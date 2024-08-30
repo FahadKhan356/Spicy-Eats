@@ -1,0 +1,127 @@
+import 'package:flutter/material.dart';
+import 'package:spicy_eats/Register%20shop/screens/DrawerScreens/Menu/MenuScreen.dart';
+import 'package:spicy_eats/Register%20shop/screens/shophome.dart';
+import 'package:spicy_eats/Register%20shop/widgets/drawerRow.dart';
+import 'package:spicy_eats/commons/country.dart';
+import 'package:spicy_eats/features/Home/screens/home_screen.dart';
+import 'package:spicy_eats/features/orders/screens/order_screen.dart';
+
+final List<DrawerRow> drawerList = [
+  DrawerRow(text: 'Home', icon: Icons.home),
+  DrawerRow(text: 'Feedback', icon: Icons.feedback),
+  DrawerRow(text: 'Payment', icon: Icons.payment),
+  DrawerRow(text: 'Menu', icon: Icons.menu_book),
+  DrawerRow(text: 'Documents', icon: Icons.document_scanner),
+  DrawerRow(text: 'Settings', icon: Icons.settings_applications_sharp),
+];
+
+List screens = [
+  const Center(child: Text("Home")),
+  const Center(child: Text("Feedback")),
+  const Center(child: Text("Payment")),
+  const MenuScreen(),
+  const Center(child: Text("Documents")),
+  const Center(child: Text("Settings")),
+];
+List screen = [
+  const HomeScreen(),
+  const OrdersScreen(),
+  ShopHome(),
+  // const Center(child: Text("Accont screen comming soon"))
+];
+
+List<String?> scheduledmeal = [
+  'None',
+  'Break Fast',
+  'Launch',
+  'Dinner',
+  'Mid Night Crave'
+];
+List<String> cuisines = [
+  'American',
+  'Chinese',
+  'Italian',
+  'Mexican',
+  'Indian',
+  'Japanese',
+  'Thai',
+  'French',
+  'Greek',
+  'Spanish',
+  'Korean',
+  'Vietnamese',
+  'Turkish',
+  'Lebanese',
+  'Brazilian',
+  'Ethiopian',
+  'Moroccan',
+  'Caribbean',
+  'Mediterranean',
+  'Russian',
+  'Cuban',
+  'German',
+  'British',
+  'Australian',
+  'Peruvian',
+  'Argentinian',
+  'Portuguese',
+  'Swedish',
+  'Egyptian',
+  'Filipino',
+  'Pakistani'
+];
+
+List<String> days = [
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+  'Sunday',
+];
+
+List<bool> setdays = [
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+];
+
+Map<String, Map<String, dynamic>> openinghours = {
+  'Monday': {'status': false, 'openinig_time': 0, 'closing_time': 0},
+  'Tuesday': {'status': false, 'openinig_time': 0, 'closing_time': 0},
+  'Wednesday': {'status': false, 'openinig_time': 0, 'closing_time': 0},
+  'Thursday': {'status': false, 'openinig_time': 0, 'closing_time': 0},
+  'Friday': {'status': false, 'openinig_time': 0, 'closing_time': 0},
+  'Saturday': {'status': false, 'openinig_time': 0, 'closing_time': 0},
+  'Sunday': {'status': false, 'openinig_time': 0, 'closing_time': 0},
+};
+
+List<String> ampmlist = ['AM', 'PM'];
+
+// List<Map<String, String>> countries = [
+//   {
+//     'name': 'Bangladesh',
+//     'code': '+880',
+//     'image': 'lib/assets/images/bangladesh.png'
+//   },
+//   {
+//     'name': 'Pakistan',
+//     'code': '+92',
+//     'image': 'lib/assets/images/pakistan.png'
+//   },
+//   {'name': 'India', 'code': '+91', 'image': 'lib/assets/images/india.png'},
+// ];
+List<Country> countries = [
+  Country(
+      name: 'Bangladesh',
+      code: '+880',
+      image: 'lib/assets/images/bangladesh.png'),
+  Country(
+      name: 'Pakistan', code: '+92', image: 'lib/assets/images/pakistan.png'),
+  Country(name: 'India', code: '+91', image: 'lib/assets/images/india.png'),
+];
