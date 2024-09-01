@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:spicy_eats/Register%20shop/widgets/Lists.dart';
 import 'package:spicy_eats/Register%20shop/widgets/TimePicker.dart';
 
 class Closing_Time extends StatefulWidget {
-  Closing_Time({
-    super.key,
-  });
+  String days;
+  Closing_Time({super.key, required this.days});
 
   @override
   State<Closing_Time> createState() => _Opening_TimeState();
@@ -14,8 +14,15 @@ class Closing_Time extends StatefulWidget {
 class _Opening_TimeState extends State<Closing_Time> {
   int clhours = 0;
   int clmins = 0;
+
   @override
   Widget build(BuildContext context) {
+    final currentam_pm = openinghours[widget.days]!["closing_period"] ?? 'PM';
+
+    final currentHours =
+        openinghours[widget.days]!['opening_time']['hours'] ?? 0;
+    final currentMinutes =
+        openinghours[widget.days]!['opening_time']['mins'] ?? 0;
     return Expanded(
       child: Container(
         padding: EdgeInsets.all(5),
@@ -30,7 +37,7 @@ class _Opening_TimeState extends State<Closing_Time> {
             //border: Border.all(color: Colors.black, width: 2),
             color: Colors.white, // Colors.indigo[100],
             borderRadius: BorderRadius.circular(10)),
-        height: 200,
+        height: 280,
         child: Column(children: [
           const Text('Closing Hours',
               style: TextStyle(fontWeight: FontWeight.w500, color: Colors.red)),
@@ -51,6 +58,8 @@ class _Opening_TimeState extends State<Closing_Time> {
                             onSelectedItemChanged: (value) {
                               setState(() {
                                 clhours = value;
+                                openinghours[widget.days]!['opening_time']
+                                    ['hours'] = clhours;
                               });
                             },
                             physics: const FixedExtentScrollPhysics(),
@@ -91,6 +100,8 @@ class _Opening_TimeState extends State<Closing_Time> {
                             onSelectedItemChanged: (value) {
                               setState(() {
                                 clmins = value;
+                                openinghours[widget.days]!['opening_time']
+                                    ['mins'] = clmins;
                               });
                               print(value);
                             },
@@ -131,6 +142,8 @@ class _Opening_TimeState extends State<Closing_Time> {
                                 onSelectedItemChanged: (value) {
                                   setState(() {
                                     ampmvalue = value;
+                                    openinghours[widget.days]![
+                                        "closing_period"] = ampmlist[value];
                                   });
                                   print(value);
                                 },
@@ -159,6 +172,80 @@ class _Opening_TimeState extends State<Closing_Time> {
                   ),
                 ),
               ],
+            ),
+          ),
+          Container(
+            height: 40,
+            decoration: BoxDecoration(
+              color: Colors.red[300],
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: Row(
+                //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  // Text(openinghours[widget.days]!['opening_time'].toString()),
+                  Text(
+                    currentHours < 10
+                        ? '0 $currentHours'
+                        : currentHours.toString(),
+                    style: GoogleFonts.aBeeZee(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      shadows: [
+                        const BoxShadow(
+                          color: Colors.black45,
+                          offset: Offset(2, 4),
+                          blurRadius: 1,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                      letterSpacing: 2,
+                    ),
+                  ),
+                  Text(
+                    currentMinutes < 10
+                        ? ' : 0 $currentMinutes'
+                        : ' : $currentMinutes',
+                    style: GoogleFonts.aBeeZee(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      shadows: [
+                        const BoxShadow(
+                          color: Colors.black45,
+                          offset: Offset(2, 4),
+                          blurRadius: 1,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                      letterSpacing: 2,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    currentam_pm.toString(),
+                    style: GoogleFonts.aBeeZee(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      shadows: [
+                        const BoxShadow(
+                          color: Colors.black45,
+                          offset: Offset(2, 4),
+                          blurRadius: 1,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                      letterSpacing: 2,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ]),

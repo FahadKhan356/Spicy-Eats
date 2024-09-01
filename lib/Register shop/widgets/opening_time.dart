@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:spicy_eats/Register%20shop/widgets/Lists.dart';
 import 'package:spicy_eats/Register%20shop/widgets/TimePicker.dart';
 
@@ -14,13 +15,22 @@ class Opening_Time extends ConsumerStatefulWidget {
 class _Opening_TimeState extends ConsumerState<Opening_Time> {
   int ophours = 0;
   int opmins = 0;
+  int ampm = 0;
+
   @override
   Widget build(BuildContext context) {
+    // final openingTime = openinghours[widget.days]?['opening_time'] ?? {};
+    final currentam_pm = openinghours[widget.days]!["opening_period"] ?? 'AM';
+
+    final currentHours =
+        openinghours[widget.days]!['opening_time']['hours'] ?? 0;
+    final currentMinutes =
+        openinghours[widget.days]!['opening_time']['mins'] ?? 0;
     return Expanded(
       child: Container(
-        padding: EdgeInsets.all(5),
+        padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
                   color: Colors.black38,
                   offset: Offset(1, 2),
@@ -30,12 +40,13 @@ class _Opening_TimeState extends ConsumerState<Opening_Time> {
             // border: Border.all(color: Colors.black, width: 2),
             color: Colors.white, // Colors.indigo[100],
             borderRadius: BorderRadius.circular(10)),
-        height: 200,
+        height: 280,
         //color: Colors.blue[50],
         child: Column(children: [
           Text(
-            'Opening Hours ${widget.days} ${openinghours[widget.days]!['status']}',
-            style: TextStyle(fontWeight: FontWeight.w500, color: Colors.red),
+            'Opening Hours ${widget.days} ${openinghours[widget.days]!["opening_time"]}',
+            style:
+                const TextStyle(fontWeight: FontWeight.w500, color: Colors.red),
           ),
           Expanded(
             child: Row(
@@ -54,6 +65,10 @@ class _Opening_TimeState extends ConsumerState<Opening_Time> {
                             onSelectedItemChanged: (value) {
                               setState(() {
                                 ophours = value;
+                                openinghours[widget.days]!['opening_time']
+                                    ['hours'] = ophours;
+                                print(
+                                    ' for checking hours  ${openinghours[widget.days]!['opening_time']}');
                               });
                             },
                             physics: const FixedExtentScrollPhysics(),
@@ -75,7 +90,7 @@ class _Opening_TimeState extends ConsumerState<Opening_Time> {
                   ),
                 ),
                 const Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
+                  padding: EdgeInsets.only(top: 20.0),
                   child: Text(
                     ':',
                     style: TextStyle(fontSize: 20),
@@ -94,10 +109,13 @@ class _Opening_TimeState extends ConsumerState<Opening_Time> {
                             onSelectedItemChanged: (value) {
                               setState(() {
                                 opmins = value;
+                                openinghours[widget.days]!['opening_time']
+                                    ['mins'] = opmins;
                               });
-                              print(value);
+                              print(
+                                  ' for checking hours  ${openinghours[widget.days]!['opening_time']}');
                             },
-                            physics: FixedExtentScrollPhysics(),
+                            physics: const FixedExtentScrollPhysics(),
                             diameterRatio: 1.0,
                             itemExtent: 40,
                             childDelegate: ListWheelChildBuilderDelegate(
@@ -133,7 +151,9 @@ class _Opening_TimeState extends ConsumerState<Opening_Time> {
                             child: ListWheelScrollView.useDelegate(
                                 onSelectedItemChanged: (value) {
                                   setState(() {
-                                    ampmvalue = value;
+                                    ampm = value;
+                                    openinghours[widget.days]![
+                                        "opening_period"] = ampmlist[value];
                                   });
                                   print(value);
                                 },
@@ -146,14 +166,14 @@ class _Opening_TimeState extends ConsumerState<Opening_Time> {
                                     width: 50,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
-                                      color: ampmvalue == index
+                                      color: ampm == index
                                           ? Colors.black12
                                           : Colors.transparent,
                                     ),
                                     child: Center(
                                         child: Text(
                                       ampmlist[index],
-                                      style: TextStyle(fontSize: 15),
+                                      style: const TextStyle(fontSize: 15),
                                     )),
                                   ),
                                 ))),
@@ -162,6 +182,78 @@ class _Opening_TimeState extends ConsumerState<Opening_Time> {
                   ),
                 ),
               ],
+            ),
+          ),
+          Container(
+            height: 40,
+            decoration: BoxDecoration(
+              color: Colors.red[300],
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: Row(
+                //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  // Text(openinghours[widget.days]!['opening_time'].toString()),
+                  Text(
+                    currentHours < 10 ? '0 $currentHours' : currentHours,
+                    style: GoogleFonts.aBeeZee(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      shadows: [
+                        const BoxShadow(
+                          color: Colors.black45,
+                          offset: Offset(2, 4),
+                          blurRadius: 1,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                      letterSpacing: 2,
+                    ),
+                  ),
+                  Text(
+                    currentMinutes < 10
+                        ? ' : 0 $currentMinutes'
+                        : ' : $currentMinutes',
+                    style: GoogleFonts.aBeeZee(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      shadows: [
+                        const BoxShadow(
+                          color: Colors.black45,
+                          offset: Offset(2, 4),
+                          blurRadius: 1,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                      letterSpacing: 2,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    currentam_pm.toString(),
+                    style: GoogleFonts.aBeeZee(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      shadows: [
+                        const BoxShadow(
+                          color: Colors.black45,
+                          offset: Offset(2, 4),
+                          blurRadius: 1,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                      letterSpacing: 2,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ]),

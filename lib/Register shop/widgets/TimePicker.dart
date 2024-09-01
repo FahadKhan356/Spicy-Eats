@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/businessInformation.dart';
 import 'package:spicy_eats/Register%20shop/widgets/Lists.dart';
@@ -65,11 +66,11 @@ class _TimePickerState extends ConsumerState<TimePicker> {
                     'Days',
                     style: TextStyle(fontSize: 25, fontWeight: FontWeight.w900),
                   ),
-                  Container(
+                  SizedBox(
                     //color: Colors.amber,
-                    height: 100,
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black12)),
+                    height: 200,
+                    // decoration:
+                    //     BoxDecoration(border: Border.all(color: Colors.black)),
                     child: ListWheelScrollView.useDelegate(
                         onSelectedItemChanged: (value) {
                           setState(() {
@@ -252,7 +253,9 @@ class _TimePickerState extends ConsumerState<TimePicker> {
                             width: 5,
                           ),
 
-                          Closing_Time(),
+                          Closing_Time(
+                            days: days[daysvalue],
+                          ),
                         ],
                       ),
                     ),

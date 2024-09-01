@@ -92,13 +92,55 @@ List<bool> setdays = [
 ];
 
 Map<String, Map<String, dynamic>> openinghours = {
-  'Monday': {'status': false, 'openinig_time': 0, 'closing_time': 0},
-  'Tuesday': {'status': false, 'openinig_time': 0, 'closing_time': 0},
-  'Wednesday': {'status': false, 'openinig_time': 0, 'closing_time': 0},
-  'Thursday': {'status': false, 'openinig_time': 0, 'closing_time': 0},
-  'Friday': {'status': false, 'openinig_time': 0, 'closing_time': 0},
-  'Saturday': {'status': false, 'openinig_time': 0, 'closing_time': 0},
-  'Sunday': {'status': false, 'openinig_time': 0, 'closing_time': 0},
+  "Monday": {
+    "status": false,
+    "opening_time": {'hours': 0, 'mins': 0},
+    "opening_period": "AM",
+    "closing_time": {'hours': 0, 'mins': 0},
+    "closing_period": "PM"
+  },
+  "Tuesday": {
+    "status": false,
+    "opening_time": {'hours': 0, 'mins': 0},
+    "opening_period": "AM",
+    "closing_time": {'hours': 0, 'mins': 0},
+    "closing_period": "PM"
+  },
+  "Wednesday": {
+    "status": false,
+    "opening_time": {'hours': 0, 'mins': 0},
+    "opening_period": "AM",
+    "closing_time": {'hours': 0, 'mins': 0},
+    "closing_period": "PM"
+  },
+  "Thursday": {
+    "status": false,
+    "opening_time": {'hours': 0, 'mins': 0},
+    "opening_period": "AM",
+    "closing_time": {'hours': 0, 'mins': 0},
+    "closing_period": "PM"
+  },
+  "Friday": {
+    "status": false,
+    "opening_time": {'hours': 0, 'mins': 0},
+    "opening_period": "AM",
+    "closing_time": {'hours': 0, 'mins': 0},
+    "closing_period": "PM"
+  },
+  "Saturday": {
+    "status": false,
+    "opening_time": {'hours': 0, 'mins': 0},
+    "opening_period": "AM",
+    "closing_time": {'hours': 0, 'mins': 0},
+    "closing_period": "PM"
+  },
+  "Sunday": {
+    "status": false,
+    "opening_time": {'hours': 0, 'mins': 0},
+    "opening_period": "AM",
+    "closing_time": {'hours': 0, 'mins': 0},
+    "closing_period": "PM"
+  }
 };
 
 List<String> ampmlist = ['AM', 'PM'];
