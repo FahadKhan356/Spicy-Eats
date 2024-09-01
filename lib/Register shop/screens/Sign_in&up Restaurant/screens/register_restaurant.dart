@@ -1,10 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/businessInformation.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/widgets/map.dart';
 import 'package:spicy_eats/Register%20shop/widgets/restauarantTextfield.dart';
+import 'package:spicy_eats/features/Home/screens/home_screen.dart';
 
 var isMapPickProvider = StateProvider<bool>((ref) => false);
 var restaurantLatProvider = StateProvider<double?>((ref) => null);
@@ -77,11 +77,11 @@ class _RegisterRestaurantState extends ConsumerState<RegisterRestaurant> {
                   ),
                   backgroundColor: Colors.white,
                   leading: IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back,
-                    ),
-                    onPressed: () {},
-                  ),
+                      icon: const Icon(
+                        Icons.arrow_back,
+                      ),
+                      onPressed: () => Navigator.popAndPushNamed(
+                          context, HomeScreen.routename)),
                   title: Container(
                     height: 50,
                     width: MediaQuery.of(context).size.width - 140,
