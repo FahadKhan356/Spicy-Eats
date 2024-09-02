@@ -4,7 +4,7 @@ import 'package:spicy_eats/Register%20shop/widgets/Lists.dart';
 import 'package:spicy_eats/Register%20shop/widgets/TimePicker.dart';
 
 class Closing_Time extends StatefulWidget {
-  String days;
+  final String days;
   Closing_Time({super.key, required this.days});
 
   @override

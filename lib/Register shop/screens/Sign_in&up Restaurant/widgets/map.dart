@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map_location_picker/flutter_map_location_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/register_restaurant.dart';
+import 'package:spicy_eats/commons/custommap.dart';
 
 class MyMap extends ConsumerStatefulWidget {
   static const String routename = '/map';
@@ -20,20 +22,38 @@ class _MyMapState extends ConsumerState<MyMap> {
 
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: const Center(
-            child: Text('Select Restaurant Location'),
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(80),
+          child: Container(
+            decoration: const BoxDecoration(boxShadow: [
+              BoxShadow(
+                  color: Colors.black45,
+                  spreadRadius: 1,
+                  blurRadius: 4,
+                  offset: Offset(1, 1)),
+            ]),
+            child: AppBar(
+              title: const Center(
+                child: Text(
+                  'Select Restaurant Location',
+                  style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 2),
+                ),
+              ),
+              leading: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(
+                    Icons.arrow_back_ios,
+                    color: Colors.black,
+                  )),
+            ),
           ),
-          leading: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: const Icon(
-                Icons.arrow_back_ios,
-                color: Colors.black,
-              )),
         ),
-        body: MapLocationPicker(
+        body: CustomMap(
             initialLatitude: 25.3936435,
             initialLongitude: 68.3838603,
             onPicked: (result) {

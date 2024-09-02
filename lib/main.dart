@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/widgets/map.dart';
 import 'package:spicy_eats/Register%20shop/widgets/Lists.dart';
 import 'package:spicy_eats/Supabse%20Backend/supabase_config.dart';
 import 'package:spicy_eats/features/authentication/passwordless_signup.dart';
@@ -87,11 +88,12 @@ class _MyAppState extends ConsumerState<MyApp> {
           useMaterial3: true,
         ),
         home: Scaffold(
-            body: supabaseClient.auth.currentSession != null
-                ? screen[currentindex]
-                : PasswordlessScreen(
-                    ref: ref,
-                  ),
+            body: MyMap(),
+            //supabaseClient.auth.currentSession != null
+            //     ? screen[currentindex]
+            //     : PasswordlessScreen(
+            //         ref: ref,
+            //       ),
             bottomNavigationBar: supabaseClient.auth.currentSession != null
                 ? BottomNavigationBar(
                     items: bitems,
