@@ -76,15 +76,18 @@ class _Opening_TimeState extends ConsumerState<Opening_Time> {
                             itemExtent: 40,
                             childDelegate: ListWheelChildBuilderDelegate(
                                 childCount: 13,
-                                builder: (context, index) => Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: ophours == index
-                                          ? Colors.black12
-                                          : Colors.transparent,
-                                    ),
-                                    child:
-                                        Center(child: MyHours(hours: index))))),
+                                builder: (context, index) {
+                                  //index = currentHours;
+                                  return Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: ophours == index
+                                            ? Colors.black12
+                                            : Colors.transparent,
+                                      ),
+                                      child:
+                                          Center(child: MyHours(hours: index)));
+                                })),
                       ),
                     ],
                   ),
@@ -123,7 +126,7 @@ class _Opening_TimeState extends ConsumerState<Opening_Time> {
                                 builder: (context, index) => Container(
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(10),
-                                        color: opmins == index
+                                        color: index == opmins
                                             ? Colors.black12
                                             : Colors.transparent,
                                       ),
@@ -184,75 +187,79 @@ class _Opening_TimeState extends ConsumerState<Opening_Time> {
               ],
             ),
           ),
-          Container(
-            height: 40,
-            decoration: BoxDecoration(
-              color: Colors.red[300],
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0),
-              child: Row(
-                //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  // Text(openinghours[widget.days]!['opening_time'].toString()),
-                  Text(
-                    currentHours < 10 ? '0 $currentHours' : currentHours,
-                    style: GoogleFonts.aBeeZee(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      shadows: [
-                        const BoxShadow(
-                          color: Colors.black45,
-                          offset: Offset(2, 4),
-                          blurRadius: 1,
-                          spreadRadius: 1,
-                        ),
-                      ],
-                      letterSpacing: 2,
+          Center(
+            child: Container(
+              height: 40,
+              decoration: BoxDecoration(
+                color: Colors.red[300],
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                child: Row(
+                  //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    // Text(openinghours[widget.days]!['opening_time'].toString()),
+                    Text(
+                      currentHours < 10
+                          ? '0 $currentHours'.toString()
+                          : currentHours.toString(),
+                      style: GoogleFonts.aBeeZee(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        shadows: [
+                          const BoxShadow(
+                            color: Colors.black45,
+                            offset: Offset(2, 4),
+                            blurRadius: 1,
+                            spreadRadius: 1,
+                          ),
+                        ],
+                        letterSpacing: 2,
+                      ),
                     ),
-                  ),
-                  Text(
-                    currentMinutes < 10
-                        ? ' : 0 $currentMinutes'
-                        : ' : $currentMinutes',
-                    style: GoogleFonts.aBeeZee(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      shadows: [
-                        const BoxShadow(
-                          color: Colors.black45,
-                          offset: Offset(2, 4),
-                          blurRadius: 1,
-                          spreadRadius: 1,
-                        ),
-                      ],
-                      letterSpacing: 2,
+                    Text(
+                      currentMinutes < 10
+                          ? ' : 0 $currentMinutes'
+                          : ' : $currentMinutes',
+                      style: GoogleFonts.aBeeZee(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        shadows: [
+                          const BoxShadow(
+                            color: Colors.black45,
+                            offset: Offset(2, 4),
+                            blurRadius: 1,
+                            spreadRadius: 1,
+                          ),
+                        ],
+                        letterSpacing: 2,
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    currentam_pm.toString(),
-                    style: GoogleFonts.aBeeZee(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      shadows: [
-                        const BoxShadow(
-                          color: Colors.black45,
-                          offset: Offset(2, 4),
-                          blurRadius: 1,
-                          spreadRadius: 1,
-                        ),
-                      ],
-                      letterSpacing: 2,
+                    const SizedBox(
+                      width: 10,
                     ),
-                  ),
-                ],
+                    Text(
+                      currentam_pm.toString(),
+                      style: GoogleFonts.aBeeZee(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        shadows: [
+                          const BoxShadow(
+                            color: Colors.black45,
+                            offset: Offset(2, 4),
+                            blurRadius: 1,
+                            spreadRadius: 1,
+                          ),
+                        ],
+                        letterSpacing: 2,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

@@ -153,7 +153,9 @@ class _MapLocationPickerState extends State<CustomMap> {
   _getLocationResult() async {
     _locationResult =
         await getLocationResult(latitude: _latitude, longitude: _longitude);
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override

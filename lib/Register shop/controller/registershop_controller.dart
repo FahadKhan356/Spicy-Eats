@@ -23,6 +23,10 @@ class RegisterShopContoller {
       email: 'contact@pizzaplace.com',
       idFirstName: 'John',
       idLastName: 'Doe',
+      userId: '',
+      idPhotoUrl: '',
+      paymentMethod: '',
+      openingHours: {},
     );
 
     try {

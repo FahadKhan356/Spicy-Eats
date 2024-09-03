@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/widgets/map.dart';
 import 'package:spicy_eats/Register%20shop/widgets/Lists.dart';
+import 'package:spicy_eats/Register%20shop/widgets/TimePicker.dart';
 import 'package:spicy_eats/Supabse%20Backend/supabase_config.dart';
+import 'package:spicy_eats/commons/shapes.dart';
 import 'package:spicy_eats/features/authentication/passwordless_signup.dart';
 import 'package:spicy_eats/routes.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -88,8 +90,16 @@ class _MyAppState extends ConsumerState<MyApp> {
           useMaterial3: true,
         ),
         home: Scaffold(
-            body: MyMap(),
-            //supabaseClient.auth.currentSession != null
+            body: supabaseClient.auth.currentSession != null
+                ? screen[currentindex]
+                : PasswordlessScreen(
+                    ref: ref,
+                  ),
+            //TimePicker(),
+
+            //Shapes(),
+            //TimePicker(),
+            // supabaseClient.auth.currentSession != null
             //     ? screen[currentindex]
             //     : PasswordlessScreen(
             //         ref: ref,

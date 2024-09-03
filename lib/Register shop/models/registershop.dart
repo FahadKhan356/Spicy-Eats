@@ -15,6 +15,10 @@ class RestaurantData {
   String email;
   String idFirstName;
   String idLastName;
+  String idPhotoUrl;
+  String userId;
+  String paymentMethod;
+  Map<String, Map<String, dynamic>> openingHours;
 
   RestaurantData({
     required this.phoneNumber,
@@ -33,6 +37,10 @@ class RestaurantData {
     required this.idNumber,
     required this.idFirstName,
     required this.idLastName,
+    required this.userId,
+    required this.idPhotoUrl,
+    required this.openingHours,
+    required this.paymentMethod,
   });
 
   Map<String, dynamic> toJson() {
@@ -53,10 +61,20 @@ class RestaurantData {
       'email': email,
       'idFirstName': idFirstName,
       'idLastName': idLastName,
+      'userId': userId,
+      'idPhotoUrl': idPhotoUrl,
+      'paymentMethod': paymentMethod,
+      'openingHours': openingHours,
     };
   }
 
   factory RestaurantData.fromJson(Map<String, dynamic> json) {
+    Map<String, Map<String, dynamic>> openingHours = {};
+    if (json['openingHours'] != null) {
+      openingHours =
+          Map<String, Map<String, dynamic>>.from(json['openingHours']);
+    }
+
     return RestaurantData(
       restaurantName: json['restaurantName'],
       deliveryFee: json['deliveryFee'],
@@ -74,6 +92,11 @@ class RestaurantData {
       email: json['email'],
       idFirstName: json['idFirstName'],
       idLastName: json['idLastName'],
+      userId: json['user_id'],
+      idPhotoUrl: json['idPhotoUrl'],
+      paymentMethod: json['paymentMethod'],
+      openingHours: openingHours,
+      //json['openinHours'],
     );
   }
 }

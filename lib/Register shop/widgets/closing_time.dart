@@ -14,15 +14,15 @@ class Closing_Time extends StatefulWidget {
 class _Opening_TimeState extends State<Closing_Time> {
   int clhours = 0;
   int clmins = 0;
-
+  int ampm = 0;
   @override
   Widget build(BuildContext context) {
     final currentam_pm = openinghours[widget.days]!["closing_period"] ?? 'PM';
 
     final currentHours =
-        openinghours[widget.days]!['opening_time']['hours'] ?? 0;
+        openinghours[widget.days]!['closing_time']['hours'] ?? 0;
     final currentMinutes =
-        openinghours[widget.days]!['opening_time']['mins'] ?? 0;
+        openinghours[widget.days]!['closing_time']['mins'] ?? 0;
     return Expanded(
       child: Container(
         padding: EdgeInsets.all(5),
@@ -58,7 +58,7 @@ class _Opening_TimeState extends State<Closing_Time> {
                             onSelectedItemChanged: (value) {
                               setState(() {
                                 clhours = value;
-                                openinghours[widget.days]!['opening_time']
+                                openinghours[widget.days]!['closing_time']
                                     ['hours'] = clhours;
                               });
                             },
@@ -100,7 +100,7 @@ class _Opening_TimeState extends State<Closing_Time> {
                             onSelectedItemChanged: (value) {
                               setState(() {
                                 clmins = value;
-                                openinghours[widget.days]!['opening_time']
+                                openinghours[widget.days]!['closing_time']
                                     ['mins'] = clmins;
                               });
                               print(value);
@@ -141,7 +141,7 @@ class _Opening_TimeState extends State<Closing_Time> {
                             child: ListWheelScrollView.useDelegate(
                                 onSelectedItemChanged: (value) {
                                   setState(() {
-                                    ampmvalue = value;
+                                    ampm = value;
                                     openinghours[widget.days]![
                                         "closing_period"] = ampmlist[value];
                                   });
@@ -156,14 +156,14 @@ class _Opening_TimeState extends State<Closing_Time> {
                                     width: 50,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
-                                      color: ampmvalue == index
+                                      color: ampm == index
                                           ? Colors.black12
                                           : Colors.transparent,
                                     ),
                                     child: Center(
                                         child: Text(
                                       ampmlist[index],
-                                      style: TextStyle(fontSize: 15),
+                                      style: const TextStyle(fontSize: 15),
                                     )),
                                   ),
                                 ))),

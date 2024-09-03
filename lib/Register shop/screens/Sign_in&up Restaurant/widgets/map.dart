@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map_location_picker/flutter_map_location_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/register_restaurant.dart';
 import 'package:spicy_eats/commons/custommap.dart';
 

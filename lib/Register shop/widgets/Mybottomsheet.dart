@@ -21,7 +21,7 @@ class _MyBottomSheetState extends State<MyBottomSheet>
         duration: const Duration(milliseconds: 1000), vsync: this);
 
     _sliderAnimation = Tween<Offset>(
-      begin: Offset(0, 2),
+      begin: const Offset(0, 2),
       end: Offset.zero,
     ).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.slowMiddle),
@@ -47,6 +47,7 @@ class _MyBottomSheetState extends State<MyBottomSheet>
 
 void showMyBottomSheet(BuildContext context) {
   showModalBottomSheet(
+      useSafeArea: true,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       context: context,
