@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/businessInformation.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/widgets/map.dart';
+import 'package:spicy_eats/Register%20shop/utils/restaurantNotifier.dart';
 import 'package:spicy_eats/Register%20shop/widgets/restauarantTextfield.dart';
 import 'package:spicy_eats/features/Home/screens/home_screen.dart';
 
@@ -37,6 +38,9 @@ class _RegisterRestaurantState extends ConsumerState<RegisterRestaurant> {
 
   @override
   Widget build(BuildContext context) {
+    final formData = ref.watch(restaurantstateProvider);
+    final formNotifier = ref.read(restaurantstateProvider.notifier);
+
     bool isMapPick = ref.watch(isMapPickProvider);
     var address = ref.watch(restaurantAddProvider);
     var latitude = ref.watch(restaurantLatProvider);
@@ -167,6 +171,9 @@ class _RegisterRestaurantState extends ConsumerState<RegisterRestaurant> {
                           if (value!.isEmpty) {
                             return 'Please enter name';
                           }
+                          formNotifier.setRestaurantData(
+                              formData.copywith(restaurantName: value));
+
                           return null;
                         },
                       ),
@@ -185,6 +192,9 @@ class _RegisterRestaurantState extends ConsumerState<RegisterRestaurant> {
                           if (!regix.hasMatch(value)) {
                             return 'Please enter a valid email format';
                           }
+                          formNotifier.setRestaurantData(
+                              formData.copywith(email: value));
+
                           return null;
                         },
                       ),
@@ -201,6 +211,9 @@ class _RegisterRestaurantState extends ConsumerState<RegisterRestaurant> {
                           if (temp == null) {
                             return 'Please enter numbers only';
                           }
+                          formNotifier.setRestaurantData(formData.copywith(
+                              phoneNumber: int.tryParse(value)));
+
                           return null;
                         },
                       ),
@@ -222,14 +235,21 @@ class _RegisterRestaurantState extends ConsumerState<RegisterRestaurant> {
                                   latitude != null &&
                                   longtitude != null) {
                                 if (mounted) {
-                                  // Perform the navigation and state update
+                                  // Perform the navigation and state update\
+
                                   Future.delayed(
                                       const Duration(milliseconds: 500), () {
                                     if (mounted) {
                                       ref
                                           .read(isMapPickProvider.notifier)
                                           .state = false;
-                                      registerShopContoller.setrestaurantdata();
+                                      // registerShopContoller.setrestaurantdata();
+                                      formNotifier.setRestaurantData(
+                                          formData.copywith(
+                                              lat: longtitude,
+                                              long: longtitude,
+                                              address: address));
+
                                       Navigator.pushNamed(context,
                                           BusinessDetailsScreen.routename);
                                     }

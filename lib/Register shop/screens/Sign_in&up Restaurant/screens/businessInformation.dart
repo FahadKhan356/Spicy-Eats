@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/legalstuffscreen.dart';
+import 'package:spicy_eats/Register%20shop/utils/restaurantNotifier.dart';
+import 'package:spicy_eats/Register%20shop/widgets/Lists.dart';
 import 'package:spicy_eats/Register%20shop/widgets/Mybottomsheet.dart';
 import 'package:spicy_eats/Register%20shop/widgets/restauarantTextfield.dart';
 
@@ -21,9 +23,16 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
   var restaurantdescriptionController = TextEditingController();
   var deliveryareacontroller = TextEditingController();
   var postalcodeController = TextEditingController();
+  var deliveryfee = TextEditingController();
+  var deliveryMinTime = TextEditingController();
+  var deliveryMaxTime = TextEditingController();
+
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
+    final formData = ref.watch(restaurantstateProvider);
+    final formNotifier = ref.read(restaurantstateProvider.notifier);
+
     final height = MediaQuery.of(context).size.height;
     // final width = MediaQuery.of(context).size.width;
 
@@ -105,6 +114,7 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                           if (value!.isEmpty) {
                             return 'Please give restaurant description';
                           }
+
                           return null;
                         },
                         onChanged: (value) {
@@ -168,7 +178,7 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                         children: [
                           Expanded(
                             child: RestaurantTextfield(
-                                controller: deliveryareacontroller,
+                                controller: deliveryfee,
                                 hintext: '\$12',
                                 title: 'delivery fee',
                                 size: 14,
@@ -176,6 +186,9 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                                   if (value!.isEmpty) {
                                     return 'please enter delivery area here';
                                   }
+                                  formNotifier.setRestaurantData(
+                                      formData.copywith(
+                                          deliveryFee: double.tryParse(value)));
                                   return null;
                                 }),
                           ),
@@ -184,7 +197,7 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                           ),
                           Expanded(
                             child: RestaurantTextfield(
-                                controller: deliveryareacontroller,
+                                controller: deliveryMinTime,
                                 hintext: '20, 25 ...',
                                 title: 'delivery min time',
                                 size: 14,
@@ -192,6 +205,8 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                                   if (value!.isEmpty) {
                                     return 'please enter delivery area here';
                                   }
+                                  formNotifier.setRestaurantData(formData
+                                      .copywith(minTime: int.tryParse(value)));
                                   return null;
                                 }),
                           ),
@@ -200,7 +215,7 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                           ),
                           Expanded(
                             child: RestaurantTextfield(
-                                controller: deliveryareacontroller,
+                                controller: deliveryMaxTime,
                                 hintext: '40 , 60 ...',
                                 title: 'delivery max time',
                                 size: 14,
@@ -208,6 +223,8 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                                   if (value!.isEmpty) {
                                     return 'please enter delivery area here';
                                   }
+                                  formNotifier.setRestaurantData(formData
+                                      .copywith(maxTime: int.tryParse(value)));
                                   return null;
                                 }),
                           ),
@@ -224,6 +241,8 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                             if (value!.isEmpty) {
                               return 'please enter delivery area here';
                             }
+                            formNotifier.setRestaurantData(
+                                formData.copywith(deliveryArea: value));
 
                             return null;
                           }),
@@ -238,7 +257,8 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                             if (value!.isEmpty) {
                               return 'please enter city postal code';
                             }
-
+                            formNotifier.setRestaurantData(
+                                formData.copywith(postalCode: value));
                             return null;
                           }),
                       const SizedBox(
@@ -259,6 +279,8 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                                       borderRadius: BorderRadius.circular(10))),
                               onPressed: () {
                                 if (_form.currentState!.validate()) {
+                                  formNotifier.setRestaurantData(formData
+                                      .copywith(openingHours: openinghours));
                                   Navigator.pushNamed(context,
                                       LegalInformationScreen.routename);
                                 }
@@ -268,8 +290,15 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                                             'Please pick your restaurant location')));
                               },
                               child: GestureDetector(
-                                onTap: () => Navigator.pushNamed(
-                                    context, LegalInformationScreen.routename),
+                                onTap: () {
+                                  formNotifier.setRestaurantData(
+                                      formData.copywith(
+                                          description:
+                                              restaurantdescriptionController
+                                                  .text));
+                                  Navigator.pushNamed(context,
+                                      LegalInformationScreen.routename);
+                                },
                                 child: const Text(
                                   'Next',
                                   style: TextStyle(color: Colors.white),

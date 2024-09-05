@@ -1,46 +1,95 @@
 class RestaurantData {
-  String restaurantName;
-  double deliveryFee;
-  int minTime;
-  int maxTime;
-  double ratings;
-  String address;
-  int phoneNumber;
-  String deliveryArea;
-  String postalCode;
-  String idNumber;
-  String description;
-  double lat;
-  double long;
-  String email;
-  String idFirstName;
-  String idLastName;
-  String idPhotoUrl;
-  String userId;
-  String paymentMethod;
-  Map<String, Map<String, dynamic>> openingHours;
+  String? restaurantName;
+  double? deliveryFee;
+  int? minTime;
+  int? maxTime;
+  double? ratings;
+  String? address;
+  int? phoneNumber;
+  String? deliveryArea;
+  String? postalCode;
+  String? idNumber;
+  String? description;
+  double? lat;
+  double? long;
+  String? email;
+  String? idFirstName;
+  String? idLastName;
+  String? idPhotoUrl;
+  String? userId;
+  String? paymentMethod;
+  Map<String, Map<String, dynamic>>? openingHours;
+  String? restaurantImageUrl;
+
+  RestaurantData copywith(
+      {String? restaurantName,
+      double? deliveryFee,
+      int? minTime,
+      int? maxTime,
+      double? ratings,
+      String? address,
+      int? phoneNumber,
+      String? deliveryArea,
+      String? postalCode,
+      String? idNumber,
+      String? description,
+      double? lat,
+      double? long,
+      String? email,
+      String? idFirstName,
+      String? idLastName,
+      String? idPhotoUrl,
+      String? userId,
+      String? paymentMethod,
+      Map<String, Map<String, dynamic>>? openingHours,
+      String? restaurantImageUrl}) {
+    return RestaurantData(
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      address: address ?? this.address,
+      restaurantName: restaurantName ?? this.restaurantName,
+      ratings: ratings ?? this.ratings,
+      email: email ?? this.email,
+      lat: lat ?? this.lat,
+      long: long ?? this.long,
+      description: description ?? this.description,
+      deliveryFee: deliveryFee ?? this.deliveryFee,
+      minTime: minTime ?? this.minTime,
+      maxTime: maxTime ?? this.maxTime,
+      deliveryArea: deliveryArea ?? this.deliveryArea,
+      postalCode: postalCode ?? this.postalCode,
+      idNumber: idNumber ?? this.idNumber,
+      idFirstName: idFirstName ?? this.idFirstName,
+      idLastName: idLastName ?? this.idLastName,
+      //userId: userId ?? this.userId,
+      idPhotoUrl: idPhotoUrl ?? this.idPhotoUrl,
+      openingHours: openingHours ?? this.openingHours,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      restaurantImageUrl: restaurantImageUrl ?? this.restaurantImageUrl,
+    );
+  }
 
   RestaurantData({
-    required this.phoneNumber,
-    required this.address,
-    required this.restaurantName,
-    required this.ratings,
-    required this.email,
-    required this.lat,
-    required this.long,
-    required this.description,
-    required this.deliveryFee,
-    required this.minTime,
-    required this.maxTime,
-    required this.deliveryArea,
-    required this.postalCode,
-    required this.idNumber,
-    required this.idFirstName,
-    required this.idLastName,
-    required this.userId,
-    required this.idPhotoUrl,
-    required this.openingHours,
-    required this.paymentMethod,
+    this.phoneNumber,
+    this.address,
+    this.restaurantName,
+    this.ratings,
+    this.email,
+    this.lat,
+    this.long,
+    this.description,
+    this.deliveryFee,
+    this.minTime,
+    this.maxTime,
+    this.deliveryArea,
+    this.postalCode,
+    this.idNumber,
+    this.idFirstName,
+    this.idLastName,
+    //this.userId,
+    this.idPhotoUrl,
+    this.openingHours,
+    this.paymentMethod,
+    this.restaurantImageUrl,
   });
 
   Map<String, dynamic> toJson() {
@@ -61,10 +110,11 @@ class RestaurantData {
       'email': email,
       'idFirstName': idFirstName,
       'idLastName': idLastName,
-      'userId': userId,
+      //'userId': userId,
       'idPhotoUrl': idPhotoUrl,
       'paymentMethod': paymentMethod,
       'openingHours': openingHours,
+      'restaurantImageUrl': restaurantImageUrl,
     };
   }
 
@@ -92,10 +142,11 @@ class RestaurantData {
       email: json['email'],
       idFirstName: json['idFirstName'],
       idLastName: json['idLastName'],
-      userId: json['user_id'],
+      //userId: json['user_id'],
       idPhotoUrl: json['idPhotoUrl'],
       paymentMethod: json['paymentMethod'],
       openingHours: openingHours,
+      restaurantImageUrl: json['restaurantImageUrl'],
       //json['openinHours'],
     );
   }

@@ -4,8 +4,11 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/paymentmethodescreen.dart';
+import 'package:spicy_eats/Register%20shop/utils/commonImageUpload.dart';
+import 'package:spicy_eats/Register%20shop/utils/restaurantNotifier.dart';
 import 'package:spicy_eats/Register%20shop/widgets/restauarantTextfield.dart';
 import 'package:spicy_eats/commons/imagepick.dart';
+import 'package:spicy_eats/main.dart';
 
 var isimage = StateProvider<bool>((ref) => true);
 
@@ -43,6 +46,8 @@ class _LegalInformationScreenState
 
   @override
   Widget build(BuildContext context) {
+    final formData = ref.watch(restaurantstateProvider);
+    final formNotifier = ref.read(restaurantstateProvider.notifier);
     final isImageSelected = ref.watch(isimage);
     return SafeArea(
       child: Scaffold(
@@ -115,6 +120,8 @@ class _LegalInformationScreenState
                           if (nicno == null) {
                             return 'Please enter numbers';
                           }
+                          formNotifier.setRestaurantData(
+                              formData.copywith(idNumber: value));
                           return null;
                         }),
                     const SizedBox(
@@ -127,6 +134,9 @@ class _LegalInformationScreenState
                           if (value!.isEmpty) {
                             return 'please fill the field';
                           }
+                          formNotifier.setRestaurantData(
+                              formData.copywith(idFirstName: value));
+
                           return null;
                         }),
                     const SizedBox(
@@ -136,6 +146,9 @@ class _LegalInformationScreenState
                         hintext: 'Nic Last Name',
                         title: 'Nic Last Name',
                         onvalidator: (value) {
+                          formNotifier.setRestaurantData(
+                              formData.copywith(idLastName: value));
+
                           return null;
                         }),
                     const SizedBox(
@@ -262,13 +275,38 @@ class _LegalInformationScreenState
                                     width: 2, color: Colors.white),
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10))),
-                            onPressed: () {
+                            onPressed: () async {
                               if (_form.currentState!.validate() &&
                                   image != null) {
                                 Navigator.pushNamed(
-                                    context, PaymentMethodScreen.routename);
+                                    context, PaymentMethodScreen.routename,
+                                    arguments: image);
                               }
                               ref.read(isimage.notifier).state = false;
+                              final userid =
+                                  supabaseClient.auth.currentUser!.id;
+                              final imgurl = await supabaseClient.storage
+                                  .from('restaurant_register_photos')
+                                  .getPublicUrl('/$userid/photos');
+                              //await uploadImage(image!);
+                              formNotifier.setRestaurantData(
+                                  formData.copywith(idPhotoUrl: imgurl));
+                              print(
+                                  '  form data  ${formData.toJson()} \n $imgurl');
+                              try {
+                                print('inside');
+                                await supabaseClient
+                                    .from('restaurants')
+                                    .insert(formData.toJson())
+                                    .then((value) =>
+                                        print("Inserted successfully: $value"))
+                                    .catchError((error) {
+                                  print("Insert failed: $error");
+                                });
+                              } catch (e) {
+                                print('Exception during insert');
+                                print(e.toString());
+                              }
                             },
                             child: const Text(
                               'Next',
