@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/legalstuffscreen.dart';
-import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/register_restaurant.dart';
-import 'package:spicy_eats/Register%20shop/utils/restaurantNotifier.dart';
-import 'package:spicy_eats/Register%20shop/widgets/Lists.dart';
 import 'package:spicy_eats/Register%20shop/widgets/Mybottomsheet.dart';
 import 'package:spicy_eats/Register%20shop/widgets/restauarantTextfield.dart';
 
@@ -29,19 +26,10 @@ class BusinessDetailsScreen extends ConsumerStatefulWidget {
 class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
   RegisterShopContoller registerShopContoller = RegisterShopContoller();
   var restaurantdescriptionController = TextEditingController();
-  var deliveryareacontroller = TextEditingController();
-  var postalcodeController = TextEditingController();
-  var deliveryfee = TextEditingController();
-  var deliveryMinTime = TextEditingController();
-  var deliveryMaxTime = TextEditingController();
 
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    final formData = ref.watch(restaurantstateProvider);
-    final formNotifier = ref.read(restaurantstateProvider.notifier);
-    final restaurantData = ref.read(restaurantDataProvider.notifier).state;
-
     final height = MediaQuery.of(context).size.height;
     // final width = MediaQuery.of(context).size.width;
 
@@ -122,10 +110,7 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                           if (value!.isEmpty) {
                             return 'Please give restaurant description';
                           }
-                          ref.read(restaurantDataProvider.notifier).state =
-                              restaurantData.copywith(
-                            description: value,
-                          );
+
                           ref
                               .read(restaurantDescriptionProvider.notifier)
                               .state = value;
@@ -192,7 +177,6 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                         children: [
                           Expanded(
                             child: RestaurantTextfield(
-                                controller: deliveryfee,
                                 hintext: '\$12',
                                 title: 'delivery fee',
                                 size: 14,
@@ -212,7 +196,6 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                           ),
                           Expanded(
                             child: RestaurantTextfield(
-                                controller: deliveryMinTime,
                                 hintext: '20, 25 ...',
                                 title: 'delivery min time',
                                 size: 14,
@@ -233,7 +216,6 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                           ),
                           Expanded(
                             child: RestaurantTextfield(
-                                controller: deliveryMaxTime,
                                 hintext: '40 , 60 ...',
                                 title: 'delivery max time',
                                 size: 14,
@@ -259,7 +241,6 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                         height: 20,
                       ),
                       RestaurantTextfield(
-                          controller: deliveryareacontroller,
                           hintext: 'Delhi , Kolkata, san francisco',
                           title: 'Delivery Area',
                           onvalidator: (value) {
@@ -276,7 +257,6 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                         height: 20,
                       ),
                       RestaurantTextfield(
-                          controller: postalcodeController,
                           hintext: 'Your city postal code ie:1700, 22009 etc',
                           title: 'Postal code',
                           onvalidator: (value) {
@@ -316,57 +296,8 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                               },
                               child: GestureDetector(
                                 onTap: () {
-                                  // formNotifier
-                                  //     .setRestaurantData(formData.copywith(
-                                  //   description:
-                                  //       restaurantdescriptionController.text,
-                                  //   openingHours: openinghours,
-                                  //   deliveryFee:
-                                  //       double.tryParse(deliveryfee.text),
-                                  //   minTime: int.tryParse(deliveryMinTime.text),
-                                  //   maxTime: int.tryParse(deliveryMaxTime.text),
-                                  //   deliveryArea: deliveryareacontroller.text,
-                                  //   postalCode: postalcodeController.text,
-                                  // ));
-
-                                  //////////////////////
-                                  // ref
-                                  //     .read(restaurantstateProvider.notifier)
-                                  //     .setRestaurantData(
-                                  //       description:
-                                  //           restaurantdescriptionController
-                                  //               .text,
-                                  //       openingHours: openinghours,
-                                  //       deliveryFee:
-                                  //           double.tryParse(deliveryfee.text),
-                                  //       minTime:
-                                  //           int.tryParse(deliveryMinTime.text),
-                                  //       maxTime:
-                                  //           int.tryParse(deliveryMaxTime.text),
-                                  //       deliveryArea:
-                                  //           deliveryareacontroller.text,
-                                  //       postalCode: postalcodeController.text,
-                                  // //     );
-                                  // registerShopContoller.updatePage2(
-                                  //   description:
-                                  //       restaurantdescriptionController.text,
-                                  //   deliveryarea: deliveryareacontroller.text,
-                                  //   postalcode: postalcodeController.text,
-                                  //   deliveryfee:
-                                  //       double.tryParse(deliveryfee.text),
-                                  //   mintime: int.tryParse(deliveryMinTime.text),
-                                  //   maxtime: int.tryParse(deliveryMaxTime.text),
-                                  //   openhours: openinghours,
-                                  // );
-
-                                  // ref
-                                  //     .read(restaurantDataProvider.notifier)
-                                  //     .state = restaurantData.copywith(
-                                  //   openingHours: openinghours,
-                                  // );
                                   Navigator.pushNamed(context,
                                       LegalInformationScreen.routename);
-                                  print(formData.toJson());
                                 },
                                 child: const Text(
                                   'Next',

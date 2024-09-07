@@ -3,13 +3,9 @@ import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/businessInformation.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/paymentmethodescreen.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/register_restaurant.dart';
-import 'package:spicy_eats/Register%20shop/utils/RestaurantDataSingleton.dart';
-import 'package:spicy_eats/Register%20shop/utils/commonImageUpload.dart';
-import 'package:spicy_eats/Register%20shop/utils/restaurantNotifier.dart';
 import 'package:spicy_eats/Register%20shop/widgets/Lists.dart';
 import 'package:spicy_eats/Register%20shop/widgets/restauarantTextfield.dart';
 import 'package:spicy_eats/commons/imagepick.dart';
@@ -33,19 +29,6 @@ class LegalInformationScreen extends ConsumerStatefulWidget {
 
 class _LegalInformationScreenState
     extends ConsumerState<LegalInformationScreen> {
-  @override
-  void dispose() {
-    super.dispose();
-    // TODO: implement dispose
-    nicnumberController.dispose();
-    firstnameController.dispose();
-    lastnameController.dispose();
-  }
-
-  final nicnumberController = TextEditingController();
-  final firstnameController = TextEditingController();
-  final lastnameController = TextEditingController();
-
   GlobalKey<FormState> _form = GlobalKey<FormState>();
   File? image;
   void pickimagefromgallery() async {
@@ -55,10 +38,6 @@ class _LegalInformationScreenState
 
   @override
   Widget build(BuildContext context) {
-    RegisterShopContoller registerShopContoller = RegisterShopContoller();
-    final formData = ref.watch(restaurantstateProvider);
-    final formNotifier = ref.read(restaurantstateProvider.notifier);
-    final restaurantData = ref.read(restaurantDataProvider.notifier).state;
     final isImageSelected = ref.watch(isimage);
     return SafeArea(
       child: Scaffold(
@@ -124,7 +103,6 @@ class _LegalInformationScreenState
                       height: 10,
                     ),
                     RestaurantTextfield(
-                        controller: nicnumberController,
                         hintext: '41302-2312345',
                         title: 'Identity Card/Nic Number',
                         onvalidator: (value) {
@@ -139,7 +117,6 @@ class _LegalInformationScreenState
                       height: 10,
                     ),
                     RestaurantTextfield(
-                        controller: firstnameController,
                         hintext: 'Mohammad, Alex...',
                         title: 'Nic First Name ',
                         onvalidator: (value) {
@@ -154,7 +131,6 @@ class _LegalInformationScreenState
                       height: 10,
                     ),
                     RestaurantTextfield(
-                        controller: lastnameController,
                         hintext: 'Nic Last Name',
                         title: 'Nic Last Name',
                         onvalidator: (value) {

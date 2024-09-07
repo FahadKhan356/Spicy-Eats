@@ -27,24 +27,24 @@ class RegisterRestaurant extends ConsumerStatefulWidget {
 }
 
 class _RegisterRestaurantState extends ConsumerState<RegisterRestaurant> {
-  var nameController = TextEditingController();
-  var emailcontroller = TextEditingController();
-  var contactController = TextEditingController();
+  // var nameController = TextEditingController();
+  // var emailcontroller = TextEditingController();
+  // var contactController = TextEditingController();
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
   final RegisterShopContoller registerShopContoller = RegisterShopContoller();
 
   @override
   void dispose() {
     // Dispose controllers
-    nameController.dispose();
-    emailcontroller.dispose();
-    contactController.dispose();
+    // nameController.dispose();
+    // emailcontroller.dispose();
+    // contactController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final restaurantData = ref.read(restaurantDataProvider.notifier).state;
+    // final restaurantData = ref.read(restaurantDataProvider.notifier).state;
     // final formData = ref.watch(restaurantstateProvider);
     // final formNotifier = ref.read(restaurantstateProvider.notifier);
 
@@ -52,9 +52,9 @@ class _RegisterRestaurantState extends ConsumerState<RegisterRestaurant> {
     var address = ref.watch(restaurantAddProvider);
     var latitude = ref.watch(restaurantLatProvider);
     var longtitude = ref.watch(restaurantLongProvider);
-    var restname = ref.watch(restaurantNameProvider);
-    var restemail = ref.watch(restaurantEmailProvider);
-    var restphoneno = ref.watch(restaurantPhoneNumberProvider);
+    // var restname = ref.watch(restaurantNameProvider);
+    // var restemail = ref.watch(restaurantEmailProvider);
+    // var restphoneno = ref.watch(restaurantPhoneNumberProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -174,22 +174,19 @@ class _RegisterRestaurantState extends ConsumerState<RegisterRestaurant> {
                         ),
                       ]),
                       RestaurantTextfield(
-                        controller: nameController,
                         hintext: 'macdonalds, pizza hut, shinwari karahi etc',
                         title: 'Restaurant Name',
                         onvalidator: (value) {
                           if (value!.isEmpty) {
                             return 'Please enter name';
                           }
-                          restname = ref
-                              .read(restaurantNameProvider.notifier)
-                              .state = value;
+                          ref.read(restaurantNameProvider.notifier).state =
+                              value;
                           return null;
                         },
                       ),
                       const SizedBox(height: 20),
                       RestaurantTextfield(
-                        controller: emailcontroller,
                         hintext: 'Pizza360@gmial.com...',
                         title: 'Email',
                         onvalidator: (value) {
@@ -202,16 +199,14 @@ class _RegisterRestaurantState extends ConsumerState<RegisterRestaurant> {
                           if (!regix.hasMatch(value)) {
                             return 'Please enter a valid email format';
                           }
-                          restemail = ref
-                              .read(restaurantEmailProvider.notifier)
-                              .state = value;
+                          ref.read(restaurantEmailProvider.notifier).state =
+                              value;
 
                           return null;
                         },
                       ),
                       const SizedBox(height: 20),
                       RestaurantTextfield(
-                        controller: contactController,
                         hintext: '923312355223',
                         title: 'Phone number',
                         onvalidator: (value) {
@@ -222,7 +217,7 @@ class _RegisterRestaurantState extends ConsumerState<RegisterRestaurant> {
                           if (temp == null) {
                             return 'Please enter numbers only';
                           }
-                          restphoneno = ref
+                          ref
                               .read(restaurantPhoneNumberProvider.notifier)
                               .state = temp;
                           return null;
@@ -246,60 +241,10 @@ class _RegisterRestaurantState extends ConsumerState<RegisterRestaurant> {
                                   latitude != null &&
                                   longtitude != null) {
                                 if (mounted) {
-                                  // Perform the navigation and state update\
-
-                                  // Future.delayed(
-                                  //     const Duration(milliseconds: 500), () {
                                   if (mounted) {
                                     ref.read(isMapPickProvider.notifier).state =
                                         false;
-                                    // formNotifier.setRestaurantData(
-                                    //   formData.copywith(
-                                    //     restaurantName: nameController.text,
-                                    //     email: emailcontroller.text,
-                                    //     phoneNumber: int.tryParse(
-                                    //         contactController.text),
-                                    //     address: address,
-                                    //     lat: latitude,
-                                    //     long: longtitude,
-                                    //   ),
-                                    // );
 
-                                    /////////
-                                    // ref
-                                    //     .read(restaurantstateProvider.notifier)
-                                    //     .setRestaurantData(
-                                    //       restaurantName: nameController.text,
-                                    //       email: emailcontroller.text,
-                                    //       phoneNumber: int.tryParse(
-                                    //           contactController.text),
-                                    //       address: address,
-                                    //       lat: latitude,
-                                    //       long: longtitude,
-                                    //     );
-////////////////////////////////////////////////////////////////
-                                    // registerShopContoller.updatePage1(
-                                    //   email: emailcontroller.text,
-                                    //   name: nameController.text,
-                                    //   address: address,
-                                    //   phoneno:
-                                    //       int.tryParse(contactController.text),
-                                    //   lat: latitude,
-                                    //   long: longtitude,
-                                    // );
-//////////////////////////////////////////////////////////////////////
-                                    ///
-                                    // ref
-                                    //     .read(restaurantDataProvider.notifier)
-                                    //     .state = restaurantData.copywith(
-                                    //   restaurantName: nameController.text,
-                                    //   email: emailcontroller.text,
-                                    //   phoneNumber:
-                                    //       int.tryParse(contactController.text),
-                                    //   address: address,
-                                    //   lat: latitude,
-                                    //   long: longtitude,
-                                    // );
                                     Navigator.pushNamed(context,
                                         BusinessDetailsScreen.routename);
                                   }
