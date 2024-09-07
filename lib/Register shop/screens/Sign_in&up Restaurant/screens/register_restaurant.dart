@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
+import 'package:spicy_eats/Register%20shop/models/registershop.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/businessInformation.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/widgets/map.dart';
-import 'package:spicy_eats/Register%20shop/utils/restaurantNotifier.dart';
 import 'package:spicy_eats/Register%20shop/widgets/restauarantTextfield.dart';
 import 'package:spicy_eats/features/Home/screens/home_screen.dart';
 
@@ -11,6 +11,12 @@ var isMapPickProvider = StateProvider<bool>((ref) => false);
 var restaurantLatProvider = StateProvider<double?>((ref) => null);
 var restaurantLongProvider = StateProvider<double?>((ref) => null);
 var restaurantAddProvider = StateProvider<String?>((ref) => null);
+var restaurantEmailProvider = StateProvider<String?>((ref) => null);
+var restaurantNameProvider = StateProvider<String?>((ref) => null);
+final restaurantPhoneNumberProvider = StateProvider<int?>((ref) => 0);
+
+final restaurantDataProvider =
+    StateProvider<RestaurantData>((ref) => RestaurantData());
 
 class RegisterRestaurant extends ConsumerStatefulWidget {
   static const String routename = '/register-restaurant';
@@ -38,13 +44,17 @@ class _RegisterRestaurantState extends ConsumerState<RegisterRestaurant> {
 
   @override
   Widget build(BuildContext context) {
-    final formData = ref.watch(restaurantstateProvider);
-    final formNotifier = ref.read(restaurantstateProvider.notifier);
+    final restaurantData = ref.read(restaurantDataProvider.notifier).state;
+    // final formData = ref.watch(restaurantstateProvider);
+    // final formNotifier = ref.read(restaurantstateProvider.notifier);
 
     bool isMapPick = ref.watch(isMapPickProvider);
     var address = ref.watch(restaurantAddProvider);
     var latitude = ref.watch(restaurantLatProvider);
     var longtitude = ref.watch(restaurantLongProvider);
+    var restname = ref.watch(restaurantNameProvider);
+    var restemail = ref.watch(restaurantEmailProvider);
+    var restphoneno = ref.watch(restaurantPhoneNumberProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -171,9 +181,9 @@ class _RegisterRestaurantState extends ConsumerState<RegisterRestaurant> {
                           if (value!.isEmpty) {
                             return 'Please enter name';
                           }
-                          formNotifier.setRestaurantData(
-                              formData.copywith(restaurantName: value));
-
+                          restname = ref
+                              .read(restaurantNameProvider.notifier)
+                              .state = value;
                           return null;
                         },
                       ),
@@ -192,8 +202,9 @@ class _RegisterRestaurantState extends ConsumerState<RegisterRestaurant> {
                           if (!regix.hasMatch(value)) {
                             return 'Please enter a valid email format';
                           }
-                          formNotifier.setRestaurantData(
-                              formData.copywith(email: value));
+                          restemail = ref
+                              .read(restaurantEmailProvider.notifier)
+                              .state = value;
 
                           return null;
                         },
@@ -211,9 +222,9 @@ class _RegisterRestaurantState extends ConsumerState<RegisterRestaurant> {
                           if (temp == null) {
                             return 'Please enter numbers only';
                           }
-                          formNotifier.setRestaurantData(formData.copywith(
-                              phoneNumber: int.tryParse(value)));
-
+                          restphoneno = ref
+                              .read(restaurantPhoneNumberProvider.notifier)
+                              .state = temp;
                           return null;
                         },
                       ),
@@ -237,23 +248,63 @@ class _RegisterRestaurantState extends ConsumerState<RegisterRestaurant> {
                                 if (mounted) {
                                   // Perform the navigation and state update\
 
-                                  Future.delayed(
-                                      const Duration(milliseconds: 500), () {
-                                    if (mounted) {
-                                      ref
-                                          .read(isMapPickProvider.notifier)
-                                          .state = false;
-                                      // registerShopContoller.setrestaurantdata();
-                                      formNotifier.setRestaurantData(
-                                          formData.copywith(
-                                              lat: longtitude,
-                                              long: longtitude,
-                                              address: address));
+                                  // Future.delayed(
+                                  //     const Duration(milliseconds: 500), () {
+                                  if (mounted) {
+                                    ref.read(isMapPickProvider.notifier).state =
+                                        false;
+                                    // formNotifier.setRestaurantData(
+                                    //   formData.copywith(
+                                    //     restaurantName: nameController.text,
+                                    //     email: emailcontroller.text,
+                                    //     phoneNumber: int.tryParse(
+                                    //         contactController.text),
+                                    //     address: address,
+                                    //     lat: latitude,
+                                    //     long: longtitude,
+                                    //   ),
+                                    // );
 
-                                      Navigator.pushNamed(context,
-                                          BusinessDetailsScreen.routename);
-                                    }
-                                  });
+                                    /////////
+                                    // ref
+                                    //     .read(restaurantstateProvider.notifier)
+                                    //     .setRestaurantData(
+                                    //       restaurantName: nameController.text,
+                                    //       email: emailcontroller.text,
+                                    //       phoneNumber: int.tryParse(
+                                    //           contactController.text),
+                                    //       address: address,
+                                    //       lat: latitude,
+                                    //       long: longtitude,
+                                    //     );
+////////////////////////////////////////////////////////////////
+                                    // registerShopContoller.updatePage1(
+                                    //   email: emailcontroller.text,
+                                    //   name: nameController.text,
+                                    //   address: address,
+                                    //   phoneno:
+                                    //       int.tryParse(contactController.text),
+                                    //   lat: latitude,
+                                    //   long: longtitude,
+                                    // );
+//////////////////////////////////////////////////////////////////////
+                                    ///
+                                    // ref
+                                    //     .read(restaurantDataProvider.notifier)
+                                    //     .state = restaurantData.copywith(
+                                    //   restaurantName: nameController.text,
+                                    //   email: emailcontroller.text,
+                                    //   phoneNumber:
+                                    //       int.tryParse(contactController.text),
+                                    //   address: address,
+                                    //   lat: latitude,
+                                    //   long: longtitude,
+                                    // );
+                                    Navigator.pushNamed(context,
+                                        BusinessDetailsScreen.routename);
+                                  }
+                                  // print(formData.toJson());
+                                  //});
                                 }
                               } else {
                                 if (mounted) {

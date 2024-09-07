@@ -3,12 +3,21 @@ import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
+import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/businessInformation.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/paymentmethodescreen.dart';
+import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/register_restaurant.dart';
+import 'package:spicy_eats/Register%20shop/utils/RestaurantDataSingleton.dart';
 import 'package:spicy_eats/Register%20shop/utils/commonImageUpload.dart';
 import 'package:spicy_eats/Register%20shop/utils/restaurantNotifier.dart';
+import 'package:spicy_eats/Register%20shop/widgets/Lists.dart';
 import 'package:spicy_eats/Register%20shop/widgets/restauarantTextfield.dart';
 import 'package:spicy_eats/commons/imagepick.dart';
 import 'package:spicy_eats/main.dart';
+
+var nicNumberProvider = StateProvider<int?>((ref) => null);
+var nicNumberFirstNameProvider = StateProvider<String?>((ref) => null);
+var nicNumberLastNameProvider = StateProvider<String?>((ref) => null);
 
 var isimage = StateProvider<bool>((ref) => true);
 
@@ -46,8 +55,10 @@ class _LegalInformationScreenState
 
   @override
   Widget build(BuildContext context) {
+    RegisterShopContoller registerShopContoller = RegisterShopContoller();
     final formData = ref.watch(restaurantstateProvider);
     final formNotifier = ref.read(restaurantstateProvider.notifier);
+    final restaurantData = ref.read(restaurantDataProvider.notifier).state;
     final isImageSelected = ref.watch(isimage);
     return SafeArea(
       child: Scaffold(
@@ -113,6 +124,7 @@ class _LegalInformationScreenState
                       height: 10,
                     ),
                     RestaurantTextfield(
+                        controller: nicnumberController,
                         hintext: '41302-2312345',
                         title: 'Identity Card/Nic Number',
                         onvalidator: (value) {
@@ -120,35 +132,34 @@ class _LegalInformationScreenState
                           if (nicno == null) {
                             return 'Please enter numbers';
                           }
-                          formNotifier.setRestaurantData(
-                              formData.copywith(idNumber: value));
+                          ref.read(nicNumberProvider.notifier).state = nicno;
                           return null;
                         }),
                     const SizedBox(
                       height: 10,
                     ),
                     RestaurantTextfield(
+                        controller: firstnameController,
                         hintext: 'Mohammad, Alex...',
                         title: 'Nic First Name ',
                         onvalidator: (value) {
                           if (value!.isEmpty) {
                             return 'please fill the field';
                           }
-                          formNotifier.setRestaurantData(
-                              formData.copywith(idFirstName: value));
-
+                          ref.read(nicNumberFirstNameProvider.notifier).state =
+                              value;
                           return null;
                         }),
                     const SizedBox(
                       height: 10,
                     ),
                     RestaurantTextfield(
+                        controller: lastnameController,
                         hintext: 'Nic Last Name',
                         title: 'Nic Last Name',
                         onvalidator: (value) {
-                          formNotifier.setRestaurantData(
-                              formData.copywith(idLastName: value));
-
+                          ref.read(nicNumberLastNameProvider.notifier).state =
+                              value;
                           return null;
                         }),
                     const SizedBox(
@@ -276,8 +287,9 @@ class _LegalInformationScreenState
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10))),
                             onPressed: () async {
-                              if (_form.currentState!.validate() &&
-                                  image != null) {
+                              if (_form.currentState!.validate()
+                                  //&& image != null
+                                  ) {
                                 Navigator.pushNamed(
                                     context, PaymentMethodScreen.routename,
                                     arguments: image);
@@ -289,20 +301,79 @@ class _LegalInformationScreenState
                                   .from('restaurant_register_photos')
                                   .getPublicUrl('/$userid/photos');
                               //await uploadImage(image!);
-                              formNotifier.setRestaurantData(
-                                  formData.copywith(idPhotoUrl: imgurl));
-                              print(
-                                  '  form data  ${formData.toJson()} \n $imgurl');
+                              // formNotifier.setRestaurantData(formData.copywith(
+                              //   idPhotoUrl: imgurl,
+                              //   idNumber: nicnumberController.text,
+                              //   idFirstName: firstnameController.text,
+                              //   idLastName: lastnameController.text,
+                              // ));
+                              ///////////////////
+                              // ref
+                              //     .read(restaurantstateProvider.notifier)
+                              //     .setRestaurantData(
+                              //       idPhotoUrl: imgurl,
+                              //       idNumber: nicnumberController.text,
+                              //       idFirstName: firstnameController.text,
+                              //       idLastName: lastnameController.text,
+                              //     );
+                              // print(
+                              //     '  form data  ${formData.toJson()} \n $imgurl');
+                              // registerShopContoller.updatePage3(
+                              //   idcardno: nicnumberController.text,
+                              //   idfirstname: firstnameController.text,
+                              //   idlastname: lastnameController.text,
+                              // );
+                              // final data = RestaurantDataSingleton();
+                              // ref.read(restaurantDataProvider.notifier).state =
+                              //     restaurantData.copywith(
+                              //   idFirstName: firstnameController.text,
+                              //   idLastName: lastnameController.text,
+                              //   idNumber: nicnumberController.text,
+                              // );
                               try {
                                 print('inside');
                                 await supabaseClient
                                     .from('restaurants')
-                                    .insert(formData.toJson())
+                                    .insert({
+                                      'restaurantName':
+                                          ref.watch(restaurantNameProvider),
+                                      'deliveryFee': ref
+                                          .watch(restaurantDeliveryFeeProvider),
+                                      'minTime': ref.watch(
+                                          restaurantDeliveryMinTimeProvider),
+                                      'maxTime': ref.watch(
+                                          restaurantDeliveryMaxTimeProvider),
+                                      'address':
+                                          ref.watch(restaurantAddProvider),
+                                      'phoneNumber': ref
+                                          .watch(restaurantPhoneNumberProvider),
+                                      'deliveryArea': ref.watch(
+                                          restaurantDeliveryAreaProvider),
+                                      'postalCode': ref
+                                          .watch(restaurantPostalCodeProvider),
+                                      'idNumber': ref.watch(nicNumberProvider),
+                                      'description': ref
+                                          .watch(restaurantDescriptionProvider),
+                                      'long': ref.watch(restaurantLongProvider),
+                                      'lat': ref.watch(restaurantLatProvider),
+                                      'businessEmail':
+                                          ref.watch(restaurantEmailProvider),
+                                      'idFirstName':
+                                          ref.watch(nicNumberFirstNameProvider),
+                                      'idLastName':
+                                          ref.watch(nicNumberLastNameProvider),
+                                      'openingHours': openinghours,
+                                      'restaurantImageUrl': '',
+                                      'idPhotoUrl': imgurl
+                                    }
+
+                                        // restaurantData.toJson()
+                                        )
                                     .then((value) =>
                                         print("Inserted successfully: $value"))
                                     .catchError((error) {
-                                  print("Insert failed: $error");
-                                });
+                                      print("Insert failed: $error");
+                                    });
                               } catch (e) {
                                 print('Exception during insert');
                                 print(e.toString());

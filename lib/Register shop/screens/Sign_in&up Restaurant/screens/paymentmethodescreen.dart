@@ -5,9 +5,11 @@ import 'package:spicy_eats/Register%20shop/screens/shophome.dart';
 import 'package:spicy_eats/Register%20shop/widgets/paymenttextfields.dart';
 
 class PaymentMethodScreen extends StatefulWidget {
-  final File? image;
+  // final File? image;
   static const String routename = '/payment-methods';
-  PaymentMethodScreen({required this.image});
+  // PaymentMethodScreen({
+  //   //required this.image
+  //   });
   @override
   _PaymentMethodScreenState createState() => _PaymentMethodScreenState();
 }

@@ -1,12 +1,19 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/legalstuffscreen.dart';
+import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/register_restaurant.dart';
 import 'package:spicy_eats/Register%20shop/utils/restaurantNotifier.dart';
 import 'package:spicy_eats/Register%20shop/widgets/Lists.dart';
 import 'package:spicy_eats/Register%20shop/widgets/Mybottomsheet.dart';
 import 'package:spicy_eats/Register%20shop/widgets/restauarantTextfield.dart';
+
+var restaurantDescriptionProvider = StateProvider<String?>((ref) => null);
+var restaurantDeliveryFeeProvider = StateProvider<double?>((ref) => null);
+var restaurantDeliveryMinTimeProvider = StateProvider<int?>((ref) => null);
+var restaurantDeliveryMaxTimeProvider = StateProvider<int?>((ref) => null);
+var restaurantDeliveryAreaProvider = StateProvider<String?>((ref) => null);
+var restaurantPostalCodeProvider = StateProvider<String?>((ref) => null);
 
 var isBottomSheetProvider = StateProvider((ref) => false);
 
@@ -20,6 +27,7 @@ class BusinessDetailsScreen extends ConsumerStatefulWidget {
 }
 
 class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
+  RegisterShopContoller registerShopContoller = RegisterShopContoller();
   var restaurantdescriptionController = TextEditingController();
   var deliveryareacontroller = TextEditingController();
   var postalcodeController = TextEditingController();
@@ -32,6 +40,7 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
   Widget build(BuildContext context) {
     final formData = ref.watch(restaurantstateProvider);
     final formNotifier = ref.read(restaurantstateProvider.notifier);
+    final restaurantData = ref.read(restaurantDataProvider.notifier).state;
 
     final height = MediaQuery.of(context).size.height;
     // final width = MediaQuery.of(context).size.width;
@@ -70,11 +79,10 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                   ),
                   backgroundColor: Colors.white,
                   leading: IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back,
-                    ),
-                    onPressed: () {},
-                  ),
+                      icon: const Icon(
+                        Icons.arrow_back,
+                      ),
+                      onPressed: () => Navigator.pop(context)),
                   title: Padding(
                     padding: const EdgeInsets.all(.0),
                     child: Container(
@@ -114,7 +122,13 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                           if (value!.isEmpty) {
                             return 'Please give restaurant description';
                           }
-
+                          ref.read(restaurantDataProvider.notifier).state =
+                              restaurantData.copywith(
+                            description: value,
+                          );
+                          ref
+                              .read(restaurantDescriptionProvider.notifier)
+                              .state = value;
                           return null;
                         },
                         onChanged: (value) {
@@ -186,9 +200,10 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                                   if (value!.isEmpty) {
                                     return 'please enter delivery area here';
                                   }
-                                  formNotifier.setRestaurantData(
-                                      formData.copywith(
-                                          deliveryFee: double.tryParse(value)));
+                                  ref
+                                      .read(restaurantDeliveryFeeProvider
+                                          .notifier)
+                                      .state = double.tryParse(value);
                                   return null;
                                 }),
                           ),
@@ -205,8 +220,11 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                                   if (value!.isEmpty) {
                                     return 'please enter delivery area here';
                                   }
-                                  formNotifier.setRestaurantData(formData
-                                      .copywith(minTime: int.tryParse(value)));
+                                  ref
+                                      .read(restaurantDeliveryMinTimeProvider
+                                          .notifier)
+                                      .state = int.tryParse(value);
+
                                   return null;
                                 }),
                           ),
@@ -223,8 +241,15 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                                   if (value!.isEmpty) {
                                     return 'please enter delivery area here';
                                   }
-                                  formNotifier.setRestaurantData(formData
-                                      .copywith(maxTime: int.tryParse(value)));
+                                  var temp = int.tryParse(value);
+                                  if (temp == null) {
+                                    return 'please enter number';
+                                  }
+                                  ref
+                                      .read(restaurantDeliveryMaxTimeProvider
+                                          .notifier)
+                                      .state = int.tryParse(value);
+
                                   return null;
                                 }),
                           ),
@@ -241,8 +266,9 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                             if (value!.isEmpty) {
                               return 'please enter delivery area here';
                             }
-                            formNotifier.setRestaurantData(
-                                formData.copywith(deliveryArea: value));
+                            ref
+                                .read(restaurantDeliveryAreaProvider.notifier)
+                                .state = value;
 
                             return null;
                           }),
@@ -257,8 +283,9 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                             if (value!.isEmpty) {
                               return 'please enter city postal code';
                             }
-                            formNotifier.setRestaurantData(
-                                formData.copywith(postalCode: value));
+                            ref
+                                .read(restaurantPostalCodeProvider.notifier)
+                                .state = value;
                             return null;
                           }),
                       const SizedBox(
@@ -279,8 +306,6 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                                       borderRadius: BorderRadius.circular(10))),
                               onPressed: () {
                                 if (_form.currentState!.validate()) {
-                                  formNotifier.setRestaurantData(formData
-                                      .copywith(openingHours: openinghours));
                                   Navigator.pushNamed(context,
                                       LegalInformationScreen.routename);
                                 }
@@ -291,13 +316,57 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                               },
                               child: GestureDetector(
                                 onTap: () {
-                                  formNotifier.setRestaurantData(
-                                      formData.copywith(
-                                          description:
-                                              restaurantdescriptionController
-                                                  .text));
+                                  // formNotifier
+                                  //     .setRestaurantData(formData.copywith(
+                                  //   description:
+                                  //       restaurantdescriptionController.text,
+                                  //   openingHours: openinghours,
+                                  //   deliveryFee:
+                                  //       double.tryParse(deliveryfee.text),
+                                  //   minTime: int.tryParse(deliveryMinTime.text),
+                                  //   maxTime: int.tryParse(deliveryMaxTime.text),
+                                  //   deliveryArea: deliveryareacontroller.text,
+                                  //   postalCode: postalcodeController.text,
+                                  // ));
+
+                                  //////////////////////
+                                  // ref
+                                  //     .read(restaurantstateProvider.notifier)
+                                  //     .setRestaurantData(
+                                  //       description:
+                                  //           restaurantdescriptionController
+                                  //               .text,
+                                  //       openingHours: openinghours,
+                                  //       deliveryFee:
+                                  //           double.tryParse(deliveryfee.text),
+                                  //       minTime:
+                                  //           int.tryParse(deliveryMinTime.text),
+                                  //       maxTime:
+                                  //           int.tryParse(deliveryMaxTime.text),
+                                  //       deliveryArea:
+                                  //           deliveryareacontroller.text,
+                                  //       postalCode: postalcodeController.text,
+                                  // //     );
+                                  // registerShopContoller.updatePage2(
+                                  //   description:
+                                  //       restaurantdescriptionController.text,
+                                  //   deliveryarea: deliveryareacontroller.text,
+                                  //   postalcode: postalcodeController.text,
+                                  //   deliveryfee:
+                                  //       double.tryParse(deliveryfee.text),
+                                  //   mintime: int.tryParse(deliveryMinTime.text),
+                                  //   maxtime: int.tryParse(deliveryMaxTime.text),
+                                  //   openhours: openinghours,
+                                  // );
+
+                                  // ref
+                                  //     .read(restaurantDataProvider.notifier)
+                                  //     .state = restaurantData.copywith(
+                                  //   openingHours: openinghours,
+                                  // );
                                   Navigator.pushNamed(context,
                                       LegalInformationScreen.routename);
+                                  print(formData.toJson());
                                 },
                                 child: const Text(
                                   'Next',
