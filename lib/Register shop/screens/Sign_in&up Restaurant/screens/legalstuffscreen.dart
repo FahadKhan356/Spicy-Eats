@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/businessInformation.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/paymentmethodescreen.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/register_restaurant.dart';
@@ -39,6 +40,7 @@ class _LegalInformationScreenState
   @override
   Widget build(BuildContext context) {
     final isImageSelected = ref.watch(isimage);
+    final registerShopController = ref.watch(registershopcontrollerProvider);
     return SafeArea(
       child: Scaffold(
         body: Form(
@@ -306,54 +308,56 @@ class _LegalInformationScreenState
                               //   idLastName: lastnameController.text,
                               //   idNumber: nicnumberController.text,
                               // );
-                              try {
-                                print('inside');
-                                await supabaseClient
-                                    .from('restaurants')
-                                    .insert({
-                                      'restaurantName':
-                                          ref.watch(restaurantNameProvider),
-                                      'deliveryFee': ref
-                                          .watch(restaurantDeliveryFeeProvider),
-                                      'minTime': ref.watch(
-                                          restaurantDeliveryMinTimeProvider),
-                                      'maxTime': ref.watch(
-                                          restaurantDeliveryMaxTimeProvider),
-                                      'address':
-                                          ref.watch(restaurantAddProvider),
-                                      'phoneNumber': ref
-                                          .watch(restaurantPhoneNumberProvider),
-                                      'deliveryArea': ref.watch(
-                                          restaurantDeliveryAreaProvider),
-                                      'postalCode': ref
-                                          .watch(restaurantPostalCodeProvider),
-                                      'idNumber': ref.watch(nicNumberProvider),
-                                      'description': ref
-                                          .watch(restaurantDescriptionProvider),
-                                      'long': ref.watch(restaurantLongProvider),
-                                      'lat': ref.watch(restaurantLatProvider),
-                                      'businessEmail':
-                                          ref.watch(restaurantEmailProvider),
-                                      'idFirstName':
-                                          ref.watch(nicNumberFirstNameProvider),
-                                      'idLastName':
-                                          ref.watch(nicNumberLastNameProvider),
-                                      'openingHours': openinghours,
-                                      'restaurantImageUrl': '',
-                                      'idPhotoUrl': imgurl
-                                    }
+                              //   try {
+                              //     print('inside');
+                              //     await supabaseClient
+                              //         .from('restaurants')
+                              //         .insert({
+                              //           'restaurantName':
+                              //               ref.watch(restaurantNameProvider),
+                              //           'deliveryFee': ref
+                              //               .watch(restaurantDeliveryFeeProvider),
+                              //           'minTime': ref.watch(
+                              //               restaurantDeliveryMinTimeProvider),
+                              //           'maxTime': ref.watch(
+                              //               restaurantDeliveryMaxTimeProvider),
+                              //           'address':
+                              //               ref.watch(restaurantAddProvider),
+                              //           'phoneNumber': ref
+                              //               .watch(restaurantPhoneNumberProvider),
+                              //           'deliveryArea': ref.watch(
+                              //               restaurantDeliveryAreaProvider),
+                              //           'postalCode': ref
+                              //               .watch(restaurantPostalCodeProvider),
+                              //           'idNumber': ref.watch(nicNumberProvider),
+                              //           'description': ref
+                              //               .watch(restaurantDescriptionProvider),
+                              //           'long': ref.watch(restaurantLongProvider),
+                              //           'lat': ref.watch(restaurantLatProvider),
+                              //           'businessEmail':
+                              //               ref.watch(restaurantEmailProvider),
+                              //           'idFirstName':
+                              //               ref.watch(nicNumberFirstNameProvider),
+                              //           'idLastName':
+                              //               ref.watch(nicNumberLastNameProvider),
+                              //           'openingHours': openinghours,
+                              //           'restaurantImageUrl': '',
+                              //           'idPhotoUrl': imgurl
+                              //         }
 
-                                        // restaurantData.toJson()
-                                        )
-                                    .then((value) =>
-                                        print("Inserted successfully: $value"))
-                                    .catchError((error) {
-                                      print("Insert failed: $error");
-                                    });
-                              } catch (e) {
-                                print('Exception during insert');
-                                print(e.toString());
-                              }
+                              //             // restaurantData.toJson()
+                              //             )
+                              //         .then((value) =>
+                              //             print("Inserted successfully: $value"))
+                              //         .catchError((error) {
+                              //           print("Insert failed: $error");
+                              //         });
+                              //   } catch (e) {
+                              //     print('Exception during insert');
+                              //     print(e.toString());
+                              //   }
+
+                              registerShopController.uploadRestaurantData();
                             },
                             child: const Text(
                               'Next',

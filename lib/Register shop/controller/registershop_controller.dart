@@ -1,78 +1,107 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
-import 'package:spicy_eats/Register%20shop/utils/RestaurantDataSingleton.dart';
+import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/businessInformation.dart';
+import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/legalstuffscreen.dart';
+import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/register_restaurant.dart';
+import 'package:spicy_eats/Register%20shop/widgets/Lists.dart';
+import 'package:spicy_eats/main.dart';
+
+final registershopcontrollerProvider = Provider((ref) {
+  final registershoprepo = ref.watch(registershoprepoProvider);
+  return RegisterShopContoller(
+      registerShopRepository: registershoprepo, ref: ref);
+});
 
 class RegisterShopContoller {
-  final RegisterShopRepository registerShopRepository =
-      RegisterShopRepository();
+  RegisterShopRepository registerShopRepository;
+  final ProviderRef ref;
+  RegisterShopContoller({
+    required this.registerShopRepository,
+    required this.ref,
+  });
 
-  // Future<void> setrestaurantdata() async {
-  //   final restaurantData = RestaurantData(
-  //     restaurantName: 'Pizza Place',
-  //     deliveryFee: 2.5,
-  //     minTime: 30,
-  //     maxTime: 45,
-  //     ratings: 4.8,
-  //     address: '123 Pizza Lane',
-  //     phoneNumber: 1234567890,
-  //     deliveryArea: 'Downtown',
-  //     postalCode: '12345',
-  //     idNumber: 'ID123456',
-  //     description: 'Best pizza in town!',
-  //     lat: 40.7128,
-  //     long: -74.0060,
-  //     email: 'contact@pizzaplace.com',
-  //     idFirstName: 'John',
-  //     idLastName: 'Doe',
-  //     // userId: '',
-  //     idPhotoUrl: '',
-  //     paymentMethod: '',
-  //     openingHours: {},
-  //   );
-
-  //   try {
-  //     await registerShopRepository.setrestaurantdata(restaurantData);
-  //   } catch (e) {
-  //     throw e.toString();
-  //   }
+  // void uploadrestaurantData() {
+  //   registerShopRepository.uploadrestaurantData(
+  //       restName: restaurantNameProvider,
+  //       address: restaurantAddProvider,
+  //       deliveryArea: restaurantDeliveryAreaProvider,
+  //       postalCode: restaurantPostalCodeProvider,
+  //       description: restaurantDescriptionProvider,
+  //       businessEmail: restaurantEmailProvider,
+  //       idFirstName: nicNumberFirstNameProvider,
+  //       idLastname: nicNumberLastNameProvider,
+  //       idPhotoUrl: '',
+  //       restImgUrl: '',
+  //       deliveryFee: restaurantDeliveryFeeProvider,
+  //       long: restaurantLongProvider,
+  //       lat: restaurantLatProvider,
+  //       minTime: restaurantDeliveryMinTimeProvider,
+  //       maxTime: restaurantDeliveryMaxTimeProvider,
+  //       phoneNumber: restaurantPhoneNumberProvider,
+  //       idNumber: nicNumberProvider,
+  //       openingHours: openinghours);
   // }
-
-  void updatePage1(
-      {String? email, name, address, int? phoneno, double? lat, long}) {
-    RestaurantDataSingleton().email = email;
-    RestaurantDataSingleton().restaurantName = name;
-    RestaurantDataSingleton().address = address;
-    RestaurantDataSingleton().phoneNumber = phoneno;
-    RestaurantDataSingleton().lat = lat;
-    RestaurantDataSingleton().long = long;
+  void uploadRestaurantData() {
+    registerShopRepository.uploadrestaurantData(
+      restName: ref.read(restaurantNameProvider) ?? '',
+      address: ref.read(restaurantAddProvider) ?? '',
+      deliveryArea: ref.read(restaurantDeliveryAreaProvider) ?? '',
+      postalCode: ref.read(restaurantPostalCodeProvider) ?? '',
+      description: ref.read(restaurantDescriptionProvider) ?? '',
+      businessEmail: ref.read(restaurantEmailProvider) ?? '',
+      idFirstName: ref.read(nicNumberFirstNameProvider) ?? '',
+      idLastname: ref.read(nicNumberLastNameProvider) ?? '',
+      idPhotoUrl: '',
+      restImgUrl: '',
+      deliveryFee: ref.read(restaurantDeliveryFeeProvider) ?? 0.0,
+      long: ref.read(restaurantLongProvider) ?? 0.0,
+      lat: ref.read(restaurantLatProvider) ?? 0.0,
+      minTime: ref.read(restaurantDeliveryMinTimeProvider) ?? 0,
+      maxTime: ref.read(restaurantDeliveryMaxTimeProvider) ?? 0,
+      phoneNumber: ref.read(restaurantPhoneNumberProvider) ?? 0,
+      idNumber: ref.read(nicNumberProvider) ?? 0,
+      openingHours: openinghours,
+    );
   }
 
-  void updatePage2({
-    String? description,
-    deliveryarea,
-    postalcode,
-    double? deliveryfee,
-    int? mintime,
-    maxtime,
-    Map<String, Map<String, dynamic>>? openhours,
-  }) {
-    RestaurantDataSingleton().description = description;
-    RestaurantDataSingleton().deliveryArea = deliveryarea;
-    RestaurantDataSingleton().postalCode = postalcode;
-    RestaurantDataSingleton().deliveryFee = deliveryfee;
-    RestaurantDataSingleton().minTime = mintime;
-    RestaurantDataSingleton().maxTime = maxtime;
-    RestaurantDataSingleton().openingHours = openhours;
-  }
-
-  void updatePage3({
-    String? idfirstname,
-    idlastname,
-    imgurl,
-    idcardno,
-  }) {
-    RestaurantDataSingleton().idNumber = idcardno;
-    RestaurantDataSingleton().idFirstName = idfirstname;
-    RestaurantDataSingleton().idLastName = idlastname;
-    RestaurantDataSingleton().restaurantImageUrl = imgurl;
+  Future<void> uploadPaymentDetails({
+    userid,
+    accountholdername,
+    bankname,
+    accountnumber,
+    iban,
+    swiftbccode,
+    paypalaccountemail,
+    cardnumber,
+    cvv,
+    expirydate,
+    businessname,
+    businessaddress,
+  }) async {
+    try {
+      await supabaseClient
+          .from('payments')
+          .insert({
+            'user_id': userid,
+            'accountHolderName': accountholdername,
+            'bankName': bankname,
+            'accountNumber': accountnumber,
+            'iBan': iban,
+            'swiftBcCode': swiftbccode,
+            'paypalAccountEmail': paypalaccountemail,
+            'cardNumber': cardnumber,
+            'cvv': cvv,
+            'expiryDate': expirydate,
+            'businessName': businessname,
+            'businessAddress': businessaddress,
+          })
+          .then((value) => print("Inserted successfully: $value"))
+          .catchError((error) {
+            print("Insert failed: $error");
+          });
+    } catch (e) {
+      print('Exception during insert');
+      print(e.toString());
+    }
   }
 }

@@ -31,7 +31,6 @@ class _RegisterRestaurantState extends ConsumerState<RegisterRestaurant> {
   // var emailcontroller = TextEditingController();
   // var contactController = TextEditingController();
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
-  final RegisterShopContoller registerShopContoller = RegisterShopContoller();
 
   @override
   void dispose() {

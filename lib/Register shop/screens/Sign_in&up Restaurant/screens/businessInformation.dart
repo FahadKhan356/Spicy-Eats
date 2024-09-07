@@ -24,7 +24,6 @@ class BusinessDetailsScreen extends ConsumerStatefulWidget {
 }
 
 class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
-  RegisterShopContoller registerShopContoller = RegisterShopContoller();
   var restaurantdescriptionController = TextEditingController();
 
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
