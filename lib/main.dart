@@ -96,6 +96,11 @@ class _MyAppState extends ConsumerState<MyApp> {
                 : PasswordlessScreen(
                     ref: ref,
                   ),
+            //supabaseClient.auth.currentSession != null
+            //     ? screen[currentindex]
+            //     : PasswordlessScreen(
+            //         ref: ref,
+            //       ),
             //TimePicker(),
 
             //Shapes(),

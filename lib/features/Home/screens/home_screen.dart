@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:spicy_eats/commons/restaurantModel.dart';
 import 'package:spicy_eats/commons/restaurant_container.dart';
 import 'package:spicy_eats/features/Home/screens/homedrawer.dart';
@@ -60,6 +62,37 @@ class _HomeScreenState extends State<HomeScreen>
       backgroundColor: Colors.white,
       extendBody: true,
       appBar: AppBar(
+        title: Center(
+            child: Column(
+          children: [
+            Text(
+              'Delivering to',
+              style: GoogleFonts.aBeeZee(fontSize: 22),
+            ),
+            Text(
+              'Riyadh-Saudi Arabia',
+              style: TextStyle(
+                // GoogleFonts.aBeeZee(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey,
+              ),
+            ),
+          ],
+        )),
+        actions: [
+          Container(
+              height: 50,
+              width: 50,
+              decoration: BoxDecoration(
+                // color: const Color(0xFFD1C4E9),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(
+                Icons.shopping_cart,
+                size: 26,
+              )),
+        ],
         leading: IconButton(
           onPressed: () {
             setState(() {

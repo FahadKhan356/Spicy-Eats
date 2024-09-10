@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/businessInformation.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/legalstuffscreen.dart';
+import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/paymentmethodescreen.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/register_restaurant.dart';
 import 'package:spicy_eats/Register%20shop/widgets/Lists.dart';
 import 'package:spicy_eats/main.dart';
@@ -20,27 +21,6 @@ class RegisterShopContoller {
     required this.ref,
   });
 
-  // void uploadrestaurantData() {
-  //   registerShopRepository.uploadrestaurantData(
-  //       restName: restaurantNameProvider,
-  //       address: restaurantAddProvider,
-  //       deliveryArea: restaurantDeliveryAreaProvider,
-  //       postalCode: restaurantPostalCodeProvider,
-  //       description: restaurantDescriptionProvider,
-  //       businessEmail: restaurantEmailProvider,
-  //       idFirstName: nicNumberFirstNameProvider,
-  //       idLastname: nicNumberLastNameProvider,
-  //       idPhotoUrl: '',
-  //       restImgUrl: '',
-  //       deliveryFee: restaurantDeliveryFeeProvider,
-  //       long: restaurantLongProvider,
-  //       lat: restaurantLatProvider,
-  //       minTime: restaurantDeliveryMinTimeProvider,
-  //       maxTime: restaurantDeliveryMaxTimeProvider,
-  //       phoneNumber: restaurantPhoneNumberProvider,
-  //       idNumber: nicNumberProvider,
-  //       openingHours: openinghours);
-  // }
   void uploadRestaurantData() {
     registerShopRepository.uploadrestaurantData(
       restName: ref.read(restaurantNameProvider) ?? '',
@@ -65,35 +45,35 @@ class RegisterShopContoller {
   }
 
   Future<void> uploadPaymentDetails({
-    userid,
-    accountholdername,
-    bankname,
-    accountnumber,
-    iban,
-    swiftbccode,
-    paypalaccountemail,
-    cardnumber,
-    cvv,
-    expirydate,
-    businessname,
-    businessaddress,
+    String? userid,
+    String? accountholdername,
+    String? bankname,
+    String? accountnumber,
+    String? iban,
+    String? swiftbccode,
+    String? paypalemail,
+    String? cardnumber,
+    String? cvv,
+    String? expirydate,
+    String? businessname,
+    String? businessaddress,
   }) async {
     try {
       await supabaseClient
           .from('payments')
           .insert({
-            'user_id': userid,
-            'accountHolderName': accountholdername,
-            'bankName': bankname,
-            'accountNumber': accountnumber,
-            'iBan': iban,
-            'swiftBcCode': swiftbccode,
-            'paypalAccountEmail': paypalaccountemail,
-            'cardNumber': cardnumber,
-            'cvv': cvv,
-            'expiryDate': expirydate,
-            'businessName': businessname,
-            'businessAddress': businessaddress,
+            'user_id': userid ?? '',
+            'accountHolderName': accountholdername ?? '',
+            'bankName': bankname ?? '',
+            'accountNumber': accountnumber ?? '',
+            'iBan': iban ?? '',
+            'swiftBcCode': swiftbccode ?? '',
+            'paypalEmail': ref.read(paypalEmailProvider),
+            'cardNumber': cardnumber ?? '',
+            'cvv': cvv ?? '',
+            'expiryDate': expirydate ?? '',
+            'businessName': businessname ?? '',
+            'businessAddress': businessaddress ?? '',
           })
           .then((value) => print("Inserted successfully: $value"))
           .catchError((error) {

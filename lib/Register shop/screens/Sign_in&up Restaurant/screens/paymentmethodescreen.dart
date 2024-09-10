@@ -3,8 +3,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
 import 'package:spicy_eats/Register%20shop/screens/shophome.dart';
 import 'package:spicy_eats/Register%20shop/widgets/paymenttextfields.dart';
+import 'package:spicy_eats/main.dart';
 
 var paymentMethodProvider = StateProvider<String?>((ref) => null);
+final accountHolderNameProvider = StateProvider<String>((ref) => '');
+final bankNameProvider = StateProvider<String>((ref) => '');
+final accountNumberProvider = StateProvider<String>((ref) => '');
+final ibanProvider = StateProvider<String>((ref) => '');
+final swiftBcCodeProvider = StateProvider<String>((ref) => '');
+
+final paypalEmailProvider = StateProvider<String?>((ref) => null);
+
+final cardNumberProvider = StateProvider<String>((ref) => '');
+final expiryDateProvider = StateProvider<String>((ref) => '');
+final cvvProvider = StateProvider<String>((ref) => '');
+
+final businessNameProvider = StateProvider<String>((ref) => '');
+final businessAddressProvider = StateProvider<String>((ref) => '');
 
 class PaymentMethodScreen extends ConsumerStatefulWidget {
   // final File? image;
@@ -27,25 +42,25 @@ class _PaymentMethodScreenState extends ConsumerState<PaymentMethodScreen> {
     final height = MediaQuery.of(context).size.height;
     final registerShopContoller = ref.watch(registershopcontrollerProvider);
 
-    //Bank fields
-    var accountHoldername;
-    var bankname;
-    var accountNumber;
-    var iBan;
-    var swiftBcCode;
+    // //Bank fields
+    // String accountHoldername = '';
+    // String bankname = '';
+    // String accountNumber = '';
+    // String iBan = '';
+    // String swiftBcCode = '';
 
-    //paypal fields
-    var paypalAccountEmail;
+    // //paypal fields
+    final paypalEmail = TextEditingController();
 
-    //Credit Card fields
-    var cardNumber;
-    var expiryDate;
-    var cvv;
+    // //Credit Card fields
+    // String cardNumber = '';
+    // String expiryDate = '';
+    // String cvv = '';
 
-    //common fields
-    var businessName;
-    var businessAddress;
-    //final taxIdVat;
+    // //common fields
+    // String businessName = '';
+    // String businessAddress = '';
+    // //final taxIdVat;
 
     return Scaffold(
       appBar: AppBar(
@@ -94,7 +109,8 @@ class _PaymentMethodScreenState extends ConsumerState<PaymentMethodScreen> {
                         if (value == null || value.isEmpty) {
                           return 'Please enter account holder’s name';
                         }
-                        accountHoldername = value;
+                        ref.watch(accountHolderNameProvider.notifier).state =
+                            value;
                         return null;
                       }),
                   paymentTextfields(
@@ -103,7 +119,8 @@ class _PaymentMethodScreenState extends ConsumerState<PaymentMethodScreen> {
                         if (value == null || value.isEmpty) {
                           return 'Please enter bank name';
                         }
-                        bankname = value;
+                        ref.watch(bankNameProvider.notifier).state = value;
+
                         return null;
                       }),
                   paymentTextfields(
@@ -112,7 +129,8 @@ class _PaymentMethodScreenState extends ConsumerState<PaymentMethodScreen> {
                         if (value == null || value.isEmpty) {
                           return 'Please enter account number';
                         }
-                        accountNumber = value;
+                        ref.watch(accountNumberProvider.notifier).state = value;
+
                         return null;
                       }),
                   paymentTextfields(
@@ -121,7 +139,8 @@ class _PaymentMethodScreenState extends ConsumerState<PaymentMethodScreen> {
                         if (value == null || value.isEmpty) {
                           return 'Please enter IBAN';
                         }
-                        iBan = value;
+                        ref.watch(ibanProvider.notifier).state = value;
+
                         return null;
                       }),
                   paymentTextfields(
@@ -130,20 +149,34 @@ class _PaymentMethodScreenState extends ConsumerState<PaymentMethodScreen> {
                         if (value == null || value.isEmpty) {
                           return 'Please enter SWIFT/BIC Code';
                         }
-                        swiftBcCode = value;
+                        ref.watch(swiftBcCodeProvider.notifier).state = value;
+
                         return null;
                       }),
                   const SizedBox(height: 20),
                 ] else if (_selectedPaymentMethod == 'PayPal') ...[
-                  paymentTextfields(
-                      label: 'PayPal Account Email',
-                      onvalidator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter PayPal email';
-                        }
-                        paypalAccountEmail = value;
-                        return null;
-                      }),
+                  TextFormField(
+                    controller: paypalEmail,
+                    validator: (value) {
+                      // if (paypalEmail.text.isEmpty) {
+                      //   return 'Please enter PayPal email';
+                      // }
+                      ref.watch(paypalEmailProvider.notifier).state =
+                          paypalEmail.text;
+
+                      return null;
+                    },
+                    // label: 'PayPal Account Email',
+                    // onvalidator: (value) {
+
+                    //   if (value == null || value.isEmpty) {
+                    //     return 'Please enter PayPal email';
+                    //   }
+                    //ref.watch(paypalEmailProvider.notifier).state = value;
+
+                    //return null;
+                    //}
+                  ),
                   const SizedBox(height: 20),
                 ] else if (_selectedPaymentMethod == 'Credit/Debit Card') ...[
                   paymentTextfields(
@@ -152,7 +185,8 @@ class _PaymentMethodScreenState extends ConsumerState<PaymentMethodScreen> {
                         if (value == null || value.isEmpty) {
                           return 'Please enter card number';
                         }
-                        cardNumber = value;
+                        ref.watch(cardNumberProvider.notifier).state = value;
+
                         return null;
                       }),
                   paymentTextfields(
@@ -161,7 +195,8 @@ class _PaymentMethodScreenState extends ConsumerState<PaymentMethodScreen> {
                         if (value == null || value.isEmpty) {
                           return 'Please enter expiry date';
                         }
-                        expiryDate = value;
+                        ref.watch(expiryDateProvider.notifier).state = value;
+
                         return null;
                       }),
                   paymentTextfields(
@@ -170,7 +205,7 @@ class _PaymentMethodScreenState extends ConsumerState<PaymentMethodScreen> {
                         if (value == null || value.isEmpty) {
                           return 'Please enter CVV';
                         }
-                        cvv = value;
+                        ref.watch(cvvProvider.notifier).state = value;
                         return null;
                       }),
                   const SizedBox(height: 20),
@@ -184,7 +219,7 @@ class _PaymentMethodScreenState extends ConsumerState<PaymentMethodScreen> {
                       if (value == null || value.isEmpty) {
                         return 'Please enter business name';
                       }
-                      businessName = value;
+                      ref.watch(businessNameProvider.notifier).state = value;
                       return null;
                     }),
 
@@ -195,7 +230,7 @@ class _PaymentMethodScreenState extends ConsumerState<PaymentMethodScreen> {
                       if (value == null || value.isEmpty) {
                         return 'Please enter business address';
                       }
-                      businessAddress = value;
+                      ref.watch(businessAddressProvider.notifier).state = value;
                       return null;
                     }),
 
@@ -226,29 +261,36 @@ class _PaymentMethodScreenState extends ConsumerState<PaymentMethodScreen> {
                         // Handle form submission
                         if (_selectedPaymentMethod == 'Bank Transfer') {
                           registerShopContoller.uploadPaymentDetails(
-                            accountholdername: accountHoldername,
-                            bankname: bankname,
-                            accountnumber: accountNumber,
-                            iban: iBan,
-                            swiftbccode: swiftBcCode,
-                            businessname: businessName,
-                            businessaddress: businessAddress,
+                            userid: supabaseClient.auth.currentUser!.id,
+                            accountholdername:
+                                ref.read(accountHolderNameProvider),
+                            bankname: ref.read(bankNameProvider),
+                            accountnumber: ref.read(accountNumberProvider),
+                            iban: ref.read(ibanProvider),
+                            swiftbccode: ref.read(swiftBcCodeProvider),
+                            businessname: ref.read(businessNameProvider),
+                            businessaddress: ref.read(businessAddressProvider),
                           );
                         } else if (_selectedPaymentMethod == 'Paypal') {
                           registerShopContoller.uploadPaymentDetails(
-                            paypalaccountemail: paypalAccountEmail,
-                            businessname: businessName,
-                            businessaddress: businessAddress,
+                            userid: supabaseClient.auth.currentUser!.id,
+                            paypalemail:
+                                'paypal@aghasdgjasd', //ref.read(paypalEmailProvider),
+                            businessname: ref.read(businessNameProvider),
+                            businessaddress: ref.read(businessAddressProvider),
                           );
                         } else {
                           registerShopContoller.uploadPaymentDetails(
-                            cardnumber: cardNumber,
-                            expirydate: expiryDate,
-                            cvv: cvv,
-                            businessname: businessName,
-                            businessaddress: businessAddress,
+                            userid: supabaseClient.auth.currentUser!.id,
+                            cardnumber: ref.read(cardNumberProvider),
+                            expirydate: ref.read(expiryDateProvider),
+                            cvv: ref.read(cvvProvider),
+                            businessname: ref.read(businessNameProvider),
+                            businessaddress: ref.read(businessAddressProvider),
                           );
                         }
+                        print(
+                            'this is paypal email ${ref.read(paypalEmailProvider)}');
                         Navigator.pushNamed(context, ShopHome.routename);
                       }
                     },
