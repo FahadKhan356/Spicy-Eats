@@ -45,7 +45,8 @@ class HomeDrawer extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              CustomDrawerItem(leadingname: 'Settings', icon: Icons.settings),
+              CustomDrawerItem(
+                  leadingname: 'Your restaurant', icon: Icons.settings),
               const Spacer(),
               CustomDrawerItem(leadingname: 'Settings', icon: Icons.settings),
             ],

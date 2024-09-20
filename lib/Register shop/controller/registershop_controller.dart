@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spicy_eats/Register%20shop/models/registershop.dart';
 import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/businessInformation.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/legalstuffscreen.dart';
@@ -83,5 +84,13 @@ class RegisterShopContoller {
       print('Exception during insert');
       print(e.toString());
     }
+  }
+
+  Future<RestaurantData?> fetchrestaurants(String? currentUserId) async {
+    return await registerShopRepository.fetchRestaurant(currentUserId);
+  }
+
+  Future<String?> fetchRestUid(String currentUserId) async {
+    return await registerShopRepository.fetchRestUid(currentUserId);
   }
 }

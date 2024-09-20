@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/widgets/Lists.dart';
 import 'package:spicy_eats/Register%20shop/widgets/customTextfield.dart';
@@ -15,7 +14,7 @@ var actualProvider = StateProvider<double>((ref) => 0);
 var finaldiscountProvider = StateProvider<String>((ref) => '');
 var isErrorProvider = StateProvider<bool>((ref) => false);
 var msgError = StateProvider((ref) => '');
-var isimage = StateProvider<bool>((ref) => true);
+var dishimage = StateProvider<bool>((ref) => true);
 
 class AddItemScreen extends ConsumerStatefulWidget {
   AddItemScreen({super.key});
@@ -30,19 +29,18 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
   final priceController = TextEditingController();
   final actualController = TextEditingController();
   final discountController = TextEditingController();
+  File? image;
+
+  void pickimagefromgallery() async {
+    image = await pickImageFromGallerymob(context);
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
-    File? image;
-    final finaldiscount = ref.watch(finaldiscountProvider);
     final isError = ref.watch(isErrorProvider);
     final GlobalKey<FormState> _form = GlobalKey<FormState>();
     String msg = ref.watch(msgError);
-    bool redError = false;
-
-    pickimagefromgallery() async {
-      image = await imagePicker(context);
-    }
 
     String? validactualprice(
         String? value, String? firstmsg, String? secondmsg) {
@@ -68,7 +66,7 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
     }
 
     void updateDiscountforactualprice() {
-      final actualprice = double.tryParse(priceController.text) ?? 90;
+      final actualprice = double.tryParse(priceController.text) ?? 0;
       final discountprice = double.tryParse(discountController.text) ?? 0;
       try {
         if (actualprice == 0) {
@@ -91,7 +89,6 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
           ref.read(msgError.notifier).state =
               'discount can not be 100% or more';
 
-          // ref.read(isErrorProvider.notifier).state = true;
           return;
         }
 
@@ -239,7 +236,7 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(10),
                                         child: Container(
-                                          padding: EdgeInsets.all(10),
+                                          padding: const EdgeInsets.all(10),
                                           height: 100,
                                           color: Colors.blueGrey,
                                           child: Column(
@@ -247,15 +244,8 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
                                               IconButton(
                                                   onPressed: () {
                                                     pickimagefromgallery();
-                                                    image != null
-                                                        ? ref
-                                                            .read(isimage
-                                                                .notifier)
-                                                            .state = true
-                                                        : ref
-                                                            .read(isimage
-                                                                .notifier)
-                                                            .state = false;
+                                                    setState(() {});
+                                                    print('$image the image');
                                                   },
                                                   icon: const Icon(
                                                     Icons.upload,
@@ -290,8 +280,8 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
                                             child: Image.file(
                                               image!,
                                               fit: BoxFit.cover,
-                                              width: 200,
-                                              height: 200,
+                                              width: 100,
+                                              height: 100,
                                             ),
                                           ),
                                         ),
@@ -308,16 +298,18 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
                                       child: IconButton(
                                         onPressed: () {
                                           pickimagefromgallery();
-                                          image != null
-                                              ? ref
-                                                  .read(isimage.notifier)
-                                                  .state = true
-                                              : ref
-                                                  .read(isimage.notifier)
-                                                  .state = false;
+                                          setState(() {});
+                                          print('$image the image');
+                                          // image != null
+                                          //     ? ref
+                                          //         .read(dishimage.notifier)
+                                          //         .state = true
+                                          //     : ref
+                                          //         .read(dishimage.notifier)
+                                          //         .state = false;
                                         },
                                         icon: const Icon(
-                                          Icons.camera_front_rounded,
+                                          Icons.add_box,
                                           size: 100,
                                         ),
                                       ),
@@ -373,20 +365,9 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
                           padding: const EdgeInsets.all(8.0),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            color: isError
-                                //priceController.text == '0' ||
-                                //         discountController.text == '0' ||
-                                //         discountController.text == '100'
-                                ? Colors.red
-                                : Colors.black87,
+                            color: isError ? Colors.red : Colors.black87,
                           ),
                           child: Text(
-                            // priceController.text == '0'
-                            //     ? 'Actual Price can not be Zero'
-                            //     : discountController.text == '0'
-                            //         ? 'discount can not be Zero or less'
-                            //         : discountController.text == '100'
-                            //             ? 'discount can not be 100% or more'
                             isError
                                 ? msg
                                 : 'New DiscountedPrice  ${ref.watch(finaldiscountProvider)}/-',
@@ -444,10 +425,7 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
                               onChanged: (String? value) {
                                 ref.read(scheduledMealProvider.notifier).state =
                                     value;
-                                // var set;
-                                // setState(() {
-                                //   set = value;
-                                // });
+
                                 print(
                                     'ne value   ${ref.read(scheduledMealProvider.notifier).state}');
                               },
@@ -512,33 +490,79 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
                         ],
                       ),
                     ),
+                    image != null
+                        ? Center(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Colors.black26,
+                                      offset: Offset(1, 3),
+                                      spreadRadius: 2,
+                                      blurRadius: 2,
+                                    )
+                                  ]),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: image != null
+                                    ? Image.file(image!,
+                                        fit: BoxFit.cover,
+                                        width: 100,
+                                        height: 100)
+                                    : const Text('No Image Selected'),
+                              ),
+                            ),
+                          )
+                        : Container(
+                            color: Colors.red,
+                            height: 100,
+                            width: 100,
+                          )
                   ],
                 ),
-                ElevatedButton(
-                    onPressed: () {
-                      final price = double.tryParse(priceController.text) ?? 0;
-                      final discount =
-                          double.tryParse(discountController.text) ?? 0;
 
-                      if (price < discount) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("failed to add")));
-                        return;
-                      }
-                      if (_form.currentState?.validate() ?? false) {
-                        if (!isError) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text("successfully added")));
-                        }
-                      }
-                      // ref.read(isErrorProvider.notifier).state = true;
-                      if (isError) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("failed to add")));
-                      }
-                    },
-                    child: const Text('Add')),
+                ///////////////////////////////////////////////////////
+                ///
+                ///
+                SizedBox(
+                    height: 60,
+                    width: 250,
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.black,
+                            side:
+                                const BorderSide(width: 2, color: Colors.white),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10))),
+                        onPressed: () {
+                          final price =
+                              double.tryParse(priceController.text) ?? 0;
+                          final discount =
+                              double.tryParse(discountController.text) ?? 0;
+
+                          if (price < discount) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text("failed to add")));
+                            return;
+                          }
+                          if (_form.currentState?.validate() ?? false) {
+                            if (!isError) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text("successfully added")));
+                            }
+                          }
+                          // ref.read(isErrorProvider.notifier).state = true;
+                          if (isError) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text("failed to add")));
+                          }
+                        },
+                        child: const Text(
+                          'Add Dish',
+                          style: TextStyle(color: Colors.white),
+                        )))
               ],
             ),
           ),

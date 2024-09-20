@@ -3,7 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
+import 'package:spicy_eats/Register%20shop/models/registershop.dart';
 import 'package:spicy_eats/commons/restaurantModel.dart';
 import 'package:spicy_eats/commons/restaurant_container.dart';
 import 'package:spicy_eats/features/Home/screens/homedrawer.dart';
@@ -11,22 +14,68 @@ import 'package:spicy_eats/features/Home/screens/widgets/cusineslist.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/screens/restaurant_menu.dart';
 import 'dart:math' as math;
 
-class HomeScreen extends StatefulWidget {
+import 'package:spicy_eats/main.dart';
+
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
   static const String routename = '/homescreen';
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>
+class _HomeScreenState extends ConsumerState<HomeScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _animationcontroller;
   late Animation<double> _animationbody;
   bool clicked = false;
+  var uid;
+  RestaurantData? restaurantData;
+  String? rest_uid;
+  bool isloading = false;
 
   @override
   void initState() {
+    setState(() => isloading = true);
+    ref
+        .read(registershopcontrollerProvider)
+        .fetchrestaurants(supabaseClient.auth.currentUser!.id);
+    ref
+        .read(registershopcontrollerProvider)
+        .fetchRestUid(supabaseClient.auth.currentUser!.id);
+    ref
+        .read(registershopcontrollerProvider)
+        .fetchrestaurants(supabaseClient.auth.currentUser!.id)
+        .then((restaurant) {
+      //  setState(() => isloading = true);
+      if (restaurant != null) {
+        setState(() {
+          restaurantData = restaurant;
+        });
+        print('rest_email is: ${restaurant.email}');
+        print('rest_hours are: ${restaurant.openingHours}');
+      }
+      ref
+          .read(registershopcontrollerProvider)
+          .fetchRestUid(supabaseClient.auth.currentUser!.id)
+          .then((value) {
+        // setState(() => isloading = true);
+        if (value != null) {
+          rest_uid = value;
+          print('rest_uuid is: ${rest_uid}');
+        }
+      });
+      setState(() => isloading = false);
+    });
+    //fetch restaurant uid
+
+    // fetchrestuid().then((restUid) {
+    //   if (restUid != null) {
+    //     print('rest_uid is: $restUid');
+    //   } else {
+    //     print('Failed to fetch rest_uid');
+    //   }
+    // });
     super.initState();
     _animationcontroller = AnimationController(
       duration: const Duration(milliseconds: 800),
@@ -58,8 +107,73 @@ class _HomeScreenState extends State<HomeScreen>
     return list.map((e) => Restaurant.fromjson(e)).toList();
   }
 
+  String? rest_name;
+  // Future<RestaurantData?> fetchRestaurant(String? currentUserId) async {
+  //   try {
+  //     RestaurantData? restaurant;
+  //     var response = await supabaseClient
+  //         .from('restaurants')
+  //         .select('*')
+  //         .eq('user_id', currentUserId!)
+  //         .single();
+  //     setState(() => restaurant = RestaurantData.fromJson(response));
+  //     return restaurant;
+  //     // rest_name = restaurant?.restaurantName;
+  //   } catch (e) {
+  //     throw e.toString();
+  //   }
+  // }
+
+  // Future<String?> fetchrestuid() async {
+  //   try {
+  //     var response = await supabaseClient
+  //         .from('restaurants')
+  //         .select('rest_uid')
+  //         .eq('user_id', supabaseClient.auth.currentUser!.id)
+  //         .single();
+
+  //     // Extract the rest_uid from the response
+  //     var restUid = response['rest_uid'] as String?;
+  //     return restUid;
+  //   } catch (e) {
+  //     print('Error fetching rest_uid: $e');
+  //     return null; // Return null if there is an error
+  //   }
+  // }
+
+//  Future<List<Restaurant>> fetchProducts() async {
+//     var userId = supabaseClient.auth.currentUser!.id;
+//     var products;
+//     if (userId == null) {
+
+//       print('user is not logged!');
+
+//     }
+
+//     try {
+//       final productList = await supabaseClient
+//           .from('restaurants')
+//           .select('*')
+//           .eq('user_id', userId)
+//           .withConverter(
+//         (list) {
+//           return (list as List).map((json) => Restaurant.fromjson(json));
+//         },
+//       );
+//       setState(() {
+//         products = List.from(productList);
+//       });
+//     } catch (e, stackTrace) {
+//       print('Caught error: $e');
+//       print('Stacktrace : $stackTrace');
+//     }
+//     return products;
+//   }
+
   @override
   Widget build(BuildContext context) {
+//var registerShopController = ref.watch(registershopcontrollerProvider);
+
     return Scaffold(
       backgroundColor: Colors.white,
       extendBody: true,
@@ -67,11 +181,15 @@ class _HomeScreenState extends State<HomeScreen>
         title: Center(
             child: Column(
           children: [
+            // Text(
+            //   '${rest_uidlist?[0]}',
+            //   style: GoogleFonts.aBeeZee(fontSize: 22),
+            // ),
             Text(
               'Delivering to',
               style: GoogleFonts.aBeeZee(fontSize: 22),
             ),
-            Text(
+            const Text(
               'Riyadh-Saudi Arabia',
               style: TextStyle(
                 // GoogleFonts.aBeeZee(
@@ -111,7 +229,7 @@ class _HomeScreenState extends State<HomeScreen>
             padding: const EdgeInsets.all(20.0),
             child: TextFormField(
               decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.search),
+                  prefixIcon: const Icon(Icons.search),
                   filled: true,
                   fillColor: Colors.grey[300],
                   focusedBorder: OutlineInputBorder(
@@ -123,10 +241,16 @@ class _HomeScreenState extends State<HomeScreen>
                       borderSide: BorderSide.none)),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
-          CusinesList(),
+          const CusinesList(),
+          isloading
+              ? const CircularProgressIndicator(
+                  backgroundColor: Colors.black12,
+                  value: 20,
+                )
+              : Text('${restaurantData?.restaurantName}'),
           Expanded(
             child: Stack(
               children: [

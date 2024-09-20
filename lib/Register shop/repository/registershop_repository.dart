@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spicy_eats/Register%20shop/models/registershop.dart';
 import 'package:spicy_eats/main.dart';
 
 var registershoprepoProvider = Provider((ref) => RegisterShopRepository());
@@ -54,6 +55,41 @@ class RegisterShopRepository {
     } catch (e) {
       print('Exception during insert');
       print(e.toString());
+    }
+  }
+
+//fetch restaurants
+  Future<RestaurantData?> fetchRestaurant(String? currentUserId) async {
+    try {
+      RestaurantData? restaurant;
+      var response = await supabaseClient
+          .from('restaurants')
+          .select('*')
+          .eq('user_id', currentUserId!)
+          .single();
+      restaurant = RestaurantData.fromJson(response);
+      return restaurant;
+      // rest_name = restaurant?.restaurantName;
+    } catch (e) {
+      throw e.toString();
+    }
+  }
+//fetch rest uid
+
+  Future<String?> fetchRestUid(String currentUserId) async {
+    try {
+      var response = await supabaseClient
+          .from('restaurants')
+          .select('rest_uid')
+          .eq('user_id', currentUserId)
+          .single();
+
+      // Extract the rest_uid from the response
+      var restUid = response['rest_uid'] as String?;
+      return restUid;
+    } catch (e) {
+      print('Error fetching rest_uid: $e');
+      return null; // Return null if there is an error
     }
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/models/registershop.dart';
 
@@ -10,7 +12,7 @@ class RestaurantNotifier extends StateNotifier<RestaurantData> {
 
   void setRestaurantData({
     String? restaurantName,
-    double? deliveryFee,
+    int? deliveryFee,
     int? minTime,
     int? maxTime,
     double? ratings,
@@ -18,7 +20,7 @@ class RestaurantNotifier extends StateNotifier<RestaurantData> {
     int? phoneNumber,
     String? deliveryArea,
     String? postalCode,
-    String? idNumber,
+    int? idNumber,
     String? description,
     double? lat,
     double? long,

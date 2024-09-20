@@ -1,6 +1,6 @@
 class RestaurantData {
   String? restaurantName;
-  double? deliveryFee;
+  int? deliveryFee;
   int? minTime;
   int? maxTime;
   double? ratings;
@@ -8,7 +8,7 @@ class RestaurantData {
   int? phoneNumber;
   String? deliveryArea;
   String? postalCode;
-  String? idNumber;
+  int? idNumber;
   String? description;
   double? lat;
   double? long;
@@ -23,7 +23,7 @@ class RestaurantData {
 
   RestaurantData copywith(
       {String? restaurantName,
-      double? deliveryFee,
+      int? deliveryFee,
       int? minTime,
       int? maxTime,
       double? ratings,
@@ -31,7 +31,7 @@ class RestaurantData {
       int? phoneNumber,
       String? deliveryArea,
       String? postalCode,
-      String? idNumber,
+      int? idNumber,
       String? description,
       double? lat,
       double? long,
@@ -126,27 +126,27 @@ class RestaurantData {
     }
 
     return RestaurantData(
-      restaurantName: json['restaurantName'],
-      deliveryFee: json['deliveryFee'],
-      minTime: json['minTime'],
-      maxTime: json['maxTime'],
-      ratings: json['ratings'],
-      address: json['address'],
-      phoneNumber: json['phoneNumber'],
-      deliveryArea: json['deliveryArea'],
-      postalCode: json['postalCode'],
-      idNumber: json['idNumber'],
-      description: json['description'],
-      lat: json['lat'],
-      long: json['long'],
-      email: json['businessEmail'],
-      idFirstName: json['idFirstName'],
-      idLastName: json['idLastName'],
+      restaurantName: json['restaurantName'] ?? '',
+      deliveryFee: json['deliveryFee'] ?? 0.0,
+      minTime: json['minTime'] ?? 0,
+      maxTime: json['maxTime'] ?? 0,
+      ratings: json['ratings'] ?? 0.0,
+      address: json['address'] ?? '',
+      phoneNumber: json['phoneNumber'] ?? 0,
+      deliveryArea: json['deliveryArea'] ?? 0.0,
+      postalCode: json['postalCode'] ?? '',
+      idNumber: json['idNumber'] ?? 0,
+      description: json['description'] ?? '',
+      lat: json['lat'] ?? 0.0,
+      long: json['long'] ?? 0.0,
+      email: json['businessEmail'] ?? '',
+      idFirstName: json['idFirstName'] ?? '',
+      idLastName: json['idLastName'] ?? '',
       //userId: json['user_id'],
-      idPhotoUrl: json['idPhotoUrl'],
-      paymentMethod: json['paymentMethod'],
+      idPhotoUrl: json['idPhotoUrl'] ?? '',
+      paymentMethod: json['paymentMethod'] ?? '',
       openingHours: openingHours,
-      restaurantImageUrl: json['restaurantImageUrl'],
+      restaurantImageUrl: json['restaurantImageUrl'] ?? '',
       //json['openinHours'],
     );
   }

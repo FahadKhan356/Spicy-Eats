@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/businessInformation.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/legalstuffscreen.dart';
@@ -53,7 +51,7 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
     case PaymentMethodScreen.routename:
       return MaterialPageRoute(builder: (context) {
         // final arguments = settings.arguments as File;
-        return PaymentMethodScreen(
+        return const PaymentMethodScreen(
             // image: arguments,
             );
       });
