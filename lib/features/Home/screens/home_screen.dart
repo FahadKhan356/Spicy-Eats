@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
 import 'package:spicy_eats/Register%20shop/models/registershop.dart';
+import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
 import 'package:spicy_eats/commons/restaurantModel.dart';
 import 'package:spicy_eats/commons/restaurant_container.dart';
 import 'package:spicy_eats/features/Home/screens/homedrawer.dart';
@@ -61,6 +62,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           .then((value) {
         // setState(() => isloading = true);
         if (value != null) {
+          ref.read(rest_ui_Provider.notifier).state = value;
           rest_uid = value;
           print('rest_uuid is: ${rest_uid}');
         }
@@ -108,67 +110,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   String? rest_name;
-  // Future<RestaurantData?> fetchRestaurant(String? currentUserId) async {
-  //   try {
-  //     RestaurantData? restaurant;
-  //     var response = await supabaseClient
-  //         .from('restaurants')
-  //         .select('*')
-  //         .eq('user_id', currentUserId!)
-  //         .single();
-  //     setState(() => restaurant = RestaurantData.fromJson(response));
-  //     return restaurant;
-  //     // rest_name = restaurant?.restaurantName;
-  //   } catch (e) {
-  //     throw e.toString();
-  //   }
-  // }
-
-  // Future<String?> fetchrestuid() async {
-  //   try {
-  //     var response = await supabaseClient
-  //         .from('restaurants')
-  //         .select('rest_uid')
-  //         .eq('user_id', supabaseClient.auth.currentUser!.id)
-  //         .single();
-
-  //     // Extract the rest_uid from the response
-  //     var restUid = response['rest_uid'] as String?;
-  //     return restUid;
-  //   } catch (e) {
-  //     print('Error fetching rest_uid: $e');
-  //     return null; // Return null if there is an error
-  //   }
-  // }
-
-//  Future<List<Restaurant>> fetchProducts() async {
-//     var userId = supabaseClient.auth.currentUser!.id;
-//     var products;
-//     if (userId == null) {
-
-//       print('user is not logged!');
-
-//     }
-
-//     try {
-//       final productList = await supabaseClient
-//           .from('restaurants')
-//           .select('*')
-//           .eq('user_id', userId)
-//           .withConverter(
-//         (list) {
-//           return (list as List).map((json) => Restaurant.fromjson(json));
-//         },
-//       );
-//       setState(() {
-//         products = List.from(productList);
-//       });
-//     } catch (e, stackTrace) {
-//       print('Caught error: $e');
-//       print('Stacktrace : $stackTrace');
-//     }
-//     return products;
-//   }
 
   @override
   Widget build(BuildContext context) {

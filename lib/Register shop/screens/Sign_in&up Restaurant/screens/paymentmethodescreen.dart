@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
@@ -22,10 +24,10 @@ final businessNameProvider = StateProvider<String>((ref) => '');
 final businessAddressProvider = StateProvider<String>((ref) => '');
 
 class PaymentMethodScreen extends ConsumerStatefulWidget {
-  // final File? image;
+  final File? image;
   static const String routename = '/payment-methods';
 
-  const PaymentMethodScreen({super.key});
+  const PaymentMethodScreen({super.key, required this.image});
   // PaymentMethodScreen({
   //   //required this.image
   //   });

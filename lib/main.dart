@@ -93,11 +93,12 @@ class _MyAppState extends ConsumerState<MyApp> {
         //   useMaterial3: true,
         // ),
         home: Scaffold(
-            body: supabaseClient.auth.currentSession != null
-                ? screen[currentindex]
-                : PasswordlessScreen(
-                    ref: ref,
-                  ),
+            body: LegalInformationScreen(),
+            //supabaseClient.auth.currentSession != null
+            //     ? screen[currentindex]
+            //     : PasswordlessScreen(
+            //         ref: ref,
+            //       ),
             //AddItemScreen(),
             //supabaseClient.auth.currentSession != null
             //     ? screen[currentindex]

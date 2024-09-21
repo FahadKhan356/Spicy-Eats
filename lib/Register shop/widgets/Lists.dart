@@ -16,7 +16,7 @@ final List<DrawerRow> drawerList = [
 ];
 
 List screens = [
-  const Center(child: Text("Home")),
+  const Center(child: HomeScreen()),
   const Center(child: Text("Feedback")),
   const Center(child: Text("Payment")),
   const MenuScreen(),

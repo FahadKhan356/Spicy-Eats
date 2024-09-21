@@ -250,7 +250,7 @@ class _LegalInformationScreenState
                             'upload image please',
                             style: TextStyle(color: Colors.red),
                           )
-                        : SizedBox(),
+                        : const SizedBox(),
                     SizedBox(
                         height: 60,
                         width: 250,
@@ -272,7 +272,7 @@ class _LegalInformationScreenState
                               ref.read(isimage.notifier).state = false;
                               final userid =
                                   supabaseClient.auth.currentUser!.id;
-                              final imgurl = await supabaseClient.storage
+                              final imgurl = supabaseClient.storage
                                   .from('restaurant_register_photos')
                                   .getPublicUrl('/$userid/photos');
                               //await uploadImage(image!);
@@ -292,67 +292,8 @@ class _LegalInformationScreenState
                               //       idLastName: lastnameController.text,
                               //     );
                               // print(
-                              //     '  form data  ${formData.toJson()} \n $imgurl');
-                              // registerShopContoller.updatePage3(
-                              //   idcardno: nicnumberController.text,
-                              //   idfirstname: firstnameController.text,
-                              //   idlastname: lastnameController.text,
-                              // );
-                              // final data = RestaurantDataSingleton();
-                              // ref.read(restaurantDataProvider.notifier).state =
-                              //     restaurantData.copywith(
-                              //   idFirstName: firstnameController.text,
-                              //   idLastName: lastnameController.text,
-                              //   idNumber: nicnumberController.text,
-                              // );
-                              //   try {
-                              //     print('inside');
-                              //     await supabaseClient
-                              //         .from('restaurants')
-                              //         .insert({
-                              //           'restaurantName':
-                              //               ref.watch(restaurantNameProvider),
-                              //           'deliveryFee': ref
-                              //               .watch(restaurantDeliveryFeeProvider),
-                              //           'minTime': ref.watch(
-                              //               restaurantDeliveryMinTimeProvider),
-                              //           'maxTime': ref.watch(
-                              //               restaurantDeliveryMaxTimeProvider),
-                              //           'address':
-                              //               ref.watch(restaurantAddProvider),
-                              //           'phoneNumber': ref
-                              //               .watch(restaurantPhoneNumberProvider),
-                              //           'deliveryArea': ref.watch(
-                              //               restaurantDeliveryAreaProvider),
-                              //           'postalCode': ref
-                              //               .watch(restaurantPostalCodeProvider),
-                              //           'idNumber': ref.watch(nicNumberProvider),
-                              //           'description': ref
-                              //               .watch(restaurantDescriptionProvider),
-                              //           'long': ref.watch(restaurantLongProvider),
-                              //           'lat': ref.watch(restaurantLatProvider),
-                              //           'businessEmail':
-                              //               ref.watch(restaurantEmailProvider),
-                              //           'idFirstName':
-                              //               ref.watch(nicNumberFirstNameProvider),
-                              //           'idLastName':
-                              //               ref.watch(nicNumberLastNameProvider),
-                              //           'openingHours': openinghours,
-                              //           'restaurantImageUrl': '',
-                              //           'idPhotoUrl': imgurl
-                              //         }
 
-                              //             // restaurantData.toJson()
-                              //             )
-                              //         .then((value) =>
-                              //             print("Inserted successfully: $value"))
-                              //         .catchError((error) {
-                              //           print("Insert failed: $error");
-                              //         });
-                              //   } catch (e) {
-                              //     print('Exception during insert');
-                              //     print(e.toString());
-                              //   }
+                              //   } catch//
 
                               registerShopController.uploadRestaurantData();
                             },

@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/models/registershop.dart';
 import 'package:spicy_eats/main.dart';
 
+var rest_ui_Provider = StateProvider<String?>((ref) => null);
 var registershoprepoProvider = Provider((ref) => RegisterShopRepository());
 
 class RegisterShopRepository {

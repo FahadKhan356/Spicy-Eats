@@ -1,14 +1,21 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/register_restaurant.dart';
+import 'package:spicy_eats/Register%20shop/screens/shophome.dart';
 import 'package:spicy_eats/features/Home/screens/widgets/customdraweritem.dart';
 
-class HomeDrawer extends StatelessWidget {
+class HomeDrawer extends ConsumerStatefulWidget {
   const HomeDrawer({super.key});
 
   @override
+  ConsumerState<HomeDrawer> createState() => _HomeDrawerState();
+}
+
+class _HomeDrawerState extends ConsumerState<HomeDrawer> {
+  @override
   Widget build(BuildContext context) {
+    var rest_uid = ref.watch(rest_ui_Provider);
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 5),
@@ -45,8 +52,15 @@ class HomeDrawer extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              CustomDrawerItem(
-                  leadingname: 'Your restaurant', icon: Icons.settings),
+              rest_uid != null
+                  ? InkWell(
+                      onTap: () =>
+                          Navigator.pushNamed(context, ShopHome.routename),
+                      child: CustomDrawerItem(
+                          leadingname: 'Your restaurant', icon: Icons.settings),
+                    )
+                  : CustomDrawerItem(
+                      leadingname: 'No restaurant', icon: Icons.settings),
               const Spacer(),
               CustomDrawerItem(leadingname: 'Settings', icon: Icons.settings),
             ],

@@ -21,7 +21,7 @@ Future<String?> uploadImage(File? file) async {
         .from('restaurant_register_photos')
         .upload('/$userid/photos', file!);
 
-    publicUrlResponse = await supabaseClient.storage
+    publicUrlResponse = supabaseClient.storage
         .from('restaurant_register_photos')
         .getPublicUrl('/$userid/photos');
   } catch (e) {
