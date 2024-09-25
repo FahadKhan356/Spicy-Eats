@@ -52,10 +52,7 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
       });
     case PaymentMethodScreen.routename:
       return MaterialPageRoute(builder: (context) {
-        final arguments = settings.arguments as File;
-        return PaymentMethodScreen(
-          image: arguments,
-        );
+        return const PaymentMethodScreen();
       });
     case OtpScreen.routename:
       return MaterialPageRoute(builder: (context) => const OtpScreen());

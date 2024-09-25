@@ -185,7 +185,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           const SizedBox(
             height: 20,
           ),
-          const CusinesList(),
+          //   const CusinesList(),
           isloading
               ? const CircularProgressIndicator(
                   backgroundColor: Colors.black12,
@@ -195,6 +195,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           Expanded(
             child: Stack(
               children: [
+                // const CusinesList(),
                 RepaintBoundary(
                   child: AnimatedBuilder(
                     animation: _animationbody,
@@ -211,44 +212,56 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                         ),
                       );
                     },
-                    child: FutureBuilder(
-                      future: readjsondata(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return const Center(child: Text("Error"));
-                        } else if (snapshot.hasData) {
-                          return ListView.builder(
-                            itemCount: snapshot.data!.length,
-                            itemBuilder: ((context, index) => Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: GestureDetector(
-                                    onTap: () => Navigator.pushNamed(
-                                      context,
-                                      RestaurantMenu.routename,
-                                      arguments: snapshot.data![index],
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: RestaurantContainer(
-                                        name: snapshot.data![index].name,
-                                        price: snapshot.data![index].deliveryFee
-                                            .toString(),
-                                        image: snapshot.data![index].image,
-                                        mindeliverytime: snapshot
-                                            .data![index].minDeliveryTime,
-                                        maxdeliverytime: snapshot
-                                            .data![index].maxDeliveryTime,
-                                        ratings: snapshot.data![index].rating,
-                                      ),
-                                    ),
-                                  ),
-                                )),
-                          );
-                        } else {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        }
-                      },
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          const CusinesList(),
+                          FutureBuilder(
+                            future: readjsondata(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasError) {
+                                return const Center(child: Text("Error"));
+                              } else if (snapshot.hasData) {
+                                return ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: snapshot.data!.length,
+                                  itemBuilder: ((context, index) => Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: GestureDetector(
+                                          onTap: () => Navigator.pushNamed(
+                                            context,
+                                            RestaurantMenu.routename,
+                                            arguments: snapshot.data![index],
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: RestaurantContainer(
+                                              name: snapshot.data![index].name,
+                                              price: snapshot
+                                                  .data![index].deliveryFee
+                                                  .toString(),
+                                              image:
+                                                  snapshot.data![index].image,
+                                              mindeliverytime: snapshot
+                                                  .data![index].minDeliveryTime,
+                                              maxdeliverytime: snapshot
+                                                  .data![index].maxDeliveryTime,
+                                              ratings:
+                                                  snapshot.data![index].rating,
+                                            ),
+                                          ),
+                                        ),
+                                      )),
+                                );
+                              } else {
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              }
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

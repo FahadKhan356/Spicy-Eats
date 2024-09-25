@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/dashboard/DrawerScreens/Menu/SubScreens/AddItemScreen.dart';
+import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/businessInformation.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/legalstuffscreen.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/paymentmethodescreen.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/widgets/map.dart';
@@ -93,12 +94,11 @@ class _MyAppState extends ConsumerState<MyApp> {
         //   useMaterial3: true,
         // ),
         home: Scaffold(
-            body: LegalInformationScreen(),
-            //supabaseClient.auth.currentSession != null
-            //     ? screen[currentindex]
-            //     : PasswordlessScreen(
-            //         ref: ref,
-            //       ),
+            body: supabaseClient.auth.currentSession != null
+                ? screen[currentindex]
+                : PasswordlessScreen(
+                    ref: ref,
+                  ),
             //AddItemScreen(),
             //supabaseClient.auth.currentSession != null
             //     ? screen[currentindex]

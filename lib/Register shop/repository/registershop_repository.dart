@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/models/registershop.dart';
+import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/businessInformation.dart';
+import 'package:spicy_eats/Register%20shop/utils/commonImageUpload.dart';
 import 'package:spicy_eats/main.dart';
 
 var rest_ui_Provider = StateProvider<String?>((ref) => null);
@@ -7,6 +11,12 @@ var registershoprepoProvider = Provider((ref) => RegisterShopRepository());
 
 class RegisterShopRepository {
   Future<void> uploadrestaurantData({
+    required restownerIDImageFolderName,
+    required File restIdImage,
+    required folderName,
+    required imagePath,
+    required idimagePath,
+    required File restImage,
     required restName,
     required address,
     required deliveryArea,
@@ -16,7 +26,6 @@ class RegisterShopRepository {
     required idFirstName,
     required idLastname,
     required idPhotoUrl,
-    required restImgUrl,
     required deliveryFee,
     required long,
     required lat,
@@ -27,6 +36,18 @@ class RegisterShopRepository {
     required Map<String, Map<String, dynamic>> openingHours,
   }) async {
     try {
+      String? restImageUrl = await uploadImageToSupabaseStorage(
+        imagePath: imagePath,
+        file: restImage,
+        folderName: folderName,
+      );
+
+      String? restIdImageUrl = await uploadImageToSupabaseStorage(
+        imagePath: idimagePath,
+        file: restIdImage,
+        folderName: restownerIDImageFolderName,
+      );
+
       await supabaseClient
           .from('restaurants')
           .insert({
@@ -46,16 +67,17 @@ class RegisterShopRepository {
             'idFirstName': idFirstName,
             'idLastName': idLastname,
             'openingHours': openingHours,
-            'restaurantImageUrl': restImgUrl,
-            'idPhotoUrl': idPhotoUrl,
+            'restaurantImageUrl': restImageUrl,
+            'idPhotoUrl': restIdImageUrl,
           })
           .then((value) => print("Inserted successfully: $value"))
           .catchError((error) {
             print("Insert failed: $error");
           });
     } catch (e) {
-      print('Exception during insert');
-      print(e.toString());
+      throw e.toString();
+      //print('Exception during insert');
+      //print(e.toString());
     }
   }
 
@@ -72,7 +94,8 @@ class RegisterShopRepository {
       return restaurant;
       // rest_name = restaurant?.restaurantName;
     } catch (e) {
-      throw e.toString();
+      //throw e.toString();
+      print('No restaurant data');
     }
   }
 //fetch rest uid

@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/legalstuffscreen.dart';
 import 'package:spicy_eats/Register%20shop/widgets/Mybottomsheet.dart';
 import 'package:spicy_eats/Register%20shop/widgets/restauarantTextfield.dart';
+import 'package:spicy_eats/commons/imagepick.dart';
 
 var restaurantDescriptionProvider = StateProvider<String?>((ref) => null);
 var restaurantDeliveryFeeProvider = StateProvider<double?>((ref) => null);
@@ -10,6 +13,7 @@ var restaurantDeliveryMinTimeProvider = StateProvider<int?>((ref) => null);
 var restaurantDeliveryMaxTimeProvider = StateProvider<int?>((ref) => null);
 var restaurantDeliveryAreaProvider = StateProvider<String?>((ref) => null);
 var restaurantPostalCodeProvider = StateProvider<String?>((ref) => null);
+var restImageFileProvider = StateProvider<File?>((ref) => null);
 
 var isBottomSheetProvider = StateProvider((ref) => false);
 
@@ -26,6 +30,13 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
   var restaurantdescriptionController = TextEditingController();
 
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
+  File? image;
+  void pickimagefromgallery() async {
+    image = await imagePicker(context);
+    setState(() {});
+    print('this is id image $image');
+  }
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -151,7 +162,32 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                         height: 60,
                         width: double.maxFinite,
                         child: ElevatedButton(
+                          onPressed: () async {
+                            ref.watch(restImageFileProvider.notifier).state =
+                                await pickImageFromGallerymob(context);
+                          },
+                          style: ElevatedButton.styleFrom(
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10))),
+                              backgroundColor: Colors.black),
+                          child: Text(
+                            'Upload Restaurant Display Image',
+                            style: TextStyle(
+                                fontSize: height * 0.02, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      SizedBox(
+                        height: 60,
+                        width: double.maxFinite,
+                        child: ElevatedButton(
                           onPressed: () {
+                            print(
+                                '${ref.read(restImageFileProvider)} this is rest image');
                             showMyBottomSheet(context);
                           },
                           style: ElevatedButton.styleFrom(

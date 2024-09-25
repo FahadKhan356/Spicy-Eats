@@ -13,20 +13,18 @@ Future<File?> pickimage() async {
   return image;
 }
 
-Future<String?> uploadImage(File? file) async {
+Future<String?> uploadImageToSupabaseStorage(
+    {required File? file,
+    required String folderName,
+    required String imagePath}) async {
   final publicUrlResponse;
   try {
-    final userid = supabaseClient.auth.currentUser!.id;
-    await supabaseClient.storage
-        .from('restaurant_register_photos')
-        .upload('/$userid/photos', file!);
-
-    publicUrlResponse = supabaseClient.storage
-        .from('restaurant_register_photos')
-        .getPublicUrl('/$userid/photos');
+    await supabaseClient.storage.from(folderName).upload(imagePath, file!);
+    publicUrlResponse =
+        supabaseClient.storage.from(folderName).getPublicUrl(imagePath);
   } catch (e) {
     throw Exception(e.toString());
   }
 
-  return publicUrlResponse.data;
+  return publicUrlResponse;
 }

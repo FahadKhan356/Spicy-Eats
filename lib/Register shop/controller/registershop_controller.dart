@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/models/registershop.dart';
 import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
@@ -22,8 +24,21 @@ class RegisterShopContoller {
     required this.ref,
   });
 
-  void uploadRestaurantData() {
+  void uploadRestaurantData({
+    required File? restImage,
+    required String folderName,
+    required String restImagePath,
+    required String? restownerIDImageFolderName,
+    required File? restIdImage,
+    required String idImagePath,
+  }) {
     registerShopRepository.uploadrestaurantData(
+      restownerIDImageFolderName: restownerIDImageFolderName,
+      restIdImage: restIdImage!,
+      folderName: folderName,
+      imagePath: restImagePath,
+      restImage: restImage!,
+      idimagePath: idImagePath,
       restName: ref.read(restaurantNameProvider) ?? '',
       address: ref.read(restaurantAddProvider) ?? '',
       deliveryArea: ref.read(restaurantDeliveryAreaProvider) ?? '',
@@ -33,7 +48,6 @@ class RegisterShopContoller {
       idFirstName: ref.read(nicNumberFirstNameProvider) ?? '',
       idLastname: ref.read(nicNumberLastNameProvider) ?? '',
       idPhotoUrl: '',
-      restImgUrl: '',
       deliveryFee: ref.read(restaurantDeliveryFeeProvider) ?? 0.0,
       long: ref.read(restaurantLongProvider) ?? 0.0,
       lat: ref.read(restaurantLatProvider) ?? 0.0,

@@ -4,6 +4,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
+import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/businessInformation.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/paymentmethodescreen.dart';
 import 'package:spicy_eats/Register%20shop/widgets/restauarantTextfield.dart';
 import 'package:spicy_eats/commons/imagepick.dart';
@@ -28,14 +29,16 @@ class LegalInformationScreen extends ConsumerStatefulWidget {
 class _LegalInformationScreenState
     extends ConsumerState<LegalInformationScreen> {
   GlobalKey<FormState> _form = GlobalKey<FormState>();
-  File? image;
+  File? idImage;
   void pickimagefromgallery() async {
-    image = await imagePicker(context);
+    idImage = await imagePicker(context);
     setState(() {});
+    print('this is id image $idImage');
   }
 
   @override
   Widget build(BuildContext context) {
+    final restImg = ref.read(restImageFileProvider);
     final isImageSelected = ref.watch(isimage);
     final registerShopController = ref.watch(registershopcontrollerProvider);
     return SafeArea(
@@ -148,7 +151,7 @@ class _LegalInformationScreenState
                         color: Colors.grey,
                         strokeWidth: 3,
                         dashPattern: const [12, 8],
-                        child: image != null
+                        child: idImage != null
                             ? Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Row(
@@ -167,7 +170,7 @@ class _LegalInformationScreenState
                                             IconButton(
                                                 onPressed: () {
                                                   pickimagefromgallery();
-                                                  image != null
+                                                  idImage != null
                                                       ? ref
                                                           .read(
                                                               isimage.notifier)
@@ -208,7 +211,7 @@ class _LegalInformationScreenState
                                           borderRadius:
                                               BorderRadius.circular(12),
                                           child: Image.file(
-                                            image!,
+                                            idImage!,
                                             fit: BoxFit.cover,
                                             width: 200,
                                             height: 200,
@@ -228,7 +231,7 @@ class _LegalInformationScreenState
                                     child: IconButton(
                                       onPressed: () {
                                         pickimagefromgallery();
-                                        image != null
+                                        idImage != null
                                             ? ref.read(isimage.notifier).state =
                                                 true
                                             : ref.read(isimage.notifier).state =
@@ -265,37 +268,22 @@ class _LegalInformationScreenState
                               if (_form.currentState!.validate()
                                   //&& image != null
                                   ) {
+                                String userId =
+                                    supabaseClient.auth.currentUser!.id;
+                                registerShopController.uploadRestaurantData(
+                                  restImage: restImg,
+                                  folderName: 'Restaurant_Registeration',
+                                  restImagePath: '/$userId/Restaurant_covers',
+                                  restownerIDImageFolderName:
+                                      'Restaurant_Registeration',
+                                  restIdImage: idImage,
+                                  idImagePath: '/$userId/Restaurant_ownerIds',
+                                );
                                 Navigator.pushNamed(
-                                    context, PaymentMethodScreen.routename,
-                                    arguments: image);
+                                  context,
+                                  PaymentMethodScreen.routename,
+                                );
                               }
-                              ref.read(isimage.notifier).state = false;
-                              final userid =
-                                  supabaseClient.auth.currentUser!.id;
-                              final imgurl = supabaseClient.storage
-                                  .from('restaurant_register_photos')
-                                  .getPublicUrl('/$userid/photos');
-                              //await uploadImage(image!);
-                              // formNotifier.setRestaurantData(formData.copywith(
-                              //   idPhotoUrl: imgurl,
-                              //   idNumber: nicnumberController.text,
-                              //   idFirstName: firstnameController.text,
-                              //   idLastName: lastnameController.text,
-                              // ));
-                              ///////////////////
-                              // ref
-                              //     .read(restaurantstateProvider.notifier)
-                              //     .setRestaurantData(
-                              //       idPhotoUrl: imgurl,
-                              //       idNumber: nicnumberController.text,
-                              //       idFirstName: firstnameController.text,
-                              //       idLastName: lastnameController.text,
-                              //     );
-                              // print(
-
-                              //   } catch//
-
-                              registerShopController.uploadRestaurantData();
                             },
                             child: const Text(
                               'Next',

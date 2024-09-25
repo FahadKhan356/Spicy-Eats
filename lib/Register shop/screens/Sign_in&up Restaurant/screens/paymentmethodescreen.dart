@@ -24,10 +24,11 @@ final businessNameProvider = StateProvider<String>((ref) => '');
 final businessAddressProvider = StateProvider<String>((ref) => '');
 
 class PaymentMethodScreen extends ConsumerStatefulWidget {
-  final File? image;
   static const String routename = '/payment-methods';
 
-  const PaymentMethodScreen({super.key, required this.image});
+  const PaymentMethodScreen({
+    super.key,
+  });
   // PaymentMethodScreen({
   //   //required this.image
   //   });
