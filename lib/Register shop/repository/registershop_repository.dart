@@ -82,20 +82,28 @@ class RegisterShopRepository {
   }
 
 //fetch restaurants
-  Future<RestaurantData?> fetchRestaurant(String? currentUserId) async {
+  Future<List<RestaurantData>?> fetchRestaurant(String? currentUserId) async {
     try {
-      RestaurantData? restaurant;
-      var response = await supabaseClient
+      List<dynamic> response = await supabaseClient
           .from('restaurants')
           .select('*')
-          .eq('user_id', currentUserId!)
-          .single();
-      restaurant = RestaurantData.fromJson(response);
+          .eq('user_id', currentUserId!);
+      if (response.isEmpty) {
+        print('No restaurant data found');
+        return null;
+      }
+
+      // restaurant = RestaurantData.fromJson(response);
+      List<RestaurantData> restaurant = response
+          .map((restauarantdata) => RestaurantData.fromJson(restauarantdata))
+          .toList();
       return restaurant;
-      // rest_name = restaurant?.restaurantName;
+      // Return the list of RestaurantData objects
     } catch (e) {
       //throw e.toString();
       print('No restaurant data');
+
+      return null;
     }
   }
 //fetch rest uid

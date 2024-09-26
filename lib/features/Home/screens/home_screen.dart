@@ -17,6 +17,8 @@ import 'dart:math' as math;
 
 import 'package:spicy_eats/main.dart';
 
+var restUidProvider = Provider<String?>((ref) => null);
+
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
   static const String routename = '/homescreen';
@@ -31,12 +33,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   late Animation<double> _animationbody;
   bool clicked = false;
   var uid;
-  RestaurantData? restaurantData;
+  List<RestaurantData> restaurantData = [];
   String? rest_uid;
   bool isloading = false;
 
   @override
   void initState() {
+    // print('_email is: ${supabaseClient.auth.currentUser?.email}');
     setState(() => isloading = true);
     ref
         .read(registershopcontrollerProvider)
@@ -53,31 +56,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         setState(() {
           restaurantData = restaurant;
         });
-        print('rest_email is: ${restaurant.email}');
-        print('rest_hours are: ${restaurant.openingHours}');
+        print('rest_email is: ${restaurantData[0].address}');
+        print('rest_hours are: ${restaurantData[0].deliveryArea}');
       }
       ref
           .read(registershopcontrollerProvider)
           .fetchRestUid(supabaseClient.auth.currentUser!.id)
           .then((value) {
-        // setState(() => isloading = true);
         if (value != null) {
           ref.read(rest_ui_Provider.notifier).state = value;
           rest_uid = value;
+          ref.watch(rest_ui_Provider.notifier).state = value;
           print('rest_uuid is: ${rest_uid}');
         }
       });
       setState(() => isloading = false);
     });
-    //fetch restaurant uid
+    /////////////////////////
 
-    // fetchrestuid().then((restUid) {
-    //   if (restUid != null) {
-    //     print('rest_uid is: $restUid');
-    //   } else {
-    //     print('Failed to fetch rest_uid');
-    //   }
-    // });
     super.initState();
     _animationcontroller = AnimationController(
       duration: const Duration(milliseconds: 800),
@@ -113,8 +109,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-//var registerShopController = ref.watch(registershopcontrollerProvider);
-
     return Scaffold(
       backgroundColor: Colors.white,
       extendBody: true,
@@ -122,10 +116,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         title: Center(
             child: Column(
           children: [
-            // Text(
-            //   '${rest_uidlist?[0]}',
-            //   style: GoogleFonts.aBeeZee(fontSize: 22),
-            // ),
             Text(
               'Delivering to',
               style: GoogleFonts.aBeeZee(fontSize: 22),
@@ -191,7 +181,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   backgroundColor: Colors.black12,
                   value: 20,
                 )
-              : Text('${restaurantData?.restaurantName}'),
+              : Text(' ${restaurantData[0].restaurantName}'),
           Expanded(
             child: Stack(
               children: [
@@ -260,6 +250,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                               }
                             },
                           ),
+                          ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: restaurantData.length,
+                              itemBuilder: ((context, index) => Container(
+                                    child: RestaurantContainer(
+                                      name: restaurantData[index]
+                                          .restaurantName
+                                          .toString(),
+                                      price: restaurantData[index]
+                                          .deliveryFee
+                                          .toString(),
+                                      image: restaurantData[index]
+                                          .restaurantImageUrl
+                                          .toString(),
+                                      mindeliverytime:
+                                          restaurantData[index].minTime!,
+                                      maxdeliverytime:
+                                          restaurantData[index].maxTime!,
+                                      ratings: restaurantData[index].ratings!,
+                                    ),
+                                  )))
                         ],
                       ),
                     ),

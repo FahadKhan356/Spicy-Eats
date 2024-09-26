@@ -100,7 +100,7 @@ class RegisterShopContoller {
     }
   }
 
-  Future<RestaurantData?> fetchrestaurants(String? currentUserId) async {
+  Future<List<RestaurantData>?> fetchrestaurants(String? currentUserId) async {
     return await registerShopRepository.fetchRestaurant(currentUserId);
   }
 

@@ -3,9 +3,12 @@ import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spicy_eats/Register%20shop/dashboard/controller/dashboardcontroller.dart';
 import 'package:spicy_eats/Register%20shop/widgets/Lists.dart';
 import 'package:spicy_eats/Register%20shop/widgets/customTextfield.dart';
 import 'package:spicy_eats/commons/imagepick.dart';
+import 'package:spicy_eats/features/Home/screens/home_screen.dart';
+import 'package:spicy_eats/main.dart';
 
 var scheduledMealProvider = StateProvider<String?>((ref) => null);
 var cusinesProvider = StateProvider<String?>((ref) => null);
@@ -38,6 +41,7 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final dashboardController = ref.read(dashboardControllerProvider);
     final isError = ref.watch(isErrorProvider);
     final GlobalKey<FormState> _form = GlobalKey<FormState>();
     String msg = ref.watch(msgError);
@@ -314,7 +318,7 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
                                         ),
                                       ),
                                     ),
-                                    const Text('Upload Identity Card Photo')
+                                    const Text('Upload Dish image')
                                   ],
                                 ),
                         ),
@@ -547,11 +551,25 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
                             return;
                           }
                           if (_form.currentState?.validate() ?? false) {
-                            if (!isError) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text("successfully added")));
-                            }
+                            // if (!isError) {
+                            String userId = supabaseClient.auth.currentUser!.id;
+                            dashboardController.uploadDish(
+                                folderName: 'Dish_Images',
+                                imagePath:
+                                    '/$userId/${nameController.text}/images',
+                                dishName: nameController.text,
+                                dishdescription: descriptionController.text,
+                                dishPrice: int.tryParse(priceController.text),
+                                dishImage: image,
+                                dishDiscount: discount.toString(),
+                                scheduleMeal: scheduledmealvalue,
+                                dishcusine: cusinesvalue,
+                                restUid: ref.read(restUidProvider));
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text("successfully added")));
+                            //}
                           }
                           // ref.read(isErrorProvider.notifier).state = true;
                           if (isError) {
