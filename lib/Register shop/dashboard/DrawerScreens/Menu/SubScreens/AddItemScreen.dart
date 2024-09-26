@@ -4,6 +4,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/dashboard/controller/dashboardcontroller.dart';
+import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
 import 'package:spicy_eats/Register%20shop/widgets/Lists.dart';
 import 'package:spicy_eats/Register%20shop/widgets/customTextfield.dart';
 import 'package:spicy_eats/commons/imagepick.dart';
@@ -540,10 +541,9 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10))),
                         onPressed: () {
-                          final price =
-                              double.tryParse(priceController.text) ?? 0;
+                          final price = int.tryParse(priceController.text) ?? 0;
                           final discount =
-                              double.tryParse(discountController.text) ?? 0;
+                              int.tryParse(discountController.text) ?? 0;
 
                           if (price < discount) {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -559,12 +559,12 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
                                     '/$userId/${nameController.text}/images',
                                 dishName: nameController.text,
                                 dishdescription: descriptionController.text,
-                                dishPrice: int.tryParse(priceController.text),
+                                dishPrice: price,
                                 dishImage: image,
-                                dishDiscount: discount.toString(),
+                                dishDiscount: discount,
                                 scheduleMeal: scheduledmealvalue,
                                 dishcusine: cusinesvalue,
-                                restUid: ref.read(restUidProvider));
+                                restUid: ref.read(rest_ui_Provider));
 
                             ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(

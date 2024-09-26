@@ -14,7 +14,7 @@ class DashBoardRepository {
     required String? dishdescription,
     required int? dishPrice,
     required File? dishImage,
-    required String? dishDiscount,
+    required int? dishDiscount,
     required String? scheduleMeal,
     required String? dishcusine,
     required String? restUid,

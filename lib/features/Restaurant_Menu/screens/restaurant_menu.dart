@@ -4,11 +4,14 @@ import 'package:flutter/widgets.dart';
 import 'package:spicy_eats/commons/dishes_card.dart';
 import 'package:spicy_eats/commons/restaurantModel.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/menu_Item_detail_screen.dart';
+import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 
 class RestaurantMenu extends StatelessWidget {
   static const String routename = "/restaurant-menu";
-  final Restaurant restaurant;
-  RestaurantMenu({super.key, required this.restaurant});
+  final Restaurant? restaurant;
+  final List<DishData>? dishData;
+  const RestaurantMenu(
+      {super.key, required this.restaurant, required this.dishData});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +24,7 @@ class RestaurantMenu extends StatelessWidget {
             children: [
               Stack(children: [
                 Image.network(
-                  restaurant.image,
+                  restaurant!.image,
                   width: double.maxFinite,
                   height: 230,
                   fit: BoxFit.cover,
@@ -50,7 +53,7 @@ class RestaurantMenu extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Text(
-                  restaurant.name,
+                  restaurant!.name,
                   style: const TextStyle(
                     fontSize: 35,
                     color: Colors.black,
@@ -66,7 +69,7 @@ class RestaurantMenu extends StatelessWidget {
                 child: Row(
                   children: [
                     Text(
-                      "\$ ${restaurant.rating}",
+                      "\$ ${restaurant?.rating}",
                       style: const TextStyle(
                           fontSize: 18,
                           color: Colors.black54,
@@ -85,7 +88,7 @@ class RestaurantMenu extends StatelessWidget {
               ),
               ListView.builder(
                   shrinkWrap: true,
-                  itemCount: restaurant.dishes.length,
+                  itemCount: restaurant!.dishes.length,
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: ((context, index) {
                     return Column(
@@ -105,20 +108,37 @@ class RestaurantMenu extends StatelessWidget {
                         GestureDetector(
                           onTap: () => Navigator.pushNamed(
                               context, MenuItemDetailScreen.routename,
-                              arguments: restaurant.dishes[index]),
+                              arguments: restaurant!.dishes[index]),
                           child: DishesCard(
-                            dishname: restaurant.dishes[index].name,
+                            dishname: restaurant!.dishes[index].name,
                             dishdescription:
-                                restaurant.dishes[index].description,
+                                restaurant!.dishes[index].description,
                             dishprice:
-                                restaurant.dishes[index].price.toString(),
-                            image: restaurant.dishes[index].image,
+                                restaurant!.dishes[index].price.toString(),
+                            image: restaurant!.dishes[index].image,
                             index: index,
                           ),
-                        )
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
                       ],
                     );
-                  }))
+                  })),
+              const SizedBox(
+                height: 20,
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: dishData!.length,
+                itemBuilder: (context, index) => DishesCard(
+                  dishname: dishData![index].dish_name!,
+                  dishdescription: dishData![index].dish_description!,
+                  dishprice: dishData![index].dish_price!.toString(),
+                  image: dishData![index].dish_imageurl,
+                  index: index,
+                ),
+              ),
             ],
           ),
         ),

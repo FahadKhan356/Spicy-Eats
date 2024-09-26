@@ -10,14 +10,14 @@ import 'package:spicy_eats/Register%20shop/models/registershop.dart';
 import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
 import 'package:spicy_eats/commons/restaurantModel.dart';
 import 'package:spicy_eats/commons/restaurant_container.dart';
+import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
 import 'package:spicy_eats/features/Home/screens/homedrawer.dart';
 import 'package:spicy_eats/features/Home/screens/widgets/cusineslist.dart';
+import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/screens/restaurant_menu.dart';
 import 'dart:math' as math;
 
 import 'package:spicy_eats/main.dart';
-
-var restUidProvider = Provider<String?>((ref) => null);
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -36,42 +36,65 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   List<RestaurantData> restaurantData = [];
   String? rest_uid;
   bool isloading = false;
+  List<DishData> dishList = [];
 
   @override
   void initState() {
+    fetchInitialData();
     // print('_email is: ${supabaseClient.auth.currentUser?.email}');
-    setState(() => isloading = true);
-    ref
-        .read(registershopcontrollerProvider)
-        .fetchrestaurants(supabaseClient.auth.currentUser!.id);
-    ref
-        .read(registershopcontrollerProvider)
-        .fetchRestUid(supabaseClient.auth.currentUser!.id);
-    ref
-        .read(registershopcontrollerProvider)
-        .fetchrestaurants(supabaseClient.auth.currentUser!.id)
-        .then((restaurant) {
-      //  setState(() => isloading = true);
-      if (restaurant != null) {
-        setState(() {
-          restaurantData = restaurant;
-        });
-        print('rest_email is: ${restaurantData[0].address}');
-        print('rest_hours are: ${restaurantData[0].deliveryArea}');
-      }
-      ref
-          .read(registershopcontrollerProvider)
-          .fetchRestUid(supabaseClient.auth.currentUser!.id)
-          .then((value) {
-        if (value != null) {
-          ref.read(rest_ui_Provider.notifier).state = value;
-          rest_uid = value;
-          ref.watch(rest_ui_Provider.notifier).state = value;
-          print('rest_uuid is: ${rest_uid}');
-        }
-      });
-      setState(() => isloading = false);
-    });
+    // setState(() => isloading = true);
+    // //fetch restaurants
+    // await ref
+    //     .read(registershopcontrollerProvider)
+    //     .fetchrestaurants(supabaseClient.auth.currentUser!.id);
+    // //fetch rest_uid
+    // await ref
+    //     .read(registershopcontrollerProvider)
+    //     .fetchRestUid(supabaseClient.auth.currentUser!.id);
+
+    // //storing restaurants objects to list
+    // await ref
+    //     .read(registershopcontrollerProvider)
+    //     .fetchrestaurants(supabaseClient.auth.currentUser!.id)
+    //     .then((restaurant) {
+    //   //  setState(() => isloading = true);
+    //   if (restaurant != null) {
+    //     setState(() {
+    //       restaurantData = restaurant;
+    //     });
+    //     print('rest_email is: ${restaurantData[0].address}');
+    //     print('rest_hours are: ${restaurantData[0].deliveryArea}');
+    //   }
+    // });
+    // //storing rest_uid to a variable
+    // await ref
+    //     .read(registershopcontrollerProvider)
+    //     .fetchRestUid(supabaseClient.auth.currentUser!.id)
+    //     .then((value) {
+    //   if (value != null) {
+    //     ref.watch(rest_ui_Provider.notifier).state = value;
+    //     print('initialize restuid provider ${ref.read(rest_ui_Provider)}');
+    //     setState(() {
+    //       rest_uid = value;
+    //     });
+    //     //print('rest_uuid is: ${rest_uid}' + '${ref.read(rest_ui_Provider)}');
+    //   }
+    // });
+    // setState(() => isloading = false);
+
+    // await ref.read(homeControllerProvider).fetchDishes(restuid: rest_uid);
+    // await ref
+    //     .read(homeControllerProvider)
+    //     .fetchDishes(restuid: rest_uid)
+    //     .then((dishes) {
+    //   if (dishes != null) {
+    //     setState(() {
+    //       dishList = dishes;
+    //       print('${dishList[0].cusine!}');
+    //     });
+    //   }
+    // });
+
     /////////////////////////
 
     super.initState();
@@ -90,6 +113,53 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     super.dispose();
   }
 
+  Future<void> fetchInitialData() async {
+    setState(() => isloading = true);
+
+    // Fetch restaurants
+    await ref
+        .read(registershopcontrollerProvider)
+        .fetchrestaurants(supabaseClient.auth.currentUser!.id)
+        .then((restaurant) {
+      if (restaurant != null) {
+        setState(() {
+          restaurantData = restaurant;
+        });
+        print('rest_email is: ${restaurantData[0].address}');
+        print('rest_hours are: ${restaurantData[0].deliveryArea}');
+      }
+    });
+
+    // Fetch rest_uid
+    await ref
+        .read(registershopcontrollerProvider)
+        .fetchRestUid(supabaseClient.auth.currentUser!.id)
+        .then((value) {
+      if (value != null) {
+        ref.watch(rest_ui_Provider.notifier).state = value;
+        print('initialize restuid provider ${ref.read(rest_ui_Provider)}');
+        setState(() {
+          rest_uid = value;
+        });
+      }
+    });
+
+    // Fetch dishes
+    await ref
+        .read(homeControllerProvider)
+        .fetchDishes(restuid: rest_uid)
+        .then((dishes) {
+      if (dishes != null) {
+        setState(() {
+          dishList = dishes;
+          print('${dishList[0].cusine!}');
+        });
+      }
+    });
+
+    setState(() => isloading = false);
+  }
+
   void onclick() {
     if (clicked) {
       _animationcontroller.forward();
@@ -106,6 +176,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   String? rest_name;
+  Restaurant? restaurant;
 
   @override
   Widget build(BuildContext context) {
@@ -216,33 +287,38 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
                                   itemCount: snapshot.data!.length,
-                                  itemBuilder: ((context, index) => Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: GestureDetector(
-                                          onTap: () => Navigator.pushNamed(
-                                            context,
-                                            RestaurantMenu.routename,
-                                            arguments: snapshot.data![index],
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: RestaurantContainer(
-                                              name: snapshot.data![index].name,
-                                              price: snapshot
-                                                  .data![index].deliveryFee
-                                                  .toString(),
-                                              image:
-                                                  snapshot.data![index].image,
-                                              mindeliverytime: snapshot
-                                                  .data![index].minDeliveryTime,
-                                              maxdeliverytime: snapshot
-                                                  .data![index].maxDeliveryTime,
-                                              ratings:
-                                                  snapshot.data![index].rating,
-                                            ),
+                                  itemBuilder: ((context, index) {
+                                    restaurant = snapshot.data![index];
+
+                                    return Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: GestureDetector(
+                                        onTap: () => Navigator.pushNamed(
+                                            context, RestaurantMenu.routename,
+                                            arguments: {
+                                              'restaurant':
+                                                  snapshot.data![index],
+                                              'dishes': dishList,
+                                            }),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: RestaurantContainer(
+                                            name: snapshot.data![index].name,
+                                            price: snapshot
+                                                .data![index].deliveryFee
+                                                .toString(),
+                                            image: snapshot.data![index].image,
+                                            mindeliverytime: snapshot
+                                                .data![index].minDeliveryTime,
+                                            maxdeliverytime: snapshot
+                                                .data![index].maxDeliveryTime,
+                                            ratings:
+                                                snapshot.data![index].rating,
                                           ),
                                         ),
-                                      )),
+                                      ),
+                                    );
+                                  }),
                                 );
                               } else {
                                 return const Center(
@@ -250,27 +326,37 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                               }
                             },
                           ),
-                          ListView.builder(
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: ListView.builder(
                               shrinkWrap: true,
                               itemCount: restaurantData.length,
-                              itemBuilder: ((context, index) => Container(
-                                    child: RestaurantContainer(
-                                      name: restaurantData[index]
-                                          .restaurantName
-                                          .toString(),
-                                      price: restaurantData[index]
-                                          .deliveryFee
-                                          .toString(),
-                                      image: restaurantData[index]
-                                          .restaurantImageUrl
-                                          .toString(),
-                                      mindeliverytime:
-                                          restaurantData[index].minTime!,
-                                      maxdeliverytime:
-                                          restaurantData[index].maxTime!,
-                                      ratings: restaurantData[index].ratings!,
-                                    ),
-                                  )))
+                              itemBuilder: (context, index) => GestureDetector(
+                                onTap: () => Navigator.pushNamed(
+                                    context, RestaurantMenu.routename,
+                                    arguments: {
+                                      'restaurant': restaurant,
+                                      'dishes': dishList,
+                                    }),
+                                child: RestaurantContainer(
+                                  name: restaurantData[index]
+                                      .restaurantName
+                                      .toString(),
+                                  price: restaurantData[index]
+                                      .deliveryFee
+                                      .toString(),
+                                  image: restaurantData[index]
+                                      .restaurantImageUrl
+                                      .toString(),
+                                  mindeliverytime:
+                                      restaurantData[index].minTime!,
+                                  maxdeliverytime:
+                                      restaurantData[index].maxTime!,
+                                  ratings: restaurantData[index].ratings!,
+                                ),
+                              ),
+                            ),
+                          )
                         ],
                       ),
                     ),
