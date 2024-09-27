@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
 import 'package:spicy_eats/Register%20shop/models/registershop.dart';
 import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
+import 'package:spicy_eats/commons/mysnackbar.dart';
 import 'package:spicy_eats/commons/restaurantModel.dart';
 import 'package:spicy_eats/commons/restaurant_container.dart';
 import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
@@ -176,7 +177,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   String? rest_name;
-  Restaurant? restaurant;
+  RestaurantData? restaurant;
 
   @override
   Widget build(BuildContext context) {
@@ -277,55 +278,56 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       child: Column(
                         children: [
                           const CusinesList(),
-                          FutureBuilder(
-                            future: readjsondata(),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasError) {
-                                return const Center(child: Text("Error"));
-                              } else if (snapshot.hasData) {
-                                return ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: snapshot.data!.length,
-                                  itemBuilder: ((context, index) {
-                                    restaurant = snapshot.data![index];
+                          // FutureBuilder(
+                          //   future: readjsondata(),
+                          //   builder: (context, snapshot) {
+                          //     if (snapshot.hasError) {
+                          //       return const Center(child: Text("Error"));
+                          //     } else if (snapshot.hasData) {
+                          //       return ListView.builder(
+                          //         shrinkWrap: true,
+                          //         physics: const NeverScrollableScrollPhysics(),
+                          //         itemCount: snapshot.data!.length,
+                          //         itemBuilder: ((context, index) {
+                          //           restaurant = snapshot.data![index];
 
-                                    return Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: GestureDetector(
-                                        onTap: () => Navigator.pushNamed(
-                                            context, RestaurantMenu.routename,
-                                            arguments: {
-                                              'restaurant':
-                                                  snapshot.data![index],
-                                              'dishes': dishList,
-                                            }),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: RestaurantContainer(
-                                            name: snapshot.data![index].name,
-                                            price: snapshot
-                                                .data![index].deliveryFee
-                                                .toString(),
-                                            image: snapshot.data![index].image,
-                                            mindeliverytime: snapshot
-                                                .data![index].minDeliveryTime,
-                                            maxdeliverytime: snapshot
-                                                .data![index].maxDeliveryTime,
-                                            ratings:
-                                                snapshot.data![index].rating,
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  }),
-                                );
-                              } else {
-                                return const Center(
-                                    child: CircularProgressIndicator());
-                              }
-                            },
-                          ),
+                          //           return Padding(
+                          //             padding: const EdgeInsets.all(8.0),
+                          //             child: GestureDetector(
+                          //               onTap: () => Navigator.pushNamed(
+                          //                   context, RestaurantMenu.routename,
+                          //                   arguments: {
+                          //                     'restaurant':
+                          //                         snapshot.data![index],
+                          //                     'dishes': dishList,
+                          //                   }),
+                          //               child: Padding(
+                          //                 padding: const EdgeInsets.all(10.0),
+                          //                 child: RestaurantContainer(
+                          //                   name: snapshot.data![index].name,
+                          //                   price: snapshot
+                          //                       .data![index].deliveryFee
+                          //                       .toString(),
+                          //                   image: snapshot.data![index].image,
+                          //                   mindeliverytime: snapshot
+                          //                       .data![index].minDeliveryTime,
+                          //                   maxdeliverytime: snapshot
+                          //                       .data![index].maxDeliveryTime,
+                          //                   ratings:
+                          //                       snapshot.data![index].rating,
+                          //                 ),
+                          //               ),
+                          //             ),
+                          //           );
+                          //         }),
+                          //       );
+                          //     } else {
+                          //       return const Center(
+                          //           child: CircularProgressIndicator());
+                          //     }
+                          //   },
+                          // ),
+                          const SizedBox(height: 20),
                           Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: ListView.builder(
@@ -335,7 +337,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                 onTap: () => Navigator.pushNamed(
                                     context, RestaurantMenu.routename,
                                     arguments: {
-                                      'restaurant': restaurant,
+                                      'restaurant': restaurantData[index],
                                       'dishes': dishList,
                                     }),
                                 child: RestaurantContainer(
