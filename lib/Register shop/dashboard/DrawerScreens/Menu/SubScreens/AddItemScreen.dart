@@ -180,7 +180,7 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
                       keyboardType:
                           TextInputType.multiline, // Allows for multiline input
                       textInputAction: TextInputAction.newline,
-                      maxLength: 100,
+                      maxLength: 500,
                       controller: descriptionController,
                       decoration: const InputDecoration(
                           enabledBorder: OutlineInputBorder(

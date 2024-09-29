@@ -39,6 +39,7 @@ List<String?> scheduledmeal = [
 ];
 List<String> cuisines = [
   'American',
+  'Arabian',
   'Chinese',
   'Italian',
   'Mexican',

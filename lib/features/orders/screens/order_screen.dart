@@ -56,13 +56,13 @@ class OrdersScreen extends StatelessWidget {
                             itemBuilder: ((context, index) {
                               var data = snapshot.data![index];
                               return DishesCard(
-                                  dishname: data.restaurant.name,
-                                  dishdescription:
-                                      data.restaurant.deliveryfee.toString(),
-                                  dishprice:
-                                      data.restaurant.createdAt.toString(),
-                                  index: index,
-                                  image: data.restaurant.image);
+                                dishname: data.restaurant.name,
+                                dishdescription:
+                                    data.restaurant.deliveryfee.toString(),
+                                dishprice: data.restaurant.createdAt.toString(),
+                                index: index,
+                                image: data.restaurant.image,
+                              );
                             })),
                       ),
                     );
