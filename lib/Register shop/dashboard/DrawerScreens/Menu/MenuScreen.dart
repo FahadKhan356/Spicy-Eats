@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/dashboard/DrawerScreens/Menu/SubScreens/AddItemScreen.dart';
+import 'package:spicy_eats/Register%20shop/dashboard/DrawerScreens/Menu/overview.dart';
 
 class MenuScreen extends ConsumerStatefulWidget {
   const MenuScreen({super.key});
@@ -43,9 +44,10 @@ class _MenuScreenState extends ConsumerState<MenuScreen>
         ),
         body: TabBarView(controller: tabBarController, children: [
           AddItemScreen(),
-          const Center(
-            child: Text('overview'),
-          )
+          const OverviewScreen(),
+          // const Center(
+          //   child: Text('overview'),
+          //)
         ]),
       ),
     );
