@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:spicy_eats/Register%20shop/dashboard/DrawerScreens/Menu/ineroverview.dart';
 import 'package:spicy_eats/Register%20shop/models/registershop.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/businessInformation.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/legalstuffscreen.dart';
@@ -26,6 +27,11 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
                 restaurant: argument['restaurant'],
                 dishData: argument['dishes'],
               ));
+    case InnerOverview.routename:
+      return MaterialPageRoute(builder: (_) {
+        final restuid = settings.arguments as String;
+        return InnerOverview(restuid: restuid);
+      });
 
     case MenuItemDetailScreen.routename:
       return MaterialPageRoute(builder: (context) {

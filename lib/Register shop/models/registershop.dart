@@ -1,4 +1,5 @@
 class RestaurantData {
+  String? restuid;
   String? restaurantName;
   int? deliveryFee;
   int? minTime;
@@ -90,6 +91,7 @@ class RestaurantData {
     this.openingHours,
     this.paymentMethod,
     this.restaurantImageUrl,
+    this.restuid,
   });
 
   Map<String, dynamic> toJson() {
@@ -115,6 +117,7 @@ class RestaurantData {
       'paymentMethod': paymentMethod,
       'openingHours': openingHours,
       'restaurantImageUrl': restaurantImageUrl,
+      'rest_uid': restuid,
     };
   }
 
@@ -126,28 +129,28 @@ class RestaurantData {
     }
 
     return RestaurantData(
-      restaurantName: json['restaurantName'] ?? '',
-      deliveryFee: json['deliveryFee'] ?? 0.0,
-      minTime: json['minTime'] ?? 0,
-      maxTime: json['maxTime'] ?? 0,
-      ratings: json['ratings'] ?? 0.0,
-      address: json['address'] ?? '',
-      phoneNumber: json['phoneNumber'] ?? 0,
-      deliveryArea: json['deliveryArea'] ?? 0.0,
-      postalCode: json['postalCode'] ?? '',
-      idNumber: json['idNumber'] ?? 0,
-      description: json['description'] ?? '',
-      lat: json['lat'] ?? 0.0,
-      long: json['long'] ?? 0.0,
-      email: json['businessEmail'] ?? '',
-      idFirstName: json['idFirstName'] ?? '',
-      idLastName: json['idLastName'] ?? '',
-      //userId: json['user_id'],
-      idPhotoUrl: json['idPhotoUrl'] ?? '',
-      paymentMethod: json['paymentMethod'] ?? '',
-      openingHours: openingHours,
-      restaurantImageUrl: json['restaurantImageUrl'] ?? '',
-      //json['openinHours'],
-    );
+        restaurantName: json['restaurantName'] ?? '',
+        deliveryFee: json['deliveryFee'] ?? 0.0,
+        minTime: json['minTime'] ?? 0,
+        maxTime: json['maxTime'] ?? 0,
+        ratings: json['ratings'] ?? 0.0,
+        address: json['address'] ?? '',
+        phoneNumber: json['phoneNumber'] ?? 0,
+        deliveryArea: json['deliveryArea'] ?? 0.0,
+        postalCode: json['postalCode'] ?? '',
+        idNumber: json['idNumber'] ?? 0,
+        description: json['description'] ?? '',
+        lat: json['lat'] ?? 0.0,
+        long: json['long'] ?? 0.0,
+        email: json['businessEmail'] ?? '',
+        idFirstName: json['idFirstName'] ?? '',
+        idLastName: json['idLastName'] ?? '',
+        //userId: json['user_id'],
+        idPhotoUrl: json['idPhotoUrl'] ?? '',
+        paymentMethod: json['paymentMethod'] ?? '',
+        openingHours: openingHours,
+        restaurantImageUrl: json['restaurantImageUrl'] ?? '',
+        //json['openinHours'],
+        restuid: json['rest_uid']);
   }
 }

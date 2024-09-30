@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:spicy_eats/commons/ItemQuantity.dart';
 import 'package:spicy_eats/commons/quantity_button.dart';
 
@@ -9,9 +8,9 @@ class DishesCard extends StatefulWidget {
   final String dishprice;
   final int index;
   final String? image;
-  int? quantity;
-  int? id;
-  List<ItemQuantity>? dishitems;
+  final int? quantity;
+  final int? id;
+  final List<ItemQuantity>? dishitems;
 
   DishesCard({
     super.key,

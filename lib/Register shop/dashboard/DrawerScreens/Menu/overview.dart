@@ -1,108 +1,157 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
+import 'package:spicy_eats/Register%20shop/dashboard/DrawerScreens/Menu/ineroverview.dart';
+import 'package:spicy_eats/commons/mysnackbar.dart';
+import 'package:spicy_eats/main.dart';
 
-class OverviewScreen extends StatelessWidget {
+class OverviewScreen extends ConsumerStatefulWidget {
   const OverviewScreen({super.key});
 
   @override
+  ConsumerState<OverviewScreen> createState() => _OverviewScreenState();
+}
+
+class _OverviewScreenState extends ConsumerState<OverviewScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final registershopcontroller = ref.read(registershopcontrollerProvider);
     return Scaffold(
-      body: GridView.builder(
-          itemCount: 6,
-          shrinkWrap: true,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-          ),
-          itemBuilder: (context, index) {
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 0),
-                  child: Container(
-                    margin: EdgeInsets.only(bottom: 0),
-                    height: 200,
-                    width: 200,
-                    decoration: BoxDecoration(
-                        color: Colors.white54, // Change to transparent
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.black26,
-                            spreadRadius: 1,
-                            offset: Offset(3, 2),
-                            blurRadius: 6,
-                          )
-                        ]),
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 120,
-                          width: 200,
-                          decoration: BoxDecoration(
-                            color: Colors
-                                .white, // This will be the background color
-                            borderRadius: BorderRadius.circular(
-                                20), // Round the corners of the container
-                          ),
-                          child: Stack(
+      body: Column(
+        children: [
+          FutureBuilder(
+              future: registershopcontroller
+                  .fetchrestaurants(supabaseClient.auth.currentUser!.id),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  floatingsnackBar(
+                      context: context, text: snapshot.error.toString());
+                } else if (snapshot.hasData && snapshot.data != null) {
+                  return ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        var data = snapshot.data![index];
+
+                        return InkWell(
+                          onTap: () => Navigator.pushNamed(
+                              context, InnerOverview.routename,
+                              arguments: data.restuid),
+                          child: Column(
                             children: [
-                              Center(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(
-                                      20), // Ensure the image is also rounded
-                                  child: Image.network(
-                                    'https://img.freepik.com/free-photo/tasty-top-view-sliced-pizza-italian-traditional-round-pizza_90220-1357.jpg',
-                                    fit: BoxFit
-                                        .contain, // Adjusted for better image fit
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 20, horizontal: 20),
+                                child: Container(
+                                  //margin: EdgeInsets.only(bottom: 0),
+                                  height: 250,
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                      color: Colors
+                                          .white54, // Change to transparent
+                                      borderRadius: BorderRadius.circular(20),
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          color: Colors.black26,
+                                          spreadRadius: 1,
+                                          offset: Offset(3, 2),
+                                          blurRadius: 6,
+                                        )
+                                      ]),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        height: 150,
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          color: Colors
+                                              .white, // This will be the background color
+                                          borderRadius: BorderRadius.circular(
+                                              20), // Round the corners of the container
+                                        ),
+                                        child: Stack(
+                                          children: [
+                                            Center(
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(
+                                                    20), // Ensure the image is also rounded
+                                                child: Image.network(
+                                                  width: double.infinity,
+                                                  data.restaurantImageUrl!,
+                                                  fit: BoxFit
+                                                      .cover, // Adjusted for better image fit
+                                                ),
+                                              ),
+                                            ),
+                                            Positioned(
+                                                right: 0,
+                                                top: 0,
+                                                child: InkWell(
+                                                  onTap: () {},
+                                                  child: Container(
+                                                    height: 50,
+                                                    width: 50,
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                            color: Colors.green,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .only(
+                                                              topLeft: Radius
+                                                                  .circular(20),
+                                                              bottomLeft: Radius
+                                                                  .circular(20),
+                                                            )),
+                                                    child: const Icon(
+                                                      Icons.delete,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                )),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text(
+                                        data.restaurantName!,
+                                        style: const TextStyle(
+                                            fontSize: 25,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text(
+                                        data.address!,
+                                        style: const TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold),
+                                      )
+                                    ],
                                   ),
                                 ),
                               ),
-                              Positioned(
-                                  right: 0,
-                                  top: 0,
-                                  child: InkWell(
-                                    onTap: () {},
-                                    child: Container(
-                                      height: 50,
-                                      width: 50,
-                                      decoration: const BoxDecoration(
-                                          color: Colors.green,
-                                          borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(20),
-                                            bottomLeft: Radius.circular(20),
-                                          )),
-                                      child: const Icon(
-                                        Icons.delete,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  )),
                             ],
                           ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        const Text(
-                          'Pizza chezious',
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        const Text(
-                          '\$9.0',
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            );
-          }),
+                        );
+                      });
+                }
+                return const Center(
+                  child: Text('There is no restaurants'),
+                );
+              }),
+        ],
+      ),
       // Container(
       //   height: 200,
       //   width: 100,
