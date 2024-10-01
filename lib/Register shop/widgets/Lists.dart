@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:spicy_eats/Register%20shop/dashboard/DrawerScreens/Menu/MenuScreen.dart';
+import 'package:spicy_eats/features/dashboard/DrawerScreens/Menu/MenuScreen.dart';
 import 'package:spicy_eats/Register%20shop/screens/shophome.dart';
 import 'package:spicy_eats/Register%20shop/widgets/drawerRow.dart';
 import 'package:spicy_eats/commons/country.dart';

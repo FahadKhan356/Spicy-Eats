@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/Register%20shop/dashboard/DrawerScreens/Menu/SubScreens/AddItemScreen.dart';
-import 'package:spicy_eats/Register%20shop/dashboard/DrawerScreens/Menu/overview.dart';
+import 'package:spicy_eats/features/dashboard/DrawerScreens/Menu/SubScreens/AddItemScreen.dart';
+import 'package:spicy_eats/features/dashboard/DrawerScreens/Menu/overview.dart';
 
 class MenuScreen extends ConsumerStatefulWidget {
   const MenuScreen({super.key});

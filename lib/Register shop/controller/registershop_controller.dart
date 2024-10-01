@@ -26,15 +26,19 @@ class RegisterShopContoller {
 
   void uploadRestaurantData({
     required File? restImage,
+    required String restLogoImagePath,
     required String folderName,
     required String restImagePath,
-    required String? restownerIDImageFolderName,
-    required File? restIdImage,
-    required String idImagePath,
+    String? restownerIDImageFolderName,
+    File? restIdImage,
+    String? idImagePath,
+    required File? restLogoimage,
+    required String? restLogoFolder,
   }) {
     registerShopRepository.uploadrestaurantData(
+      restLogoFolder: restLogoFolder,
       restownerIDImageFolderName: restownerIDImageFolderName,
-      restIdImage: restIdImage!,
+      restIdImage: restIdImage ?? null,
       folderName: folderName,
       imagePath: restImagePath,
       restImage: restImage!,
@@ -56,6 +60,8 @@ class RegisterShopContoller {
       phoneNumber: ref.read(restaurantPhoneNumberProvider) ?? 0,
       idNumber: ref.read(nicNumberProvider) ?? 0,
       openingHours: openinghours,
+      restLogo: restLogoimage,
+      restLogoImagePath: restLogoImagePath,
     );
   }
 

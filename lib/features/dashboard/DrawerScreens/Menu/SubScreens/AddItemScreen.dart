@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/Register%20shop/dashboard/controller/dashboardcontroller.dart';
+import 'package:spicy_eats/features/dashboard/controller/dashboardcontroller.dart';
 import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
 import 'package:spicy_eats/Register%20shop/widgets/Lists.dart';
 import 'package:spicy_eats/Register%20shop/widgets/customTextfield.dart';

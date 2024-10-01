@@ -39,6 +39,7 @@ class _LegalInformationScreenState
   @override
   Widget build(BuildContext context) {
     final restImg = ref.read(restImageFileProvider);
+    final restLogo = ref.read(restLogoFileProvider);
     final isImageSelected = ref.watch(isimage);
     final registerShopController = ref.watch(registershopcontrollerProvider);
     return SafeArea(
@@ -271,6 +272,9 @@ class _LegalInformationScreenState
                                 String userId =
                                     supabaseClient.auth.currentUser!.id;
                                 registerShopController.uploadRestaurantData(
+                                  restLogoimage: restLogo,
+                                  restLogoFolder: 'Restaurant_Registeration',
+                                  restLogoImagePath: '/$userId/Restaurant_Logo',
                                   restImage: restImg,
                                   folderName: 'Restaurant_Registeration',
                                   restImagePath: '/$userId/Restaurant_covers',

@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/models/registershop.dart';
-import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/businessInformation.dart';
 import 'package:spicy_eats/Register%20shop/utils/commonImageUpload.dart';
 import 'package:spicy_eats/main.dart';
 
@@ -12,10 +11,13 @@ var registershoprepoProvider = Provider((ref) => RegisterShopRepository());
 class RegisterShopRepository {
   Future<void> uploadrestaurantData({
     required restownerIDImageFolderName,
-    required File restIdImage,
+    required restLogo,
+    required restLogoImagePath,
+    required File? restIdImage,
     required folderName,
+    required restLogoFolder,
     required imagePath,
-    required idimagePath,
+    required String? idimagePath,
     required File restImage,
     required restName,
     required address,
@@ -42,11 +44,17 @@ class RegisterShopRepository {
         folderName: folderName,
       );
 
-      String? restIdImageUrl = await uploadImageToSupabaseStorage(
-        imagePath: idimagePath,
-        file: restIdImage,
-        folderName: restownerIDImageFolderName,
-      );
+      String? restIdImageUrl = restIdImage != null
+          ? await uploadImageToSupabaseStorage(
+              imagePath: idimagePath ?? '',
+              file: restIdImage,
+              folderName: restownerIDImageFolderName,
+            )
+          : '';
+      String? restLogoUrl = await uploadImageToSupabaseStorage(
+          file: restLogo,
+          folderName: restLogoFolder,
+          imagePath: restLogoImagePath);
 
       await supabaseClient
           .from('restaurants')
@@ -69,6 +77,7 @@ class RegisterShopRepository {
             'openingHours': openingHours,
             'restaurantImageUrl': restImageUrl,
             'idPhotoUrl': restIdImageUrl,
+            'restLogoUrl': restLogoUrl,
           })
           .then((value) => print("Inserted successfully: $value"))
           .catchError((error) {
@@ -76,8 +85,6 @@ class RegisterShopRepository {
           });
     } catch (e) {
       throw e.toString();
-      //print('Exception during insert');
-      //print(e.toString());
     }
   }
 

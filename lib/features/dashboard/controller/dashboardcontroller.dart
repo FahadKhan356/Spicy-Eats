@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/Register%20shop/dashboard/repository/dashboardrepository.dart';
+import 'package:spicy_eats/features/dashboard/repository/dashboardrepository.dart';
 
 var dashboardControllerProvider = Provider((ref) {
   final dashboardrepo = ref.watch(dashboardRepositoryProvider);

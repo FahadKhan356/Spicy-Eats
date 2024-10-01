@@ -2,10 +2,15 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
+import 'package:spicy_eats/Register%20shop/models/registershop.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/legalstuffscreen.dart';
+import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/paymentmethodescreen.dart';
 import 'package:spicy_eats/Register%20shop/widgets/Mybottomsheet.dart';
 import 'package:spicy_eats/Register%20shop/widgets/restauarantTextfield.dart';
 import 'package:spicy_eats/commons/imagepick.dart';
+
+import 'package:spicy_eats/main.dart';
 
 var restaurantDescriptionProvider = StateProvider<String?>((ref) => null);
 var restaurantDeliveryFeeProvider = StateProvider<double?>((ref) => null);
@@ -14,6 +19,7 @@ var restaurantDeliveryMaxTimeProvider = StateProvider<int?>((ref) => null);
 var restaurantDeliveryAreaProvider = StateProvider<String?>((ref) => null);
 var restaurantPostalCodeProvider = StateProvider<String?>((ref) => null);
 var restImageFileProvider = StateProvider<File?>((ref) => null);
+var restLogoFileProvider = StateProvider<File?>((ref) => null);
 
 var isBottomSheetProvider = StateProvider((ref) => false);
 
@@ -27,9 +33,27 @@ class BusinessDetailsScreen extends ConsumerStatefulWidget {
 }
 
 class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
-  var restaurantdescriptionController = TextEditingController();
+  List<RestaurantData>? restaurants;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    ref
+        .read(registershopcontrollerProvider)
+        .fetchrestaurants(supabaseClient.auth.currentUser!.id)
+        .then((restaurant) {
+      if (restaurant != null) {
+        setState(() {
+          restaurants = restaurant;
+          print(restaurant.length);
+        });
+      }
+    });
+  }
 
+  var restaurantdescriptionController = TextEditingController();
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
+
   File? image;
   void pickimagefromgallery() async {
     image = await imagePicker(context);
@@ -65,7 +89,6 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                             topLeft: Radius.circular(10),
                             topRight: Radius.circular(10)),
                         child: Image.network(
-                          //'https://plus.unsplash.com/premium_photo-1664298753317-179db93f8ad5?q=80&w=1539&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
                           'https://images.unsplash.com/photo-1533052286801-2385cb274342?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
                           width: double.infinity,
                           height: 200,
@@ -180,6 +203,29 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                       ),
                       const SizedBox(
                         height: 20,
+                      ),
+                      SizedBox(
+                        height: 60,
+                        width: double.maxFinite,
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            ref.watch(restLogoFileProvider.notifier).state =
+                                await pickImageFromGallerymob(context);
+                          },
+                          style: ElevatedButton.styleFrom(
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10))),
+                              backgroundColor: Colors.black),
+                          child: Text(
+                            'Upload Restaurant Logo',
+                            style: TextStyle(
+                                fontSize: height * 0.02, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
                       ),
                       SizedBox(
                         height: 60,
@@ -320,23 +366,21 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
                                       borderRadius: BorderRadius.circular(10))),
                               onPressed: () {
                                 if (_form.currentState!.validate()) {
-                                  Navigator.pushNamed(context,
-                                      LegalInformationScreen.routename);
+                                  restaurants!.isNotEmpty && restaurants != null
+                                      ? Navigator.pushNamed(context,
+                                          PaymentMethodScreen.routename,
+                                          arguments: restaurants)
+                                      : Navigator.pushNamed(context,
+                                          LegalInformationScreen.routename);
                                 }
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                         content: Text(
                                             'Please pick your restaurant location')));
                               },
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.pushNamed(context,
-                                      LegalInformationScreen.routename);
-                                },
-                                child: const Text(
-                                  'Next',
-                                  style: TextStyle(color: Colors.white),
-                                ),
+                              child: const Text(
+                                'Next',
+                                style: TextStyle(color: Colors.white),
                               ))),
                     ],
                   ),

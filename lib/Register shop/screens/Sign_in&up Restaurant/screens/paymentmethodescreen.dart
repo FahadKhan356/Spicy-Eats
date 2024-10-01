@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
+import 'package:spicy_eats/Register%20shop/models/registershop.dart';
+import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/businessInformation.dart';
+import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/legalstuffscreen.dart';
 import 'package:spicy_eats/Register%20shop/screens/shophome.dart';
 import 'package:spicy_eats/Register%20shop/widgets/paymenttextfields.dart';
 import 'package:spicy_eats/main.dart';
@@ -25,8 +28,10 @@ final businessAddressProvider = StateProvider<String>((ref) => '');
 
 class PaymentMethodScreen extends ConsumerStatefulWidget {
   static const String routename = '/payment-methods';
+  final List<RestaurantData>? restaurants;
 
   const PaymentMethodScreen({
+    required this.restaurants,
     super.key,
   });
   // PaymentMethodScreen({
@@ -42,6 +47,8 @@ class _PaymentMethodScreenState extends ConsumerState<PaymentMethodScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final restImg = ref.read(restImageFileProvider);
+    final restLogo = ref.read(restLogoFileProvider);
     final height = MediaQuery.of(context).size.height;
     final registerShopContoller = ref.watch(registershopcontrollerProvider);
 
@@ -292,6 +299,30 @@ class _PaymentMethodScreenState extends ConsumerState<PaymentMethodScreen> {
                             businessaddress: ref.read(businessAddressProvider),
                           );
                         }
+                        /*checking if there is alread restaurant exist for user 
+                      if ues then we upload bussnessinformation screen data from here
+                      because we have to skip legalinformationscreen as id of owner is already exist
+                      in the record of supabase*/
+                        if (widget.restaurants != null) {
+                          final timestamp =
+                              DateTime.now().millisecondsSinceEpoch;
+                          String userId = supabaseClient.auth.currentUser!.id;
+                          registerShopContoller.uploadRestaurantData(
+                            restLogoimage: restLogo,
+                            restLogoFolder: 'Restaurant_Registeration',
+                            restLogoImagePath:
+                                '/$userId/$timestamp/Restaurant_Logo',
+                            restImage: restImg,
+                            folderName: 'Restaurant_Registeration',
+                            restImagePath:
+                                '/$userId/$timestamp/Restaurant_covers',
+                            // restownerIDImageFolderName:
+                            //     'Restaurant_Registeration',
+                            //restIdImage: ,
+                            //idImagePath: '/$userId/Restaurant_ownerIds',
+                          );
+                        }
+
                         print(
                             'this is paypal email ${ref.read(paypalEmailProvider)}');
                         Navigator.pushNamed(context, ShopHome.routename);

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/models/registershop.dart';
-import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
 import 'package:spicy_eats/commons/ItemQuantity.dart';
 import 'package:spicy_eats/commons/mysnackbar.dart';
 import 'package:spicy_eats/commons/quantity_button.dart';
@@ -15,39 +13,87 @@ var showAddProvider = StateProvider<bool>((ref) => false);
 class RestaurantMenu extends ConsumerStatefulWidget {
   static const String routename = "/restaurant-menu";
   final RestaurantData? restaurant;
-  final List<DishData>? dishData;
+  //List<DishData>? dishData;
+  final String? rest_uid;
 
-  const RestaurantMenu(
-      {super.key, required this.restaurant, required this.dishData});
+  RestaurantMenu(
+      {super.key,
+      required this.restaurant,
+      //required this.dishData,
+      required this.rest_uid});
 
   @override
   ConsumerState<RestaurantMenu> createState() => _RestaurantMenuState();
 }
 
-List<ItemQuantity> uniqueDish = [];
-
 class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
     with TickerProviderStateMixin {
+  List<DishData>? dishesData;
+
   @override
   void initState() {
     super.initState();
+    ref
+        .read(homeControllerProvider)
+        .fetchDishes(restuid: widget.rest_uid)
+        .then((dishes) {
+      if (dishes != null) {
+        setState(() {
+          dishesData = dishes;
+          print('dishesData check: ${dishesData!.length}');
+        });
 
-    // List<ItemQuantity>? dishIds = [];
-    // for (int i = 0; i < widget.dishData!.length; i++) {
-    //   ItemQuantity itemQuantity = ItemQuantity(
-    //     id: widget.dishData![i].dishid!,
-    //   );
-    //   dishIds.add(itemQuantity);
-    //   uniqueDish = dishIds;
-    // }
-    super.initState();
-    for (int i = 0; i < widget.dishData!.length; i++) {
-      ref
-          .read(quantityProvider.notifier)
-          .state
-          .add(ItemQuantity(id: widget.dishData![i].dishid!));
-    }
+        // Schedule the update of quantityProvider after the current frame
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          List<ItemQuantity> newQuantityList = [];
+          for (int i = 0; i < dishesData!.length; i++) {
+            newQuantityList.add(ItemQuantity(id: dishesData![i].dishid!));
+            print('checking given dishData :: ${dishesData![i].dishid}');
+          }
+
+          // Update quantityProvider state
+          ref
+              .read(quantityProvider.notifier)
+              .update((state) => newQuantityList);
+        });
+      }
+    });
   }
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   ref
+  //       .read(homeControllerProvider)
+  //       .fetchDishes(restuid: widget.rest_uid)
+  //       .then((dishes) {
+  //     if (dishes != null) {
+  //       setState(() {
+  //         dishesData = dishes;
+  //         print('dishesData check: ${dishesData!.length}');
+  //       });
+  //     }
+  //   });
+  //   // for (int i = 0; i < dishesData!.length; i++) {
+  //   //   ref
+  //   //       .read(quantityProvider.notifier)
+  //   //       .state
+  //   //       .add(ItemQuantity(id: dishesData![i].dishid!));
+
+  //   //   print('checking given dishData :: ${dishesData![i].dishid}');
+  //   //   print(
+  //   //       'checking given quantityProvider :: ${ref.read(quantityProvider)[i].id}');
+  //   // }
+
+  //   // List<ItemQuantity>? dishIds = [];
+  //   // for (int i = 0; i < widget.dishData!.length; i++) {
+  //   //   ItemQuantity itemQuantity = ItemQuantity(
+  //   //     id: widget.dishData![i].dishid!,
+  //   //   );
+  //   //   dishIds.add(itemQuantity);
+  //   //   uniqueDish = dishIds;
+  //   // }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +157,7 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                             color: Colors.black54,
                             fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
                       const Icon(
@@ -119,12 +165,15 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                         size: 22,
                         color: Colors.amber,
                       ),
-                      Text(
-                        "- ${widget.restaurant!.address}",
-                        style: const TextStyle(
-                            fontSize: 18,
-                            color: Colors.black54,
-                            fontWeight: FontWeight.bold),
+                      Expanded(
+                        child: Text(
+                          "- ${widget.restaurant!.address}",
+                          style: const TextStyle(
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: 18,
+                              color: Colors.black54,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ],
                   ),
@@ -136,15 +185,16 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
               FutureBuilder(
                   future: ref
                       .read(homeControllerProvider)
-                      .fetchDishes(restuid: ref.read(rest_ui_Provider)),
+                      .fetchDishes(restuid: widget.rest_uid!),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());
-                    } else if (snapshot.data!.isEmpty) {
-                      return const Center(
-                        child: Text('No dishes'),
-                      );
-                    } else if (snapshot.hasError) {
+                    }
+                    // else if (snapshot.data != null) {
+                    //   return const Center(
+                    //     child: Text('No dishes'),
+                    //   );
+                    else if (snapshot.hasError) {
                       mysnackbar(
                           context: context, text: snapshot.error.toString());
                       return const Center(child: Text('An error occurred'));
@@ -153,124 +203,144 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                         snapshot.data != null) {
                       final dishes = snapshot.data;
 
-                      return ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: dishes!.length,
-                          itemBuilder: (context, index) {
-                            return Consumer(builder: (context, ref, child) {
-                              final itemQuantity = ref
-                                  .watch(quantityProvider)
-                                  .firstWhere((item) =>
-                                      item.id == dishes[index].dishid);
+                      return snapshot.data != null
+                          ? ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: dishes!.length,
+                              itemBuilder: (context, index) {
+                                return Consumer(builder: (context, ref, child) {
+                                  // final itemQuantity = ref
+                                  //     .watch(quantityProvider)
+                                  //     .firstWhere((item) =>
+                                  //         item.id == dishes[index].dishid);
+                                  final itemQuantity =
+                                      ref.watch(quantityProvider).firstWhere(
+                                            (item) =>
+                                                item.id == dishes[index].dishid,
+                                            orElse: () => ItemQuantity(
+                                                id: dishes[index].dishid!,
+                                                quantity:
+                                                    0), // Provide a default value
+                                          );
 
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 15, horizontal: 20),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    index == 0
-                                        ? const Text(
-                                            "Menu",
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                color: Colors.black54,
-                                                fontWeight: FontWeight.bold),
-                                          )
-                                        : const SizedBox(),
-                                    index != 0
-                                        ? const Divider(
-                                            height: 4,
-                                            thickness: 4,
-                                            color: Colors.black26,
-                                          )
-                                        : const SizedBox(),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Row(
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 15, horizontal: 20),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        widget.dishData![index].dish_imageurl !=
-                                                    null &&
-                                                widget.dishData![index]
-                                                    .dish_imageurl!.isNotEmpty
-                                            ? ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                child: Image.network(
-                                                  widget.dishData![index]
-                                                      .dish_imageurl!,
-                                                  fit: BoxFit.cover,
-                                                  width: 120,
-                                                  height: 120,
-                                                ),
-                                              )
-                                            : const SizedBox(),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                widget.dishData![index]
-                                                    .dish_name!,
-                                                style: const TextStyle(
-                                                    fontSize: 20,
-                                                    color: Colors.black,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              Text(
-                                                widget.dishData![index]
-                                                    .dish_description!,
-                                                style: const TextStyle(
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    fontSize: 20,
+                                        Text(ref
+                                            .read(quantityProvider)
+                                            .length
+                                            .toString()),
+                                        index == 0
+                                            ? const Text(
+                                                "Menu",
+                                                style: TextStyle(
+                                                    fontSize: 18,
                                                     color: Colors.black54,
                                                     fontWeight:
                                                         FontWeight.bold),
-                                              ),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                              Text(
-                                                "\$ ${widget.dishData![index].dish_price}",
-                                                style: const TextStyle(
-                                                    fontSize: 20,
-                                                    color: Colors.black,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
+                                              )
+                                            : const SizedBox(),
+                                        index != 0
+                                            ? const Divider(
+                                                height: 4,
+                                                thickness: 4,
+                                                color: Colors.black26,
+                                              )
+                                            : const SizedBox(),
                                         const SizedBox(
-                                          width: 10,
+                                          height: 10,
                                         ),
-                                        AnimatedSize(
-                                          duration:
-                                              const Duration(milliseconds: 200),
-                                          curve: Curves.easeIn,
-                                          child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                AnimatedOpacity(
-                                                    duration: const Duration(
-                                                        milliseconds: 200),
-                                                    opacity:
-                                                        itemQuantity.quantity >
+                                        Row(
+                                          children: [
+                                            dishesData![index].dish_imageurl !=
+                                                        null &&
+                                                    dishesData![index]
+                                                        .dish_imageurl!
+                                                        .isNotEmpty
+                                                ? ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    child: Image.network(
+                                                      dishesData![index]
+                                                          .dish_imageurl!,
+                                                      fit: BoxFit.cover,
+                                                      width: 120,
+                                                      height: 120,
+                                                    ),
+                                                  )
+                                                : const SizedBox(),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    dishesData![index]
+                                                        .dish_name!,
+                                                    style: const TextStyle(
+                                                        fontSize: 20,
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  Text(
+                                                    dishesData![index]
+                                                        .dish_description!,
+                                                    style: const TextStyle(
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        fontSize: 20,
+                                                        color: Colors.black54,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  Text(
+                                                    "\$ ${dishesData![index].dish_price}",
+                                                    style: const TextStyle(
+                                                        fontSize: 20,
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            AnimatedSize(
+                                              duration: const Duration(
+                                                  milliseconds: 200),
+                                              curve: Curves.easeIn,
+                                              child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    AnimatedOpacity(
+                                                        duration:
+                                                            const Duration(
+                                                                milliseconds:
+                                                                    200),
+                                                        opacity: itemQuantity
+                                                                    .quantity >
                                                                 0
                                                             ? 1.0
                                                             : 0.50,
-                                                    child:
-                                                        itemQuantity.quantity >
+                                                        child: itemQuantity
+                                                                    .quantity >
                                                                 0
                                                             ? Row(
                                                                 children: [
@@ -296,7 +366,7 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                                                                           .state
                                                                           .indexWhere((element) =>
                                                                               element.id ==
-                                                                              widget.dishData![index].dishid);
+                                                                              dishesData![index].dishid);
 
                                                                       if (dishindex !=
                                                                           -1) {
@@ -323,7 +393,7 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                                                                               quantityProvider)
                                                                           .firstWhere((item) =>
                                                                               item.id ==
-                                                                              widget.dishData![index].dishid)
+                                                                              dishesData![index].dishid)
                                                                           .quantity;
                                                                       return Padding(
                                                                         padding: const EdgeInsets
@@ -368,7 +438,7 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                                                                           .state
                                                                           .indexWhere((item) =>
                                                                               item.id ==
-                                                                              widget.dishData![index].dishid);
+                                                                              dishesData![index].dishid);
                                                                       if (dishIndex !=
                                                                           -1) {
                                                                         ref.read(quantityProvider.notifier).update(
@@ -405,45 +475,42 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                                                                 iconSize: 30,
                                                                 onpress: () {
                                                                   var dish = ref
-                                                                      .watch(quantityProvider
+                                                                      .read(quantityProvider
                                                                           .notifier)
                                                                       .state
                                                                       .indexWhere((item) =>
                                                                           item.id ==
-                                                                          widget
-                                                                              .dishData![index]
+                                                                          dishesData![index]
                                                                               .dishid);
+                                                                  if (dish !=
+                                                                      -1) {
+                                                                    ref
+                                                                        .read(quantityProvider
+                                                                            .notifier)
+                                                                        .update(
+                                                                            (state) {
+                                                                      state[dish]
+                                                                          .quantity++;
 
-                                                                  ref
-                                                                      .watch(quantityProvider
-                                                                          .notifier)
-                                                                      .update(
-                                                                          (state) {
-                                                                    state[dish]
-                                                                        .quantity++;
-
-                                                                    return [
-                                                                      ...state
-                                                                    ];
-                                                                  });
-                                                                  print(ref
-                                                                      .watch(quantityProvider
-                                                                          .notifier)
-                                                                      .state[
-                                                                          index]
-                                                                      .quantity);
+                                                                      return [
+                                                                        ...state
+                                                                      ];
+                                                                    });
+                                                                  }
                                                                 },
                                                               )),
-                                              ]),
+                                                  ]),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
-                                  ],
-                                ),
-                              );
-                            });
-                          });
+                                  );
+                                });
+                              })
+                          : Center(child: Text('No dishes available'));
                     } else {
+                      print(widget.rest_uid);
                       // Handle the case where there is no data
                       return const Center(child: Text('No dishes available'));
                     }

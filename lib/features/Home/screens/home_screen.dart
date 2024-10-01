@@ -8,7 +8,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
 import 'package:spicy_eats/Register%20shop/models/registershop.dart';
 import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
-import 'package:spicy_eats/commons/mysnackbar.dart';
 import 'package:spicy_eats/commons/restaurantModel.dart';
 import 'package:spicy_eats/commons/restaurant_container.dart';
 import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
@@ -146,17 +145,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     });
 
     // Fetch dishes
-    await ref
-        .read(homeControllerProvider)
-        .fetchDishes(restuid: rest_uid)
-        .then((dishes) {
-      if (dishes != null) {
-        setState(() {
-          dishList = dishes;
-          print('${dishList[0].cusine!}');
-        });
-      }
-    });
 
     setState(() => isloading = false);
   }
@@ -334,16 +322,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                               shrinkWrap: true,
                               itemCount: restaurantData.length,
                               itemBuilder: (context, index) => GestureDetector(
-                                onTap: () => Navigator.pushNamed(
-                                    context, RestaurantMenu.routename,
-                                    arguments: {
-                                      'restaurant': restaurantData[index],
-                                      'dishes': dishList,
-                                    }),
+                                onTap: () {
+                                  ref
+                                      .read(homeControllerProvider)
+                                      .fetchDishes(
+                                          restuid:
+                                              restaurantData[index].restuid)
+                                      .then((dishes) {
+                                    if (dishes != null) {
+                                      setState(() {
+                                        dishList = dishes;
+                                      });
+                                    }
+                                  });
+                                  Navigator.pushNamed(
+                                      context, RestaurantMenu.routename,
+                                      arguments: {
+                                        'restaurant': restaurantData[index],
+                                        // 'dishes': dishList,
+                                        'rest_uid':
+                                            restaurantData[index].restuid,
+                                      });
+                                },
                                 child: RestaurantContainer(
-                                  name: restaurantData[index]
-                                      .restaurantName
-                                      .toString(),
+                                  name:
+                                      restaurantData[index].restuid.toString(),
                                   price: restaurantData[index]
                                       .deliveryFee
                                       .toString(),
