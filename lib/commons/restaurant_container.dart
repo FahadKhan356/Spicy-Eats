@@ -35,7 +35,7 @@ class RestaurantContainer extends StatelessWidget {
                   width: double.maxFinite,
                 ),
                 Positioned(
-                  left: MediaQuery.of(context).size.width / 1.140,
+                  left: MediaQuery.of(context).size.width - 70,
                   top: 20,
                   child: Container(
                     //color: Colors.white,

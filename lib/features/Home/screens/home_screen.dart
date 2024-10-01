@@ -320,21 +320,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                             padding: const EdgeInsets.all(10.0),
                             child: ListView.builder(
                               shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
                               itemCount: restaurantData.length,
                               itemBuilder: (context, index) => GestureDetector(
                                 onTap: () {
-                                  ref
-                                      .read(homeControllerProvider)
-                                      .fetchDishes(
-                                          restuid:
-                                              restaurantData[index].restuid)
-                                      .then((dishes) {
-                                    if (dishes != null) {
-                                      setState(() {
-                                        dishList = dishes;
-                                      });
-                                    }
-                                  });
+                                  print(MediaQuery.of(context).size.width);
+
                                   Navigator.pushNamed(
                                       context, RestaurantMenu.routename,
                                       arguments: {
@@ -345,8 +336,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                       });
                                 },
                                 child: RestaurantContainer(
-                                  name:
-                                      restaurantData[index].restuid.toString(),
+                                  name: restaurantData[index]
+                                      .restaurantName
+                                      .toString(),
                                   price: restaurantData[index]
                                       .deliveryFee
                                       .toString(),

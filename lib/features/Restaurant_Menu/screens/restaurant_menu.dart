@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/models/registershop.dart';
 import 'package:spicy_eats/commons/ItemQuantity.dart';
@@ -97,6 +98,7 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -105,11 +107,14 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Stack(children: [
-                Image.network(
-                  widget.restaurant!.restaurantImageUrl!,
-                  width: double.maxFinite,
-                  height: 230,
-                  fit: BoxFit.cover,
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 50),
+                  child: Image.network(
+                    widget.restaurant!.restaurantImageUrl!,
+                    width: double.maxFinite,
+                    height: 250,
+                    fit: BoxFit.cover,
+                  ),
                 ),
                 Positioned(
                     top: 20,
@@ -131,6 +136,26 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                         ),
                       ),
                     )),
+                Positioned(
+                  bottom: 0,
+                  left: (size.width / 2) - 50,
+                  child: Container(
+                    height: 100,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(color: Colors.white, width: 6),
+                        borderRadius: BorderRadius.circular(50)),
+                    child: widget.restaurant!.restaurantLogoImageUrl != null
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(50),
+                            child: Image.network(
+                                fit: BoxFit.cover,
+                                widget.restaurant!.restaurantLogoImageUrl!),
+                          )
+                        : const SizedBox(),
+                  ),
+                )
               ]),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -206,6 +231,7 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                       return snapshot.data != null
                           ? ListView.builder(
                               shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
                               itemCount: dishes!.length,
                               itemBuilder: (context, index) {
                                 return Consumer(builder: (context, ref, child) {
@@ -235,13 +261,30 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                                             .length
                                             .toString()),
                                         index == 0
-                                            ? const Text(
-                                                "Menu",
-                                                style: TextStyle(
-                                                    fontSize: 18,
-                                                    color: Colors.black54,
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                            ? Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceAround,
+                                                children: [
+                                                  Container(
+                                                    height: 5,
+                                                    width: size.width / 3,
+                                                    color: Colors.black12,
+                                                  ),
+                                                  const Text(
+                                                    "Menu",
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  Container(
+                                                    height: 5,
+                                                    width: size.width / 3,
+                                                    color: Colors.black12,
+                                                  ),
+                                                ],
                                               )
                                             : const SizedBox(),
                                         index != 0
