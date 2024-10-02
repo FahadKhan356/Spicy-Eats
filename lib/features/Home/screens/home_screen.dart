@@ -169,6 +169,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
       extendBody: true,
@@ -178,13 +179,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           children: [
             Text(
               'Delivering to',
-              style: GoogleFonts.aBeeZee(fontSize: 22),
+              style: GoogleFonts.aBeeZee(fontSize: size.width * 0.04),
             ),
-            const Text(
+            Text(
               'Riyadh-Saudi Arabia',
               style: TextStyle(
                 // GoogleFonts.aBeeZee(
-                fontSize: 22,
+                fontSize: size.width * 0.04,
                 fontWeight: FontWeight.bold,
                 color: Colors.grey,
               ),
@@ -193,16 +194,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         )),
         actions: [
           Container(
-              height: 50,
-              width: 50,
+              height: size.width * 0.12,
+              width: size.width * 0.12,
               decoration: BoxDecoration(
-                // color: const Color(0xFFD1C4E9),
+                // color: Colors.red,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Icon(
-                Icons.shopping_cart,
-                size: 26,
-              )),
+              child: Icon(Icons.search, size: size.width * 0.072)),
+          Container(
+              height: size.width * 0.12,
+              width: size.width * 0.12,
+              decoration: BoxDecoration(
+                // color: Colors.red,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(Icons.shopping_cart, size: size.width * 0.072)),
         ],
         leading: IconButton(
           onPressed: () {
@@ -217,12 +223,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: EdgeInsets.all(size.width * 0.03),
             child: TextFormField(
               decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.search),
                   filled: true,
-                  fillColor: Colors.grey[300],
+                  fillColor: Colors.grey[200],
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide.none,
                     borderRadius: BorderRadius.circular(10),
@@ -232,16 +238,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       borderSide: BorderSide.none)),
             ),
           ),
-          const SizedBox(
-            height: 20,
-          ),
-          //   const CusinesList(),
-          isloading
-              ? const CircularProgressIndicator(
-                  backgroundColor: Colors.black12,
-                  value: 20,
-                )
-              : Text(' ${restaurantData[0].restaurantName}'),
+          // const SizedBox(
+          //   height: 20,
+          // ),
+          // //   const CusinesList(),
+          // isloading
+          //     ? const CircularProgressIndicator(
+          //         backgroundColor: Colors.black12,
+          //         value: 20,
+          //       )
+          //     : Text(' ${restaurantData[0].restaurantName}'),
           Expanded(
             child: Stack(
               children: [

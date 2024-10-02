@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/models/registershop.dart';
 import 'package:spicy_eats/commons/ItemQuantity.dart';
@@ -52,7 +51,7 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
             print('checking given dishData :: ${dishesData![i].dishid}');
           }
 
-          // Update quantityProvider state
+          //Update quantityProvider state
           ref
               .read(quantityProvider.notifier)
               .update((state) => newQuantityList);
@@ -164,8 +163,8 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                     padding: const EdgeInsets.all(10.0),
                     child: Text(
                       widget.restaurant!.restaurantName!,
-                      style: const TextStyle(
-                        fontSize: 35,
+                      style: TextStyle(
+                        fontSize: size.width * 0.06,
                         color: Colors.black,
                         fontWeight: FontWeight.w500,
                         overflow: TextOverflow.visible,
@@ -251,15 +250,15 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
 
                                   return Padding(
                                     padding: const EdgeInsets.symmetric(
-                                        vertical: 15, horizontal: 20),
+                                        vertical: 10, horizontal: 10),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(ref
-                                            .read(quantityProvider)
-                                            .length
-                                            .toString()),
+                                        // Text(ref
+                                        //     .read(quantityProvider)
+                                        //     .length
+                                        //     .toString()),
                                         index == 0
                                             ? Row(
                                                 mainAxisAlignment:
@@ -288,10 +287,10 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                                               )
                                             : const SizedBox(),
                                         index != 0
-                                            ? const Divider(
+                                            ? Divider(
                                                 height: 4,
                                                 thickness: 4,
-                                                color: Colors.black26,
+                                                color: Colors.grey[100],
                                               )
                                             : const SizedBox(),
                                         const SizedBox(
@@ -299,24 +298,29 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                                         ),
                                         Row(
                                           children: [
-                                            dishesData![index].dish_imageurl !=
-                                                        null &&
-                                                    dishesData![index]
-                                                        .dish_imageurl!
-                                                        .isNotEmpty
-                                                ? ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    child: Image.network(
-                                                      dishesData![index]
-                                                          .dish_imageurl!,
-                                                      fit: BoxFit.cover,
-                                                      width: 120,
-                                                      height: 120,
-                                                    ),
-                                                  )
-                                                : const SizedBox(),
+                                            // if (dishes[index]
+                                            //             .dish_imageurl ==
+                                            //         null &&
+                                            //     dishes[index]
+                                            //         .dish_imageurl!
+                                            //         .isEmpty)
+                                            //   const SizedBox(),
+                                            // if (dishesData![index]
+                                            //             .dish_imageurl !=
+                                            //         null &&
+                                            //     dishesData![index]
+                                            //         .dish_imageurl!
+                                            //         .isNotEmpty)
+                                            ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              child: Image.network(
+                                                dishes[index].dish_imageurl!,
+                                                fit: BoxFit.cover,
+                                                width: size.width * 0.25,
+                                                height: size.width * 0.25,
+                                              ),
+                                            ),
                                             const SizedBox(
                                               width: 10,
                                             ),
@@ -330,8 +334,9 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                                                   Text(
                                                     dishesData![index]
                                                         .dish_name!,
-                                                    style: const TextStyle(
-                                                        fontSize: 20,
+                                                    style: TextStyle(
+                                                        fontSize:
+                                                            size.width * 0.04,
                                                         color: Colors.black,
                                                         fontWeight:
                                                             FontWeight.bold),
@@ -339,10 +344,11 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                                                   Text(
                                                     dishesData![index]
                                                         .dish_description!,
-                                                    style: const TextStyle(
+                                                    style: TextStyle(
                                                         overflow: TextOverflow
                                                             .ellipsis,
-                                                        fontSize: 20,
+                                                        fontSize:
+                                                            size.width * 0.04,
                                                         color: Colors.black54,
                                                         fontWeight:
                                                             FontWeight.bold),
@@ -352,8 +358,9 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                                                   ),
                                                   Text(
                                                     "\$ ${dishesData![index].dish_price}",
-                                                    style: const TextStyle(
-                                                        fontSize: 20,
+                                                    style: TextStyle(
+                                                        fontSize:
+                                                            size.width * 0.04,
                                                         color: Colors.black,
                                                         fontWeight:
                                                             FontWeight.bold),
@@ -366,8 +373,8 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                                             ),
                                             AnimatedSize(
                                               duration: const Duration(
-                                                  milliseconds: 200),
-                                              curve: Curves.easeIn,
+                                                  milliseconds: 100),
+                                              curve: Curves.bounceInOut,
                                               child: Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.center,
@@ -385,137 +392,176 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                                                         child: itemQuantity
                                                                     .quantity >
                                                                 0
-                                                            ? Row(
-                                                                children: [
-                                                                  QuantityButton(
-                                                                    buttonradius:
-                                                                        10,
-                                                                    buttonheight:
-                                                                        40,
-                                                                    icon: Icons
-                                                                        .remove,
-                                                                    iconColor:
-                                                                        Colors
-                                                                            .white,
-                                                                    iconSize:
-                                                                        30,
-                                                                    bgcolor: Colors
-                                                                        .black,
-                                                                    onpress:
-                                                                        () {
-                                                                      int dishindex = ref
-                                                                          .read(quantityProvider
-                                                                              .notifier)
-                                                                          .state
-                                                                          .indexWhere((element) =>
-                                                                              element.id ==
-                                                                              dishesData![index].dishid);
+                                                            ? Container(
+                                                                // width:
+                                                                //     size.width *
+                                                                //         0.09,
+                                                                decoration: BoxDecoration(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10),
+                                                                    color: Colors
+                                                                            .grey[
+                                                                        200]),
+                                                                child: Column(
+                                                                  children: [
+                                                                    QuantityButton(
+                                                                      radiustopleft:
+                                                                          10,
+                                                                      radiustopright:
+                                                                          10,
+                                                                      // buttonradius:
+                                                                      //     10,
+                                                                      buttonheight:
+                                                                          size.width *
+                                                                              0.09,
+                                                                      buttonwidth:
+                                                                          size.width *
+                                                                              0.09,
+                                                                      icon: Icons
+                                                                          .remove,
+                                                                      iconColor:
+                                                                          Colors
+                                                                              .white,
+                                                                      iconSize:
+                                                                          size.width *
+                                                                              0.055,
+                                                                      bgcolor:
+                                                                          Colors
+                                                                              .black,
+                                                                      onpress:
+                                                                          () {
+                                                                        int dishindex = ref
+                                                                            .read(quantityProvider
+                                                                                .notifier)
+                                                                            .state
+                                                                            .indexWhere((element) =>
+                                                                                element.id ==
+                                                                                dishesData![index].dishid);
 
-                                                                      if (dishindex !=
-                                                                          -1) {
-                                                                        ref.read(quantityProvider.notifier).update(
-                                                                            (state) {
-                                                                          if (state[dishindex].quantity >
-                                                                              0) {
-                                                                            state[dishindex].quantity--;
-                                                                          }
-                                                                          return [
-                                                                            ...state
-                                                                          ];
-                                                                        });
-                                                                      }
-                                                                    },
-                                                                  ),
-                                                                  Consumer(
-                                                                    builder:
-                                                                        (context,
-                                                                            ref,
-                                                                            child) {
-                                                                      final quantity = ref
-                                                                          .watch(
-                                                                              quantityProvider)
-                                                                          .firstWhere((item) =>
-                                                                              item.id ==
-                                                                              dishesData![index].dishid)
-                                                                          .quantity;
-                                                                      return Padding(
-                                                                        padding: const EdgeInsets
-                                                                            .symmetric(
-                                                                            horizontal:
-                                                                                10),
-                                                                        child:
-                                                                            Text(
-                                                                          " $quantity",
-                                                                          style:
-                                                                              const TextStyle(
-                                                                            fontSize:
-                                                                                28,
-                                                                            color:
-                                                                                Colors.black54,
-                                                                            fontWeight:
-                                                                                FontWeight.w400,
+                                                                        if (dishindex !=
+                                                                            -1) {
+                                                                          ref.read(quantityProvider.notifier).update(
+                                                                              (state) {
+                                                                            if (state[dishindex].quantity >
+                                                                                0) {
+                                                                              state[dishindex].quantity--;
+                                                                            }
+                                                                            return [
+                                                                              ...state
+                                                                            ];
+                                                                          });
+                                                                        }
+                                                                      },
+                                                                    ),
+                                                                    Consumer(
+                                                                      builder: (context,
+                                                                          ref,
+                                                                          child) {
+                                                                        final quantity = ref
+                                                                            .watch(
+                                                                                quantityProvider)
+                                                                            .firstWhere((item) =>
+                                                                                item.id ==
+                                                                                dishesData![index].dishid)
+                                                                            .quantity;
+                                                                        return Center(
+                                                                          child:
+                                                                              Text(
+                                                                            " $quantity",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: size.width * 0.05,
+                                                                              color: Colors.black,
+                                                                              fontWeight: FontWeight.w400,
+                                                                            ),
                                                                           ),
-                                                                        ),
-                                                                      );
-                                                                    },
-                                                                  ),
-                                                                  QuantityButton(
-                                                                    buttonradius:
-                                                                        10,
-                                                                    icon: Icons
-                                                                        .add,
-                                                                    iconColor:
-                                                                        Colors
-                                                                            .white,
-                                                                    iconSize:
-                                                                        30,
-                                                                    bgcolor: Colors
-                                                                        .black,
-                                                                    buttonheight:
-                                                                        40,
-                                                                    onpress:
-                                                                        () {
-                                                                      final dishIndex = ref
-                                                                          .read(quantityProvider
-                                                                              .notifier)
-                                                                          .state
-                                                                          .indexWhere((item) =>
-                                                                              item.id ==
-                                                                              dishesData![index].dishid);
-                                                                      if (dishIndex !=
-                                                                          -1) {
-                                                                        ref.read(quantityProvider.notifier).update(
-                                                                            (state) {
-                                                                          state[dishIndex]
-                                                                              .quantity++;
+                                                                        );
+                                                                      },
+                                                                    ),
+                                                                    QuantityButton(
+                                                                      radiusbottomleft:
+                                                                          10,
+                                                                      radiusbottomright:
+                                                                          10,
+                                                                      // radiustopleft:
+                                                                      //     10,
+                                                                      // radiustopright:
+                                                                      //     10,
+                                                                      // buttonradius:
+                                                                      //     10,
+                                                                      icon: Icons
+                                                                          .add,
+                                                                      iconColor:
+                                                                          Colors
+                                                                              .white,
+                                                                      iconSize:
+                                                                          size.width *
+                                                                              0.055,
+                                                                      bgcolor:
+                                                                          Colors
+                                                                              .black,
+                                                                      buttonheight:
+                                                                          size.width *
+                                                                              0.08,
+                                                                      buttonwidth:
+                                                                          size.width *
+                                                                              0.09,
+                                                                      onpress:
+                                                                          () {
+                                                                        final dishIndex = ref
+                                                                            .read(quantityProvider
+                                                                                .notifier)
+                                                                            .state
+                                                                            .indexWhere((item) =>
+                                                                                item.id ==
+                                                                                dishesData![index].dishid);
+                                                                        if (dishIndex !=
+                                                                            -1) {
+                                                                          ref.read(quantityProvider.notifier).update(
+                                                                              (state) {
+                                                                            state[dishIndex].quantity++;
 
-                                                                          if (ref.read(quantityProvider.notifier).state[dishIndex].quantity >
-                                                                              0) {
-                                                                            ref.read(showAddProvider.notifier).state =
-                                                                                true;
-                                                                          }
+                                                                            if (ref.read(quantityProvider.notifier).state[dishIndex].quantity >
+                                                                                0) {
+                                                                              ref.read(showAddProvider.notifier).state = true;
+                                                                            }
 
-                                                                          return [
-                                                                            ...state
-                                                                          ]; // return a new state
-                                                                        });
-                                                                      }
-                                                                    },
-                                                                  )
-                                                                ],
+                                                                            return [
+                                                                              ...state
+                                                                            ]; // return a new state
+                                                                          });
+                                                                        }
+                                                                      },
+                                                                    )
+                                                                  ],
+                                                                ),
                                                               )
                                                             : QuantityButton(
                                                                 bgcolor: Colors
                                                                     .white,
                                                                 buttonheight:
-                                                                    40,
-                                                                buttonradius:
+                                                                    size.width *
+                                                                        0.08,
+                                                                buttonwidth:
+                                                                    size.width *
+                                                                        0.09,
+                                                                // buttonradius:
+                                                                //     10,
+                                                                radiustopleft:
                                                                     10,
-                                                                icon:
-                                                                    Icons.done,
+                                                                radiustopright:
+                                                                    10,
+                                                                radiusbottomleft:
+                                                                    10,
+                                                                radiusbottomright:
+                                                                    10,
+                                                                icon: Icons.add,
                                                                 iconColor:
                                                                     Colors.red,
-                                                                iconSize: 30,
+                                                                iconSize:
+                                                                    size.width *
+                                                                        0.055,
                                                                 onpress: () {
                                                                   var dish = ref
                                                                       .read(quantityProvider

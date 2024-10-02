@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class QuantityButton extends StatelessWidget {
+  double? radiustopleft;
+  double? radiusbottomleft;
+  double? radiustopright;
+  double? radiusbottomright;
   double? buttonheight;
   double? buttonwidth;
   IconData icon;
@@ -11,6 +15,10 @@ class QuantityButton extends StatelessWidget {
   double? buttonradius;
   VoidCallback onpress;
   QuantityButton({
+    this.radiusbottomleft,
+    this.radiustopleft,
+    this.radiusbottomright,
+    this.radiustopright,
     super.key,
     required this.icon,
     required this.iconColor,
@@ -29,9 +37,23 @@ class QuantityButton extends StatelessWidget {
       width: buttonwidth == 0 ? 70 : buttonwidth,
       decoration: BoxDecoration(
           border: Border.all(width: 3, color: Colors.black),
-          borderRadius: buttonradius == 0
-              ? BorderRadius.circular(35)
-              : BorderRadius.circular(buttonradius ?? 35),
+          borderRadius: BorderRadius.only(
+            topLeft: radiustopleft == 0
+                ? const Radius.circular(0)
+                : Radius.circular(radiustopleft ?? 0),
+            bottomLeft: radiusbottomleft == 0
+                ? const Radius.circular(0)
+                : Radius.circular(radiusbottomleft ?? 0),
+            topRight: radiustopright == 0
+                ? const Radius.circular(0)
+                : Radius.circular(radiustopright ?? 0),
+            bottomRight: radiusbottomright == 0
+                ? const Radius.circular(0)
+                : Radius.circular(radiusbottomright ?? 0),
+          ),
+          // buttonradius == 0
+          // ? BorderRadius.circular(35)
+          // : BorderRadius.circular(buttonradius ?? 35),
           color: bgcolor ?? Colors.black),
       child: IconButton(
         padding: EdgeInsets.zero,
