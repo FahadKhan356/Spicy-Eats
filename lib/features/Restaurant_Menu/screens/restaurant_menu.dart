@@ -332,8 +332,7 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                                                     MainAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    dishesData![index]
-                                                        .dish_name!,
+                                                    dishes[index].dish_name!,
                                                     style: TextStyle(
                                                         fontSize:
                                                             size.width * 0.04,
@@ -342,7 +341,7 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                                                             FontWeight.bold),
                                                   ),
                                                   Text(
-                                                    dishesData![index]
+                                                    dishes[index]
                                                         .dish_description!,
                                                     style: TextStyle(
                                                         overflow: TextOverflow
@@ -357,7 +356,7 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                                                     height: 5,
                                                   ),
                                                   Text(
-                                                    "\$ ${dishesData![index].dish_price}",
+                                                    "\$ ${dishes[index].dish_price}",
                                                     style: TextStyle(
                                                         fontSize:
                                                             size.width * 0.04,
@@ -463,7 +462,7 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                                                                                 quantityProvider)
                                                                             .firstWhere((item) =>
                                                                                 item.id ==
-                                                                                dishesData![index].dishid)
+                                                                                dishes[index].dishid)
                                                                             .quantity;
                                                                         return Center(
                                                                           child:

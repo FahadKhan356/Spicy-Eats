@@ -110,7 +110,7 @@ class RegisterShopContoller {
     return await registerShopRepository.fetchRestaurant(currentUserId);
   }
 
-  Future<String?> fetchRestUid(String currentUserId) async {
+  Future<List<String>?> fetchRestUid(String currentUserId) async {
     return await registerShopRepository.fetchRestUid(currentUserId);
   }
 }

@@ -115,17 +115,17 @@ class RegisterShopRepository {
   }
 //fetch rest uid
 
-  Future<String?> fetchRestUid(String currentUserId) async {
+  Future<List<String>?> fetchRestUid(String currentUserId) async {
     try {
       var response = await supabaseClient
           .from('restaurants')
           .select('rest_uid')
-          .eq('user_id', currentUserId)
-          .single();
-
+          .eq('user_id', currentUserId);
       // Extract the rest_uid from the response
-      var restUid = response['rest_uid'] as String?;
-      return restUid;
+      List<String> restuids = response
+          .map((restaurant) => restaurant['rest_uid'] as String)
+          .toList();
+      return restuids;
     } catch (e) {
       print('Error fetching rest_uid: $e');
       return null; // Return null if there is an error

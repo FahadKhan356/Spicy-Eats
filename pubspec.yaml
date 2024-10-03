@@ -80,6 +80,7 @@ flutter:
     - lib/assets/data/restaurants.json
     - lib/assets/data/orders.json
     - lib/assets/images/
+    - lib/assets/images/cusineslist/
     - lib/assets/images/FoodBurger.png
     
      

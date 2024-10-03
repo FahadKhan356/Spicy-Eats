@@ -21,89 +21,120 @@ class RestaurantContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
-          width: double.maxFinite,
-          child: AspectRatio(
-            aspectRatio: 16 / 8,
-            child: Stack(
-              children: [
-                Image.network(
-                  image,
-                  fit: BoxFit.cover,
-                  width: double.maxFinite,
-                ),
-                Positioned(
-                  left: MediaQuery.of(context).size.width - 70,
-                  top: 20,
-                  child: Container(
-                    //color: Colors.white,
-                    child: const Icon(
-                      Icons.favorite_outline_rounded,
-                      size: 40,
-                      color: Colors.white,
-                    ),
+    var size = MediaQuery.of(context).size;
+    return Padding(
+      padding: const EdgeInsets.only(top: 5),
+      child: Column(
+        children: [
+          SizedBox(
+            width: double.maxFinite,
+            child: AspectRatio(
+              aspectRatio: 16 / 8,
+              child: Stack(
+                children: [
+                  Image.network(
+                    image,
+                    fit: BoxFit.cover,
+                    width: double.maxFinite,
                   ),
-                )
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Flexible(
-              child: Text(
-                name,
-                style: const TextStyle(
-                    fontSize: 20,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w500,
-                    overflow: TextOverflow.ellipsis),
+                  Positioned(
+                    right: size.width * 0.03,
+                    top: 20,
+                    child: Container(
+                      //color: Colors.white,
+                      child: Icon(
+                        Icons.favorite_outline_rounded,
+                        size: size.width * 0.09,
+                        color: Colors.white,
+                      ),
+                    ),
+                  )
+                ],
               ),
             ),
-            Container(
-              height: 50,
-              width: 50,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: const Color(0xFFD1C4E9)),
-              child: Center(
-                child: Text(
-                  ratings.toString(),
-                  style: const TextStyle(
-                      fontSize: 17,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            )
-          ],
-        ),
-        Row(children: [
-          Text(
-            "\$$price",
-            style: const TextStyle(
-                fontSize: 18,
-                color: Colors.black54,
-                fontWeight: FontWeight.bold),
           ),
           const SizedBox(
-            width: 10,
+            height: 10,
           ),
-          Text(
-            "$mindeliverytime-$maxdeliverytime",
-            style: const TextStyle(
-                fontSize: 18,
-                color: Colors.black54,
-                fontWeight: FontWeight.bold),
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name,
+                        style: TextStyle(
+                            fontSize: size.width * 0.045,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                            overflow: TextOverflow.ellipsis),
+                      ),
+
+                      Row(children: [
+                        Text(
+                          "\$$price",
+                          style: TextStyle(
+                              fontSize: size.width * 0.04,
+                              color: Colors.black54,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          "$mindeliverytime-$maxdeliverytime",
+                          style: TextStyle(
+                              fontSize: size.width * 0.04,
+                              color: Colors.black54,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ]),
+                      //   Row(
+                      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //     children: [
+
+                      //       Container(
+                      //         height: size.width * 0.1,
+                      //         width: size.width * 0.1,
+                      //         decoration: BoxDecoration(
+                      //             borderRadius: BorderRadius.circular(10),
+                      //             color: const Color(0xFFD1C4E9)),
+                      //         child: Center(
+                      //           child: Text(
+                      //             ratings.toString(),
+                      //             style: TextStyle(
+                      //                 fontSize: size.width * 0.04,
+                      //                 color: Colors.black,
+                      //                 fontWeight: FontWeight.bold),
+                      //           ),
+                      //         ),
+                      //       )
+                      //     ],
+                      //   ),
+                      // ],
+                    ]),
+              ),
+              Container(
+                height: size.width * 0.1,
+                width: size.width * 0.1,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: const Color(0xFFD1C4E9)),
+                child: Center(
+                  child: Text(
+                    ratings.toString(),
+                    style: TextStyle(
+                        fontSize: size.width * 0.04,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ]),
-      ],
+        ],
+      ),
     );
   }
 }

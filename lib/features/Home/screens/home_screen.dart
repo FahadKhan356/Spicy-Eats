@@ -34,7 +34,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   bool clicked = false;
   var uid;
   List<RestaurantData> restaurantData = [];
-  String? rest_uid;
+  List<String>? restuid;
   bool isloading = false;
   List<DishData> dishList = [];
 
@@ -136,10 +136,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         .fetchRestUid(supabaseClient.auth.currentUser!.id)
         .then((value) {
       if (value != null) {
-        ref.watch(rest_ui_Provider.notifier).state = value;
+        // ref.watch(rest_ui_Provider.notifier).state = value;
         print('initialize restuid provider ${ref.read(rest_ui_Provider)}');
         setState(() {
-          rest_uid = value;
+          restuid = value;
         });
       }
     });
@@ -321,9 +321,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                           //     }
                           //   },
                           // ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 10),
                           Padding(
-                            padding: const EdgeInsets.all(10.0),
+                            padding: EdgeInsets.all(size.width * 0.026),
                             child: ListView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
@@ -373,7 +373,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                         begin: const Offset(-1, 0), // Starting position
                         end: Offset.zero, // Ending position
                       ).animate(_animationbody),
-                      child: const HomeDrawer(),
+                      child: HomeDrawer(
+                        restuid: restuid,
+                      ),
                     );
                   },
                 ),

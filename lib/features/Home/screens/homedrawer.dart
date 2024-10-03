@@ -6,7 +6,8 @@ import 'package:spicy_eats/Register%20shop/screens/shophome.dart';
 import 'package:spicy_eats/features/Home/screens/widgets/customdraweritem.dart';
 
 class HomeDrawer extends ConsumerStatefulWidget {
-  const HomeDrawer({super.key});
+  final List<String>? restuid;
+  const HomeDrawer({super.key, required this.restuid});
 
   @override
   ConsumerState<HomeDrawer> createState() => _HomeDrawerState();
@@ -15,7 +16,7 @@ class HomeDrawer extends ConsumerStatefulWidget {
 class _HomeDrawerState extends ConsumerState<HomeDrawer> {
   @override
   Widget build(BuildContext context) {
-    var rest_uid = ref.watch(rest_ui_Provider);
+    //  var rest_uid = ref.watch(rest_ui_Provider);
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 5),
@@ -52,7 +53,7 @@ class _HomeDrawerState extends ConsumerState<HomeDrawer> {
               const SizedBox(
                 height: 10,
               ),
-              rest_uid != null
+              widget.restuid != null
                   ? InkWell(
                       onTap: () =>
                           Navigator.pushNamed(context, ShopHome.routename),
