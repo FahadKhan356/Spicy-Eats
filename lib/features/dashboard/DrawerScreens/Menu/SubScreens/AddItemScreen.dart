@@ -2,13 +2,16 @@ import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spicy_eats/Register%20shop/models/registershop.dart';
+import 'package:spicy_eats/commons/categoriesmodel.dart';
 import 'package:spicy_eats/features/dashboard/controller/dashboardcontroller.dart';
 import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
 import 'package:spicy_eats/Register%20shop/widgets/Lists.dart';
 import 'package:spicy_eats/Register%20shop/widgets/customTextfield.dart';
 import 'package:spicy_eats/commons/imagepick.dart';
-import 'package:spicy_eats/features/Home/screens/home_screen.dart';
+import 'package:spicy_eats/features/dashboard/repository/dashboardrepository.dart';
 import 'package:spicy_eats/main.dart';
 
 var scheduledMealProvider = StateProvider<String?>((ref) => null);
@@ -19,6 +22,7 @@ var finaldiscountProvider = StateProvider<String>((ref) => '');
 var isErrorProvider = StateProvider<bool>((ref) => false);
 var msgError = StateProvider((ref) => '');
 var dishimage = StateProvider<bool>((ref) => true);
+var selectedCategoryIdProvider = StateProvider<String?>((ref) => null);
 
 class AddItemScreen extends ConsumerStatefulWidget {
   AddItemScreen({super.key});
@@ -40,8 +44,25 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
     setState(() {});
   }
 
+  List<Categories>? categoriesList = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    ref.read(dashboardRepositoryProvider).fetchCategories().then((value) {
+      if (value != null) {
+        setState(() {
+          categoriesList = value;
+          print(' ye hai init state me se ${categoriesList![0].categoryid}');
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     final dashboardController = ref.read(dashboardControllerProvider);
     final isError = ref.watch(isErrorProvider);
     final GlobalKey<FormState> _form = GlobalKey<FormState>();
@@ -495,38 +516,33 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
                         ],
                       ),
                     ),
-                    image != null
-                        ? Center(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Colors.black26,
-                                      offset: Offset(1, 3),
-                                      spreadRadius: 2,
-                                      blurRadius: 2,
-                                    )
-                                  ]),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: image != null
-                                    ? Image.file(image!,
-                                        fit: BoxFit.cover,
-                                        width: 100,
-                                        height: 100)
-                                    : const Text('No Image Selected'),
-                              ),
-                            ),
-                          )
-                        : Container(
-                            color: Colors.red,
-                            height: 100,
-                            width: 100,
-                          )
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    DropdownButton<String?>(
+                      value: categoriesList?.isNotEmpty == true
+                          ? ref.read(selectedCategoryIdProvider)
+                          : null, // Set value only if there are items in the list
+                      hint: const Text('Select category'),
+                      menuMaxHeight: 300,
+                      onChanged: (value) {
+                        // Update the selected category ID
+                        ref.read(selectedCategoryIdProvider.notifier).state =
+                            value;
+                      },
+                      items: categoriesList?.map((category) {
+                        return DropdownMenuItem<String>(
+                          value: category.categoryid,
+                          child:
+                              Text(category.categoryname ?? 'Unnamed Category'),
+                        );
+                      }).toList(),
+                    ),
                   ],
                 ),
-
+                SizedBox(
+                  height: 20,
+                ),
                 ///////////////////////////////////////////////////////
                 ///
                 ///

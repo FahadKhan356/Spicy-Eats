@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/utils/commonImageUpload.dart';
+import 'package:spicy_eats/commons/categoriesmodel.dart';
+import 'package:spicy_eats/commons/mysnackbar.dart';
 import 'package:spicy_eats/main.dart';
 
 var dashboardRepositoryProvider = Provider((ref) => DashBoardRepository());
@@ -35,6 +37,27 @@ class DashBoardRepository {
       });
     } catch (e) {
       throw Exception(e);
+    }
+  }
+
+  Future<List<Categories>?> fetchCategories() async {
+    var response = await supabaseClient.from('categories').select('*');
+
+    print(response); // Print the raw response for debugging
+
+    try {
+      if (response.isEmpty) {
+        print('No categories data found');
+        return null;
+      }
+
+      List<Categories> categories =
+          response.map<Categories>((e) => Categories.fromJson(e)).toList();
+
+      return categories;
+    } catch (e) {
+      print('Error: $e');
+      return null;
     }
   }
 }

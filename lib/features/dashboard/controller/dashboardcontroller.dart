@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spicy_eats/commons/categoriesmodel.dart';
 import 'package:spicy_eats/features/dashboard/repository/dashboardrepository.dart';
 
 var dashboardControllerProvider = Provider((ref) {
@@ -43,4 +44,7 @@ class DashBoardController {
       throw Exception(e);
     }
   }
+
+  // Future<List<Categories>?> fetchCategories() async {
+  //   return dashBoardRepository.fetchCategories();
 }
