@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -19,22 +20,32 @@ class CustomTextfield extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: const TextStyle(fontSize: 20, color: Colors.black),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          child: Text(
+            title,
+            style: TextStyle(fontSize: size.width * 0.045, color: Colors.black),
+          ),
         ),
         TextFormField(
           validator: onvalidator,
           onChanged: onchanged,
           controller: controller,
           decoration: InputDecoration(
-              enabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(width: 2, color: Colors.black)),
-              focusedBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(width: 2, color: Colors.black)),
+              filled: true,
+              fillColor: Colors.grey[200],
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: const BorderSide(width: 1, color: Colors.black),
+                borderRadius: BorderRadius.circular(20),
+              ),
               // hintText: '\$20.0',
               hintText: hintext,
               hintStyle: const TextStyle(color: Colors.black54),

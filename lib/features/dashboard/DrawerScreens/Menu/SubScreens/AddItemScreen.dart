@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -63,6 +64,7 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    var selectedCategoryId = ref.watch(selectedCategoryIdProvider);
     final dashboardController = ref.read(dashboardControllerProvider);
     final isError = ref.watch(isErrorProvider);
     final GlobalKey<FormState> _form = GlobalKey<FormState>();
@@ -133,6 +135,7 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
     final cusinesvalue = ref.watch(cusinesProvider);
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(30.0),
@@ -144,28 +147,34 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
                   height: 20,
                 ),
                 CustomTextfield(
-                    onvalidator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please name your item';
-                      }
-                      if (value.length < 8) {
-                        return 'Item name atleast have 8 alphabets';
-                      }
-                      return null;
-                    },
-                    onchanged: (value) {},
-                    controller: nameController,
-                    hintext: 'california pizza, fish curry',
-                    title: 'Item Name'),
+                  onvalidator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please name your item';
+                    }
+                    if (value.length < 8) {
+                      return 'Item name atleast have 8 alphabets';
+                    }
+                    return null;
+                  },
+                  onchanged: (value) {},
+                  controller: nameController,
+                  hintext: 'california pizza, fish curry',
+                  title: 'Item Name',
+                ),
+
                 const SizedBox(
                   height: 20,
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Description',
-                      style: TextStyle(fontSize: 20, color: Colors.black),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Text(
+                        'Description',
+                        style: TextStyle(
+                            color: Colors.black, fontSize: size.width * 0.045),
+                      ),
                     ),
                     TextFormField(
                       validator: (value) {
@@ -203,15 +212,18 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
                       textInputAction: TextInputAction.newline,
                       maxLength: 500,
                       controller: descriptionController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.grey[200],
                           enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          focusedBorder: const OutlineInputBorder(
                               borderSide:
-                                  BorderSide(width: 2, color: Colors.black)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(width: 2, color: Colors.black)),
+                                  BorderSide(width: 1, color: Colors.black)),
                           hintText: 'its the best tasty and delicious ...',
-                          border: OutlineInputBorder(
+                          border: const OutlineInputBorder(
                               borderSide:
                                   BorderSide(width: 1, color: Colors.black))),
                     ),
@@ -387,41 +399,48 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
                     ),
                     Row(
                       children: [
-                        Container(
-                          padding: const EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: isError ? Colors.red : Colors.black87,
-                          ),
-                          child: Text(
-                            isError
-                                ? msg
-                                : 'New DiscountedPrice  ${ref.watch(finaldiscountProvider)}/-',
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 18),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            // if (!_form.currentState!.validate()) {
-                            //   validactualprice(discountController.text,
-                            //       'empty value', 'only number type allowed');
-                            //   return;
-                            // }
-                            ref.read(isErrorProvider.notifier).state = false;
-                            setState(() {
-                              updateDiscountforactualprice();
-                            });
-                          },
+                        Expanded(
                           child: Container(
                             padding: const EdgeInsets.all(8.0),
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.green),
-                            child: const Text(
-                              'see discount',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 18),
+                              borderRadius: BorderRadius.circular(10),
+                              color: isError ? Colors.red : Colors.black87,
+                            ),
+                            child: Text(
+                              isError
+                                  ? msg
+                                  : 'New DiscountedPrice  ${ref.watch(finaldiscountProvider)}/-',
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 18),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              // if (!_form.currentState!.validate()) {
+                              //   validactualprice(discountController.text,
+                              //       'empty value', 'only number type allowed');
+                              //   return;
+                              // }
+                              ref.read(isErrorProvider.notifier).state = false;
+                              setState(() {
+                                updateDiscountforactualprice();
+                              });
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(8.0),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.green),
+                              child: const Text(
+                                'see discount',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 18),
+                              ),
                             ),
                           ),
                         ),
@@ -437,7 +456,7 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
                         children: [
                           const Text(
                             'Scheduled Meal (Optional)',
-                            style: TextStyle(color: Colors.black38),
+                            style: TextStyle(color: Colors.black),
                           ),
                           const SizedBox(
                             width: 5,
@@ -480,7 +499,7 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
                         children: [
                           const Text(
                             'Cusines',
-                            style: TextStyle(color: Colors.black38),
+                            style: TextStyle(color: Colors.black),
                           ),
                           const SizedBox(
                             width: 5,
@@ -519,24 +538,45 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
                     const SizedBox(
                       height: 10,
                     ),
-                    DropdownButton<String?>(
-                      value: categoriesList?.isNotEmpty == true
-                          ? ref.read(selectedCategoryIdProvider)
-                          : null, // Set value only if there are items in the list
-                      hint: const Text('Select category'),
-                      menuMaxHeight: 300,
-                      onChanged: (value) {
-                        // Update the selected category ID
-                        ref.read(selectedCategoryIdProvider.notifier).state =
-                            value;
-                      },
-                      items: categoriesList?.map((category) {
-                        return DropdownMenuItem<String>(
-                          value: category.categoryid,
-                          child:
-                              Text(category.categoryname ?? 'Unnamed Category'),
-                        );
-                      }).toList(),
+
+                    Row(
+                      children: [
+                        const Text(
+                          'Select Section/Category',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: DropdownButton<String?>(
+                            value: categoriesList?.isNotEmpty == true
+                                ? selectedCategoryId
+                                : null, // Set value only if there are items in the list
+                            hint: Text('Featured items...'),
+                            isExpanded: true,
+                            style: const TextStyle(
+                                fontSize: 15, color: Colors.black),
+                            menuMaxHeight: 300,
+                            onChanged: (value) {
+                              // Update the selected category ID
+                              ref
+                                  .read(selectedCategoryIdProvider.notifier)
+                                  .state = value;
+                              print(ref
+                                  .read(selectedCategoryIdProvider.notifier)
+                                  .state);
+                            },
+                            items: categoriesList?.map((category) {
+                              return DropdownMenuItem<String>(
+                                value: category.categoryid,
+                                child: Text(category.categoryname ??
+                                    'Unnamed Category'),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

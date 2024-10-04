@@ -90,10 +90,11 @@ class _MyAppState extends ConsumerState<MyApp> {
         onGenerateRoute: generateRoutes,
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
-        // theme: ThemeData(
-        //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        //   useMaterial3: true,
-        // ),
+        theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
+            tabBarTheme: TabBarTheme(),
+            appBarTheme: AppBarTheme(backgroundColor: Colors.white)),
         home: Scaffold(
             body: supabaseClient.auth.currentSession != null
                 ? screen[currentindex]
