@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/dashboard/DrawerScreens/Menu/ineroverview.dart';
 import 'package:spicy_eats/Register%20shop/models/registershop.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/businessInformation.dart';
@@ -50,6 +51,8 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
             quantity: argument['quantity']);
       });
 
+    case Home.routename:
+      return MaterialPageRoute(builder: (_) => const Home());
     case ShopHome.routename:
       return MaterialPageRoute(builder: (context) {
         // var index = settings.arguments as int;

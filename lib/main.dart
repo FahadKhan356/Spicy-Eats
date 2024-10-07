@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/dashboard/DrawerScreens/Menu/SubScreens/AddItemScreen.dart';
 import 'package:spicy_eats/features/dashboard/DrawerScreens/Menu/overview.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/businessInformation.dart';
@@ -65,76 +66,45 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    List<BottomNavigationBarItem> bitems = [
-      const BottomNavigationBarItem(
-          icon: Icon(
-            Icons.home,
-            size: 40,
-          ),
-          label: ''),
-      const BottomNavigationBarItem(
-          icon: Icon(
-            Icons.delivery_dining,
-            size: 40,
-          ),
-          label: ''),
-      const BottomNavigationBarItem(
-          icon: Icon(
-            Icons.account_box,
-            size: 40,
-          ),
-          label: ''),
-    ];
-
     return MaterialApp(
         onGenerateRoute: generateRoutes,
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,
+            //drawerTheme: DrawerThemeData(backgroundColor: Colors.),
             tabBarTheme: TabBarTheme(),
             appBarTheme: AppBarTheme(backgroundColor: Colors.white)),
         home: Scaffold(
-            body: supabaseClient.auth.currentSession != null
-                ? screen[currentindex]
-                : PasswordlessScreen(
-                    ref: ref,
-                  ),
-            //AddItemScreen(),
-            //supabaseClient.auth.currentSession != null
-            //     ? screen[currentindex]
-            //     : PasswordlessScreen(
-            //         ref: ref,
-            //       ),
-            //AddItemScreen(),
-            //supabaseClient.auth.currentSession != null
-            //     ? screen[currentindex]
-            //     : PasswordlessScreen(
-            //         ref: ref,
-            //       ),
-            //TimePicker(),
+          body: supabaseClient.auth.currentSession != null
+              ? const Home()
+              : PasswordlessScreen(ref: ref),
+          // supabaseClient.auth.currentSession != null
+          //     ? screen[currentindex]
+          //     : PasswordlessScreen(
+          //         ref: ref,
+          //       ),
+          //AddItemScreen(),
+          //supabaseClient.auth.currentSession != null
+          //     ? screen[currentindex]
+          //     : PasswordlessScreen(
+          //         ref: ref,
+          //       ),
+          //AddItemScreen(),
+          //supabaseClient.auth.currentSession != null
+          //     ? screen[currentindex]
+          //     : PasswordlessScreen(
+          //         ref: ref,
+          //       ),
+          //TimePicker(),
 
-            //Shapes(),
-            //TimePicker(),
-            // supabaseClient.auth.currentSession != null
-            //     ? screen[currentindex]
-            //     : PasswordlessScreen(
-            //         ref: ref,
-            //       ),
-            bottomNavigationBar: supabaseClient.auth.currentSession != null
-                ? BottomNavigationBar(
-                    items: bitems,
-                    onTap: (index) {
-                      setState(() {
-                        currentindex = index;
-                      });
-                    },
-                    currentIndex: currentindex,
-                    selectedItemColor: Colors.black,
-                    unselectedItemColor: Colors.black38,
-                    elevation: 2,
-                  )
-                : null));
+          //Shapes(),
+          //TimePicker(),
+          // supabaseClient.auth.currentSession != null
+          //     ? screen[currentindex]
+          //     : PasswordlessScreen(
+          //         ref: ref,
+          //       ),
+        ));
   }
 }

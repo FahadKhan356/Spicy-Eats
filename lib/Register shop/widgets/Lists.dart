@@ -7,19 +7,19 @@ import 'package:spicy_eats/features/Home/screens/home_screen.dart';
 import 'package:spicy_eats/features/orders/screens/order_screen.dart';
 
 final List<DrawerRow> drawerList = [
-  DrawerRow(text: 'Home', icon: Icons.home),
+  // DrawerRow(text: 'Home', icon: Icons.home),
+  DrawerRow(text: 'Menu', icon: Icons.menu_book),
   DrawerRow(text: 'Feedback', icon: Icons.feedback),
   DrawerRow(text: 'Payment', icon: Icons.payment),
-  DrawerRow(text: 'Menu', icon: Icons.menu_book),
   DrawerRow(text: 'Documents', icon: Icons.document_scanner),
   DrawerRow(text: 'Settings', icon: Icons.settings_applications_sharp),
 ];
 
 List screens = [
-  const Center(child: HomeScreen()),
+//  const Center(child: HomeScreen()),
+  const MenuScreen(),
   const Center(child: Text("Feedback")),
   const Center(child: Text("Payment")),
-  const MenuScreen(),
   const Center(child: Text("Documents")),
   const Center(child: Text("Settings")),
 ];
@@ -28,6 +28,26 @@ List screen = [
   const OrdersScreen(),
   ShopHome(),
   // const Center(child: Text("Accont screen comming soon"))
+];
+List<BottomNavigationBarItem> bitems = [
+  const BottomNavigationBarItem(
+      icon: Icon(
+        Icons.home,
+        size: 40,
+      ),
+      label: ''),
+  const BottomNavigationBarItem(
+      icon: Icon(
+        Icons.delivery_dining,
+        size: 40,
+      ),
+      label: ''),
+  const BottomNavigationBarItem(
+      icon: Icon(
+        Icons.account_box,
+        size: 40,
+      ),
+      label: ''),
 ];
 
 List<String?> scheduledmeal = [

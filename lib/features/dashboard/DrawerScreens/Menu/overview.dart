@@ -21,136 +21,148 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     final registershopcontroller = ref.read(registershopcontrollerProvider);
     return Scaffold(
-      body: Column(
-        children: [
-          FutureBuilder(
-              future: registershopcontroller
-                  .fetchrestaurants(supabaseClient.auth.currentUser!.id),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  floatingsnackBar(
-                      context: context, text: snapshot.error.toString());
-                } else if (snapshot.hasData && snapshot.data != null) {
-                  return ListView.builder(
-                      itemCount: snapshot.data!.length,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        var data = snapshot.data![index];
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            FutureBuilder(
+                future: registershopcontroller
+                    .fetchrestaurants(supabaseClient.auth.currentUser!.id),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    floatingsnackBar(
+                        context: context, text: snapshot.error.toString());
+                  } else if (snapshot.hasData && snapshot.data != null) {
+                    return ListView.builder(
+                        itemCount: snapshot.data!.length,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          var data = snapshot.data![index];
 
-                        return InkWell(
-                          onTap: () => Navigator.pushNamed(
-                              context, InnerOverview.routename,
-                              arguments: data.restuid),
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 20, horizontal: 20),
-                                child: Container(
-                                  //margin: EdgeInsets.only(bottom: 0),
-                                  height: 250,
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                      color: Colors
-                                          .white54, // Change to transparent
-                                      borderRadius: BorderRadius.circular(20),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          color: Colors.black26,
-                                          spreadRadius: 1,
-                                          offset: Offset(3, 2),
-                                          blurRadius: 6,
-                                        )
-                                      ]),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        height: 150,
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                          color: Colors
-                                              .white, // This will be the background color
-                                          borderRadius: BorderRadius.circular(
-                                              20), // Round the corners of the container
-                                        ),
-                                        child: Stack(
-                                          children: [
-                                            Center(
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.circular(
-                                                    20), // Ensure the image is also rounded
-                                                child: Image.network(
-                                                  width: double.infinity,
-                                                  data.restaurantImageUrl!,
-                                                  fit: BoxFit
-                                                      .cover, // Adjusted for better image fit
+                          return InkWell(
+                            onTap: () => Navigator.pushNamed(
+                                context, InnerOverview.routename,
+                                arguments: data.restuid),
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 20, horizontal: 20),
+                                  child: Container(
+                                    //margin: EdgeInsets.only(bottom: 0),
+                                    height: 250,
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                        color: Colors
+                                            .white54, // Change to transparent
+                                        borderRadius: BorderRadius.circular(20),
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            color: Colors.black26,
+                                            spreadRadius: 1,
+                                            offset: Offset(3, 2),
+                                            blurRadius: 6,
+                                          )
+                                        ]),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          height: 150,
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                            color: Colors
+                                                .white, // This will be the background color
+                                            borderRadius: BorderRadius.circular(
+                                                20), // Round the corners of the container
+                                          ),
+                                          child: Stack(
+                                            children: [
+                                              Center(
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20), // Ensure the image is also rounded
+                                                  child: Image.network(
+                                                    width: double.infinity,
+                                                    data.restaurantImageUrl!,
+                                                    fit: BoxFit
+                                                        .cover, // Adjusted for better image fit
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            Positioned(
-                                                right: 0,
-                                                top: 0,
-                                                child: InkWell(
-                                                  onTap: () {},
-                                                  child: Container(
-                                                    height: 50,
-                                                    width: 50,
-                                                    decoration:
-                                                        const BoxDecoration(
-                                                            color: Colors.green,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .only(
-                                                              topLeft: Radius
-                                                                  .circular(20),
-                                                              bottomLeft: Radius
-                                                                  .circular(20),
-                                                            )),
-                                                    child: const Icon(
-                                                      Icons.delete,
-                                                      color: Colors.white,
+                                              Positioned(
+                                                  right: 0,
+                                                  top: 0,
+                                                  child: InkWell(
+                                                    onTap: () {},
+                                                    child: Container(
+                                                      height: 50,
+                                                      width: 50,
+                                                      decoration:
+                                                          const BoxDecoration(
+                                                              color:
+                                                                  Colors.green,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .only(
+                                                                topLeft: Radius
+                                                                    .circular(
+                                                                        20),
+                                                                bottomLeft: Radius
+                                                                    .circular(
+                                                                        20),
+                                                              )),
+                                                      child: const Icon(
+                                                        Icons.delete,
+                                                        color: Colors.white,
+                                                      ),
                                                     ),
-                                                  ),
-                                                )),
-                                          ],
+                                                  )),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(
-                                        data.restaurantName!,
-                                        style: const TextStyle(
-                                            fontSize: 25,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(
-                                        data.address!,
-                                        style: const TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold),
-                                      )
-                                    ],
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Center(
+                                          child: Text(
+                                            data.restaurantName!,
+                                            style: TextStyle(
+                                                fontSize: size.width * 0.04,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Center(
+                                          child: Text(
+                                            data.address!,
+                                            style: TextStyle(
+                                                fontSize: size.width * 0.03,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        );
-                      });
-                }
-                return const Center(
-                  child: Text('There is no restaurants'),
-                );
-              }),
-        ],
+                              ],
+                            ),
+                          );
+                        });
+                  }
+                  return const Center(
+                    child: Text('There is no restaurants'),
+                  );
+                }),
+          ],
+        ),
       ),
       // Container(
       //   height: 200,

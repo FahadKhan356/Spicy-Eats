@@ -135,7 +135,7 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
     final cusinesvalue = ref.watch(cusinesProvider);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.white12,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(30.0),

@@ -29,13 +29,14 @@ class _MenuScreenState extends ConsumerState<MenuScreen>
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.black,
           title: TabBar(
               dividerColor: Colors.transparent,
               isScrollable: true,
               controller: tabBarController,
               // dividerColor: const Color.fromRGBO(33, 33, 33, 1),
               padding: const EdgeInsets.only(bottom: 10),
-              indicatorColor: Colors.black,
+              indicatorColor: Colors.white,
               labelColor: Colors.black,
               unselectedLabelColor: Colors.grey,
               indicatorWeight: 2,
@@ -46,7 +47,8 @@ class _MenuScreenState extends ConsumerState<MenuScreen>
                   padding: const EdgeInsets.all(10.0),
                   child: Text(
                     'ADD DISH',
-                    style: TextStyle(fontSize: size.width * 0.04),
+                    style: TextStyle(
+                        fontSize: size.width * 0.035, color: Colors.white),
                   ),
                 )),
                 Expanded(
@@ -54,7 +56,8 @@ class _MenuScreenState extends ConsumerState<MenuScreen>
                   padding: const EdgeInsets.all(10.0),
                   child: Text(
                     'OVERVIEW',
-                    style: TextStyle(fontSize: size.width * 0.04),
+                    style: TextStyle(
+                        fontSize: size.width * 0.03, color: Colors.white),
                   ),
                 )),
               ]),
