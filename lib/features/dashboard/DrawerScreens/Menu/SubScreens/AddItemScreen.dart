@@ -1,12 +1,15 @@
 import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
 import 'package:spicy_eats/Register%20shop/models/registershop.dart';
 import 'package:spicy_eats/commons/categoriesmodel.dart';
+import 'package:spicy_eats/commons/orderModel.dart';
 import 'package:spicy_eats/features/dashboard/controller/dashboardcontroller.dart';
 import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
 import 'package:spicy_eats/Register%20shop/widgets/Lists.dart';
@@ -15,15 +18,12 @@ import 'package:spicy_eats/commons/imagepick.dart';
 import 'package:spicy_eats/features/dashboard/repository/dashboardrepository.dart';
 import 'package:spicy_eats/main.dart';
 
-var scheduledMealProvider = StateProvider<String?>((ref) => null);
 var cusinesProvider = StateProvider<String?>((ref) => null);
-var discountProvider = StateProvider<double>((ref) => 0);
-var actualProvider = StateProvider<double>((ref) => 0);
-var finaldiscountProvider = StateProvider<String>((ref) => '');
 var isErrorProvider = StateProvider<bool>((ref) => false);
-var msgError = StateProvider((ref) => '');
 var dishimage = StateProvider<bool>((ref) => true);
 var selectedCategoryIdProvider = StateProvider<String?>((ref) => null);
+var isSearchProvider = StateProvider<bool>((ref) => false);
+var categoryIdProvider = StateProvider<String?>((ref) => null);
 
 class AddItemScreen extends ConsumerStatefulWidget {
   AddItemScreen({super.key});
@@ -38,6 +38,9 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
   final priceController = TextEditingController();
   final actualController = TextEditingController();
   final discountController = TextEditingController();
+  final categoryNameController = TextEditingController();
+  final categoryDiscriptionController = TextEditingController();
+
   File? image;
 
   void pickimagefromgallery() async {
@@ -46,12 +49,38 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
   }
 
   List<Categories>? categoriesList = [];
+  List<RestaurantData>? restaurants = [];
+  String? restid;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    ref.read(dashboardRepositoryProvider).fetchCategories().then((value) {
+    initialfetches();
+    // ref.read(dashboardRepositoryProvider).fetchCategories().then((value) {
+    //   if (value != null) {
+    //     setState(() {
+    //       categoriesList = value;
+    //       print(' ye hai init state me se ${categoriesList![0].categoryid}');
+    //     });
+    //   }
+    // });
+
+    // ref
+    //     .read(registershopcontrollerProvider)
+    //     .fetchrestaurants(supabaseClient.auth.currentUser?.id)
+    //     .then((value) {
+    //   if (value != null) {
+    //     setState(() {
+    //       restaurants = value;
+    //       print(' ye hai init state me se ${restaurants![0].email}');
+    //     });
+    //   }
+    // });
+  }
+
+  Future<void> initialfetches() async {
+    await ref.read(dashboardRepositoryProvider).fetchCategories().then((value) {
       if (value != null) {
         setState(() {
           categoriesList = value;
@@ -59,6 +88,29 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
         });
       }
     });
+
+    await ref
+        .read(registershopcontrollerProvider)
+        .fetchrestaurants(supabaseClient.auth.currentUser?.id)
+        .then((value) {
+      if (value != null) {
+        setState(() {
+          restaurants = value;
+          print(' ye hai init state me se ${restaurants![0].email}');
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    categoryNameController.dispose();
+    categoryDiscriptionController.dispose();
+    nameController.dispose();
+    priceController.dispose();
+    discountController.dispose();
   }
 
   @override
@@ -68,71 +120,10 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
     final dashboardController = ref.read(dashboardControllerProvider);
     final isError = ref.watch(isErrorProvider);
     final GlobalKey<FormState> _form = GlobalKey<FormState>();
-    String msg = ref.watch(msgError);
 
-    String? validactualprice(
-        String? value, String? firstmsg, String? secondmsg) {
-      if (value == null || value.isEmpty) {
-        return firstmsg;
-      }
-      final doublevalue = double.tryParse(value);
-      if (doublevalue == null) {
-        return secondmsg;
-      }
-      return null;
-    }
-
-    String? validdiscount(String? value, String? firstmsg, String? secondmsg) {
-      if (value == null || value.isEmpty) {
-        return firstmsg;
-      }
-      final doublevalue = double.tryParse(value);
-      if (doublevalue == null) {
-        return secondmsg;
-      }
-      return null;
-    }
-
-    void updateDiscountforactualprice() {
-      final actualprice = double.tryParse(priceController.text) ?? 0;
-      final discountprice = double.tryParse(discountController.text) ?? 0;
-      try {
-        if (actualprice == 0) {
-          ref.read(isErrorProvider.notifier).state = true;
-          ref.read(msgError.notifier).state = 'actual price can not be 0 value';
-
-          ref.read(finaldiscountProvider.notifier).state = '0%';
-          return;
-        }
-        if (discountprice <= 0) {
-          ref.read(isErrorProvider.notifier).state = true;
-          ref.read(msgError.notifier).state =
-              'discount can not be 0% or lesser';
-
-          // ref.read(isErrorProvider.notifier).state = true;
-          return;
-        }
-        if (discountprice >= 100) {
-          ref.read(isErrorProvider.notifier).state = true;
-          ref.read(msgError.notifier).state =
-              'discount can not be 100% or more';
-
-          return;
-        }
-
-        final finaldiscount =
-            (actualprice - (actualprice * discountprice / 100));
-
-        ref.read(finaldiscountProvider.notifier).state =
-            finaldiscount.toStringAsFixed(0);
-      } catch (e) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(e.toString())));
-      }
-    }
-
-    final scheduledmealvalue = ref.watch(scheduledMealProvider);
+    final isSearch = ref.watch(isSearchProvider);
     final cusinesvalue = ref.watch(cusinesProvider);
+    final categoryId = ref.watch(categoryIdProvider);
 
     return Scaffold(
       backgroundColor: Colors.white12,
@@ -143,6 +134,26 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
             key: _form,
             child: Column(
               children: [
+                restaurants!.length == 1
+                    ? Text(restaurants![0].restaurantName.toString())
+                    : DropdownButton<String?>(
+                        hint: const Text('select restaurant to add dish'),
+                        value: restaurants!.isNotEmpty ? restid : null,
+                        menuMaxHeight: 300,
+                        isExpanded: true,
+                        onChanged: (value) {
+                          setState(() {
+                            restid = value;
+                          });
+                        },
+                        items: restaurants!.map((restaurant) {
+                          return DropdownMenuItem<String?>(
+                              value: restaurant.restuid,
+                              child:
+                                  Text(restaurant.restaurantName.toString()));
+                        }).toList(),
+                      ),
+
                 const SizedBox(
                   height: 20,
                 ),
@@ -379,158 +390,45 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
                     const SizedBox(
                       height: 10,
                     ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    CustomTextfield(
-                        controller: discountController,
-                        onvalidator: (value) {
-                          return validdiscount(
-                              value,
-                              'Enter given item discount',
-                              'Please enter numbers only');
-                        },
-                        onchanged: (value) {},
-                        hintext:
-                            '10% discount i.e: price-percentage=Discount  ',
-                        title: 'Enter Discounted Percentage(Optional)'),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.all(8.0),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: isError ? Colors.red : Colors.black87,
-                            ),
-                            child: Text(
-                              isError
-                                  ? msg
-                                  : 'New DiscountedPrice  ${ref.watch(finaldiscountProvider)}/-',
-                              style: const TextStyle(
-                                  color: Colors.white, fontSize: 18),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              // if (!_form.currentState!.validate()) {
-                              //   validactualprice(discountController.text,
-                              //       'empty value', 'only number type allowed');
-                              //   return;
-                              // }
-                              ref.read(isErrorProvider.notifier).state = false;
-                              setState(() {
-                                updateDiscountforactualprice();
-                              });
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.all(8.0),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.green),
-                              child: const Text(
-                                'see discount',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 18),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
 
-                    const SizedBox(
-                      height: 10,
-                    ),
                     Padding(
                       padding: const EdgeInsets.only(top: 10),
-                      child: Row(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Scheduled Meal (Optional)',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Flexible(
-                            child: DropdownButton<String?>(
-                              isExpanded: true,
-                              style: const TextStyle(fontSize: 15),
-                              value: scheduledmealvalue,
-                              hint: const Text('Select an option'),
-                              onChanged: (String? value) {
-                                ref.read(scheduledMealProvider.notifier).state =
-                                    value;
-
-                                print(
-                                    'ne value   ${ref.read(scheduledMealProvider.notifier).state}');
-                              },
-                              items: scheduledmeal
-                                  .map<DropdownMenuItem<String?>>(
-                                      (String? value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(
-                                    value ?? '',
-                                    style: const TextStyle(
-                                        color: Colors.black,
-                                        overflow: TextOverflow
-                                            .visible), // Custom text style
-                                  ),
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Row(
-                        children: [
-                          const Text(
+                          Text(
                             'Cusines',
-                            style: TextStyle(color: Colors.black),
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: size.width * 0.035),
                           ),
                           const SizedBox(
                             width: 5,
                           ),
-                          Flexible(
-                            child: DropdownButton<String?>(
-                              menuMaxHeight: 300,
-                              isExpanded: true,
-                              style: const TextStyle(fontSize: 15),
-                              value: cusinesvalue,
-                              hint: const Text('Select an option'),
-                              onChanged: (String? value) {
-                                ref.read(cusinesProvider.notifier).state =
-                                    value;
-                                print(ref.read(cusinesProvider.notifier).state =
-                                    value);
-                              },
-                              items: cuisines.map<DropdownMenuItem<String?>>(
-                                  (String? value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(
-                                    value ?? '',
-                                    style: const TextStyle(
-                                        color: Colors.black,
-                                        overflow: TextOverflow
-                                            .visible), // Custom text style
-                                  ),
-                                );
-                              }).toList(),
-                            ),
+                          DropdownButton<String?>(
+                            menuMaxHeight: 300,
+                            isExpanded: true,
+                            style: const TextStyle(fontSize: 15),
+                            value: cusinesvalue,
+                            hint: const Text('Select an option'),
+                            onChanged: (String? value) {
+                              ref.read(cusinesProvider.notifier).state = value;
+                              print(ref.read(cusinesProvider.notifier).state =
+                                  value);
+                            },
+                            items: cuisines.map<DropdownMenuItem<String?>>(
+                                (String? value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(
+                                  value ?? '',
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      overflow: TextOverflow
+                                          .visible), // Custom text style
+                                ),
+                              );
+                            }).toList(),
                           ),
                         ],
                       ),
@@ -539,45 +437,168 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
                       height: 10,
                     ),
 
-                    Row(
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Select Section/Category',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: size.width * 0.035),
                         ),
                         const SizedBox(
                           width: 10,
                         ),
-                        Expanded(
-                          child: DropdownButton<String?>(
-                            value: categoriesList?.isNotEmpty == true
-                                ? selectedCategoryId
-                                : null, // Set value only if there are items in the list
-                            hint: Text('Featured items...'),
-                            isExpanded: true,
-                            style: const TextStyle(
-                                fontSize: 15, color: Colors.black),
-                            menuMaxHeight: 300,
-                            onChanged: (value) {
-                              // Update the selected category ID
-                              ref
-                                  .read(selectedCategoryIdProvider.notifier)
-                                  .state = value;
-                              print(ref
-                                  .read(selectedCategoryIdProvider.notifier)
-                                  .state);
-                            },
-                            items: categoriesList?.map((category) {
-                              return DropdownMenuItem<String>(
-                                value: category.categoryid,
-                                child: Text(category.categoryname ??
-                                    'Unnamed Category'),
-                              );
-                            }).toList(),
-                          ),
+                        DropdownButton<String?>(
+                          value: categoriesList?.isNotEmpty == true
+                              ? selectedCategoryId
+                              : null, // Set value only if there are items in the list
+                          hint: const Text('Featured items...'),
+                          isExpanded: true,
+                          style: const TextStyle(
+                              fontSize: 15, color: Colors.black),
+                          menuMaxHeight: 300,
+                          onChanged: (value) {
+                            // Update the selected category ID
+                            ref
+                                .read(selectedCategoryIdProvider.notifier)
+                                .state = value;
+                            ref.read(categoryIdProvider.notifier).state = value;
+
+                            print(ref
+                                .read(selectedCategoryIdProvider.notifier)
+                                .state);
+                          },
+                          items: categoriesList?.map((category) {
+                            return DropdownMenuItem<String>(
+                              value: category.categoryid,
+                              child: Text(
+                                  category.categoryname ?? 'Unnamed Category'),
+                            );
+                          }).toList(),
                         ),
                       ],
                     ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        ref.read(isSearchProvider.notifier).state = !isSearch;
+                      },
+                      child: Row(
+                        children: [
+                          Center(
+                              child: Text(
+                            'Or Create a new category',
+                            style: TextStyle(fontSize: size.width * 0.035),
+                          )),
+                          const Icon(
+                            Icons.arrow_drop_down,
+                            size: 25,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      child: Column(
+                        children: [
+                          ref.read(isSearchProvider.notifier).state == true
+                              ? AnimatedSize(
+                                  duration: const Duration(microseconds: 900),
+                                  curve: Curves.linear,
+                                  child: Column(
+                                    children: [
+                                      TextFormField(
+                                        controller: categoryNameController,
+                                        decoration: InputDecoration(
+                                            hintText:
+                                                'add new category to your ',
+                                            contentPadding:
+                                                const EdgeInsets.all(10),
+                                            // prefixIcon: const Icon(Icons.search),
+                                            filled: true,
+                                            fillColor: Colors.grey[200],
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide.none,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                borderSide: BorderSide.none)),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      TextFormField(
+                                        controller:
+                                            categoryDiscriptionController,
+                                        decoration: InputDecoration(
+                                            hintText: 'category discription ',
+                                            contentPadding:
+                                                const EdgeInsets.all(10),
+                                            // prefixIcon: const Icon(Icons.search),
+                                            filled: true,
+                                            fillColor: Colors.grey[200],
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide.none,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                borderSide: BorderSide.none)),
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          await dashboardController.addCategory(
+                                              categoryname:
+                                                  categoryNameController.text,
+                                              categorydiscription:
+                                                  categoryDiscriptionController
+                                                      .text,
+                                              restUid: restid);
+                                          print('Successfulu category added');
+                                          await ref
+                                              .read(dashboardRepositoryProvider)
+                                              .fetchCategories()
+                                              .then((value) {
+                                            if (value != null) {
+                                              setState(() {
+                                                categoriesList = value;
+                                                print(
+                                                    ' ye hai init state me se ${categoriesList![0].categoryid}');
+                                              });
+                                            }
+                                          });
+                                          setState(() {});
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.black,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10))),
+                                        child: const Icon(
+                                          Icons.add,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : const SizedBox(),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                        ],
+                      ),
+                    )
                   ],
                 ),
                 SizedBox(
@@ -617,10 +638,9 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
                                 dishdescription: descriptionController.text,
                                 dishPrice: price,
                                 dishImage: image,
-                                dishDiscount: discount,
-                                scheduleMeal: scheduledmealvalue,
+                                categoryId: categoryId,
                                 dishcusine: cusinesvalue,
-                                restUid: ref.read(rest_ui_Provider));
+                                restUid: restid);
 
                             ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(

@@ -23,10 +23,9 @@ class DashBoardController {
     required String? dishdescription,
     required int? dishPrice,
     required File? dishImage,
-    required int? dishDiscount,
-    required String? scheduleMeal,
     required String? dishcusine,
     required String? restUid,
+    required String? categoryId,
   }) async {
     try {
       dashBoardRepository.uploadDish(
@@ -36,9 +35,23 @@ class DashBoardController {
           dishdescription: dishdescription,
           dishPrice: dishPrice,
           dishImage: dishImage,
-          dishDiscount: dishDiscount,
-          scheduleMeal: scheduleMeal,
           dishcusine: dishcusine,
+          restUid: restUid,
+          categoryId: categoryId);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  Future<void> addCategory({
+    required String? categoryname,
+    required String? categorydiscription,
+    required String? restUid,
+  }) async {
+    try {
+      dashBoardRepository.addCategory(
+          categoryname: categoryname,
+          categorydiscription: categorydiscription,
           restUid: restUid);
     } catch (e) {
       throw Exception(e);

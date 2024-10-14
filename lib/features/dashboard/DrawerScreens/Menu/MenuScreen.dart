@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spicy_eats/Register%20shop/screens/shophome.dart';
 import 'package:spicy_eats/features/dashboard/DrawerScreens/Menu/SubScreens/AddItemScreen.dart';
 import 'package:spicy_eats/features/dashboard/DrawerScreens/Menu/overview.dart';
 
@@ -31,6 +32,10 @@ class _MenuScreenState extends ConsumerState<MenuScreen>
         appBar: AppBar(
           backgroundColor: Colors.black,
           title: TabBar(
+              indicator: ShapeDecoration(
+                  color: Colors.green,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10))),
               dividerColor: Colors.transparent,
               isScrollable: true,
               controller: tabBarController,
@@ -46,7 +51,7 @@ class _MenuScreenState extends ConsumerState<MenuScreen>
                     child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Text(
-                    'ADD DISH',
+                    ' OVERVIEW',
                     style: TextStyle(
                         fontSize: size.width * 0.035, color: Colors.white),
                   ),
@@ -55,20 +60,24 @@ class _MenuScreenState extends ConsumerState<MenuScreen>
                     child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Text(
-                    'OVERVIEW',
+                    'ADD DISH',
                     style: TextStyle(
                         fontSize: size.width * 0.03, color: Colors.white),
                   ),
                 )),
               ]),
         ),
-        body: TabBarView(controller: tabBarController, children: [
-          AddItemScreen(),
-          const OverviewScreen(),
-          // const Center(
-          //   child: Text('overview'),
-          //)
-        ]),
+        body: TabBarView(
+            controller: tabBarController,
+            viewportFraction: 1,
+            children: [
+              const OverviewScreen(),
+              AddItemScreen(),
+
+              // const Center(
+              //   child: Text('overview'),
+              //)
+            ]),
       ),
     );
   }

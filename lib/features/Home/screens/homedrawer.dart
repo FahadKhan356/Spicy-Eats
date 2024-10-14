@@ -55,8 +55,9 @@ class _HomeDrawerState extends ConsumerState<HomeDrawer> {
               ),
               widget.restuid != null
                   ? InkWell(
-                      onTap: () =>
-                          Navigator.pushNamed(context, ShopHome.routename),
+                      onTap: () => Navigator.pushNamed(
+                          context, ShopHome.routename,
+                          arguments: 'Menu'),
                       child: CustomDrawerItem(
                           leadingname: 'Your restaurant', icon: Icons.settings),
                     )

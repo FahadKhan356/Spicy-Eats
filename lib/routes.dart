@@ -53,9 +53,9 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
 
     case Home.routename:
       return MaterialPageRoute(builder: (_) => const Home());
+
     case ShopHome.routename:
       return MaterialPageRoute(builder: (context) {
-        // var index = settings.arguments as int;
         return ShopHome();
       });
 

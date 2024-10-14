@@ -16,10 +16,9 @@ class DashBoardRepository {
     required String? dishdescription,
     required int? dishPrice,
     required File? dishImage,
-    required int? dishDiscount,
-    required String? scheduleMeal,
     required String? dishcusine,
     required String? restUid,
+    required String? categoryId,
   }) async {
     try {
       String? dishimageUrl = await uploadImageToSupabaseStorage(
@@ -31,9 +30,8 @@ class DashBoardRepository {
         'dish_price': dishPrice,
         'dish_imageurl': dishimageUrl,
         'dish_name': dishName,
-        'dish_schedule_meal': scheduleMeal,
+        'category_id': categoryId,
         'cusine': dishcusine,
-        'dish_discount': dishDiscount,
       });
     } catch (e) {
       throw Exception(e);
@@ -58,6 +56,26 @@ class DashBoardRepository {
     } catch (e) {
       print('Error: $e');
       return null;
+    }
+  }
+
+  Future<void> addCategory({
+    required String? categoryname,
+    required String? categorydiscription,
+    required String? restUid,
+  }) async {
+    try {
+      await supabaseClient.from('categories').insert({
+        'category_name': categoryname,
+        'category_description': categorydiscription,
+        'rest_uid': restUid,
+      }).then((value) {
+        if (value != null) {
+          print('successfully added category...');
+        }
+      });
+    } catch (e) {
+      throw Exception(e);
     }
   }
 }

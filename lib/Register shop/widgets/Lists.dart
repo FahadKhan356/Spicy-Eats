@@ -4,6 +4,7 @@ import 'package:spicy_eats/Register%20shop/screens/shophome.dart';
 import 'package:spicy_eats/Register%20shop/widgets/drawerRow.dart';
 import 'package:spicy_eats/commons/country.dart';
 import 'package:spicy_eats/features/Home/screens/home_screen.dart';
+import 'package:spicy_eats/features/dashboard/DrawerScreens/paymnent/Payments.dart';
 import 'package:spicy_eats/features/orders/screens/order_screen.dart';
 
 final List<DrawerRow> drawerList = [
@@ -19,7 +20,7 @@ List screens = [
 //  const Center(child: HomeScreen()),
   const MenuScreen(),
   const Center(child: Text("Feedback")),
-  const Center(child: Text("Payment")),
+  const PaymentScreen(),
   const Center(child: Text("Documents")),
   const Center(child: Text("Settings")),
 ];
