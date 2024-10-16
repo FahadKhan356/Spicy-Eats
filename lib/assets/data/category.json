@@ -1,0 +1,153 @@
+[
+    {
+      "name": "Picked For You",
+      "products": [
+        {
+          "name": "Product 1",
+          "description": "Delicious dish 1",
+          "imageUrl": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg"
+        },
+        {
+          "name": "Product 2",
+          "description": "Tasty treat 2",
+          "imageUrl": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg"
+        },
+        {
+          "name": "Product 3",
+          "description": "Yummy dish 3",
+          "imageUrl": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg"
+        },
+        {
+          "name": "Product 4",
+          "description": "Savory dish 4",
+          "imageUrl": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg"
+        },
+        {
+          "name": "Product 5",
+          "description": "Flavorful dish 5",
+          "imageUrl": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg"
+        }
+      ]
+    },
+    {
+      "name": "Starters",
+      "products": [
+        {
+          "name": "Starter 1",
+          "description": "Crispy starter 1",
+          "imageUrl": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg"
+        },
+        {
+          "name": "Starter 2",
+          "description": "Appetizing starter 2",
+          "imageUrl": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg"
+        },
+        {
+          "name": "Starter 3",
+          "description": "Tasty starter 3",
+          "imageUrl": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg"
+        },
+        {
+          "name": "Starter 4",
+          "description": "Delightful starter 4",
+          "imageUrl": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg"
+        },
+        {
+          "name": "Starter 5",
+          "description": "Satisfying starter 5",
+          "imageUrl": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg"
+        }
+      ]
+    },
+    {
+      "name": "Main Courses",
+      "products": [
+        {
+          "name": "Main Course 1",
+          "description": "Hearty dish 1",
+          "imageUrl": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg"
+        },
+        {
+          "name": "Main Course 2",
+          "description": "Filling meal 2",
+          "imageUrl": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg"
+        },
+        {
+          "name": "Main Course 3",
+          "description": "Substantial dish 3",
+          "imageUrl": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg"
+        },
+        {
+          "name": "Main Course 4",
+          "description": "Nourishing meal 4",
+          "imageUrl": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg"
+        },
+        {
+          "name": "Main Course 5",
+          "description": "Flavor-packed dish 5",
+          "imageUrl": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg"
+        }
+      ]
+    },
+    {
+      "name": "Desserts",
+      "products": [
+        {
+          "name": "Dessert 1",
+          "description": "Sweet treat 1",
+          "imageUrl": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg"
+        },
+        {
+          "name": "Dessert 2",
+          "description": "Sugary delight 2",
+          "imageUrl": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg"
+        },
+        {
+          "name": "Dessert 3",
+          "description": "Indulgent dessert 3",
+          "imageUrl": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg"
+        },
+        {
+          "name": "Dessert 4",
+          "description": "Decadent treat 4",
+          "imageUrl": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg"
+        },
+        {
+          "name": "Dessert 5",
+          "description": "Yummy dessert 5",
+          "imageUrl": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg"
+        }
+      ]
+    },
+    {
+      "name": "Beverages",
+      "products": [
+        {
+          "name": "Beverage 1",
+          "description": "Refreshing drink 1",
+          "imageUrl": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg"
+        },
+        {
+          "name": "Beverage 2",
+          "description": "Chilled beverage 2",
+          "imageUrl": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg"
+        },
+        {
+          "name": "Beverage 3",
+          "description": "Tasty drink 3",
+          "imageUrl": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg"
+        },
+        {
+          "name": "Beverage 4",
+          "description": "Fruity drink 4",
+          "imageUrl": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg"
+        },
+        {
+          "name": "Beverage 5",
+          "description": "Sparkling drink 5",
+          "imageUrl": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg"
+        }
+      ]
+    }
+  ]
+  

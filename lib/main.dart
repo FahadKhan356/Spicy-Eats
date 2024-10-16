@@ -17,6 +17,8 @@ import 'package:spicy_eats/features/authentication/passwordless_signup.dart';
 import 'package:spicy_eats/routes.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'SyncTabBar/home_sliver_with_scrollable_tabs.dart';
+
 // final currentIndexProvider = StateProvider((ref) => 0);
 
 void main() async {
@@ -76,9 +78,10 @@ class _MyAppState extends ConsumerState<MyApp> {
             tabBarTheme: TabBarTheme(),
             appBarTheme: AppBarTheme(backgroundColor: Colors.white)),
         home: Scaffold(
-          body: supabaseClient.auth.currentSession != null
-              ? const Home()
-              : PasswordlessScreen(ref: ref),
+          body: HomeSliverWithScrollableTabs(),
+          // supabaseClient.auth.currentSession != null
+          //     ? const Home()
+          //     : PasswordlessScreen(ref: ref),
           // supabaseClient.auth.currentSession != null
           //     ? screen[currentindex]
           //     : PasswordlessScreen(
