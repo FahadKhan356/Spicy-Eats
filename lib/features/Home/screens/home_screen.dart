@@ -10,6 +10,7 @@ import 'package:spicy_eats/Register%20shop/controller/registershop_controller.da
 import 'package:spicy_eats/Register%20shop/models/registershop.dart';
 import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
 import 'package:spicy_eats/Register%20shop/widgets/Lists.dart';
+import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
 import 'package:spicy_eats/commons/restaurantModel.dart';
 import 'package:spicy_eats/commons/restaurant_container.dart';
 import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
@@ -251,18 +252,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                               width: 10,
                             ),
                             Container(
-                                height: 40,
-                                width: 40,
-                                decoration: BoxDecoration(
-                                  color: const Color.fromARGB(255, 94, 81, 81),
+                              height: 40,
+                              width: 40,
+                              decoration: BoxDecoration(
+                                color: const Color.fromARGB(255, 94, 81, 81),
 
-                                  // color: Colors.red,
-                                  borderRadius: BorderRadius.circular(
-                                      size.width * 0.12 / 2),
+                                // color: Colors.red,
+                                borderRadius: BorderRadius.circular(
+                                    size.width * 0.12 / 2),
+                              ),
+                              child: Center(
+                                child: Icon(
+                                  Icons.shopping_cart,
+                                  size: 30,
+                                  color: Colors.white,
                                 ),
-                                child: const Center(
-                                    child: Icon(Icons.shopping_cart,
-                                        size: 30, color: Colors.white))),
+                              ),
+                            ),
                           ],
                         ),
                       ],
@@ -408,14 +414,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                   onTap: () {
                                     print(MediaQuery.of(context).size.width);
 
+                                    // Navigator.pushNamed(
+                                    //     context, RestaurantMenu.routename,
+                                    //     arguments: {
+                                    //       'restaurant': restaurantData[index],
+                                    //       // 'dishes': dishList,
+                                    //       'rest_uid':
+                                    //           restaurantData[index].restuid,
+                                    //     });
                                     Navigator.pushNamed(
-                                        context, RestaurantMenu.routename,
-                                        arguments: {
-                                          'restaurant': restaurantData[index],
-                                          // 'dishes': dishList,
-                                          'rest_uid':
-                                              restaurantData[index].restuid,
-                                        });
+                                      context,
+                                      HomeSliverWithScrollableTabs.routename,
+                                      arguments: {
+                                        'restuid':
+                                            restaurantData[index].restuid,
+                                        'restaurantdata': restaurantData[index],
+                                      },
+                                    );
                                   },
                                   child: RestaurantContainer(
                                     name: restaurantData[index]

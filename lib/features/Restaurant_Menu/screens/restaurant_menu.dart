@@ -387,7 +387,7 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                                                                     .quantity >
                                                                 0
                                                             ? 1.0
-                                                            : 0.50,
+                                                            : 1.0,
                                                         child: itemQuantity
                                                                     .quantity >
                                                                 0
@@ -538,7 +538,7 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                                                               )
                                                             : QuantityButton(
                                                                 bgcolor: Colors
-                                                                    .white,
+                                                                    .black,
                                                                 buttonheight:
                                                                     size.width *
                                                                         0.08,
@@ -557,7 +557,8 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                                                                     10,
                                                                 icon: Icons.add,
                                                                 iconColor:
-                                                                    Colors.red,
+                                                                    Colors
+                                                                        .white,
                                                                 iconSize:
                                                                     size.width *
                                                                         0.055,

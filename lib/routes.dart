@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/dashboard/DrawerScreens/Menu/ineroverview.dart';
 import 'package:spicy_eats/Register%20shop/models/registershop.dart';
@@ -42,6 +43,14 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
           dish: argument,
         );
       });
+    case HomeSliverWithScrollableTabs.routename:
+      return MaterialPageRoute(builder: (_) {
+        final argument = settings.arguments as Map;
+        return HomeSliverWithScrollableTabs(
+            restuid: argument['restuid'],
+            restaurantdata: argument['restaurantdata']);
+      });
+
     case BasketScreen.routename:
       return MaterialPageRoute(builder: (context) {
         final argument = settings.arguments as Map;

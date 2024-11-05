@@ -36,7 +36,7 @@ class QuantityButton extends StatelessWidget {
       height: buttonheight == 0 ? 70 : buttonheight,
       width: buttonwidth == 0 ? 70 : buttonwidth,
       decoration: BoxDecoration(
-          border: Border.all(width: 3, color: Colors.black),
+          border: Border.all(width: 5, color: Colors.black),
           borderRadius: BorderRadius.only(
             topLeft: radiustopleft == 0
                 ? const Radius.circular(0)

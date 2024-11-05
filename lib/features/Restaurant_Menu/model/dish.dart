@@ -7,6 +7,7 @@ class DishData {
   String? dish_schedule_meal;
   String? cusine;
   int? dish_discount;
+  String? category_id;
 
   DishData({
     this.dishid,
@@ -17,6 +18,7 @@ class DishData {
     this.cusine,
     this.dish_name,
     this.dish_discount,
+    this.category_id,
   });
 
 //tojson
@@ -30,6 +32,7 @@ class DishData {
       'dish_imageurl': dish_imageurl,
       'dish_schedule_meal': dish_schedule_meal,
       'cusine': cusine,
+      'category_id': category_id,
     };
   }
 
@@ -44,6 +47,7 @@ class DishData {
       dish_imageurl: json['dish_imageurl'] ?? '',
       dish_schedule_meal: json['dish_schedule_meal'] ?? '',
       cusine: json['cusine'] ?? '',
+      category_id: json['category_id'] ?? '',
     );
   }
 }
