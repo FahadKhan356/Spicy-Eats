@@ -1,21 +1,25 @@
 import 'dart:convert';
+import 'dart:ffi';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/models/registershop.dart';
 import 'package:spicy_eats/SyncTabBar/CategoryModel.dart';
 import 'package:spicy_eats/SyncTabBar/MyHeader.dart';
 import 'package:spicy_eats/SyncTabBar/SecondHeaderTitle.dart';
-import 'package:spicy_eats/SyncTabBar/Sliver_Scroll_controller.dart';
 import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
 import 'package:spicy_eats/SyncTabBar/headerTitle.dart';
 import 'package:spicy_eats/commons/ItemQuantity.dart';
 import 'package:spicy_eats/commons/quantity_button.dart';
+import 'package:spicy_eats/features/Basket/model/CartModel.dart';
 import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/screens/restaurant_menu.dart';
 
+var showCartButton = StateProvider<bool>((ref) => false);
+var cartList = StateProvider<List<CartModel>>((ref) => []);
+var cartLength = StateProvider<int?>((ref) => null);
 final globalOffsetValues = ValueNotifier<double>(0);
 //value to do the validations of the top icons
 final valueScroll2 = ValueNotifier<double>(0);
@@ -51,7 +55,6 @@ class _HomeSliverWithScrollableTabsState
   List<Categories> sections = [];
   Map<String, List<DishData>> sortedDishes = {};
   List<DishData> mydishes = [];
-
   @override
   void initState() {
     // TODO: implement initState
@@ -100,6 +103,10 @@ class _HomeSliverWithScrollableTabsState
           ref
               .read(quantityProvider.notifier)
               .update((state) => newQuantityList);
+          //clear cart everytime
+          ref.read(cartLength.notifier).state = 0;
+          ref.read(cartList.notifier).state.clear();
+          ref.read(showCartButton.notifier).state = false;
         });
       }
     });
@@ -136,6 +143,8 @@ class _HomeSliverWithScrollableTabsState
 
   @override
   Widget build(BuildContext context) {
+    final cartlength = ref.watch(cartLength);
+
     void refreshHeader({
       required int index,
       required bool visible,
@@ -170,6 +179,38 @@ class _HomeSliverWithScrollableTabsState
     }
 
     return Scaffold(
+      floatingActionButton: ref.watch(showCartButton)
+          ? Align(
+              alignment: Alignment.bottomCenter,
+              child: SizedBox(
+                height: 50,
+                width: 150,
+                child: FloatingActionButton(
+                  backgroundColor: Colors.black,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  onPressed: () {},
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.shopping_cart,
+                        size: 30,
+                        color: Colors.white,
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        '$cartlength',
+                        style: TextStyle(fontSize: 28, color: Colors.white),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            )
+          : SizedBox(),
       body: Scrollbar(
         notificationPredicate: (scroll) {
           valueScroll2.value = scroll.metrics.extentInside;
@@ -260,7 +301,7 @@ class FlexibleSpaceBarHeader extends StatelessWidget {
             BackgroundSliver(
               restaurantdata: restaurantdata,
             ),
-            Positioned(
+            const Positioned(
                 top: 20, //(size.height - 10),
                 right: 10,
                 child: Icon(
@@ -286,7 +327,7 @@ class FlexibleSpaceBarHeader extends StatelessWidget {
 
 //BackgroundSliver
 class BackgroundSliver extends StatelessWidget {
-  RestaurantData? restaurantdata;
+  final RestaurantData? restaurantdata;
   BackgroundSliver({super.key, this.restaurantdata});
 
   @override
@@ -520,6 +561,8 @@ class SliverBodyItems extends ConsumerStatefulWidget {
 }
 
 class _SliverBodyItemsState extends ConsumerState<SliverBodyItems> {
+  //List<CartModel> cartlist = [];
+
   @override
   void initState() {
     // TODO: implement initState
@@ -549,10 +592,10 @@ class _SliverBodyItemsState extends ConsumerState<SliverBodyItems> {
         (context, index) {
           final product = widget.listItems[index];
           return Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Column(
               children: [
-                Divider(
+                const Divider(
                   color: Colors.black38,
                   thickness: 2,
                 ),
@@ -685,6 +728,59 @@ class _SliverBodyItemsState extends ConsumerState<SliverBodyItems> {
                                                         return [...state];
                                                       });
                                                     }
+
+                                                    int cartindex = ref
+                                                        .read(cartList)
+                                                        .indexWhere((item) =>
+                                                            item.itemId ==
+                                                            product.dishid);
+                                                    print(
+                                                        'item at cartlist cartindex..$cartindex');
+
+                                                    if (cartindex != -1 &&
+                                                        ref
+                                                                .read(cartList)[
+                                                                    cartindex]
+                                                                .itemTotalQuantity >
+                                                            1) {
+                                                      ref
+                                                          .read(
+                                                              cartList.notifier)
+                                                          .state[cartindex]
+                                                          .itemTotalQuantity--;
+                                                    } else {
+                                                      ref
+                                                          .read(cartList)
+                                                          .removeAt(cartindex);
+                                                      print('not removing..');
+                                                    }
+
+                                                    print(
+                                                        ' cart list length : ${ref.read(cartList).length}');
+                                                    if (ref
+                                                        .read(cartList)
+                                                        .isEmpty) {
+                                                      ref
+                                                          .read(showCartButton
+                                                              .notifier)
+                                                          .state = false;
+                                                    }
+
+                                                    print(
+                                                        'this is item ${itemQuantity.quantity}');
+                                                    ('this is bool value ${ref.read(showCartButton.notifier).state}');
+                                                    final cartlength = ref
+                                                        .watch(
+                                                            cartList.notifier)
+                                                        .state
+                                                        .length;
+                                                    ref
+                                                        .read(
+                                                            cartLength.notifier)
+                                                        .update((state) =>
+                                                            state = cartlength);
+                                                    print(
+                                                        'cart length : $cartlength');
                                                   },
                                                 ),
                                                 Center(
@@ -717,6 +813,8 @@ class _SliverBodyItemsState extends ConsumerState<SliverBodyItems> {
                                                   buttonwidth:
                                                       size.width * 0.09,
                                                   onpress: () {
+                                                    double itemTotalprice = 0.0;
+
                                                     final dishIndex = ref
                                                         .read(quantityProvider
                                                             .notifier)
@@ -732,19 +830,110 @@ class _SliverBodyItemsState extends ConsumerState<SliverBodyItems> {
                                                         state[dishIndex]
                                                             .quantity++;
 
-                                                        if (ref
-                                                                .read(quantityProvider
+                                                        print(
+                                                            'this is item ${itemQuantity.quantity}');
+                                                        ('this is bool value ${ref.read(showCartButton.notifier).state}');
+                                                        final totalquantity = ref
+                                                            .read(
+                                                                quantityProvider
                                                                     .notifier)
-                                                                .state[
-                                                                    dishIndex]
-                                                                .quantity >
-                                                            0) {
+                                                            .state[dishIndex]
+                                                            .quantity;
+                                                        itemTotalprice =
+                                                            (totalquantity *
+                                                                (product
+                                                                    .dish_price!
+                                                                    .toDouble()));
+
+                                                        print(
+                                                            'itemtotalprice : $itemTotalprice');
+
+                                                        int cartItemIndex = ref
+                                                            .read(cartList
+                                                                .notifier)
+                                                            .state
+                                                            .indexWhere((item) =>
+                                                                item.itemId ==
+                                                                ref
+                                                                    .read(quantityProvider
+                                                                        .notifier)
+                                                                    .state[
+                                                                        dishIndex]
+                                                                    .id);
+
+                                                        if (cartItemIndex !=
+                                                            -1) {
+                                                          // If the item exists in the cartList, update its quantity and total price
+                                                          ref
+                                                                  .read(cartList)[
+                                                                      cartItemIndex]
+                                                                  .itemTotalQuantity =
+                                                              totalquantity;
+                                                          ref
+                                                                  .read(cartList)[
+                                                                      cartItemIndex]
+                                                                  .itemTotalPrice =
+                                                              itemTotalprice;
+                                                          print(
+                                                              "Cart List after addition: ${ref.read(cartList.notifier).state.length}");
+                                                        } else {
+                                                          // If the item is not in the cartList, add it as a new entry
+                                                          print(
+                                                              'item id in cart list ${ref.read(cartList)[0].itemId}');
+                                                          print(
+                                                              ' ${product.dishid}');
+
+                                                          // Item does not exist, add as new item to cart
+                                                          ref
+                                                              .read(cartList
+                                                                  .notifier)
+                                                              .update((state) {
+                                                            return [
+                                                              ...state,
+                                                              CartModel(
+                                                                itemId: product
+                                                                    .dishid!,
+                                                                itemName: product
+                                                                    .dish_name
+                                                                    .toString(),
+                                                                itemTotalPrice:
+                                                                    itemTotalprice,
+                                                                itemTotalQuantity:
+                                                                    1,
+                                                              ),
+                                                            ];
+                                                          });
+                                                          print(
+                                                              "Cart List after addition: ${ref.read(cartList.notifier).state.length}");
+                                                          final cartlength = ref
+                                                              .watch(cartList
+                                                                  .notifier)
+                                                              .state
+                                                              .length;
+                                                          ref
+                                                              .read(cartLength
+                                                                  .notifier)
+                                                              .update((state) =>
+                                                                  state =
+                                                                      cartlength);
+                                                          print(
+                                                              'cart length : $cartlength');
+                                                        }
+
+                                                        // Print for debugging
+
+                                                        if (ref
+                                                            .read(cartList)
+                                                            .isNotEmpty) {
                                                           ref
                                                               .read(
-                                                                  showAddProvider
+                                                                  showCartButton
                                                                       .notifier)
                                                               .state = true;
                                                         }
+
+                                                        print(
+                                                            'itemtotalprice : $itemTotalprice');
 
                                                         return [
                                                           ...state
@@ -770,6 +959,7 @@ class _SliverBodyItemsState extends ConsumerState<SliverBodyItems> {
                                             iconColor: Colors.white,
                                             iconSize: size.width * 0.055,
                                             onpress: () {
+                                              double itemTotalprice = 0.0;
                                               var dish = ref
                                                   .read(
                                                       quantityProvider.notifier)
@@ -787,6 +977,67 @@ class _SliverBodyItemsState extends ConsumerState<SliverBodyItems> {
                                                   return [...state];
                                                 });
                                               }
+
+                                              final totalquantity = ref
+                                                  .read(
+                                                      quantityProvider.notifier)
+                                                  .state[dish]
+                                                  .quantity;
+                                              itemTotalprice = (totalquantity *
+                                                  (product.dish_price!
+                                                      .toDouble()));
+
+                                              print(
+                                                  'itemtotalprice : $itemTotalprice');
+
+                                              var newcart = CartModel(
+                                                  itemId: product.dishid!,
+                                                  itemName: product.dish_name
+                                                      .toString(),
+                                                  itemTotalPrice:
+                                                      itemTotalprice,
+                                                  itemTotalQuantity:
+                                                      totalquantity);
+
+                                              // ref
+                                              //     .read(cartList.notifier)
+                                              //     .state
+                                              //     .add(newcart);
+
+                                              // final cartlistLength =
+                                              //     ref.read(cartList.notifier);
+
+                                              // ref
+                                              //         .read(showCartButton.notifier)
+                                              //         .state =
+                                              //     cartlistLength.state.isEmpty;
+                                              ref
+                                                  .read(cartList.notifier)
+                                                  .state
+                                                  .add(newcart);
+                                              print(
+                                                  "Cart List after addition: ${ref.read(cartList.notifier).state.length}");
+                                              final cartlength =
+                                                  ref.watch(cartList).length;
+                                              ref
+                                                  .read(cartLength.notifier)
+                                                  .update((state) =>
+                                                      state = cartlength);
+                                              print(
+                                                  'cart length : $cartlength');
+
+                                              if (ref
+                                                  .read(cartList)
+                                                  .isNotEmpty) {
+                                                ref
+                                                    .read(
+                                                        showCartButton.notifier)
+                                                    .state = true;
+                                              }
+
+                                              print(
+                                                  'this is item ${itemQuantity.quantity}');
+                                              ('this is bool value ${ref.read(showCartButton.notifier).state}');
                                             },
                                           )),
                               ]),
@@ -833,9 +1084,7 @@ class ListItemHeaderSliver extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        color: index == snapshot?.index
-                            ? Colors.white
-                            : Colors.red,
+                        color: index == snapshot?.index ? Colors.white : null,
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Text(

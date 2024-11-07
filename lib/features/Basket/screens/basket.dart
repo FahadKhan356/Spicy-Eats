@@ -3,9 +3,9 @@ import 'package:spicy_eats/commons/restaurantModel.dart';
 
 class BasketScreen extends StatelessWidget {
   static const String routename = "/basketScreen";
-  final Dish dish;
-  final double totalprice;
-  final int quantity;
+  final Dish? dish;
+  final double? totalprice;
+  final int? quantity;
   BasketScreen(
       {super.key,
       required this.dish,
@@ -32,7 +32,7 @@ class BasketScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              dish.name,
+              'sddsd',
               style: const TextStyle(
                 fontSize: 30,
                 color: Colors.black,
@@ -66,7 +66,7 @@ class BasketScreen extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  dish.name,
+                  dish?.name ?? 'sdda',
                   style: const TextStyle(
                     fontSize: 14,
                     color: Colors.black87,
@@ -166,7 +166,7 @@ class BasketScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "${totalprice.toStringAsFixed(2)} \$",
+                      "${totalprice!.toStringAsFixed(2)} \$",
                       style: const TextStyle(
                         fontSize: 18,
                         color: Colors.white,

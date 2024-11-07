@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spicy_eats/features/Basket/screens/basket.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/dashboard/DrawerScreens/Menu/SubScreens/AddItemScreen.dart';
 import 'package:spicy_eats/features/dashboard/DrawerScreens/Menu/overview.dart';
@@ -78,10 +79,10 @@ class _MyAppState extends ConsumerState<MyApp> {
             tabBarTheme: TabBarTheme(),
             appBarTheme: AppBarTheme(backgroundColor: Colors.white)),
         home: Scaffold(
-          body: // HomeSliverWithScrollableTabs(),
-              supabaseClient.auth.currentSession != null
-                  ? const Home()
-                  : PasswordlessScreen(ref: ref),
+          body: BasketScreen(dish: null, totalprice: 122, quantity: 2),
+          // supabaseClient.auth.currentSession != null
+          //     ? const Home()
+          //     : PasswordlessScreen(ref: ref),
           // supabaseClient.auth.currentSession != null
           //     ? screen[currentindex]
           //     : PasswordlessScreen(

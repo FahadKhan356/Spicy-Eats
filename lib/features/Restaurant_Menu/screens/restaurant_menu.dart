@@ -8,7 +8,6 @@ import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 
 final quantityProvider = StateProvider<List<ItemQuantity>>((ref) => []);
-var showAddProvider = StateProvider<bool>((ref) => false);
 
 class RestaurantMenu extends ConsumerStatefulWidget {
   static const String routename = "/restaurant-menu";
@@ -521,10 +520,10 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                                                                               (state) {
                                                                             state[dishIndex].quantity++;
 
-                                                                            if (ref.read(quantityProvider.notifier).state[dishIndex].quantity >
-                                                                                0) {
-                                                                              ref.read(showAddProvider.notifier).state = true;
-                                                                            }
+                                                                            // if (ref.read(quantityProvider.notifier).state[dishIndex].quantity >
+                                                                            //     0) {
+                                                                            //   ref.read(showAddProvider.notifier).state = true;
+                                                                            // }
 
                                                                             return [
                                                                               ...state

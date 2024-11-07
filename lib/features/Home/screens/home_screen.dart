@@ -169,6 +169,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    final showCart = ref.watch(showCartButton);
+    final cartsize = ref.watch(cartLength);
     var size = MediaQuery.of(context).size;
     var issearch = !ref.watch(searchProvider);
     return SafeArea(
@@ -224,8 +226,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                         Row(
                           children: [
                             Container(
-                              height: 40,
-                              width: 40,
+                              height: 50,
+                              width: 50,
                               decoration: BoxDecoration(
                                   color: const Color.fromARGB(255, 94, 81, 81),
                                   //color: Colors.white70,
@@ -251,23 +253,58 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                             const SizedBox(
                               width: 10,
                             ),
-                            Container(
-                              height: 40,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                color: const Color.fromARGB(255, 94, 81, 81),
+                            Stack(
+                              children: [
+                                Container(
+                                  height: 50,
+                                  width: 50,
+                                  decoration: BoxDecoration(
+                                    color:
+                                        const Color.fromARGB(255, 94, 81, 81),
 
-                                // color: Colors.red,
-                                borderRadius: BorderRadius.circular(
-                                    size.width * 0.12 / 2),
-                              ),
-                              child: Center(
-                                child: Icon(
-                                  Icons.shopping_cart,
-                                  size: 30,
-                                  color: Colors.white,
+                                    // color: Colors.red,
+                                    borderRadius: BorderRadius.circular(
+                                        size.width * 0.12 / 2),
+                                  ),
+                                  child: Center(
+                                    child: IconButton(
+                                        onPressed: () {},
+                                        icon: Icon(
+                                          Icons.shopping_cart,
+                                          size: 30,
+                                          color: Colors.white,
+                                        )),
+                                  ),
                                 ),
-                              ),
+                                showCart
+                                    ? Positioned(
+                                        top: 5,
+                                        right: 0,
+                                        child: Container(
+                                          height: 25,
+                                          width: 25,
+                                          decoration: BoxDecoration(
+                                            color: Colors.red.withOpacity(0.8),
+
+                                            // color: Colors.red,
+                                            borderRadius: BorderRadius.circular(
+                                              12.5,
+                                              // size.width * 0.12 / 2
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              '$cartsize',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : const SizedBox(),
+                              ],
                             ),
                           ],
                         ),
