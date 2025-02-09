@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
-import 'package:spicy_eats/SyncTabBar/CategoryModel.dart';
 import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/main.dart';

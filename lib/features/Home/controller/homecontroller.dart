@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/SyncTabBar/CategoryModel.dart';
 import 'package:spicy_eats/features/Home/repository/homerespository.dart';
 
 import '../../../SyncTabBar/categoriesmodel.dart';

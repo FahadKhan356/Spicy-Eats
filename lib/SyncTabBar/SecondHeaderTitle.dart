@@ -20,7 +20,7 @@ class SecondHeaderTitle extends SliverPersistentHeaderDelegate {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             child: Container(
-              //color: Colors.white,
+              color: Colors.red,
               child: Text(
                 titles[index].category_name,
                 style:

@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:spicy_eats/Practice%20for%20cart/screens/DummyBasket.dart';
+import 'package:spicy_eats/Practice%20for%20cart/screens/DummyCart.dart';
 import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/dashboard/DrawerScreens/Menu/ineroverview.dart';
@@ -55,9 +57,23 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) {
         final argument = settings.arguments as Map;
         return BasketScreen(
-            dish: argument['dish'],
-            totalprice: argument['totalprice'],
-            quantity: argument['quantity']);
+          dish: argument['dish'],
+          totalprice: argument['totalprice'],
+          quantity: argument['quantity'],
+          cartlist: argument['cartlist'],
+          dishes: argument['dishes'] ?? [],
+        );
+      });
+    case DummyCart.routename:
+      return MaterialPageRoute(builder: (context) {
+        final argument = settings.arguments as String;
+        return DummyCart(
+          restuid: argument,
+        );
+      });
+    case DummyBasket.routename:
+      return MaterialPageRoute(builder: (context) {
+        return DummyBasket();
       });
 
     case Home.routename:

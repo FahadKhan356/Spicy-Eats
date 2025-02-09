@@ -38,7 +38,7 @@ class MyHeaderTitle extends SliverPersistentHeaderDelegate {
             index != 0
                 ? Divider(
                     thickness: 5,
-                    color: Colors.black,
+                    color: Colors.blueGrey,
                   )
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,

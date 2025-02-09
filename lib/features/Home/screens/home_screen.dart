@@ -1,11 +1,11 @@
 import 'dart:convert';
-import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:spicy_eats/Practice%20for%20cart/screens/DummyCart.dart';
 import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
 import 'package:spicy_eats/Register%20shop/models/registershop.dart';
 import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
@@ -13,6 +13,7 @@ import 'package:spicy_eats/Register%20shop/widgets/Lists.dart';
 import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
 import 'package:spicy_eats/commons/restaurantModel.dart';
 import 'package:spicy_eats/commons/restaurant_container.dart';
+import 'package:spicy_eats/features/Basket/screens/basket.dart';
 import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
 import 'package:spicy_eats/features/Home/screens/homedrawer.dart';
 import 'package:spicy_eats/features/Home/screens/widgets/cusineslist.dart';
@@ -268,7 +269,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                   ),
                                   child: Center(
                                     child: IconButton(
-                                        onPressed: () {},
+                                        onPressed: () => Navigator.pushNamed(
+                                                context, BasketScreen.routename,
+                                                arguments: {
+                                                  'dish': null,
+                                                  'totalprice': 300.0,
+                                                  'quantity': 12,
+                                                  'cartlist': ref
+                                                      .read(cartList.notifier)
+                                                      .state,
+                                                  'dishes': dishList,
+                                                }),
                                         icon: Icon(
                                           Icons.shopping_cart,
                                           size: 30,
@@ -461,12 +472,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                     //     });
                                     Navigator.pushNamed(
                                       context,
-                                      HomeSliverWithScrollableTabs.routename,
-                                      arguments: {
-                                        'restuid':
-                                            restaurantData[index].restuid,
-                                        'restaurantdata': restaurantData[index],
-                                      },
+                                      DummyCart.routename,
+                                      arguments: restaurantData[index].restuid,
+                                      // HomeSliverWithScrollableTabs.routename,
+                                      // arguments: {
+                                      //   'restuid':
+                                      //       restaurantData[index].restuid,
+                                      //   'restaurantdata': restaurantData[index],
+                                      // },
                                     );
                                   },
                                   child: RestaurantContainer(

@@ -1,184 +1,317 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
+import 'package:spicy_eats/commons/ItemQuantity.dart';
+import 'package:spicy_eats/commons/quantity_button.dart';
 import 'package:spicy_eats/commons/restaurantModel.dart';
+import 'package:spicy_eats/features/Basket/model/CartModel.dart';
+import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
+import 'package:spicy_eats/features/Restaurant_Menu/screens/restaurant_menu.dart';
 
-class BasketScreen extends StatelessWidget {
+class BasketScreen extends ConsumerWidget {
   static const String routename = "/basketScreen";
+  final List<CartModel> cartlist;
   final Dish? dish;
   final double? totalprice;
   final int? quantity;
-  BasketScreen(
-      {super.key,
-      required this.dish,
-      required this.totalprice,
-      required this.quantity});
+  final List<DishData> dishes;
+
+  BasketScreen({
+    super.key,
+    required this.dish,
+    required this.totalprice,
+    required this.quantity,
+    required this.cartlist,
+    required this.dishes,
+  });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final cartlength = ref.watch(cartLength);
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        shadowColor: Colors.transparent,
+        centerTitle: true,
+        title: const Text(
+          'Your Basket',
+          style: TextStyle(color: Colors.white, fontSize: 30),
+        ),
+        backgroundColor: Colors.black,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
           icon: const Icon(
             Icons.arrow_back,
-            color: Colors.black,
+            color: Colors.white,
             size: 24,
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'sddsd',
-              style: const TextStyle(
-                fontSize: 30,
-                color: Colors.black,
-                fontWeight: FontWeight.w500,
-                overflow: TextOverflow.visible,
-              ),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Your Items',
-              style: TextStyle(
-                fontSize: 15,
-                color: Colors.black87,
-                fontWeight: FontWeight.w500,
-                overflow: TextOverflow.visible,
-              ),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  quantity.toString(),
-                  style: const TextStyle(
-                    fontSize: 15,
-                    color: Colors.black87,
-                    fontWeight: FontWeight.w500,
-                    overflow: TextOverflow.visible,
-                  ),
-                ),
-                Text(
-                  dish?.name ?? 'sdda',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.black87,
-                    fontWeight: FontWeight.w500,
-                    overflow: TextOverflow.visible,
-                    letterSpacing: 1,
-                  ),
-                ),
-                Text(
-                  totalprice.toString(),
-                  style: const TextStyle(
-                    fontSize: 15,
-                    color: Colors.black54,
-                    fontWeight: FontWeight.w500,
-                    overflow: TextOverflow.visible,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 30),
-            const Divider(
-              height: 4,
-              thickness: 4,
-              color: Color.fromARGB(87, 226, 211, 211),
-            ),
-            const SizedBox(height: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Subtotal',
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.black54,
-                    fontWeight: FontWeight.w500,
-                    overflow: TextOverflow.visible,
-                  ),
-                ),
-                Text(
-                  totalprice.toString(),
-                  style: const TextStyle(
-                    fontSize: 15,
-                    color: Colors.black54,
-                    fontWeight: FontWeight.w500,
-                    overflow: TextOverflow.visible,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Total',
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.black54,
-                    fontWeight: FontWeight.w500,
-                    overflow: TextOverflow.visible,
-                  ),
-                ),
-                Text(
-                  totalprice.toString(),
-                  style: const TextStyle(
-                    fontSize: 15,
-                    color: Colors.black54,
-                    fontWeight: FontWeight.w500,
-                    overflow: TextOverflow.visible,
-                  ),
-                ),
-              ],
-            ),
-            const Spacer(),
-            SizedBox(
-              height: 50,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.zero,
-                  ),
-                ),
-                onPressed: () {},
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SizedBox(width: 30),
-                    const Text(
-                      'Next . ',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Text(
-                      "${totalprice!.toStringAsFixed(2)} \$",
-                      style: const TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          ],
-        ),
+      body: Column(
+        children: [
+          cartlength != 0
+              ? ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: cartlist.length,
+                  itemBuilder: (context, index) {
+                    return Consumer(builder: (context, ref, child) {
+                      final itemQuantity =
+                          ref.watch(quantityProvider).firstWhere(
+                                (element) =>
+                                    element.id == cartlist[index].itemId,
+                                orElse: () => ItemQuantity(
+                                  id: dishes[index].dishid!,
+                                  quantity: 0,
+                                ),
+                              );
+
+                      return Column(
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                height: 100,
+                                width: 100,
+                                child: Image.network(
+                                  cartlist[index].cartItemImageUrl!,
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                              Text(
+                                cartlist[index].itemTotalPrice.toString(),
+                                style: const TextStyle(
+                                    color: Colors.black, fontSize: 30),
+                              )
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Container(
+                                // width:
+                                //     size.width *
+                                //         0.09,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.grey[200]),
+                                child: Row(
+                                  children: [
+                                    QuantityButton(
+                                      radiustopleft: 10,
+                                      radiustopright: 10,
+                                      radiusbottomleft: 10,
+                                      radiusbottomright: 10,
+                                      // buttonradius:
+                                      //     10,
+                                      buttonheight: size.width * 0.09,
+                                      buttonwidth: size.width * 0.09,
+                                      icon: Icons.remove,
+                                      iconColor: Colors.white,
+                                      iconSize: size.width * 0.055,
+                                      bgcolor: Colors.black,
+                                      onpress: () {
+                                        int dishindex = ref
+                                            .read(quantityProvider.notifier)
+                                            .state
+                                            .indexWhere((element) =>
+                                                element.id ==
+                                                cartlist[index].itemId);
+
+                                        if (dishindex != -1) {
+                                          ref
+                                              .read(quantityProvider.notifier)
+                                              .update((state) {
+                                            if (state[dishindex].quantity > 0) {
+                                              state[dishindex].quantity--;
+                                            }
+                                            return [...state];
+                                          });
+                                        }
+
+                                        int cartindex = ref
+                                            .read(cartList)
+                                            .indexWhere((item) =>
+                                                item.itemId ==
+                                                cartlist[index].itemId);
+                                        print(
+                                            'item at cartlist cartindex..$cartindex');
+
+                                        if (cartindex != -1) {
+                                          if (ref
+                                                  .read(cartList)[cartindex]
+                                                  .itemTotalQuantity >
+                                              1) {
+                                            ref
+                                                .read(cartList.notifier)
+                                                .state[cartindex]
+                                                .itemTotalQuantity--;
+                                          } else {
+                                            ref
+                                                .read(cartList)
+                                                .removeAt(cartindex);
+                                            print('not removing..');
+                                          }
+                                        }
+
+                                        print(
+                                            ' cart list length : ${ref.read(cartList).length}');
+                                        if (ref.read(cartList).isEmpty) {
+                                          ref
+                                              .read(showCartButton.notifier)
+                                              .state = false;
+                                        }
+
+                                        print(
+                                            'this is item ${itemQuantity.quantity}');
+                                        ('this is bool value ${ref.read(showCartButton.notifier).state}');
+                                        final cartlength = ref
+                                            .watch(cartList.notifier)
+                                            .state
+                                            .length;
+                                        ref.read(cartLength.notifier).update(
+                                            (state) => state = cartlength);
+                                        print('cart length : $cartlength');
+                                      },
+                                    ),
+                                    Center(
+                                      child: Text(
+                                        " ${itemQuantity.quantity}",
+                                        style: TextStyle(
+                                          fontSize: size.width * 0.05,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                    ),
+                                    QuantityButton(
+                                      radiusbottomleft: 10,
+                                      radiusbottomright: 10,
+                                      radiustopleft: 10,
+                                      radiustopright: 10,
+                                      // radiustopleft:
+                                      //     10,
+                                      // radiustopright:
+                                      //     10,
+                                      // buttonradius:
+                                      //     10,
+                                      icon: Icons.add,
+                                      iconColor: Colors.white,
+                                      iconSize: size.width * 0.055,
+                                      bgcolor: Colors.black,
+                                      buttonheight: size.width * 0.08,
+                                      buttonwidth: size.width * 0.09,
+                                      onpress: () {
+                                        double itemTotalprice = 0.0;
+
+                                        final dishIndex = ref
+                                            .read(quantityProvider.notifier)
+                                            .state
+                                            .indexWhere((item) =>
+                                                item.id ==
+                                                cartlist[index].itemId);
+                                        if (dishIndex != -1) {
+                                          ref
+                                              .read(quantityProvider.notifier)
+                                              .update((state) {
+                                            state[dishIndex].quantity++;
+
+                                            print(
+                                                'this is item ${itemQuantity.quantity}');
+                                            ('this is bool value ${ref.read(showCartButton.notifier).state}');
+                                            final totalquantity = ref
+                                                .read(quantityProvider.notifier)
+                                                .state[dishIndex]
+                                                .quantity;
+                                            itemTotalprice += ((cartlist[index]
+                                                    .itemTotalPrice!
+                                                    .toDouble())) *
+                                                ref
+                                                    .read(quantityProvider
+                                                        .notifier)
+                                                    .state[dishIndex]
+                                                    .quantity;
+
+                                            print(
+                                                'itemtotalprice : $itemTotalprice');
+
+                                            int cartItemIndex = ref
+                                                .read(cartList.notifier)
+                                                .state
+                                                .indexWhere((item) =>
+                                                    item.itemId ==
+                                                    ref
+                                                        .read(quantityProvider
+                                                            .notifier)
+                                                        .state[dishIndex]
+                                                        .id);
+
+                                            if (cartItemIndex != -1) {
+                                              // If the item exists in the cartList, update its quantity and total price
+                                              ref
+                                                      .read(cartList)[cartItemIndex]
+                                                      .itemTotalQuantity =
+                                                  totalquantity;
+                                              ref
+                                                  .read(cartList)[cartItemIndex]
+                                                  .itemTotalPrice = itemTotalprice;
+                                              print(
+                                                  "Cart List after addition: ${ref.read(cartList.notifier).state.length}");
+                                            } else {
+                                              // If the item is not in the cartList, add it as a new entry
+                                              print(
+                                                  'item id in cart list ${ref.read(cartList)[0].itemId}');
+                                              print(
+                                                  ' ${cartlist[index].itemId}');
+
+                                              // Item does not exist, add as new item to cart
+                                              ref
+                                                  .read(cartList.notifier)
+                                                  .update((state) {
+                                                return [
+                                                  ...state,
+                                                ];
+                                              });
+                                              print(
+                                                  "Cart List after addition: ${ref.read(cartList.notifier).state.length}");
+                                              final cartlength = ref
+                                                  .watch(cartList.notifier)
+                                                  .state
+                                                  .length;
+                                              ref
+                                                  .read(cartLength.notifier)
+                                                  .update((state) =>
+                                                      state = cartlength);
+                                              print(
+                                                  'cart length : $cartlength');
+                                            }
+
+                                            // Print for debugging
+
+                                            if (ref.read(cartList).isNotEmpty) {
+                                              ref
+                                                  .read(showCartButton.notifier)
+                                                  .state = true;
+                                            }
+
+                                            print(
+                                                'itemtotalprice : $itemTotalprice');
+
+                                            return [
+                                              ...state
+                                            ]; // return a new state
+                                          });
+                                        }
+                                      },
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
+                          )
+                        ],
+                      );
+                    });
+                  })
+              : SizedBox()
+        ],
       ),
     );
   }
