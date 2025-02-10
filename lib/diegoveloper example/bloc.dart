@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spicy_eats/SyncTabBar/CategoryModel.dart';
 import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 
@@ -9,13 +10,16 @@ class RappiBloc with ChangeNotifier {
   List<List<int>> productlength = [];
   List<RapitabCategory> tabs = [];
   List<RappiItem> items = [];
+  bool _listen = true;
 
   ScrollController? scrollController;
-
+  TabController? tabController;
   void init(TickerProvider ticker,
       {List<DishData>? dishes, List<Categories>? categories}) {
+    // tabController = TabController(length: categories!.length, vsync: ticker);
     final Map<String, List<DishData>> categoryDishesMap = {};
     double offsetFrom = 0.0;
+    double offsetTo = 0.0;
     scrollController = ScrollController();
 
     // Group dishes by category_id
@@ -32,10 +36,21 @@ class RappiBloc with ChangeNotifier {
 
       if (i > 0) {
         // Calculate offsetFrom based on the previous category's dishes
-        final previousCategoryDishes =
-            categoryDishesMap[categories[i - 1].category_id] ?? [];
-        offsetFrom +=
-            (previousCategoryDishes.length * productHeight) + categoryHeight;
+        // final previousCategoryDishes =
+        //     categoryDishesMap[categories[i - 1].category_id] ?? [];
+        // offsetFrom +=
+        //     categoryHeight + (previousCategoryDishes.length * productHeight);
+        offsetFrom = tabs[i - 1].offsetTo;
+      }
+      if (i < categories.length - 1) {
+        final value = categoryDishesMap[categories[i + 1].category_id] ?? [];
+
+        offsetTo = offsetFrom + categoryHeight + (value.length * productHeight);
+      } else {
+        // offsetTo = double.infinity;
+        offsetTo = offsetFrom +
+            (categoryDishes.length * productHeight) +
+            categoryHeight;
       }
 
       // Add the category to tabs and items
@@ -43,6 +58,7 @@ class RappiBloc with ChangeNotifier {
         category: category,
         selected: (i == 0),
         offsetFrom: offsetFrom, // Ensure this is set
+        offsetTo: offsetTo,
       ));
 
       items.add(RappiItem(category: category));
@@ -54,9 +70,45 @@ class RappiBloc with ChangeNotifier {
 
       // Debug print
       print('Category: ${category.category_name}, offsetFrom: $offsetFrom');
+      print(
+          'Category: ${category.category_name}, offsetFrom: $offsetFrom, offsetTo: $offsetTo');
     }
 
-    notifyListeners();
+    //notifyListeners();
+    scrollController!.addListener(_onScrollingListener);
+  }
+
+  // void _onScrollingListener() {
+  //   if (_listen) {
+  //     for (int i = 0; i < tabs.length; i++) {
+  //       final tab = tabs[i];
+  //       if (scrollController!.offset >= tab.offsetFrom &&
+  //           scrollController!.offset <= tab.offsetTo &&
+  //           !tab.selected!) {
+  //         onCategoryTab(i, animationRequired: false);
+  //         tabController!.animateTo(i);
+  //         break;
+  //       }
+  //     }
+  //   }
+  // }
+  void _onScrollingListener() {
+    if (_listen) {
+      for (int i = 0; i < tabs.length; i++) {
+        final tab = tabs[i];
+        if (scrollController!.offset >= tab.offsetFrom &&
+            scrollController!.offset < tab.offsetTo &&
+            !tab.selected!) {
+          print('Scrolled to category: ${tab.category.category_name}');
+          print('Scroll position: ${scrollController!.offset}');
+          print(
+              'Category offsetFrom: ${tab.offsetFrom}, offsetTo: ${tab.offsetTo}');
+          onCategoryTab(i, animationRequired: false);
+          tabController!.animateTo(i);
+          break;
+        }
+      }
+    }
   }
 
   @override
@@ -65,7 +117,7 @@ class RappiBloc with ChangeNotifier {
     super.dispose();
   }
 
-  void onCategoryTab(int index) {
+  void onCategoryTab(int index, {bool animationRequired = true}) async {
     print('${index}');
     if (scrollController == null) {
       print('ScrollController is not initialized');
@@ -78,17 +130,20 @@ class RappiBloc with ChangeNotifier {
           selected: selected.category.category_name ==
               tabs[i].category.category_name);
     }
-    if (selected.offsetFrom == null) {
-      print(
-          'offsetFrom is null for category: ${selected.category.category_name}');
-      return;
+    // if (selected.offsetFrom == null) {
+    //   print(
+    //       'offsetFrom is null for category: ${selected.category.category_name}');
+    //   return;
+    // }
+    if (animationRequired) {
+      _listen = false;
+      await scrollController!.animateTo(
+        selected.offsetFrom,
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.bounceOut,
+      );
+      _listen = true;
     }
-
-    scrollController!.animateTo(
-      selected.offsetFrom,
-      duration: Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
 
     notifyListeners();
   }
@@ -96,15 +151,19 @@ class RappiBloc with ChangeNotifier {
 
 class RapitabCategory {
   RapitabCategory(
-      {required this.category, this.selected, required this.offsetFrom});
+      {required this.category,
+      this.selected,
+      required this.offsetFrom,
+      required this.offsetTo});
   final Categories category; // Make `category` non-nullable
   bool? selected;
   final double offsetFrom; // Make `offsetFrom` non-nullable
-
+  final double offsetTo;
   RapitabCategory copywith({bool? selected}) => RapitabCategory(
         category: category,
         selected: selected ?? this.selected,
         offsetFrom: offsetFrom,
+        offsetTo: offsetTo,
       );
 }
 

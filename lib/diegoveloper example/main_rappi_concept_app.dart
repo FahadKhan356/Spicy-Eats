@@ -17,7 +17,7 @@ class Mian_rappi_concept_app extends ConsumerStatefulWidget {
       _Mian_rappi_concept_appState();
 }
 
-TabController? _tabController;
+// TabController? _tabController;
 
 class _Mian_rappi_concept_appState extends ConsumerState<Mian_rappi_concept_app>
     with SingleTickerProviderStateMixin {
@@ -58,10 +58,15 @@ class _Mian_rappi_concept_appState extends ConsumerState<Mian_rappi_concept_app>
     fetchcategoriesAnddishes(restuid).then((value) {
       if (allcategories.isNotEmpty) {
         setState(() {
-          _tabController =
+          bloc.tabController =
               TabController(length: allcategories.length, vsync: this);
+          print('Number of tabs: ${bloc.tabs.length}');
+          print('TabController length: ${bloc.tabController?.length}');
+          // bloc.tabController =
+          //     TabController(length: bloc.tabs.length, vsync: this);
         });
       }
+
       bloc.init(this, dishes: dishes, categories: allcategories);
     });
   }
@@ -70,7 +75,7 @@ class _Mian_rappi_concept_appState extends ConsumerState<Mian_rappi_concept_app>
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    _tabController!.dispose();
+    bloc.tabController!.dispose();
   }
 
   @override
@@ -124,7 +129,7 @@ class _Mian_rappi_concept_appState extends ConsumerState<Mian_rappi_concept_app>
                           child: TabBar(
                             indicatorColor: Colors.white,
                             isScrollable: true,
-                            controller: _tabController,
+                            controller: bloc.tabController,
                             tabs: bloc.tabs.map((e) {
                               return Rappi_tab_widget(category: e);
                             }).toList(),
@@ -138,9 +143,8 @@ class _Mian_rappi_concept_appState extends ConsumerState<Mian_rappi_concept_app>
                             child: Container(
                                 // width: double.maxFinite,
                                 color: Colors.white,
-                                child: Column(
-                                  children:
-                                      List.generate(bloc.items.length, (index) {
+                                child: Column(children: [
+                                  ...List.generate(bloc.items.length, (index) {
                                     if (bloc.items[index].isCategory) {
                                       return RappiCategory(
                                           category: bloc.items[index].category);
@@ -149,7 +153,10 @@ class _Mian_rappi_concept_appState extends ConsumerState<Mian_rappi_concept_app>
                                           dish: bloc.items[index].product!);
                                     }
                                   }).toList(),
-                                )),
+                                  // SizedBox(
+                                  //     height:
+                                  //         MediaQuery.of(context).size.height),
+                                ])),
                           ),
                         ),
                       ],
@@ -163,19 +170,19 @@ class _Mian_rappi_concept_appState extends ConsumerState<Mian_rappi_concept_app>
 Widget Rappi_tab_widget({RapitabCategory? category}) {
   return Card(
     margin: const EdgeInsets.all(5),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(1)),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     borderOnForeground: false,
-    color: Colors.white,
-    elevation: category!.selected! ? 6 : 0,
+    color: category!.selected! ? Colors.black : Colors.white,
+    elevation: category.selected! ? 6 : 0,
     shadowColor: Colors.black12,
     child: Padding(
       padding: const EdgeInsets.all(8.0),
       child: Text(
-        //'sdadasd',
-        category!.category!.category_name.toString(),
+        category.category.category_name.toString(),
         style: TextStyle(
             fontSize: 15,
-            color: category.selected! ? Colors.black : Colors.black38),
+            fontWeight: FontWeight.bold,
+            color: category.selected! ? Colors.white : Colors.black38),
       ),
     ),
   );
@@ -184,41 +191,80 @@ Widget Rappi_tab_widget({RapitabCategory? category}) {
 // ignore: non_constant_identifier_names
 class RappiCategory extends StatelessWidget {
   RappiCategory({required this.category});
-  Categories? category;
+  final Categories? category;
 
   @override
   Widget build(BuildContext context) {
     return Container(
         height: 55,
         width: double.maxFinite,
-        child: Card(color: Colors.blue, child: Text(category!.category_name)));
+        child: Card(
+            elevation: 0,
+            color: Colors.white,
+            child: Center(
+              child: Text(
+                category!.category_name,
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            )));
   }
 }
 
 // ignore: non_constant_identifier_names
 class RappiProduct extends StatelessWidget {
   RappiProduct({required this.dish});
-  DishData dish;
+  final DishData dish;
   @override
   Widget build(BuildContext context) {
     return Container(
         height: 110,
         width: double.maxFinite,
         child: Card(
-            color: Colors.cyanAccent,
+            elevation: 3,
+            color: Colors.white,
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Image.network(
-                  dish.dish_imageurl.toString(),
-                  fit: BoxFit.cover,
+                Container(
+                  height: 100,
+                  width: 100,
+                  child: Image.network(
+                    dish.dish_imageurl.toString(),
+                    fit: BoxFit.contain,
+                  ),
                 ),
-                Column(
-                  children: [
-                    Text(
-                      dish.dish_name.toString(),
-                      style: const TextStyle(fontSize: 12, color: Colors.black),
-                    ),
-                  ],
+                const SizedBox(
+                  width: 5,
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        dish.dish_name.toString(),
+                        style:
+                            const TextStyle(fontSize: 15, color: Colors.black),
+                      ),
+                      Text(
+                        dish.dish_description.toString(),
+                        style: const TextStyle(
+                          fontSize: 15,
+                          color: Colors.black,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Text(
+                        '\$${dish.dish_price!.toStringAsFixed(1)}',
+                        style: const TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green,
+                        ),
+                      ),
+                    ],
+                  ),
                 )
               ],
             )));
