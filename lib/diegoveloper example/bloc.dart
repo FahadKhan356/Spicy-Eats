@@ -75,7 +75,9 @@ class RappiBloc with ChangeNotifier {
     }
 
     //notifyListeners();
-    scrollController!.addListener(_onScrollingListener);
+    scrollController!.addListener((() {
+      _onScrollingListener();
+    }));
   }
 
   // void _onScrollingListener() {
@@ -103,6 +105,7 @@ class RappiBloc with ChangeNotifier {
           print('Scroll position: ${scrollController!.offset}');
           print(
               'Category offsetFrom: ${tab.offsetFrom}, offsetTo: ${tab.offsetTo}');
+          // print('Scroll offset: ${scrollController!.offset}');
           onCategoryTab(i, animationRequired: false);
           tabController!.animateTo(i);
           break;
@@ -139,7 +142,7 @@ class RappiBloc with ChangeNotifier {
       _listen = false;
       await scrollController!.animateTo(
         selected.offsetFrom,
-        duration: const Duration(milliseconds: 100),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.bounceOut,
       );
       _listen = true;

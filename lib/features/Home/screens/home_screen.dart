@@ -462,24 +462,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                   onTap: () {
                                     print(MediaQuery.of(context).size.width);
 
-                                    // Navigator.pushNamed(
-                                    //     context, RestaurantMenu.routename,
-                                    //     arguments: {
-                                    //       'restaurant': restaurantData[index],
-                                    //       // 'dishes': dishList,
-                                    //       'rest_uid':
-                                    //           restaurantData[index].restuid,
-                                    //     });
                                     Navigator.pushNamed(
-                                      context,
-                                      DummyCart.routename,
-                                      arguments: restaurantData[index].restuid,
-                                      // HomeSliverWithScrollableTabs.routename,
+                                      // context, RestaurantMenu.routename,
                                       // arguments: {
-                                      //   'restuid':
+                                      //   'restaurant': restaurantData[index],
+                                      //   // 'dishes': dishList,
+                                      //   'rest_uid':
                                       //       restaurantData[index].restuid,
-                                      //   'restaurantdata': restaurantData[index],
-                                      // },
+                                      // }
+                                      //     });
+                                      // Navigator.pushNamed(
+                                      //   context,
+                                      //   DummyCart.routename,
+                                      //   arguments: restaurantData[index].restuid,
+                                      context,
+                                      HomeSliverWithScrollableTabs.routename,
+                                      arguments: {
+                                        'restuid':
+                                            restaurantData[index].restuid,
+                                        'restaurantdata': restaurantData[index],
+                                      },
                                     );
                                   },
                                   child: RestaurantContainer(

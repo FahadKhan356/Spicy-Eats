@@ -1,127 +1,329 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
+import 'package:spicy_eats/diegoveloper%20example/bloc.dart';
+import 'package:spicy_eats/diegoveloper%20example/main_rappi_concept_app.dart';
+import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
+import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 
-class SliverAppBarWithDynamicTabs extends StatefulWidget {
+class CustomScrollTransition extends StatefulWidget {
   @override
-  _SliverAppBarWithDynamicTabsState createState() =>
-      _SliverAppBarWithDynamicTabsState();
+  _CustomScrollTransitionState createState() => _CustomScrollTransitionState();
 }
 
-class _SliverAppBarWithDynamicTabsState
-    extends State<SliverAppBarWithDynamicTabs>
-    with SingleTickerProviderStateMixin {
-  late ScrollController _scrollController;
-  late TabController _tabController;
-  double _opacity = 0.0;
-
+class _CustomScrollTransitionState extends State<CustomScrollTransition> {
+  ScrollController _scrollController = ScrollController();
+  double _imageHeight = 300; // Initial height
+  double _opacity = 1.0; // Opacity for fade effect
+  double _titleOpacity = 0.0;
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController();
-    _tabController = TabController(length: 3, vsync: this);
-
-    _scrollController.addListener(() {
-      _handleScroll();
-    });
+    _scrollController.addListener(_onScroll);
   }
 
-  void _handleScroll() {
-    double expandedHeight = 250.0; // Expanded height of SliverAppBar
-    double scrollOffset = _scrollController.offset;
+  void _onScroll() {
+    double offset = _scrollController.offset;
+    double newHeight = (300 - offset).clamp(100, 300); // Shrink image smoothly
+    double newOpacity = (1 - (offset / 150)).clamp(0.3, 1); // Fade effect
+    double newTitleOpacity = (offset > 100) ? 1.0 : 0.0; // Title fades in
 
-    // Fade in title when scrolling up
-    double newOpacity = (scrollOffset / expandedHeight).clamp(0.0, 1.0);
-    if (newOpacity != _opacity) {
-      setState(() {
-        _opacity = newOpacity;
-        print(scrollOffset);
-      });
-    }
-
-    // **Tab Switching Logic**
-    if (scrollOffset >= 600) {
-      _tabController.animateTo(2); // Tab 3 (Item 10 and beyond)
-    } else if (scrollOffset >= 300) {
-      _tabController.animateTo(1); // Tab 2 (Item 5 to 9)
-    } else {
-      _tabController.animateTo(0); // Tab 1 (Item 1 to 4)
-    }
+    setState(() {
+      _imageHeight = newHeight;
+      _opacity = newOpacity;
+      _titleOpacity = newTitleOpacity;
+    });
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
-    _tabController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        body: NestedScrollView(
-          controller: _scrollController,
-          headerSliverBuilder: (context, innerBoxIsScrolled) => [
-            SliverAppBar(
-              pinned: true,
-              expandedHeight: 250.0,
-              flexibleSpace: FlexibleSpaceBar(
-                background: Image.network(
-                  "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg",
+    return Scaffold(
+      body: Stack(
+        children: [
+          /// ✅ Image that shrinks and fades smoothly
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: AnimatedContainer(
+              color: Colors.black,
+              duration: Duration(milliseconds: 200),
+              height: _imageHeight,
+              curve: Curves.easeInOut,
+              child: Opacity(
+                opacity: _opacity,
+                child: Image.network(
+                  'https://mrqaapzhzeqvarrtfkgv.supabase.co/storage/v1/object/public/Restaurant_Registeration//8d019a6b-b66a-466e-99b9-c66f9745ba70/Restaurant_covers',
                   fit: BoxFit.cover,
+                  width: double.infinity,
                 ),
               ),
-              bottom: _scrollController.offset >= 190
-                  ? PreferredSize(
-                      preferredSize: Size.fromHeight(50.0),
-                      child: Container(
-                        color: Colors.white,
-                        child: TabBar(
-                          controller: _tabController,
-                          labelColor: Colors.black,
-                          unselectedLabelColor: Colors.grey,
-                          tabs: [
-                            Tab(text: "Tab 1"),
-                            Tab(text: "Tab 2"),
-                            Tab(text: "Tab 3"),
-                          ],
-                        ),
-                      ),
-                    )
-                  : PreferredSize(
-                      preferredSize: Size.fromHeight(10), child: SizedBox()),
-              //Opacity(
-              //   opacity: _opacity,
-              //   child: Text("Your Title"),
-              //),
-              // bottom: _scrollController.offset >= 100
-              //     ? PreferredSize(
-              //         preferredSize: Size.fromHeight(50.0),
-              //         child: Container(
-              //           color: Colors.white,
-              //           child: TabBar(
-              //             controller: _tabController,
-              //             labelColor: Colors.black,
-              //             unselectedLabelColor: Colors.grey,
-              //             tabs: [
-              //               Tab(text: "Tab 1"),
-              //               Tab(text: "Tab 2"),
-              //               Tab(text: "Tab 3"),
-              //             ],
-              //           ),
-              //         ),
-              //       )
-              //     : PreferredSize(
-              //         preferredSize: Size.fromHeight(10), child: SizedBox()),
             ),
-          ],
-          body: ListView.builder(
-            itemCount: 30,
-            itemBuilder: (context, index) =>
-                ListTile(title: Text("Item $index")),
           ),
-        ),
+          Positioned(
+            top: 40,
+            left: 20,
+            right: 20,
+            child: AnimatedOpacity(
+              duration: Duration(milliseconds: 300),
+              opacity: _titleOpacity,
+              child: Text(
+                "AlBaik",
+                style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+              ),
+            ),
+          ),
+
+          /// ✅ Main content scrolls under the image
+          Positioned.fill(
+            top: _imageHeight,
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              padding: EdgeInsets.only(top: 10),
+              child: Column(
+                children: List.generate(
+                  20,
+                  (index) => ListTile(
+                    title: Text('Item $index'),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
+  }
+}
+
+class MyFinalScrollScreen extends ConsumerStatefulWidget {
+  const MyFinalScrollScreen({super.key});
+
+  @override
+  ConsumerState<MyFinalScrollScreen> createState() =>
+      _MyFinalScrollScreenState();
+}
+
+class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
+    with TickerProviderStateMixin {
+  final bloc = RappiBloc();
+  double myOffset = 0.0;
+  List<DishData> dishes = [];
+  List<Categories> allcategories = [];
+  String restuid = 'd20a2270-b19b-462c-8a65-ba13ff8c0197';
+  bool isTabPinned = false;
+  late AnimationController _opacityController;
+  late Animation _opacityAnimation;
+  double _imageHeight = 300;
+  double _imageOpacity = 1;
+  double _titletabOpacity = 0;
+  double _tabOpacity = 0;
+
+  // void onScroll() {
+  //   print('inside the onscroll');
+  //   //bloc.scrollController = ScrollController();
+  //   //double offset1 = bloc.scrollController!.offset;
+  //   double newImatgeHeight = (300 - myOffset).clamp(150, 300);
+  //   double newImageOpacity = 1 - (myOffset / 100).clamp(0.3, 1);
+  //   double newTitleTabOpacity = (myOffset > 200) ? 1.00 : 0.0;
+  //   double newtabOpacity = (myOffset > 200) ? 1.0 : 0.0;
+  //   print('offset1 onscroll ${myOffset}');
+
+  //   if (bloc.scrollController!.hasClients) {
+  //     if (mounted) {
+  //       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+  //         setState(() {
+  //           print('offset1 onscroll ${myOffset}');
+  //           _imageHeight = newImatgeHeight;
+  //           _imageOpacity = newImageOpacity;
+  //           _titletabOpacity = newTitleTabOpacity;
+  //           _tabOpacity = newtabOpacity;
+  //         });
+  //       });
+  //     }
+  //   }
+  // }
+
+  Future fetchcategoriesAnddishes(String restuid) async {
+    await ref
+        .read(homeControllerProvider)
+        .fetchDishes(restuid: restuid)
+        .then((value) {
+      if (value != null) {
+        setState(() {
+          dishes = value;
+        });
+      }
+    });
+    await ref
+        .read(homeControllerProvider)
+        .fetchCategories(restuid: restuid)
+        .then((value) {
+      if (value != null) {
+        setState(() {
+          allcategories = value;
+          print(allcategories[0].category_name);
+        });
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    // bloc.scrollController = ScrollController();
+    // bloc.scrollController!.addListener(() {
+    //   updateOffset();
+    //   // onScroll();
+    // });
+    // _opacityController = AnimationController(
+    //     vsync: this, duration: const Duration(milliseconds: 500));
+    // _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+    //     CurvedAnimation(parent: _opacityController, curve: Curves.easeIn));
+    // TODO: implement initState
+    super.initState();
+
+    fetchcategoriesAnddishes(restuid).then((value) {
+      if (allcategories.isNotEmpty) {
+        setState(() {
+          bloc.tabController =
+              TabController(length: allcategories.length, vsync: this);
+          print('Number of tabs: ${bloc.tabs.length}');
+          print('TabController length: ${bloc.tabController?.length}');
+          // bloc.tabController =
+          //     TabController(length: bloc.tabs.length, vsync: this);
+        });
+      }
+
+      bloc.init(this, dishes: dishes, categories: allcategories);
+      bloc.scrollController!.addListener(() {
+        updateOffset();
+        // onScroll();
+      });
+    });
+
+    // bloc.scrollController = ScrollController();
+    // bloc.scrollController!.addListener(() {
+    //   updateOffset();
+    //   onScroll();
+    // }); // Update the offset when scrolling
+  }
+
+  void updateOffset() {
+    double newImatgeHeight = (300 - myOffset).clamp(80, 300);
+    double newImageOpacity = 1 - (myOffset / 100).clamp(0.3, 1);
+    double newTitleTabOpacity = (myOffset > 200) ? 1.00 : 0.0;
+    double newtabOpacity = (myOffset > 200) ? 1.0 : 0.0;
+    // Safely check if the scrollController is attached to the scroll view
+    if (bloc.scrollController!.hasClients && mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          myOffset = bloc.scrollController!.offset;
+
+          print('offset1 onscroll ${myOffset}');
+          _imageHeight = newImatgeHeight;
+          _imageOpacity = newImageOpacity;
+          _titletabOpacity = newTitleTabOpacity;
+          _tabOpacity = newtabOpacity;
+
+          print("Scroll Offset: $myOffset");
+        });
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    bloc.tabController!.dispose();
+    bloc.dispose();
+    // bloc.scrollController!.dispose();
+    // _opacityController.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: allcategories.isEmpty
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : Stack(
+                children: [
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    left: 0,
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      height: _imageHeight,
+                      color: Colors.white,
+                      child: AnimatedOpacity(
+                        duration: const Duration(milliseconds: 300),
+                        opacity: _imageOpacity,
+                        curve: Curves.easeIn,
+                        child: Image.network(
+                          'https://mrqaapzhzeqvarrtfkgv.supabase.co/storage/v1/object/public/Restaurant_Registeration//8d019a6b-b66a-466e-99b9-c66f9745ba70/Restaurant_covers',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
+                  AnimatedBuilder(
+                      animation: bloc,
+                      builder: (_, __) {
+                        updateOffset();
+                        return Positioned(
+                          top: 0,
+                          right: 0,
+                          left: 0,
+                          child: AnimatedOpacity(
+                            duration: const Duration(milliseconds: 300),
+                            opacity: _tabOpacity,
+                            child: Container(
+                              height: 60,
+                              width: double.maxFinite,
+                              child: TabBar(
+                                  dividerColor: Colors.transparent,
+                                  indicatorColor: Colors.transparent,
+                                  onTap: bloc.onCategoryTab,
+                                  isScrollable: true,
+                                  controller: bloc.tabController,
+                                  tabs: bloc.tabs
+                                      .map((e) => Rappi_tab_widget(category: e))
+                                      .toList()),
+                            ),
+                          ),
+                        );
+                      }),
+                  Positioned.fill(
+                    top: _imageHeight,
+                    child: SingleChildScrollView(
+                        controller: bloc.scrollController,
+                        child: Column(
+                            children: List.generate(bloc.items.length, (index) {
+                          if (bloc.items[index].isCategory) {
+                            return RappiCategory(
+                                category: bloc.items[index].category);
+                          } else {
+                            return RappiProduct(
+                                dish: bloc.items[index].product!);
+                          }
+                        }).toList())),
+                  ),
+                ],
+              ));
   }
 }

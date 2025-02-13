@@ -14,12 +14,38 @@ class _MyCustomSliverScreenState extends State<MyCustomSliverScreen>
   bool _isSliverAppBarPinned = false;
 
   final List<String> _headers = [
+    'asdadsadasd',
+    'adsdad',
     'Spicy Dishes',
     'Sea Food',
     'Sweets',
     'Beverages'
   ];
   final List<List<String>> _items = [
+    [
+      'Spicy Item 1',
+      'Spicy Item 2',
+      'Spicy Item 3',
+      'Spicy Item 4',
+      'Spicy Item 5',
+      'Spicy Item 6',
+      'Spicy Item 7',
+      'Spicy Item 8',
+      'Spicy Item 9',
+      'Spicy Item 10'
+    ],
+    [
+      'Spicy Item 1',
+      'Spicy Item 2',
+      'Spicy Item 3',
+      'Spicy Item 4',
+      'Spicy Item 5',
+      'Spicy Item 6',
+      'Spicy Item 7',
+      'Spicy Item 8',
+      'Spicy Item 9',
+      'Spicy Item 10'
+    ],
     [
       'Spicy Item 1',
       'Spicy Item 2',
@@ -45,50 +71,7 @@ class _MyCustomSliverScreenState extends State<MyCustomSliverScreen>
       'Beverage Item 2',
       'Beverage Item 3',
       'Beverage Item 4',
-      'Beverage Item 5',
-      'Beverage Item 6',
-      'Beverage Item 1',
-      'Beverage Item 2',
-      'Beverage Item 3',
       'Beverage Item 4',
-      'Beverage Item 5',
-      'Beverage Item 6',
-      'Beverage Item 1',
-      'Beverage Item 2',
-      'Beverage Item 3',
-      'Beverage Item 4',
-      'Beverage Item 5',
-      'Beverage Item 6',
-      'Beverage Item 1',
-      'Beverage Item 2',
-      'Beverage Item 3',
-      'Beverage Item 4',
-      'Beverage Item 5',
-      'Beverage Item 6',
-      'Beverage Item 1',
-      'Beverage Item 2',
-      'Beverage Item 3',
-      'Beverage Item 4',
-      'Beverage Item 5',
-      'Beverage Item 6',
-      'Beverage Item 1',
-      'Beverage Item 2',
-      'Beverage Item 3',
-      'Beverage Item 4',
-      'Beverage Item 5',
-      'Beverage Item 6',
-      'Beverage Item 1',
-      'Beverage Item 2',
-      'Beverage Item 3',
-      'Beverage Item 4',
-      'Beverage Item 5',
-      'Beverage Item 6',
-      'Beverage Item 1',
-      'Beverage Item 2',
-      'Beverage Item 3',
-      'Beverage Item 4',
-      'Beverage Item 5',
-      'Beverage Item 6',
     ],
   ];
   int _currentIndex = 0;
@@ -108,6 +91,7 @@ class _MyCustomSliverScreenState extends State<MyCustomSliverScreen>
     for (int i = 0; i < _headers.length; i++) {
       if (offset >= _getSectionOffset(i) && offset < _getSectionOffset(i + 1)) {
         newIndex = i;
+        _tabController.animateTo(newIndex);
         break;
       }
     }
@@ -151,7 +135,7 @@ class _MyCustomSliverScreenState extends State<MyCustomSliverScreen>
         onNotification: (notification) {
           final double offset = notification.metrics.pixels;
           final double appBarHeight =
-              100.0; // Height of the expanded SliverAppBar
+              120.0; // Height of the expanded SliverAppBar
 
           if (offset >= appBarHeight && !_isSliverAppBarPinned) {
             setState(() {
@@ -176,24 +160,21 @@ class _MyCustomSliverScreenState extends State<MyCustomSliverScreen>
                   'https://b.zmtcdn.com/data/pictures/chains/7/20287/24697b617bb8aaf5b1c7df9a7074a662.jpg?fit=around|960:500&crop=960:500;*,*',
                   fit: BoxFit.cover,
                 ),
-                title: _isSliverAppBarPinned
-                    ? TabBar(
-                        controller: _tabController,
-                        tabs: _headers
-                            .map((e) => Tab(
-                                  text: e,
-                                ))
-                            .toList(),
-                        onTap: (index) {
-                          _scrollController.animateTo(
-                            _getSectionOffset(index),
-                            duration: Duration(milliseconds: 500),
-                            curve: Curves.easeInOut,
-                          );
-                        },
-                      )
-                    : null,
               ),
+              title: _isSliverAppBarPinned
+                  ? TabBar(
+                      isScrollable: true,
+                      controller: _tabController,
+                      tabs: _headers.map((e) => Text(e)).toList(),
+                      onTap: (index) {
+                        _scrollController.animateTo(
+                          _getSectionOffset(index),
+                          duration: Duration(milliseconds: 500),
+                          curve: Curves.easeInOut,
+                        );
+                      },
+                    )
+                  : null,
             ),
             SliverList(
               delegate: SliverChildBuilderDelegate(
