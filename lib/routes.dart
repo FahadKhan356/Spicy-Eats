@@ -19,6 +19,7 @@ import 'package:spicy_eats/features/Restaurant_Menu/menu_Item_detail_screen.dart
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/screens/restaurant_menu.dart';
 import 'package:spicy_eats/features/authentication/otp.dart';
+import 'package:spicy_eats/tabexample.dart/tabexample.dart';
 
 Route<dynamic> generateRoutes(RouteSettings settings) {
   switch (settings.name) {
@@ -106,6 +107,15 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
     case RegisterRestaurant.routename:
       return MaterialPageRoute(
           builder: (context) => const RegisterRestaurant());
+
+    case MyFinalScrollScreen.routename:
+      return MaterialPageRoute(builder: (context) {
+        final restuid = settings.arguments as String;
+
+        return MyFinalScrollScreen(
+          restuid: restuid,
+        );
+      });
 
     default:
       return MaterialPageRoute(

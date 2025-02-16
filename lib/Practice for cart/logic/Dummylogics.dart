@@ -113,7 +113,9 @@ class Dummylogics {
             .from('cart')
             .delete()
             .eq('id', items[index].cart_id!);
-        items.removeAt(index);
+        if (items.isNotEmpty) {
+          items.removeAt(index);
+        }
       }
     }
 

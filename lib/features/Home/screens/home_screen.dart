@@ -22,6 +22,7 @@ import 'package:spicy_eats/features/Restaurant_Menu/screens/restaurant_menu.dart
 import 'dart:math' as math;
 
 import 'package:spicy_eats/main.dart';
+import 'package:spicy_eats/tabexample.dart/tabexample.dart';
 
 var searchProvider = StateProvider<bool>((ref) => false);
 
@@ -472,16 +473,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                       // }
                                       //     });
                                       // Navigator.pushNamed(
-                                      //   context,
-                                      //   DummyCart.routename,
-                                      //   arguments: restaurantData[index].restuid,
+
+                                      //for myfinalscreen
                                       context,
-                                      HomeSliverWithScrollableTabs.routename,
-                                      arguments: {
-                                        'restuid':
-                                            restaurantData[index].restuid,
-                                        'restaurantdata': restaurantData[index],
-                                      },
+                                      MyFinalScrollScreen.routename,
+                                      arguments: restaurantData[index].restuid,
+                                      //for dummycart
+
+                                      // context,
+                                      // DummyCart.routename,
+                                      // arguments: restaurantData[index].restuid,
+                                      // context,
+
+                                      //for homesliverscrollabletabs
+
+                                      // HomeSliverWithScrollableTabs.routename,
+                                      // arguments: {
+                                      //   'restuid':
+                                      //       restaurantData[index].restuid,
+                                      //   'restaurantdata': restaurantData[index],
+                                      // },
                                     );
                                   },
                                   child: RestaurantContainer(

@@ -68,7 +68,7 @@ class HeaderSliver extends SliverPersistentHeaderDelegate {
                               fontSize: 25,
                               fontWeight: FontWeight.bold,
                               color:
-                                  percent > 0.1 ? Colors.white : Colors.black,
+                                  percent > 0.1 ? Colors.white : Colors.white,
                             ),
                           )),
                     ],

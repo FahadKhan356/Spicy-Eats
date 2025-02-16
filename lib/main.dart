@@ -87,17 +87,18 @@ class _MyAppState extends ConsumerState<MyApp> {
             tabBarTheme: TabBarTheme(),
             appBarTheme: AppBarTheme(backgroundColor: Colors.white)),
         home: Scaffold(
-          body: MyFinalScrollScreen(),
-          //MyCustomSliverScreen(),
-          //CustomScrollTransition(),
-          //Mian_rappi_concept_app(),
-          // SliverAppBarWithDynamicTabs()
-          // QuantityButton1(),
+          body:
+              //MyFinalScrollScreen(),
+              //MyCustomSliverScreen(),
+              //CustomScrollTransition(),
+              //Mian_rappi_concept_app(),
+              // SliverAppBarWithDynamicTabs()
+              // QuantityButton1(),
 
-          //BasketScreen(dish: null, totalprice: 122, quantity: 2),
-          // supabaseClient.auth.currentSession != null
-          //     ? const Home()
-          //     : PasswordlessScreen(ref: ref),
+              //BasketScreen(dish: null, totalprice: 122, quantity: 2),
+              supabaseClient.auth.currentSession != null
+                  ? const Home()
+                  : PasswordlessScreen(ref: ref),
           // supabaseClient.auth.currentSession != null
           //     ? screen[currentindex]
           //     : PasswordlessScreen(

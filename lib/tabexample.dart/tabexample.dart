@@ -1,13 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
+import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
+import 'package:spicy_eats/Practice%20for%20cart/screens/DummyBasket.dart';
 import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
 import 'package:spicy_eats/diegoveloper%20example/bloc.dart';
 import 'package:spicy_eats/diegoveloper%20example/main_rappi_concept_app.dart';
 import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
+import 'package:spicy_eats/main.dart';
 
 class CustomScrollTransition extends StatefulWidget {
   @override
@@ -109,7 +115,9 @@ class _CustomScrollTransitionState extends State<CustomScrollTransition> {
 }
 
 class MyFinalScrollScreen extends ConsumerStatefulWidget {
-  const MyFinalScrollScreen({super.key});
+  static const String routename = '/MyFinalScreen';
+  final String? restuid;
+  const MyFinalScrollScreen({super.key, this.restuid});
 
   @override
   ConsumerState<MyFinalScrollScreen> createState() =>
@@ -122,14 +130,16 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
   double myOffset = 0.0;
   List<DishData> dishes = [];
   List<Categories> allcategories = [];
-  String restuid = 'd20a2270-b19b-462c-8a65-ba13ff8c0197';
+  // String restuid = 'd20a2270-b19b-462c-8a65-ba13ff8c0197';
   bool isTabPinned = false;
   late AnimationController _opacityController;
   late Animation _opacityAnimation;
-  double _imageHeight = 300;
+  double _imageHeight = 200;
   double _imageOpacity = 1;
   double _titletabOpacity = 0;
   double _tabOpacity = 0;
+  double _imageContainerRadius = 30;
+  double _imageContainerSlide = 0.0;
 
   // void onScroll() {
   //   print('inside the onscroll');
@@ -194,7 +204,7 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
     // TODO: implement initState
     super.initState();
 
-    fetchcategoriesAnddishes(restuid).then((value) {
+    fetchcategoriesAnddishes(widget.restuid!).then((value) {
       if (allcategories.isNotEmpty) {
         setState(() {
           bloc.tabController =
@@ -221,10 +231,13 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
   }
 
   void updateOffset() {
-    double newImatgeHeight = (300 - myOffset).clamp(80, 300);
-    double newImageOpacity = 1 - (myOffset / 100).clamp(0.3, 1);
+    double newImatgeHeight = (200 - myOffset).clamp(100, 200);
+    double newImageOpacity = 1 - (myOffset / 100).clamp(0.1, 1);
     double newTitleTabOpacity = (myOffset > 200) ? 1.00 : 0.0;
-    double newtabOpacity = (myOffset > 200) ? 1.0 : 0.0;
+    double newtabOpacity = (myOffset > 100) ? 1.0 : 0.0;
+    double newContainerRadius = (300 - myOffset).clamp(10, 30);
+    // double newContainerSlide = (300 - myOffset).clamp(10, 270);
+    // double newContainerSlide = (myOffset / 300).clamp(0.0, 3);
     // Safely check if the scrollController is attached to the scroll view
     if (bloc.scrollController!.hasClients && mounted) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -236,6 +249,8 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
           _imageOpacity = newImageOpacity;
           _titletabOpacity = newTitleTabOpacity;
           _tabOpacity = newtabOpacity;
+          _imageContainerRadius = newContainerRadius;
+          // _imageContainerSlide = newContainerSlide;
 
           print("Scroll Offset: $myOffset");
         });
@@ -255,75 +270,246 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: allcategories.isEmpty
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : Stack(
-                children: [
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    left: 0,
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      height: _imageHeight,
-                      color: Colors.white,
+    final cart = ref.watch(cartProvider);
+    final size = MediaQuery.of(context).size;
+    // final centeredOffset = (size.width / 150) - 2;
+    return SafeArea(
+      child: Scaffold(
+          floatingActionButton: cart.isNotEmpty
+              ? Align(
+                  alignment: Alignment.bottomCenter,
+                  child: FloatingActionButton(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.shopping_cart),
+                        Text(cart.length.toString()), // Dynamic cart count
+                      ],
+                    ),
+                    onPressed: () => Navigator.popAndPushNamed(
+                        context, DummyBasket.routename),
+                  ),
+                )
+              : const SizedBox(),
+          backgroundColor: Colors.white,
+          body: allcategories.isEmpty
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : Stack(
+                  children: [
+                    Positioned(
+                        top: 0,
+                        right: 0,
+                        left: 0,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          height: _imageHeight,
+                          color: Colors.black,
+                          child: AnimatedOpacity(
+                            duration: const Duration(milliseconds: 300),
+                            opacity: _imageOpacity,
+                            curve: Curves.easeIn,
+                            child: Image.network(
+                              'https://mrqaapzhzeqvarrtfkgv.supabase.co/storage/v1/object/public/Restaurant_Registeration//8d019a6b-b66a-466e-99b9-c66f9745ba70/Restaurant_covers',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        )),
+
+                    AnimatedBuilder(
+                        animation: bloc,
+                        builder: (_, __) {
+                          // print(size.width);
+                          updateOffset();
+                          return Positioned(
+                            top: 40,
+                            right: 0,
+                            left: 0,
+                            child: AnimatedOpacity(
+                              duration: const Duration(milliseconds: 300),
+                              opacity: _tabOpacity,
+                              child: Container(
+                                height: 60,
+                                width: double.maxFinite,
+                                child: TabBar(
+                                    dividerColor: Colors.transparent,
+                                    indicatorColor: Colors.transparent,
+                                    onTap: bloc.onCategoryTab,
+                                    isScrollable: true,
+                                    controller: bloc.tabController,
+                                    tabs: bloc.tabs
+                                        .map((e) =>
+                                            Rappi_tab_widget(category: e))
+                                        .toList()),
+                              ),
+                            ),
+                          );
+                        }),
+                    // const SizedBox(
+                    //   height: 20,
+                    // ),
+                    Positioned.fill(
+                      top: _imageHeight,
+                      child: SingleChildScrollView(
+                          controller: bloc.scrollController,
+                          child: Column(children: [
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            const Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.watch_later_outlined,
+                                    color: Colors.black,
+                                    size: 25,
+                                  ),
+                                  Text(
+                                    '20-40 mins |',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.star,
+                                        color: Colors.yellow,
+                                        size: 25,
+                                      ),
+                                      Text('4.2',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold)),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    child: Container(
+                                      height: 5,
+                                      color: Colors.black26,
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  'Menu',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                Expanded(
+                                  child: Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    child: Container(
+                                      height: 5,
+                                      color: Colors.black26,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            ...List.generate(bloc.items.length, (index) {
+                              final items = bloc.items[index];
+                              final cartIndex = cart.firstWhere(
+                                  (dish) =>
+                                      dish.dish_id ==
+                                      bloc.items[index].product?.dishid,
+                                  orElse: () =>
+                                      CartModelNew(dish_id: 0, quantity: 0));
+                              final quantityindex = cart.indexWhere((dish) =>
+                                  dish.dish_id == items.product?.dishid);
+                              if (bloc.items[index].isCategory) {
+                                return RappiCategory(
+                                    category: bloc.items[index].category);
+                              } else {
+                                return RappiProduct(
+                                  dish: bloc.items[index].product!,
+                                  cartItem: cartIndex,
+                                  qunatityindex: quantityindex,
+                                  userId: supabaseClient.auth.currentUser!.id,
+                                );
+                              }
+                            }),
+                          ])),
+                    ),
+                    // Positioned(
+                    //     top: myOffset <= 300
+                    //         ? _imageHeight - 30
+                    //         : _imageHeight - 145,
+                    //     // right: (60 - 60) / 2,
+                    //     left: (MediaQuery.of(context).size.width - 60) / 2,
+                    //     child: AnimatedContainer(
+                    //       duration: const Duration(milliseconds: 400),
+                    //       curve: Curves.easeInOut,
+                    //       child: ClipRRect(
+                    //         borderRadius:
+                    //             BorderRadius.circular(_imageContainerRadius),
+                    //         child: Container(
+                    //           height: 60,
+                    //           width: 60,
+                    //           color: Colors.amber,
+                    //         ),
+                    //       ),
+                    //     ),
+
+                    //     ),
+                    Positioned(
+                      top: 0,
+                      left: 5,
                       child: AnimatedOpacity(
+                        curve: Curves.bounceIn,
+                        opacity: myOffset >= 110 ? 1 : 0,
+                        duration: Duration(milliseconds: 300),
+                        child: IconButton(
+                            onPressed: () {},
+                            icon: const Icon(
+                              Icons.arrow_back_rounded,
+                              size: 25,
+                              color: Colors.white,
+                            )),
+                      ),
+                    ),
+                    Positioned(
+                      top: myOffset >= 100
+                          ? _imageHeight - 90
+                          : _imageHeight - 145,
+                      // top: myOffset <= 50
+                      //     ? _imageHeight - 30
+                      //     : _imageHeight - 145,
+                      //right: (MediaQuery.of(context).size.width - 60) / 1.1,
+                      left: myOffset >= 110
+                          ? (MediaQuery.of(context).size.width - 80) / 1
+                          : (MediaQuery.of(context).size.width - 60) / 5,
+                      child: AnimatedSlide(
+                        offset: Offset(myOffset >= 110 ? -4.2 : 0, 0),
                         duration: const Duration(milliseconds: 300),
-                        opacity: _imageOpacity,
-                        curve: Curves.easeIn,
-                        child: Image.network(
-                          'https://mrqaapzhzeqvarrtfkgv.supabase.co/storage/v1/object/public/Restaurant_Registeration//8d019a6b-b66a-466e-99b9-c66f9745ba70/Restaurant_covers',
-                          fit: BoxFit.cover,
+                        curve: Curves.linear,
+                        child: Text(
+                          'AlBaiq',
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: myOffset >= 110
+                                  ? Colors.white
+                                  : Colors.transparent),
                         ),
                       ),
                     ),
-                  ),
-                  AnimatedBuilder(
-                      animation: bloc,
-                      builder: (_, __) {
-                        updateOffset();
-                        return Positioned(
-                          top: 0,
-                          right: 0,
-                          left: 0,
-                          child: AnimatedOpacity(
-                            duration: const Duration(milliseconds: 300),
-                            opacity: _tabOpacity,
-                            child: Container(
-                              height: 60,
-                              width: double.maxFinite,
-                              child: TabBar(
-                                  dividerColor: Colors.transparent,
-                                  indicatorColor: Colors.transparent,
-                                  onTap: bloc.onCategoryTab,
-                                  isScrollable: true,
-                                  controller: bloc.tabController,
-                                  tabs: bloc.tabs
-                                      .map((e) => Rappi_tab_widget(category: e))
-                                      .toList()),
-                            ),
-                          ),
-                        );
-                      }),
-                  Positioned.fill(
-                    top: _imageHeight,
-                    child: SingleChildScrollView(
-                        controller: bloc.scrollController,
-                        child: Column(
-                            children: List.generate(bloc.items.length, (index) {
-                          if (bloc.items[index].isCategory) {
-                            return RappiCategory(
-                                category: bloc.items[index].category);
-                          } else {
-                            return RappiProduct(
-                                dish: bloc.items[index].product!);
-                          }
-                        }).toList())),
-                  ),
-                ],
-              ));
+                  ],
+                )),
+    );
   }
 }
