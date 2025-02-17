@@ -120,7 +120,8 @@ class RappiBloc with ChangeNotifier {
 
   @override
   void dispose() {
-    scrollController?.dispose(); // Use null-aware operator
+    scrollController?.dispose();
+    tabController?.dispose(); // Use null-aware operator
     super.dispose();
   }
 

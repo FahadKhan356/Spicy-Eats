@@ -141,7 +141,7 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
   double _imageContainerRadius = 30;
   double _imageContainerSlide = 0.0;
   String? userId = supabaseClient.auth.currentUser!.id;
-
+  bool cartFetched = false;
   // void onScroll() {
   //   print('inside the onscroll');
   //   //bloc.scrollController = ScrollController();
@@ -182,7 +182,7 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
         .read(homeControllerProvider)
         .fetchCategories(restuid: restuid)
         .then((value) {
-      if (value != null) {
+      if (value != null && mounted) {
         setState(() {
           allcategories = value;
           print(allcategories[0].category_name);
@@ -204,27 +204,31 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
     //     CurvedAnimation(parent: _opacityController, curve: Curves.easeIn));
     // TODO: implement initState
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        fetchcategoriesAnddishes(widget.restuid!).then((value) {
+          if (allcategories.isNotEmpty) {
+            setState(() {
+              bloc.tabController =
+                  TabController(length: allcategories.length, vsync: this);
+              print('Number of tabs: ${bloc.tabs.length}');
+              print('TabController length: ${bloc.tabController?.length}');
+              // bloc.tabController =
+              //     TabController(length: bloc.tabs.length, vsync: this);
+            });
+          }
 
-    fetchcategoriesAnddishes(widget.restuid!).then((value) {
-      if (allcategories.isNotEmpty) {
-        setState(() {
-          bloc.tabController =
-              TabController(length: allcategories.length, vsync: this);
-          print('Number of tabs: ${bloc.tabs.length}');
-          print('TabController length: ${bloc.tabController?.length}');
-          // bloc.tabController =
-          //     TabController(length: bloc.tabs.length, vsync: this);
+          bloc.init(this, dishes: dishes, categories: allcategories);
+          bloc.scrollController!.addListener(() {
+            updateOffset();
+            // onScroll();
+          });
         });
       }
-
-      bloc.init(this, dishes: dishes, categories: allcategories);
-      bloc.scrollController!.addListener(() {
-        updateOffset();
-        // onScroll();
-      });
     });
 
     ref.read(DummyLogicProvider).fetchCart(ref, userId!).then((value) {
+      cartFetched = true;
       final cart = ref.read(cartProvider.notifier).state;
       if (cart.isNotEmpty) {
         print('${cart[0].tprice}');
@@ -270,7 +274,7 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    bloc.tabController!.dispose();
+    // bloc.tabController!.dispose();
     bloc.dispose();
     // bloc.scrollController!.dispose();
     // _opacityController.dispose();
@@ -287,24 +291,28 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
               ? Align(
                   alignment: Alignment.bottomCenter,
                   child: FloatingActionButton(
-                    backgroundColor: Colors.black,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.shopping_cart,
-                          color: Colors.white,
-                        ),
-                        Text(
-                          cart.length.toString(),
-                          style: const TextStyle(color: Colors.white),
-                        ), // Dynamic cart count
-                      ],
-                    ),
-                    onPressed: () => Navigator.popAndPushNamed(
-                        context, DummyBasket.routename,
-                        arguments: {'cart': cart}),
-                  ),
+                      backgroundColor: Colors.black,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.shopping_cart,
+                            color: Colors.white,
+                          ),
+                          Text(
+                            cart.length.toString(),
+                            style: const TextStyle(color: Colors.white),
+                          ), // Dynamic cart count
+                        ],
+                      ),
+                      onPressed: () {
+                        if (cartFetched) {
+                          Navigator.popAndPushNamed(
+                              context, DummyBasket.routename,
+                              arguments: {'cart': cart});
+                          cartFetched = false;
+                        }
+                      }),
                 )
               : const SizedBox(),
           backgroundColor: Colors.white,
