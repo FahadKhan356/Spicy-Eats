@@ -314,7 +314,7 @@ class RappiCategory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 55,
+        height: 65,
         width: double.maxFinite,
         child: Card(
             elevation: 0,
@@ -342,10 +342,10 @@ class RappiProduct extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Container(
-          height: 110,
+          height: 130,
           width: double.maxFinite,
           child: Card(
-              //margin: const EdgeInsets.symmetric(vertical: 10),
+              margin: const EdgeInsets.symmetric(vertical: 10),
               elevation: 5,
               color: Colors.white,
               child: Row(
@@ -356,8 +356,8 @@ class RappiProduct extends ConsumerWidget {
                       children: [
                         Container(
                           // color: Colors.red,
-                          height: 60, //120
-                          width: 60, //120
+                          height: 120,
+                          width: 120,
                           child: Image.network(
                             dish.dish_imageurl.toString(),
                             fit: BoxFit.contain,
@@ -418,6 +418,7 @@ class RappiProduct extends ConsumerWidget {
                                           userId!,
                                           dish.dishid.toString(),
                                           dish.dish_price!.toDouble(),
+                                          dish.dish_imageurl!,
                                         );
                                   },
                                   child: Container(
@@ -450,7 +451,10 @@ class RappiProduct extends ConsumerWidget {
                                             ref
                                                 ?.read(DummyLogicProvider)
                                                 .increaseQuantity(
-                                                    ref, dish.dishid!);
+                                                  ref,
+                                                  dish.dishid!,
+                                                  dish.dish_price!,
+                                                );
                                           },
                                           child: Container(
                                             height: 50,
@@ -512,7 +516,10 @@ class RappiProduct extends ConsumerWidget {
                                             ref
                                                 .read(DummyLogicProvider)
                                                 .decreaseQuantity(
-                                                    ref, dish.dishid!);
+                                                  ref,
+                                                  dish.dishid!,
+                                                  dish.dish_price!,
+                                                );
                                           },
                                           child: Container(
                                             height: 50,

@@ -74,7 +74,10 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
       });
     case DummyBasket.routename:
       return MaterialPageRoute(builder: (context) {
-        return DummyBasket();
+        final argument = settings.arguments as Map;
+        return DummyBasket(
+          cart: argument['cart'],
+        );
       });
 
     case Home.routename:

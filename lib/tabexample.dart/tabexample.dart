@@ -140,6 +140,7 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
   double _tabOpacity = 0;
   double _imageContainerRadius = 30;
   double _imageContainerSlide = 0.0;
+  String? userId = supabaseClient.auth.currentUser!.id;
 
   // void onScroll() {
   //   print('inside the onscroll');
@@ -223,6 +224,13 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
       });
     });
 
+    ref.read(DummyLogicProvider).fetchCart(ref, userId!).then((value) {
+      final cart = ref.read(cartProvider.notifier).state;
+      if (cart.isNotEmpty) {
+        print('${cart[0].tprice}');
+      }
+    });
+
     // bloc.scrollController = ScrollController();
     // bloc.scrollController!.addListener(() {
     //   updateOffset();
@@ -294,7 +302,8 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                       ],
                     ),
                     onPressed: () => Navigator.popAndPushNamed(
-                        context, DummyBasket.routename),
+                        context, DummyBasket.routename,
+                        arguments: {'cart': cart}),
                   ),
                 )
               : const SizedBox(),

@@ -128,11 +128,11 @@ class _DummyCartState extends ConsumerState<DummyCart> {
                                   child: ElevatedButton(
                                     onPressed: () {
                                       ref.read(DummyLogicProvider).addToCart(
-                                            ref,
-                                            supabaseClient.auth.currentUser!.id,
-                                            dish.dishid.toString(),
-                                            dish.dish_price!.toDouble(),
-                                          );
+                                          ref,
+                                          supabaseClient.auth.currentUser!.id,
+                                          dish.dishid.toString(),
+                                          dish.dish_price!.toDouble(),
+                                          dish.dish_imageurl!);
                                     },
                                     style: ElevatedButton.styleFrom(
                                       shape: const RoundedRectangleBorder(
@@ -154,7 +154,9 @@ class _DummyCartState extends ConsumerState<DummyCart> {
                                           ref
                                               .read(DummyLogicProvider)
                                               .increaseQuantity(
-                                                  ref, dish.dishid!);
+                                                  ref,
+                                                  dish.dishid!,
+                                                  dish.dish_price!);
                                         },
                                         style: ElevatedButton.styleFrom(
                                           shape: const RoundedRectangleBorder(
@@ -184,7 +186,9 @@ class _DummyCartState extends ConsumerState<DummyCart> {
                                           ref
                                               .read(DummyLogicProvider)
                                               .decreaseQuantity(
-                                                  ref, dish.dishid!);
+                                                  ref,
+                                                  dish.dishid!,
+                                                  dish.dish_price!);
                                         },
                                         style: ElevatedButton.styleFrom(
                                           shape: RoundedRectangleBorder(

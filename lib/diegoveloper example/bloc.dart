@@ -3,11 +3,11 @@ import 'package:spicy_eats/SyncTabBar/CategoryModel.dart';
 import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 
-double categoryHeight = 55;
-double productHeight = 110;
+double categoryHeight = 65;
+double productHeight = 130;
+double productsCardMargin = 10;
 
 class RappiBloc with ChangeNotifier {
-  List<List<int>> productlength = [];
   List<RapitabCategory> tabs = [];
   List<RappiItem> items = [];
   bool _listen = true;
@@ -45,10 +45,14 @@ class RappiBloc with ChangeNotifier {
       if (i < categories.length - 1) {
         final value = categoryDishesMap[categories[i + 1].category_id] ?? [];
 
-        offsetTo = offsetFrom + categoryHeight + (value.length * productHeight);
+        offsetTo = offsetFrom +
+            categoryHeight +
+            productsCardMargin +
+            (value.length * productHeight);
       } else {
         // offsetTo = double.infinity;
         offsetTo = offsetFrom +
+            productsCardMargin +
             (categoryDishes.length * productHeight) +
             categoryHeight;
       }

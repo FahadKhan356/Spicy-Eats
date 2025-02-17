@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
 
 class DummyBasket extends StatefulWidget {
   static const String routename = "/Dummy_basket";
-  const DummyBasket({super.key});
+  DummyBasket({super.key, required this.cart});
+  List<CartModelNew> cart = [];
 
   @override
   State<DummyBasket> createState() => _DummyBasketState();
@@ -14,7 +16,7 @@ class _DummyBasketState extends State<DummyBasket> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Your Basket'),
+        title: Text('Your Basket ${widget.cart.length}'),
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
@@ -22,8 +24,9 @@ class _DummyBasketState extends State<DummyBasket> {
           children: [
             ListView.builder(
                 shrinkWrap: true,
-                itemCount: 2,
-                itemBuilder: (index, context) {
+                itemCount: widget.cart.length,
+                itemBuilder: (context, index) {
+                  final cartitem = widget.cart[index];
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: Column(
@@ -37,14 +40,14 @@ class _DummyBasketState extends State<DummyBasket> {
                                   height: 50,
                                   width: 50,
                                   child: Image.network(
-                                    "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/uber-eats/restaurant1.jpeg",
+                                    cartitem.image.toString(),
                                     fit: BoxFit.cover,
                                   ),
                                 ),
                                 Column(
                                   children: [
-                                    Text("x 2"),
-                                    Text("\$40.33"),
+                                    Text("x ${cartitem.quantity}"),
+                                    Text("\$${cartitem.tprice}"),
                                   ],
                                 ),
                               ],

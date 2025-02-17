@@ -8,7 +8,8 @@ var DummyLogicProvider = Provider((ref) => Dummylogics());
 class Dummylogics {
   //fetch cart
   Future<void> fetchCart(WidgetRef ref, String userId) async {
-    final userId = supabaseClient.auth.currentUser!.id;
+    // final userId = supabaseClient.auth.currentUser!.id;
+    final cartlist = ref.read(cartProvider.notifier);
 
     if (userId.isEmpty) return;
 
@@ -18,14 +19,16 @@ class Dummylogics {
     if (response.isNotEmpty) {
       List<CartModelNew> cartItems =
           response.map((json) => CartModelNew.fromjson(json)).toList();
-      ref.read(cartProvider.notifier).state = cartItems;
+      // ref.read(cartProvider.notifier).state = cartItems;
+      cartlist.state = List.from(cartItems);
+
       print("cart fetched");
     }
   }
 
   //addtocart
-  Future<void> addToCart(
-      WidgetRef ref, String userId, String dishId, double price) async {
+  Future<void> addToCart(WidgetRef ref, String userId, String dishId,
+      double price, String image) async {
     final cart = ref.read(cartProvider.notifier);
     final items = cart.state;
 
@@ -34,7 +37,7 @@ class Dummylogics {
     if (index != -1) {
       // If item exists, update quantity
       items[index].quantity++;
-
+      items[index].tprice = items[index].quantity * price;
       await supabaseClient.from('cart').update({
         'quantity': items[index].quantity,
         'total_price': items[index].tprice,
@@ -45,7 +48,8 @@ class Dummylogics {
         'user_id': userId,
         'dish_id': dishId,
         'quantity': 1,
-        'tprice': price
+        'tprice': price,
+        'image': image,
       }).select();
 
       if (response.isNotEmpty) {
@@ -58,7 +62,7 @@ class Dummylogics {
   }
 
 //increase quantity
-  Future<void> increaseQuantity(WidgetRef ref, int dishId) async {
+  Future<void> increaseQuantity(WidgetRef ref, int dishId, int price) async {
     // print('inside the increase quantity..');
     final cart = ref.read(cartProvider.notifier);
     final items = cart.state;
@@ -78,6 +82,8 @@ class Dummylogics {
           'before increase quantity:${ref.read(cartProvider.notifier).state[index].quantity}');
 
       ref.watch(cartProvider.notifier).state[index].quantity++;
+      items[index].tprice = items[index].quantity * price.toDouble();
+
       print(
           'after increase quantity:${ref.read(cartProvider.notifier).state[index].quantity}');
 
@@ -94,7 +100,7 @@ class Dummylogics {
   }
 
 //decrease qunatity
-  Future<void> decreaseQuantity(WidgetRef ref, int? dishId) async {
+  Future<void> decreaseQuantity(WidgetRef ref, int? dishId, int price) async {
     final cart = ref.read(cartProvider.notifier);
     final items = cart.state;
 
@@ -103,6 +109,7 @@ class Dummylogics {
     if (index != -1) {
       if (items[index].quantity > 1) {
         items[index].quantity--;
+        items[index].tprice = items[index].quantity * price.toDouble();
 
         await supabaseClient.from('cart').update({
           'quantity': items[index].quantity,
