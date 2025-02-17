@@ -342,10 +342,10 @@ class RappiProduct extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Container(
-          height: 160,
+          height: 110,
           width: double.maxFinite,
           child: Card(
-              margin: const EdgeInsets.symmetric(vertical: 10),
+              //margin: const EdgeInsets.symmetric(vertical: 10),
               elevation: 5,
               color: Colors.white,
               child: Row(
@@ -356,8 +356,8 @@ class RappiProduct extends ConsumerWidget {
                       children: [
                         Container(
                           // color: Colors.red,
-                          height: 120,
-                          width: 120,
+                          height: 60, //120
+                          width: 60, //120
                           child: Image.network(
                             dish.dish_imageurl.toString(),
                             fit: BoxFit.contain,

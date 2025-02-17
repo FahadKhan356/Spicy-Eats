@@ -279,11 +279,18 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
               ? Align(
                   alignment: Alignment.bottomCenter,
                   child: FloatingActionButton(
+                    backgroundColor: Colors.black,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.shopping_cart),
-                        Text(cart.length.toString()), // Dynamic cart count
+                        const Icon(
+                          Icons.shopping_cart,
+                          color: Colors.white,
+                        ),
+                        Text(
+                          cart.length.toString(),
+                          style: const TextStyle(color: Colors.white),
+                        ), // Dynamic cart count
                       ],
                     ),
                     onPressed: () => Navigator.popAndPushNamed(
@@ -316,6 +323,20 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                             ),
                           ),
                         )),
+                    Positioned(
+                      top: 0,
+                      left: 10,
+                      child: myOffset < 70
+                          ? IconButton(
+                              icon: const Icon(
+                                Icons.arrow_back,
+                                size: 25,
+                                color: Colors.white,
+                              ),
+                              onPressed: () => Navigator.pop(context),
+                            )
+                          : SizedBox(),
+                    ),
 
                     AnimatedBuilder(
                         animation: bloc,
@@ -357,70 +378,73 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                             const SizedBox(
                               height: 30,
                             ),
-                            const Center(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.watch_later_outlined,
-                                    color: Colors.black,
-                                    size: 25,
-                                  ),
-                                  Text(
-                                    '20-40 mins |',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.star,
-                                        color: Colors.yellow,
-                                        size: 25,
-                                      ),
-                                      Text('4.2',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 30,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 10),
-                                    child: Container(
-                                      height: 5,
-                                      color: Colors.black26,
-                                    ),
-                                  ),
-                                ),
-                                Text(
-                                  'Menu',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                Expanded(
-                                  child: Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 10),
-                                    child: Container(
-                                      height: 5,
-                                      color: Colors.black26,
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 30,
-                            ),
+                            // Container(
+                            //   // height: 100,
+                            //   width: double.maxFinite,
+                            //   color: Colors.black87,
+                            // child:
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.center,
+                            //   children: [
+                            //     Icon(
+                            //       Icons.watch_later_outlined,
+                            //       color: Colors.black,
+                            //       size: 25,
+                            //     ),
+                            //     Text(
+                            //       '20-40 mins |',
+                            //       style: TextStyle(fontWeight: FontWeight.bold),
+                            //     ),
+                            //     Row(
+                            //       children: [
+                            //         Icon(
+                            //           Icons.star,
+                            //           color: Colors.yellow,
+                            //           size: 25,
+                            //         ),
+                            //         Text('4.2',
+                            //             style: TextStyle(
+                            //                 fontWeight: FontWeight.bold)),
+                            //       ],
+                            //     )
+                            //   ],
+                            // ),
+                            // // ),
+                            // const SizedBox(
+                            //   height: 30,
+                            // ),
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //   children: [
+                            //     Expanded(
+                            //       child: Padding(
+                            //         padding:
+                            //             EdgeInsets.symmetric(horizontal: 10),
+                            //         child: Container(
+                            //           height: 5,
+                            //           color: Colors.black26,
+                            //         ),
+                            //       ),
+                            //     ),
+                            //     Text(
+                            //       'Menu',
+                            //       style: TextStyle(fontWeight: FontWeight.bold),
+                            //     ),
+                            //     Expanded(
+                            //       child: Padding(
+                            //         padding:
+                            //             EdgeInsets.symmetric(horizontal: 10),
+                            //         child: Container(
+                            //           height: 5,
+                            //           color: Colors.black26,
+                            //         ),
+                            //       ),
+                            //     )
+                            //   ],
+                            // ),
+                            // const SizedBox(
+                            //   height: 30,
+                            // ),
                             ...List.generate(bloc.items.length, (index) {
                               final items = bloc.items[index];
                               final cartIndex = cart.firstWhere(

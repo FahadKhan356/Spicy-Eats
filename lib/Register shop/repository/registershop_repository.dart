@@ -91,10 +91,9 @@ class RegisterShopRepository {
 //fetch restaurants
   Future<List<RestaurantData>?> fetchRestaurant(String? currentUserId) async {
     try {
-      List<dynamic> response = await supabaseClient
-          .from('restaurants')
-          .select('*')
-          .eq('user_id', currentUserId!);
+      List<dynamic> response =
+          await supabaseClient.from('restaurants').select('*');
+
       if (response.isEmpty) {
         print('No restaurant data found');
         return null;
