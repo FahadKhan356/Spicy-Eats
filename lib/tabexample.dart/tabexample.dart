@@ -4,7 +4,6 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
 import 'package:spicy_eats/Practice%20for%20cart/screens/DummyBasket.dart';
@@ -14,105 +13,6 @@ import 'package:spicy_eats/diegoveloper%20example/main_rappi_concept_app.dart';
 import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/main.dart';
-
-class CustomScrollTransition extends StatefulWidget {
-  @override
-  _CustomScrollTransitionState createState() => _CustomScrollTransitionState();
-}
-
-class _CustomScrollTransitionState extends State<CustomScrollTransition> {
-  ScrollController _scrollController = ScrollController();
-  double _imageHeight = 300; // Initial height
-  double _opacity = 1.0; // Opacity for fade effect
-  double _titleOpacity = 0.0;
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-  }
-
-  void _onScroll() {
-    double offset = _scrollController.offset;
-    double newHeight = (300 - offset).clamp(100, 300); // Shrink image smoothly
-    double newOpacity = (1 - (offset / 150)).clamp(0.3, 1); // Fade effect
-    double newTitleOpacity = (offset > 100) ? 1.0 : 0.0; // Title fades in
-
-    setState(() {
-      _imageHeight = newHeight;
-      _opacity = newOpacity;
-      _titleOpacity = newTitleOpacity;
-    });
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          /// ✅ Image that shrinks and fades smoothly
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: AnimatedContainer(
-              color: Colors.black,
-              duration: Duration(milliseconds: 200),
-              height: _imageHeight,
-              curve: Curves.easeInOut,
-              child: Opacity(
-                opacity: _opacity,
-                child: Image.network(
-                  'https://mrqaapzhzeqvarrtfkgv.supabase.co/storage/v1/object/public/Restaurant_Registeration//8d019a6b-b66a-466e-99b9-c66f9745ba70/Restaurant_covers',
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: 40,
-            left: 20,
-            right: 20,
-            child: AnimatedOpacity(
-              duration: Duration(milliseconds: 300),
-              opacity: _titleOpacity,
-              child: Text(
-                "AlBaik",
-                style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
-            ),
-          ),
-
-          /// ✅ Main content scrolls under the image
-          Positioned.fill(
-            top: _imageHeight,
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              padding: EdgeInsets.only(top: 10),
-              child: Column(
-                children: List.generate(
-                  20,
-                  (index) => ListTile(
-                    title: Text('Item $index'),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class MyFinalScrollScreen extends ConsumerStatefulWidget {
   static const String routename = '/MyFinalScreen';
@@ -193,17 +93,8 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
 
   @override
   void initState() {
-    // bloc.scrollController = ScrollController();
-    // bloc.scrollController!.addListener(() {
-    //   updateOffset();
-    //   // onScroll();
-    // });
-    // _opacityController = AnimationController(
-    //     vsync: this, duration: const Duration(milliseconds: 500));
-    // _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-    //     CurvedAnimation(parent: _opacityController, curve: Curves.easeIn));
-    // TODO: implement initState
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         fetchcategoriesAnddishes(widget.restuid!).then((value) {
@@ -309,7 +200,10 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                         if (cartFetched) {
                           Navigator.popAndPushNamed(
                               context, DummyBasket.routename,
-                              arguments: {'cart': cart});
+                              arguments: {
+                                'cart': cart,
+                                'dishes': dishes,
+                              });
                           cartFetched = false;
                         }
                       }),

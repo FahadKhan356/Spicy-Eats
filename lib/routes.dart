@@ -77,6 +77,7 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
         final argument = settings.arguments as Map;
         return DummyBasket(
           cart: argument['cart'],
+          dishes: argument['dishes'],
         );
       });
 

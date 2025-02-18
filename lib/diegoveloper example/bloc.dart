@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:spicy_eats/SyncTabBar/CategoryModel.dart';
 import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 

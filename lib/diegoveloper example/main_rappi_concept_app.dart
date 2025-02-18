@@ -36,7 +36,7 @@ class _Mian_rappi_concept_appState extends ConsumerState<Mian_rappi_concept_app>
   double _imageHeight = 300;
   double _imageOpacity = 1;
   double _titletabOpacity = 0;
-
+  Debouncer? _debouncer;
   void onScroll() {
     bloc.scrollController = ScrollController();
     // double offset1 = bloc.scrollController!.offset;
@@ -92,13 +92,15 @@ class _Mian_rappi_concept_appState extends ConsumerState<Mian_rappi_concept_app>
 
     fetchcategoriesAnddishes(restuid).then((value) {
       if (allcategories.isNotEmpty) {
-        setState(() {
-          bloc.tabController =
-              TabController(length: allcategories.length, vsync: this);
-          print('Number of tabs: ${bloc.tabs.length}');
-          print('TabController length: ${bloc.tabController?.length}');
-          // bloc.tabController =
-          //     TabController(length: bloc.tabs.length, vsync: this);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          setState(() {
+            bloc.tabController =
+                TabController(length: allcategories.length, vsync: this);
+            print('Number of tabs: ${bloc.tabs.length}');
+            print('TabController length: ${bloc.tabController?.length}');
+            // bloc.tabController =
+            //     TabController(length: bloc.tabs.length, vsync: this);
+          });
         });
       }
 
@@ -330,15 +332,31 @@ class RappiCategory extends StatelessWidget {
 }
 
 // ignore: non_constant_identifier_names
-class RappiProduct extends ConsumerWidget {
+class RappiProduct extends ConsumerStatefulWidget {
   RappiProduct(
       {required this.dish, this.cartItem, this.qunatityindex, this.userId});
   final DishData dish;
   final CartModelNew? cartItem;
   final int? qunatityindex;
   final String? userId;
+
   @override
-  Widget build(BuildContext context, WidgetRef? ref) {
+  ConsumerState<RappiProduct> createState() => _RappiProductState();
+}
+
+class _RappiProductState extends ConsumerState<RappiProduct> {
+  Debouncer? _debouncer;
+  @override
+  void initState() {
+    _debouncer = Debouncer(milliseconds: 500);
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  Widget build(
+    BuildContext context,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Container(
@@ -359,7 +377,7 @@ class RappiProduct extends ConsumerWidget {
                           height: 120,
                           width: 120,
                           child: Image.network(
-                            dish.dish_imageurl.toString(),
+                            widget.dish.dish_imageurl.toString(),
                             fit: BoxFit.contain,
                           ),
                         ),
@@ -374,12 +392,12 @@ class RappiProduct extends ConsumerWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  dish.dish_name.toString(),
+                                  widget.dish.dish_name.toString(),
                                   style: const TextStyle(
                                       fontSize: 15, color: Colors.black),
                                 ),
                                 Text(
-                                  dish.dish_description.toString(),
+                                  widget.dish.dish_description.toString(),
                                   maxLines: 1,
                                   style: const TextStyle(
                                     fontSize: 15,
@@ -388,7 +406,7 @@ class RappiProduct extends ConsumerWidget {
                                   ),
                                 ),
                                 Text(
-                                  '\$${dish.dish_price!.toStringAsFixed(1)}',
+                                  '\$${widget.dish.dish_price!.toStringAsFixed(1)}',
                                   style: const TextStyle(
                                     fontSize: 17,
                                     fontWeight: FontWeight.bold,
@@ -410,16 +428,18 @@ class RappiProduct extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          cartItem!.dish_id != dish.dishid
+                          widget.cartItem!.dish_id != widget.dish.dishid
                               ? InkWell(
                                   onTap: () {
-                                    ref?.read(DummyLogicProvider).addToCart(
-                                          ref,
-                                          userId!,
-                                          dish.dishid.toString(),
-                                          dish.dish_price!.toDouble(),
-                                          dish.dish_imageurl!,
-                                        );
+                                    _debouncer!.run(() {
+                                      ref.read(DummyLogicProvider).addToCart(
+                                            ref,
+                                            widget.userId!,
+                                            widget.dish.dishid.toString(),
+                                            widget.dish.dish_price!.toDouble(),
+                                            widget.dish.dish_imageurl!,
+                                          );
+                                    });
                                   },
                                   child: Container(
                                     height: 50,
@@ -448,13 +468,15 @@ class RappiProduct extends ConsumerWidget {
                                       Expanded(
                                         child: InkWell(
                                           onTap: () {
-                                            ref
-                                                ?.read(DummyLogicProvider)
-                                                .increaseQuantity(
-                                                  ref,
-                                                  dish.dishid!,
-                                                  dish.dish_price!,
-                                                );
+                                            _debouncer!.run(() {
+                                              ref
+                                                  .read(DummyLogicProvider)
+                                                  .increaseQuantity(
+                                                    ref,
+                                                    widget.dish.dishid!,
+                                                    widget.dish.dish_price!,
+                                                  );
+                                            });
                                           },
                                           child: Container(
                                             height: 50,
@@ -502,9 +524,9 @@ class RappiProduct extends ConsumerWidget {
                                       const SizedBox(width: 5),
                                       Text(
                                         //cartItem.quantity.toString(),
-                                        ref!
+                                        ref
                                             .read(cartProvider.notifier)
-                                            .state[qunatityindex!]
+                                            .state[widget.qunatityindex!]
                                             .quantity
                                             .toString(),
                                         style: const TextStyle(fontSize: 20),
@@ -513,13 +535,15 @@ class RappiProduct extends ConsumerWidget {
                                       Expanded(
                                         child: InkWell(
                                           onTap: () {
-                                            ref
-                                                .read(DummyLogicProvider)
-                                                .decreaseQuantity(
-                                                  ref,
-                                                  dish.dishid!,
-                                                  dish.dish_price!,
-                                                );
+                                            _debouncer!.run(() {
+                                              ref
+                                                  .read(DummyLogicProvider)
+                                                  .decreaseQuantity(
+                                                    ref,
+                                                    widget.dish.dishid!,
+                                                    widget.dish.dish_price!,
+                                                  );
+                                            });
                                           },
                                           child: Container(
                                             height: 50,
