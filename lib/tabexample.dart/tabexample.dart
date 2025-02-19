@@ -11,6 +11,7 @@ import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
 import 'package:spicy_eats/diegoveloper%20example/bloc.dart';
 import 'package:spicy_eats/diegoveloper%20example/main_rappi_concept_app.dart';
 import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
+import 'package:spicy_eats/features/Home/screens/home_screen.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/main.dart';
 
@@ -198,11 +199,11 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                       ),
                       onPressed: () {
                         if (cartFetched) {
-                          Navigator.popAndPushNamed(
-                              context, DummyBasket.routename,
+                          Navigator.pushNamed(context, DummyBasket.routename,
                               arguments: {
-                                'cart': cart,
+                                // 'cart': cart,
                                 'dishes': dishes,
+                                'restuid': widget.restuid,
                               });
                           cartFetched = false;
                         }
@@ -244,8 +245,10 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                                 size: 25,
                                 color: Colors.white,
                               ),
-                              onPressed: () => Navigator.pop(context),
-                            )
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, HomeScreen.routename);
+                              })
                           : SizedBox(),
                     ),
 

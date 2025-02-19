@@ -76,8 +76,9 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) {
         final argument = settings.arguments as Map;
         return DummyBasket(
-          cart: argument['cart'],
+          // cart: argument['cart'],
           dishes: argument['dishes'],
+          restuid: argument['restuid'],
         );
       });
 

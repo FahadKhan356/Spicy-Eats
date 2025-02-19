@@ -1,0 +1,239 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
+import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
+import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
+
+class CartCard extends ConsumerWidget {
+  CartCard({
+    super.key,
+    this.cardHeight,
+    required this.elevation,
+    required this.cardColor,
+    required this.dish,
+    required this.imageHeight,
+    required this.imageWidth,
+    required this.cartItem,
+    required this.userId,
+    required this.isCartScreen,
+    required this.quantityIndex,
+    this.addbuttonHeight,
+    this.addbuttonWidth,
+    this.buttonIncDecHeight,
+    this.buttonIncDecWidth,
+  });
+  final double? cardHeight;
+  final double? elevation;
+  final Color? cardColor;
+  final DishData? dish;
+  final double? imageHeight;
+  final double? imageWidth;
+  final CartModelNew cartItem;
+  final String? userId;
+  bool? isCartScreen;
+  int? quantityIndex;
+  double? addbuttonHeight;
+  double? addbuttonWidth;
+  double? buttonIncDecHeight;
+  double? buttonIncDecWidth;
+
+  Debouncer _debouncer = Debouncer(milliseconds: 500);
+  @override
+  build(BuildContext context, WidgetRef ref) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Container(
+          height: cardHeight ?? 130,
+          width: double.maxFinite,
+          child: Card(
+              margin: const EdgeInsets.symmetric(vertical: 10),
+              elevation: elevation ?? 5,
+              color: cardColor ?? Colors.white,
+              child: Row(
+                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Container(
+                          // color: Colors.red,
+                          height: imageHeight,
+                          width: imageWidth,
+                          child: Image.network(
+                            dish!.dish_imageurl.toString(),
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Expanded(
+                          child: Container(
+                            // color: Colors.blue,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  dish!.dish_name.toString(),
+                                  style: const TextStyle(
+                                      fontSize: 15, color: Colors.black),
+                                ),
+                                Text(
+                                  dish!.dish_description.toString(),
+                                  maxLines: 1,
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.black,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                Text(
+                                  '\$${dish!.dish_price!.toStringAsFixed(1)}',
+                                  style: const TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Flexible(
+                    flex: 0,
+                    child: Container(
+                      // color: Colors.amber,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          cartItem.dish_id != dish!.dishid &&
+                                  isCartScreen == true
+                              ? InkWell(
+                                  onTap: () {
+                                    _debouncer.run(() {
+                                      ref.read(DummyLogicProvider).addToCart(
+                                            ref,
+                                            userId!,
+                                            dish!.dishid.toString(),
+                                            dish!.dish_price!.toDouble(),
+                                            dish!.dish_imageurl!,
+                                          );
+                                    });
+                                  },
+                                  child: Container(
+                                    height: addbuttonHeight ?? 50,
+                                    width: addbuttonWidth ?? 50,
+                                    decoration: const BoxDecoration(
+                                        color: Colors.black,
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(10),
+                                            bottomRight: Radius.circular(10))),
+                                    child: const Align(
+                                      alignment: Alignment.center,
+                                      child: Icon(
+                                        Icons.add,
+                                        size: 20,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : Expanded(
+                                  child: Column(
+                                    // mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: InkWell(
+                                          onTap: () {
+                                            _debouncer.run(() {
+                                              ref
+                                                  .read(DummyLogicProvider)
+                                                  .increaseQuantity(
+                                                    ref,
+                                                    dish!.dishid!,
+                                                    dish!.dish_price!,
+                                                  );
+                                            });
+                                          },
+                                          child: Container(
+                                            height: buttonIncDecHeight ?? 50,
+                                            width: buttonIncDecHeight ?? 50,
+                                            decoration: const BoxDecoration(
+                                                color: Colors.black,
+                                                borderRadius: BorderRadius.only(
+                                                    topRight:
+                                                        Radius.circular(10),
+                                                    bottomLeft:
+                                                        Radius.circular(10))),
+                                            child: const Icon(
+                                              Icons.add,
+                                              size: 20,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 5),
+                                      Text(
+                                        //cartItem.quantity.toString(),
+                                        ref
+                                            .read(cartProvider.notifier)
+                                            .state[quantityIndex!]
+                                            .quantity
+                                            .toString(),
+                                        style: const TextStyle(fontSize: 20),
+                                      ),
+                                      const SizedBox(width: 5),
+                                      Expanded(
+                                        child: InkWell(
+                                          onTap: () {
+                                            _debouncer.run(() {
+                                              ref
+                                                  .read(DummyLogicProvider)
+                                                  .decreaseQuantity(
+                                                    ref,
+                                                    dish!.dishid!,
+                                                    dish!.dish_price!,
+                                                  );
+                                            });
+                                          },
+                                          child: Container(
+                                            height: buttonIncDecHeight ?? 50,
+                                            width: buttonIncDecWidth ?? 50,
+                                            decoration: const BoxDecoration(
+                                                color: Colors.black,
+                                                borderRadius: BorderRadius.only(
+                                                    topLeft:
+                                                        Radius.circular(10),
+                                                    bottomRight:
+                                                        Radius.circular(10))),
+                                            child: Center(
+                                              child: Icon(
+                                                Icons.minimize_outlined,
+                                                size: 20,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              ))),
+    );
+  }
+}

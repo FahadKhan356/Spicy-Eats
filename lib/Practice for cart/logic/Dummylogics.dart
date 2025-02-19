@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ffi';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -8,6 +7,7 @@ import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
 import 'package:spicy_eats/main.dart';
 
 var cartProvider = StateProvider<List<CartModelNew>>((ref) => []);
+var cartPriceSumProvider = StateProvider<double>((ref) => 0);
 var DummyLogicProvider = Provider((ref) => Dummylogics());
 
 //debouncer class to prevent race condition
@@ -68,6 +68,7 @@ class Dummylogics {
     _mutex.run(() async {
       final cart = ref.read(cartProvider.notifier);
       final items = cart.state;
+      final cartTPrice = ref.read(cartPriceSumProvider.notifier);
 
       final index = items.indexWhere((item) => item.dish_id == dishId);
 
@@ -96,6 +97,8 @@ class Dummylogics {
       }
 
       cart.state = List.from(items); // Update state
+      cartTPrice.state = getTotalPrice(ref);
+      print('car total price check ${cartTPrice.state}');
     });
   }
 
@@ -105,6 +108,7 @@ class Dummylogics {
       // print('inside the increase quantity..');
       final cart = ref.read(cartProvider.notifier);
       final items = cart.state;
+      final cartTPrice = ref.read(cartPriceSumProvider.notifier);
       // print('dishid given by ui: $dishId');
 
       final index = ref
@@ -137,7 +141,9 @@ class Dummylogics {
       ref.read(cartProvider.notifier).state =
           List.from(ref.read(cartProvider.notifier).state);
       cart.state = List.from(items); // Update state
+      cartTPrice.state = getTotalPrice(ref);
       print('ended the increase quantity..');
+      print('car total price check ${cartTPrice.state}');
     });
   }
 
@@ -146,6 +152,7 @@ class Dummylogics {
     await _mutex.run(() async {
       final cart = ref.read(cartProvider.notifier);
       final items = cart.state;
+      final cartTPrice = ref.read(cartPriceSumProvider.notifier);
 
       final index = items.indexWhere((item) => item.dish_id == dishId);
 
@@ -172,6 +179,8 @@ class Dummylogics {
       }
 
       cart.state = List.from(items); // Update state
+      cartTPrice.state = getTotalPrice(ref);
+      print('car total price check ${cartTPrice.state}');
     });
   }
 
@@ -179,12 +188,15 @@ class Dummylogics {
   Future<void> removeItem(WidgetRef ref, String dishId) async {
     final cart = ref.read(cartProvider.notifier);
     final items = cart.state;
+    final cartTPrice = ref.read(cartPriceSumProvider.notifier);
 
     await supabaseClient.from('cart').delete().eq('dish_id', dishId);
 
     items.removeWhere((item) => item.dish_id == dishId);
 
     cart.state = List.from(items); // Update state
+    cartTPrice.state = getTotalPrice(ref);
+    print('car total price check ${cartTPrice.state}');
   }
 
   //calculate total pirce
