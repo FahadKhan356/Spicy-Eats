@@ -32,7 +32,7 @@ import 'SyncTabBar/home_sliver_with_scrollable_tabs.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Supabase.initialize(url: supabaseUrl, anonKey: supabasekey);
-  //debugPaintSizeEnabled = true;
+  // debugPaintSizeEnabled = true;
   runApp(const ProviderScope(child: MyApp()));
 }
 

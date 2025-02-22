@@ -40,7 +40,7 @@ class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
     super.initState();
     ref
         .read(registershopcontrollerProvider)
-        .fetchrestaurants(supabaseClient.auth.currentUser!.id)
+        .fetchrestaurants()
         .then((restaurant) {
       if (restaurant != null) {
         setState(() {

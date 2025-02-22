@@ -4,7 +4,9 @@ class RestaurantData {
   int? deliveryFee;
   int? minTime;
   int? maxTime;
-  double? ratings;
+  double? averageRatings;
+
+  int? totalRatings;
   String? address;
   int? phoneNumber;
   String? deliveryArea;
@@ -28,7 +30,8 @@ class RestaurantData {
       int? deliveryFee,
       int? minTime,
       int? maxTime,
-      double? ratings,
+      double? averageRatings,
+      int? totalRatings,
       String? address,
       int? phoneNumber,
       String? deliveryArea,
@@ -49,7 +52,8 @@ class RestaurantData {
       phoneNumber: phoneNumber ?? this.phoneNumber,
       address: address ?? this.address,
       restaurantName: restaurantName ?? this.restaurantName,
-      ratings: ratings ?? this.ratings,
+      averageRatings: averageRatings ?? this.averageRatings,
+      totalRatings: totalRatings ?? this.totalRatings,
       email: email ?? this.email,
       lat: lat ?? this.lat,
       long: long ?? this.long,
@@ -74,7 +78,8 @@ class RestaurantData {
     this.phoneNumber,
     this.address,
     this.restaurantName,
-    this.ratings,
+    this.averageRatings,
+    this.totalRatings,
     this.email,
     this.lat,
     this.long,
@@ -102,7 +107,8 @@ class RestaurantData {
       'deliveryFee': deliveryFee,
       'minTime': minTime,
       'maxTime': maxTime,
-      'ratings': ratings,
+      'average_ratings': averageRatings,
+      'total_ratngs': totalRatings,
       'address': address,
       'phoneNumber': phoneNumber,
       'deliveryArea': deliveryArea,
@@ -136,7 +142,8 @@ class RestaurantData {
       deliveryFee: json['deliveryFee'] ?? 0.0,
       minTime: json['minTime'] ?? 0,
       maxTime: json['maxTime'] ?? 0,
-      ratings: json['ratings'] ?? 0.0,
+      averageRatings: json['average_ratings'] ?? 0.0,
+      totalRatings: json['total_ratings'] ?? 0,
       address: json['address'] ?? '',
       phoneNumber: json['phoneNumber'] ?? 0,
       deliveryArea: json['deliveryArea'] ?? 0.0,

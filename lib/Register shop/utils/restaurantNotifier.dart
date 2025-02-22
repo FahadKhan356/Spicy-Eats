@@ -37,7 +37,7 @@ class RestaurantNotifier extends StateNotifier<RestaurantData> {
         phoneNumber: phoneNumber,
         address: address,
         restaurantName: restaurantName,
-        ratings: ratings,
+        averageRatings: ratings,
         email: email,
         lat: lat,
         long: long,

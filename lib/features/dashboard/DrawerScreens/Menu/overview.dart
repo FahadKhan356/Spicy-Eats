@@ -28,8 +28,7 @@ class _OverviewScreenState extends ConsumerState<OverviewScreen> {
         child: Column(
           children: [
             FutureBuilder(
-                future: registershopcontroller
-                    .fetchrestaurants(supabaseClient.auth.currentUser!.id),
+                future: registershopcontroller.fetchrestaurants(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());

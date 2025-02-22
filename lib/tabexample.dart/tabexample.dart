@@ -7,7 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
 import 'package:spicy_eats/Practice%20for%20cart/screens/DummyBasket.dart';
+import 'package:spicy_eats/Register%20shop/models/registershop.dart';
 import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
+import 'package:spicy_eats/commons/orderModel.dart';
 import 'package:spicy_eats/diegoveloper%20example/bloc.dart';
 import 'package:spicy_eats/diegoveloper%20example/main_rappi_concept_app.dart';
 import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
@@ -18,7 +20,9 @@ import 'package:spicy_eats/main.dart';
 class MyFinalScrollScreen extends ConsumerStatefulWidget {
   static const String routename = '/MyFinalScreen';
   final String? restuid;
-  const MyFinalScrollScreen({super.key, this.restuid});
+  final RestaurantData restaurantData;
+  const MyFinalScrollScreen(
+      {super.key, this.restuid, required this.restaurantData});
 
   @override
   ConsumerState<MyFinalScrollScreen> createState() =>
@@ -206,6 +210,7 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                                 'restuid': widget.restuid,
                               });
                           cartFetched = false;
+                          ref.read(DummyLogicProvider).getTotalPrice(ref);
                         }
                       }),
                 )
@@ -230,7 +235,9 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                             opacity: _imageOpacity,
                             curve: Curves.easeIn,
                             child: Image.network(
-                              'https://mrqaapzhzeqvarrtfkgv.supabase.co/storage/v1/object/public/Restaurant_Registeration//8d019a6b-b66a-466e-99b9-c66f9745ba70/Restaurant_covers',
+                              //'https://mrqaapzhzeqvarrtfkgv.supabase.co/storage/v1/object/public/Restaurant_Registeration//8d019a6b-b66a-466e-99b9-c66f9745ba70/Restaurant_covers',
+                              widget.restaurantData.restaurantImageUrl
+                                  .toString(),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -284,6 +291,7 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                     // const SizedBox(
                     //   height: 20,
                     // ),
+
                     Positioned.fill(
                       top: _imageHeight,
                       child: SingleChildScrollView(
@@ -292,73 +300,85 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                             const SizedBox(
                               height: 30,
                             ),
-                            // Container(
-                            //   // height: 100,
-                            //   width: double.maxFinite,
-                            //   color: Colors.black87,
-                            // child:
-                            // Row(
-                            //   mainAxisAlignment: MainAxisAlignment.center,
-                            //   children: [
-                            //     Icon(
-                            //       Icons.watch_later_outlined,
-                            //       color: Colors.black,
-                            //       size: 25,
-                            //     ),
-                            //     Text(
-                            //       '20-40 mins |',
-                            //       style: TextStyle(fontWeight: FontWeight.bold),
-                            //     ),
-                            //     Row(
-                            //       children: [
-                            //         Icon(
-                            //           Icons.star,
-                            //           color: Colors.yellow,
-                            //           size: 25,
-                            //         ),
-                            //         Text('4.2',
-                            //             style: TextStyle(
-                            //                 fontWeight: FontWeight.bold)),
-                            //       ],
-                            //     )
-                            //   ],
-                            // ),
-                            // // ),
-                            // const SizedBox(
-                            //   height: 30,
-                            // ),
-                            // Row(
-                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            //   children: [
-                            //     Expanded(
-                            //       child: Padding(
-                            //         padding:
-                            //             EdgeInsets.symmetric(horizontal: 10),
-                            //         child: Container(
-                            //           height: 5,
-                            //           color: Colors.black26,
-                            //         ),
-                            //       ),
-                            //     ),
-                            //     Text(
-                            //       'Menu',
-                            //       style: TextStyle(fontWeight: FontWeight.bold),
-                            //     ),
-                            //     Expanded(
-                            //       child: Padding(
-                            //         padding:
-                            //             EdgeInsets.symmetric(horizontal: 10),
-                            //         child: Container(
-                            //           height: 5,
-                            //           color: Colors.black26,
-                            //         ),
-                            //       ),
-                            //     )
-                            //   ],
-                            // ),
-                            // const SizedBox(
-                            //   height: 30,
-                            // ),
+                            Container(
+                                height: 120,
+                                color: Colors.amber,
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      // height: 100,
+                                      width: double.maxFinite,
+                                      color: Colors.black87,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.watch_later_outlined,
+                                            color: Colors.black,
+                                            size: 25,
+                                          ),
+                                          Text(
+                                            '20-40 mins |',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                Icons.star,
+                                                color: Colors.yellow,
+                                                size: 25,
+                                              ),
+                                              Text('4.2',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    // ),
+                                    const SizedBox(
+                                      height: 30,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            child: Container(
+                                              height: 5,
+                                              color: Colors.black26,
+                                            ),
+                                          ),
+                                        ),
+                                        Text(
+                                          'Menu',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Expanded(
+                                          child: Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            child: Container(
+                                              height: 5,
+                                              color: Colors.black26,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 30,
+                                    ),
+                                  ],
+                                )),
                             ...List.generate(bloc.items.length, (index) {
                               final items = bloc.items[index];
                               final cartIndex = cart.firstWhere(
@@ -412,7 +432,8 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                         opacity: myOffset >= 110 ? 1 : 0,
                         duration: Duration(milliseconds: 300),
                         child: IconButton(
-                            onPressed: () {},
+                            onPressed: () => Navigator.pushNamed(
+                                context, HomeScreen.routename),
                             icon: const Icon(
                               Icons.arrow_back_rounded,
                               size: 25,

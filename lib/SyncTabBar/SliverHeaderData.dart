@@ -31,7 +31,7 @@ class SliverHeaderData extends StatelessWidget {
                   width: 4,
                 ),
                 Text(
-                    '${restaurantdata.maxTime} - ${restaurantdata.minTime} Min | ${restaurantdata.ratings}',
+                    '${restaurantdata.maxTime} - ${restaurantdata.minTime} Min | ${restaurantdata.averageRatings}',
                     style: TextStyle(fontSize: 15)),
                 SizedBox(
                   width: 6,

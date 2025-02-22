@@ -91,7 +91,7 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
 
     await ref
         .read(registershopcontrollerProvider)
-        .fetchrestaurants(supabaseClient.auth.currentUser?.id)
+        .fetchrestaurants()
         .then((value) {
       if (value != null) {
         setState(() {

@@ -89,7 +89,7 @@ class RegisterShopRepository {
   }
 
 //fetch restaurants
-  Future<List<RestaurantData>?> fetchRestaurant(String? currentUserId) async {
+  Future<List<RestaurantData>?> fetchRestaurant() async {
     try {
       List<dynamic> response =
           await supabaseClient.from('restaurants').select('*');

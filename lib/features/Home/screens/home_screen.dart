@@ -123,9 +123,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final registershopcontroller = ref.read(registershopcontrollerProvider);
 
     // Fetch restaurants
-    registershopcontroller
-        .fetchrestaurants(supabaseClient.auth.currentUser!.id)
-        .then((restaurant) {
+    registershopcontroller.fetchrestaurants().then((restaurant) {
       if (restaurant != null && mounted) {
         setState(() {
           restaurantData = restaurant;
@@ -464,36 +462,41 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                     print(MediaQuery.of(context).size.width);
 
                                     Navigator.pushNamed(
-                                      // context, RestaurantMenu.routename,
-                                      // arguments: {
-                                      //   'restaurant': restaurantData[index],
-                                      //   // 'dishes': dishList,
-                                      //   'rest_uid':
-                                      //       restaurantData[index].restuid,
-                                      // }
-                                      //     });
-                                      // Navigator.pushNamed(
+                                        // context, RestaurantMenu.routename,
+                                        // arguments: {
+                                        //   'restaurant': restaurantData[index],
+                                        //   // 'dishes': dishList,
+                                        //   'rest_uid':
+                                        //       restaurantData[index].restuid,
+                                        // }
+                                        //     });
+                                        // Navigator.pushNamed(
 
-                                      //for myfinalscreen
-                                      context,
-                                      MyFinalScrollScreen.routename,
-                                      arguments: restaurantData[index].restuid,
-                                      //for dummycart
+                                        //for myfinalscreen
+                                        context,
+                                        MyFinalScrollScreen.routename,
+                                        arguments: {
+                                          'restuid':
+                                              restaurantData[index].restuid,
+                                          'restaurantdata':
+                                              restaurantData[index],
+                                        }
+                                        //for dummycart
 
-                                      // context,
-                                      // DummyCart.routename,
-                                      // arguments: restaurantData[index].restuid,
-                                      // context,
+                                        // context,
+                                        // DummyCart.routename,
+                                        // arguments: restaurantData[index].restuid,
+                                        // context,
 
-                                      //for homesliverscrollabletabs
+                                        //for homesliverscrollabletabs
 
-                                      // HomeSliverWithScrollableTabs.routename,
-                                      // arguments: {
-                                      //   'restuid':
-                                      //       restaurantData[index].restuid,
-                                      //   'restaurantdata': restaurantData[index],
-                                      // },
-                                    );
+                                        // HomeSliverWithScrollableTabs.routename,
+                                        // arguments: {
+                                        //   'restuid':
+                                        //       restaurantData[index].restuid,
+                                        //   'restaurantdata': restaurantData[index],
+                                        // },
+                                        );
                                   },
                                   child: RestaurantContainer(
                                     name: restaurantData[index]
@@ -509,7 +512,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                         restaurantData[index].minTime!,
                                     maxdeliverytime:
                                         restaurantData[index].maxTime!,
-                                    ratings: restaurantData[index].ratings!,
+                                    ratings:
+                                        restaurantData[index].averageRatings!,
                                   ),
                                 ),
                               ),

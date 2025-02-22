@@ -1,8 +1,11 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
 import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/main.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 var homeRepositoryController = Provider((ref) => HomeRepository());
 
@@ -57,6 +60,53 @@ class HomeRepository {
       //print('${ref.read(rest_ui_Provider)} this is rest uid in the homerepo');
 
       print('$e....we are in fetchcategories catch block');
+    }
+  }
+
+  Future<void> addRatings(
+      {required BuildContext context,
+      required String restid,
+      required String userid,
+      required double ratings}) async {
+    try {
+      await supabaseClient.from('restaurants_ratings').upsert({
+        'userid': userid,
+        'rest_uid': restid,
+        'ratings': ratings,
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+  }
+
+  Future<void> calculateAverageRatingsWithUpdate({
+    required BuildContext context,
+    required String restid,
+  }) async {
+    double averageRatings;
+    int totalRatings;
+    try {
+      final response = await supabaseClient
+          .from('restaurants_ratings')
+          .select('ratings')
+          .eq('rest_uid', restid);
+
+      if (response.isNotEmpty) {
+        final ratings =
+            response.map((r) => (r['ratings'] as num).toDouble()).toList();
+        averageRatings = ratings.reduce((value, element) => value + element) /
+            ratings.length;
+        totalRatings = ratings.length;
+
+        await supabaseClient.from('restaurants').update({
+          'average_ratings': averageRatings,
+          'total_ratings': totalRatings,
+        }).eq('rest_uid', restid);
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
 }

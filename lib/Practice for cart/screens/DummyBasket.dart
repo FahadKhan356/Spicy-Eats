@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
+import 'package:spicy_eats/commons/CartCard.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
+import 'package:spicy_eats/main.dart';
 import 'package:spicy_eats/tabexample.dart/tabexample.dart';
 
 class DummyBasket extends ConsumerStatefulWidget {
@@ -24,11 +26,20 @@ class DummyBasket extends ConsumerStatefulWidget {
 
 class _DummyBasketState extends ConsumerState<DummyBasket> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final userId = supabaseClient.auth.currentUser!.id;
+    var carttotalamount = ref.read(DummyLogicProvider).getTotalPrice(ref);
     final cart = ref.watch(cartProvider);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           backgroundColor: Colors.black,
           automaticallyImplyLeading: false,
           leading: IconButton(
@@ -65,125 +76,17 @@ class _DummyBasketState extends ConsumerState<DummyBasket> {
                           final dishindex = widget.dishes.firstWhere(
                             (dish) => dish.dishid == cart[index].dish_id,
                           );
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: Card(
-                              elevation: 2,
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Container(
-                                            height: 90,
-                                            width: 90,
-                                            child: Image.network(
-                                              cartitem.image.toString(),
-                                              fit: BoxFit.contain,
-                                            ),
-                                          ),
-                                          Column(
-                                            children: [
-                                              Text(
-                                                "x ${cartitem.quantity}",
-                                                style: const TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              Text(
-                                                "\$${cartitem.tprice!}",
-                                                style: const TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.green,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          InkWell(
-                                            onTap: () {
-                                              ref
-                                                  .read(DummyLogicProvider)
-                                                  .increaseQuantity(
-                                                    ref,
-                                                    cartitem.dish_id!,
-                                                    dishindex.dish_price!,
-                                                  );
-                                            },
-                                            child: Container(
-                                              height: 30,
-                                              width: 30,
-                                              decoration: const BoxDecoration(
-                                                color: Colors.black,
-                                                borderRadius: BorderRadius.only(
-                                                  topRight: Radius.circular(10),
-                                                  bottomLeft:
-                                                      Radius.circular(10),
-                                                ),
-                                              ),
-                                              child: const Icon(
-                                                Icons.add,
-                                                size: 20,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(width: 5),
-                                          Text(
-                                            cartitem.quantity.toString(),
-                                            style:
-                                                const TextStyle(fontSize: 20),
-                                          ),
-                                          const SizedBox(width: 5),
-                                          InkWell(
-                                            onTap: () {
-                                              ref
-                                                  .read(DummyLogicProvider)
-                                                  .decreaseQuantity(
-                                                    ref,
-                                                    cartitem.dish_id,
-                                                    dishindex.dish_price!,
-                                                  );
-                                            },
-                                            child: Container(
-                                              height: 30,
-                                              width: 30,
-                                              decoration: const BoxDecoration(
-                                                color: Colors.black,
-                                                borderRadius: BorderRadius.only(
-                                                  topLeft: Radius.circular(10),
-                                                  bottomRight:
-                                                      Radius.circular(10),
-                                                ),
-                                              ),
-                                              child: const Align(
-                                                alignment: Alignment.center,
-                                                child: Icon(
-                                                  Icons.minimize_outlined,
-                                                  size: 20,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
+                          return CartCard(
+                              cardHeight: 120,
+                              elevation: 5,
+                              cardColor: Colors.white,
+                              dish: dishindex,
+                              imageHeight: 50,
+                              imageWidth: 50,
+                              cartItem: cartitem,
+                              userId: userId,
+                              isCartScreen: false,
+                              quantityIndex: index);
                         },
                       ),
                       const SizedBox(height: 20),
@@ -211,10 +114,10 @@ class _DummyBasketState extends ConsumerState<DummyBasket> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    const Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Products'),
+                        const Text('Products'),
                         Text('\$12.33'),
                       ],
                     ),
@@ -224,7 +127,7 @@ class _DummyBasketState extends ConsumerState<DummyBasket> {
                       children: [
                         const Text('Total'),
                         Text(
-                          '\$${ref.watch(cartPriceSumProvider)}',
+                          '\$${carttotalamount}',
                           style: TextStyle(color: Colors.green),
                         ),
                       ],

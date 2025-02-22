@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
+import 'package:spicy_eats/features/Restaurant_Menu/screens/restaurant_menu.dart';
 
 class CartCard extends ConsumerWidget {
   CartCard({
@@ -29,7 +30,7 @@ class CartCard extends ConsumerWidget {
   final DishData? dish;
   final double? imageHeight;
   final double? imageWidth;
-  final CartModelNew cartItem;
+  final CartModelNew? cartItem;
   final String? userId;
   bool? isCartScreen;
   int? quantityIndex;
@@ -78,25 +79,36 @@ class CartCard extends ConsumerWidget {
                                 Text(
                                   dish!.dish_name.toString(),
                                   style: const TextStyle(
-                                      fontSize: 15, color: Colors.black),
+                                      fontSize: 15,
+                                      color: Colors.black54,
+                                      fontWeight: FontWeight.w500),
                                 ),
                                 Text(
                                   dish!.dish_description.toString(),
                                   maxLines: 1,
                                   style: const TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.black,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                                      fontSize: 15,
+                                      color: Colors.black54,
+                                      overflow: TextOverflow.ellipsis,
+                                      fontWeight: FontWeight.w500),
                                 ),
-                                Text(
-                                  '\$${dish!.dish_price!.toStringAsFixed(1)}',
-                                  style: const TextStyle(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.green,
-                                  ),
-                                ),
+                                isCartScreen!
+                                    ? Text(
+                                        '\$${dish!.dish_price!.toStringAsFixed(1)}',
+                                        style: const TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.green,
+                                        ),
+                                      )
+                                    : Text(
+                                        '\$${cartItem!.tprice!.toStringAsFixed(1)}',
+                                        style: const TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.green,
+                                        ),
+                                      ),
                               ],
                             ),
                           ),
@@ -112,7 +124,7 @@ class CartCard extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          cartItem.dish_id != dish!.dishid &&
+                          cartItem!.dish_id != dish!.dishid &&
                                   isCartScreen == true
                               ? InkWell(
                                   onTap: () {
@@ -130,6 +142,13 @@ class CartCard extends ConsumerWidget {
                                     height: addbuttonHeight ?? 50,
                                     width: addbuttonWidth ?? 50,
                                     decoration: const BoxDecoration(
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color: Colors.black54,
+                                              blurRadius: 6,
+                                              offset: Offset(-1, -1),
+                                              spreadRadius: 1)
+                                        ],
                                         color: Colors.black,
                                         borderRadius: BorderRadius.only(
                                             topLeft: Radius.circular(10),
@@ -216,12 +235,18 @@ class CartCard extends ConsumerWidget {
                                                     bottomRight:
                                                         Radius.circular(10))),
                                             child: Center(
-                                              child: Icon(
-                                                Icons.minimize_outlined,
-                                                size: 20,
-                                                color: Colors.white,
-                                              ),
-                                            ),
+                                                child: isCartScreen == false &&
+                                                        cartItem!.quantity == 1
+                                                    ? const Icon(
+                                                        Icons.delete_rounded,
+                                                        size: 20,
+                                                        color: Colors.white,
+                                                      )
+                                                    : const Icon(
+                                                        Icons.minimize_outlined,
+                                                        size: 20,
+                                                        color: Colors.white,
+                                                      )),
                                           ),
                                         ),
                                       ),

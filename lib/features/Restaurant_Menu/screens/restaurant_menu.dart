@@ -174,7 +174,7 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "\ ${widget.restaurant!.ratings}",
+                        "\ ${widget.restaurant!.averageRatings}",
                         style: const TextStyle(
                             fontSize: 18,
                             color: Colors.black54,
