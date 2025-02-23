@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
 
 class RestaurantContainer extends ConsumerStatefulWidget {
   final String name;
@@ -9,9 +10,13 @@ class RestaurantContainer extends ConsumerStatefulWidget {
   final double ratings;
   final int mindeliverytime;
   final int maxdeliverytime;
+  final String restid;
+  final String userid;
 
   const RestaurantContainer({
     super.key,
+    required this.restid,
+    required this.userid,
     required this.name,
     required this.price,
     required this.image,
@@ -28,6 +33,8 @@ class RestaurantContainer extends ConsumerStatefulWidget {
 class _RestaurantContainerState extends ConsumerState<RestaurantContainer> {
   @override
   Widget build(BuildContext context) {
+    bool isFav = ref.watch(favoriteProvider)[widget.restid] ?? false;
+
     var size = MediaQuery.of(context).size;
     return Padding(
       padding: const EdgeInsets.only(top: 5),
@@ -47,13 +54,27 @@ class _RestaurantContainerState extends ConsumerState<RestaurantContainer> {
                   Positioned(
                     right: size.width * 0.03,
                     top: 20,
-                    child: Container(
-                      color: Colors.white,
-                      child: Icon(
-                        Icons.favorite_outline_rounded,
-                        size: size.width * 0.09,
-                        color: Colors.white,
-                      ),
+                    child: InkWell(
+                      onTap: () => ref
+                          .read(registershoprepoProvider)
+                          .togglefavorites(
+                              userid: widget.userid,
+                              restid: widget.restid,
+                              ref: ref,
+                              context: context),
+                      child: Container(
+                          // color: Colors.white,
+                          child: isFav
+                              ? Icon(
+                                  Icons.favorite,
+                                  size: size.width * 0.09,
+                                  color: Colors.red,
+                                )
+                              : Icon(
+                                  Icons.favorite_outline_rounded,
+                                  size: size.width * 0.09,
+                                  color: Colors.white,
+                                )),
                     ),
                   )
                 ],

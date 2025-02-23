@@ -459,6 +459,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                 itemBuilder: (context, index) =>
                                     GestureDetector(
                                   onTap: () {
+                                    ref
+                                        .read(registershoprepoProvider)
+                                        .checkIfFavorites(
+                                            userid: supabaseClient
+                                                .auth.currentUser!.id,
+                                            restid:
+                                                restaurantData[index].restuid!,
+                                            ref: ref);
                                     print(MediaQuery.of(context).size.width);
 
                                     Navigator.pushNamed(
@@ -514,6 +522,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                         restaurantData[index].maxTime!,
                                     ratings:
                                         restaurantData[index].averageRatings!,
+                                    restid: restaurantData[index].restuid!,
+                                    userid: supabaseClient.auth.currentUser!.id,
                                   ),
                                 ),
                               ),

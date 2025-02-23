@@ -9,6 +9,7 @@ import 'package:spicy_eats/main.dart';
 
 var rest_ui_Provider = StateProvider<String?>((ref) => null);
 var registershoprepoProvider = Provider((ref) => RegisterShopRepository());
+var favoriteProvider = StateProvider<Map<String, bool>>((ref) => {});
 
 class RegisterShopRepository {
   Future<void> uploadrestaurantData({
@@ -134,32 +135,55 @@ class RegisterShopRepository {
     }
   }
 
-  Future<void> addfavorites(
+  Future<void> checkIfFavorites(
       {required String userid,
       required String restid,
-      required BuildContext context}) async {
+      required WidgetRef ref}) async {
     try {
       final existingUser = await supabaseClient
           .from('favorites')
           .select('id')
-          .eq('userid', userid)
-          .eq('restid', restid)
+          .eq('user_id', userid)
+          .eq('rest_id', restid)
           .maybeSingle();
 
-      if (existingUser != null) {
+      ref.read(favoriteProvider.notifier).state = {
+        ...ref.read(favoriteProvider),
+        restid: existingUser != null,
+      };
+    } catch (e) {
+      // ScaffoldMessenger.of(context)
+      //     .showSnackBar(SnackBar(content: Text(e.toString())));
+      print(e.toString());
+    }
+  }
+
+  Future<void> togglefavorites(
+      {required String userid,
+      required String restid,
+      required WidgetRef ref,
+      required BuildContext context}) async {
+    final isFav = ref.read(favoriteProvider)[restid] ?? false;
+    try {
+      if (isFav) {
         await supabaseClient
             .from('favorites')
             .delete()
-            .eq('id', existingUser['id']);
+            .eq('user_id', userid)
+            .eq('rest_id', restid);
       } else {
         await supabaseClient.from('favorites').insert({
-          'userid': userid,
-          'restid': restid,
+          'user_id': userid,
+          'rest_id': restid,
         });
       }
+
+      ref.read(favoriteProvider.notifier).state = {
+        ...ref.read(favoriteProvider),
+        restid: !isFav,
+      };
     } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.toString())));
+      throw Exception(e);
     }
   }
 }
