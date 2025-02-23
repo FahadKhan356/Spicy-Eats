@@ -69,11 +69,26 @@ class HomeRepository {
       required String userid,
       required double ratings}) async {
     try {
-      await supabaseClient.from('restaurants_ratings').upsert({
-        'userid': userid,
-        'rest_uid': restid,
-        'ratings': ratings,
-      });
+      final result = await supabaseClient
+          .from('restaurants_ratings')
+          .select('id')
+          .eq('restid', restid)
+          .eq('user_id', userid)
+          .maybeSingle();
+
+      if (result != null) {
+        await supabaseClient.from('restaurants_ratings').update({
+          'user_id': userid,
+          'restid': restid,
+          'ratings': ratings,
+        }).eq('restid', restid);
+      } else {
+        await supabaseClient.from('restaurants_ratings').insert({
+          'user_id': userid,
+          'restid': restid,
+          'ratings': ratings,
+        }).eq('restid', restid);
+      }
     } catch (e) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(e.toString())));
@@ -84,13 +99,13 @@ class HomeRepository {
     required BuildContext context,
     required String restid,
   }) async {
-    double averageRatings;
+    double? averageRatings;
     int totalRatings;
     try {
       final response = await supabaseClient
           .from('restaurants_ratings')
           .select('ratings')
-          .eq('rest_uid', restid);
+          .eq('restid', restid);
 
       if (response.isNotEmpty) {
         final ratings =
@@ -103,10 +118,14 @@ class HomeRepository {
           'average_ratings': averageRatings,
           'total_ratings': totalRatings,
         }).eq('rest_uid', restid);
+        print(
+            'Average Ratings (before update): $averageRatings (Type: ${averageRatings.runtimeType})');
       }
     } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.toString())));
+      // ScaffoldMessenger.of(context)
+      //     .showSnackBar(SnackBar(content: Text(e.toString()))
+      //     );
+      throw Exception(e);
     }
   }
 }

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class RestaurantContainer extends StatelessWidget {
+class RestaurantContainer extends ConsumerStatefulWidget {
   final String name;
   final String price;
   final String image;
@@ -20,6 +21,12 @@ class RestaurantContainer extends StatelessWidget {
   });
 
   @override
+  ConsumerState<RestaurantContainer> createState() =>
+      _RestaurantContainerState();
+}
+
+class _RestaurantContainerState extends ConsumerState<RestaurantContainer> {
+  @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Padding(
@@ -33,7 +40,7 @@ class RestaurantContainer extends StatelessWidget {
               child: Stack(
                 children: [
                   Image.network(
-                    image,
+                    widget.image,
                     fit: BoxFit.cover,
                     width: double.maxFinite,
                   ),
@@ -41,7 +48,7 @@ class RestaurantContainer extends StatelessWidget {
                     right: size.width * 0.03,
                     top: 20,
                     child: Container(
-                      //color: Colors.white,
+                      color: Colors.white,
                       child: Icon(
                         Icons.favorite_outline_rounded,
                         size: size.width * 0.09,
@@ -63,7 +70,7 @@ class RestaurantContainer extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        name,
+                        widget.name,
                         style: TextStyle(
                             fontSize: size.width * 0.045,
                             color: Colors.black,
@@ -73,7 +80,7 @@ class RestaurantContainer extends StatelessWidget {
 
                       Row(children: [
                         Text(
-                          "\$$price",
+                          "\$${widget.price}",
                           style: TextStyle(
                               fontSize: size.width * 0.04,
                               color: Colors.black54,
@@ -83,7 +90,7 @@ class RestaurantContainer extends StatelessWidget {
                           width: 10,
                         ),
                         Text(
-                          "$mindeliverytime-$maxdeliverytime",
+                          "${widget.mindeliverytime}-${widget.maxdeliverytime}",
                           style: TextStyle(
                               fontSize: size.width * 0.04,
                               color: Colors.black54,
@@ -123,7 +130,7 @@ class RestaurantContainer extends StatelessWidget {
                     color: const Color(0xFFD1C4E9)),
                 child: Center(
                   child: Text(
-                    ratings.toString(),
+                    widget.ratings.toString(),
                     style: TextStyle(
                         fontSize: size.width * 0.04,
                         color: Colors.black,

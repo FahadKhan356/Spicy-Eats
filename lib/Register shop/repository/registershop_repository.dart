@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/models/registershop.dart';
 import 'package:spicy_eats/Register%20shop/utils/commonImageUpload.dart';
@@ -107,7 +109,8 @@ class RegisterShopRepository {
       // Return the list of RestaurantData objects
     } catch (e) {
       //throw e.toString();
-      print('No restaurant data');
+      throw Exception(e);
+      // print(e.toString());
 
       return null;
     }
@@ -128,6 +131,35 @@ class RegisterShopRepository {
     } catch (e) {
       print('Error fetching rest_uid: $e');
       return null; // Return null if there is an error
+    }
+  }
+
+  Future<void> addfavorites(
+      {required String userid,
+      required String restid,
+      required BuildContext context}) async {
+    try {
+      final existingUser = await supabaseClient
+          .from('favorites')
+          .select('id')
+          .eq('userid', userid)
+          .eq('restid', restid)
+          .maybeSingle();
+
+      if (existingUser != null) {
+        await supabaseClient
+            .from('favorites')
+            .delete()
+            .eq('id', existingUser['id']);
+      } else {
+        await supabaseClient.from('favorites').insert({
+          'userid': userid,
+          'restid': restid,
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
 }

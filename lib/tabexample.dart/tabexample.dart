@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
@@ -13,6 +14,7 @@ import 'package:spicy_eats/commons/orderModel.dart';
 import 'package:spicy_eats/diegoveloper%20example/bloc.dart';
 import 'package:spicy_eats/diegoveloper%20example/main_rappi_concept_app.dart';
 import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
+import 'package:spicy_eats/features/Home/repository/homerespository.dart';
 import 'package:spicy_eats/features/Home/screens/home_screen.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/main.dart';
@@ -301,14 +303,14 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                               height: 30,
                             ),
                             Container(
-                                height: 120,
-                                color: Colors.amber,
+                                height: 122,
+                                // color: Colors.amber,
                                 child: Column(
                                   children: [
                                     Container(
                                       // height: 100,
                                       width: double.maxFinite,
-                                      color: Colors.black87,
+                                      // color: Colors.black87,
                                       child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
@@ -323,19 +325,57 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold),
                                           ),
-                                          Row(
-                                            children: [
-                                              Icon(
-                                                Icons.star,
-                                                color: Colors.yellow,
-                                                size: 25,
-                                              ),
-                                              Text('4.2',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                            ],
-                                          )
+                                          // Row(
+                                          //   children: [
+                                          //     Icon(
+                                          //       Icons.star,
+                                          //       color: Colors.yellow,
+                                          //       size: 25,
+                                          //     ),
+                                          //     Text('4.2',
+                                          //         style: TextStyle(
+                                          //             fontWeight:
+                                          //                 FontWeight.bold)),
+                                          //   ],
+                                          // )
+                                          RatingBar.builder(
+                                            initialRating: 1.0,
+                                            itemSize: 25,
+                                            minRating: 1,
+                                            direction: Axis.horizontal,
+                                            allowHalfRating: true,
+                                            itemCount: 5,
+                                            itemBuilder: (context, _) =>
+                                                const Icon(
+                                              Icons.star,
+                                              color: Colors.amber,
+                                            ),
+                                            onRatingUpdate: (rating) async {
+                                              setState(() {
+                                                ref
+                                                    .read(
+                                                        homeRepositoryController)
+                                                    .addRatings(
+                                                        context: context,
+                                                        restid: widget
+                                                            .restaurantData
+                                                            .restuid!,
+                                                        userid: supabaseClient
+                                                            .auth
+                                                            .currentUser!
+                                                            .id,
+                                                        ratings: rating);
+
+                                                ref
+                                                    .read(
+                                                        homeRepositoryController)
+                                                    .calculateAverageRatingsWithUpdate(
+                                                        context: context,
+                                                        restid:
+                                                            widget.restuid!);
+                                              });
+                                            },
+                                          ),
                                         ],
                                       ),
                                     ),

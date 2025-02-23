@@ -5,7 +5,7 @@ import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 double categoryHeight = 65;
 double productHeight = 130;
 // double productsCardMargin = 60;
-final additionalWidgetsHeight = 10.0;
+double additionalWidgetsHeight = 150.0;
 
 class RappiBloc with ChangeNotifier {
   List<RapitabCategory> tabs = [];
@@ -18,7 +18,7 @@ class RappiBloc with ChangeNotifier {
       {List<DishData>? dishes, List<Categories>? categories}) {
     // tabController = TabController(length: categories!.length, vsync: ticker);
     final Map<String, List<DishData>> categoryDishesMap = {};
-    double offsetFrom = 100.0;
+    double offsetFrom = 0.0;
     double offsetTo = 0.0;
     scrollController = ScrollController();
 
@@ -50,13 +50,18 @@ class RappiBloc with ChangeNotifier {
             // productsCardMargin +
             (value.length * productHeight) +
             additionalWidgetsHeight;
+        //+ additionalWidgetsHeight;
+        additionalWidgetsHeight = 0;
       } else {
         // offsetTo = double.infinity;
         offsetTo = offsetFrom +
             // productsCardMargin +
-            (categoryDishes.length * productHeight) +
             categoryHeight +
+            (categoryDishes.length * productHeight) +
             additionalWidgetsHeight;
+        additionalWidgetsHeight = 0;
+
+        //+additionalWidgetsHeight;
       }
 
       // Add the category to tabs and items
