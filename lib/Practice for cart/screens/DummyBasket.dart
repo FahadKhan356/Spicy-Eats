@@ -75,6 +75,7 @@ class _DummyBasketState extends ConsumerState<DummyBasket> {
                           final cartitem = cart[index];
                           final dishindex = widget.dishes.firstWhere(
                             (dish) => dish.dishid == cart[index].dish_id,
+                            orElse: () => DishData(),
                           );
                           return CartCard(
                               cardHeight: 120,

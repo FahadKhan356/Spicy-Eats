@@ -62,7 +62,9 @@ class CartCard extends ConsumerWidget {
                           height: imageHeight,
                           width: imageWidth,
                           child: Image.network(
-                            dish!.dish_imageurl.toString(),
+                            isCartScreen!
+                                ? dish!.dish_imageurl.toString()
+                                : cartItem!.image.toString(),
                             fit: BoxFit.contain,
                           ),
                         ),
@@ -77,14 +79,18 @@ class CartCard extends ConsumerWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  dish!.dish_name.toString(),
+                                  isCartScreen!
+                                      ? dish!.dish_name.toString()
+                                      : cartItem!.name.toString(),
                                   style: const TextStyle(
                                       fontSize: 15,
                                       color: Colors.black54,
                                       fontWeight: FontWeight.w500),
                                 ),
                                 Text(
-                                  dish!.dish_description.toString(),
+                                  isCartScreen!
+                                      ? dish!.dish_description.toString()
+                                      : cartItem!.description.toString(),
                                   maxLines: 1,
                                   style: const TextStyle(
                                       fontSize: 15,

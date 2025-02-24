@@ -6,8 +6,14 @@ class CartModelNew {
   final int? dish_id;
   final String? created_at;
   final String? image;
+  final itemprice;
+  final String? name;
+  final String? description;
 
   CartModelNew({
+    this.name,
+    this.description,
+    this.itemprice,
     this.cart_id,
     required this.quantity,
     this.dish_id,
@@ -28,6 +34,9 @@ class CartModelNew {
       'tprice': tprice,
       'created_at': created_at,
       'image': image,
+      'itemprice': itemprice,
+      'name': name,
+      'description': description,
     };
   }
 //copywith
@@ -40,6 +49,9 @@ class CartModelNew {
     int? dish_id,
     String? created_at,
     String? image,
+    int? itemprice,
+    String? name,
+    String? description,
   }) {
     return CartModelNew(
       cart_id: cart_id ?? this.cart_id,
@@ -48,6 +60,9 @@ class CartModelNew {
       dish_id: dish_id ?? this.dish_id,
       quantity: quantity ?? this.quantity,
       image: image ?? this.image,
+      itemprice: itemprice ?? this.itemprice,
+      name: name ?? this.name,
+      description: description ?? this.description,
     );
   }
 
@@ -63,6 +78,9 @@ class CartModelNew {
       user_id: json['user_id'] ?? '',
       created_at: json['created_at'] ?? '',
       image: json['image'] ?? '',
+      itemprice: json['itemprice'] ?? '',
+      name: json['name'] ?? '',
+      description: json['description'] ?? '',
     );
   }
 }
