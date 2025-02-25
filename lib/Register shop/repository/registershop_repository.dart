@@ -186,4 +186,26 @@ class RegisterShopRepository {
       throw Exception(e);
     }
   }
+
+  Future<void> fetchFavorites(
+      {required String userid, required WidgetRef ref}) async {
+    try {
+      final res = await supabaseClient
+          .from('favorites')
+          .select('*')
+          .eq('user_id', userid);
+      if (res.isNotEmpty) {
+        final favs = res.map((e) => e['rest_id'] as String).toList();
+
+        for (var eachvalue in favs) {
+          ref.read(favoriteProvider.notifier).state = {
+            ...ref.read(favoriteProvider),
+            eachvalue: true
+          };
+        }
+      }
+    } catch (e) {
+      throw e.toString();
+    }
+  }
 }

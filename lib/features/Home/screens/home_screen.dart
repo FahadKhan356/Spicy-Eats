@@ -43,6 +43,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   List<RestaurantData> restaurantData = [];
   List<String>? restuid;
   List<DishData> dishList = [];
+  final userid = supabaseClient.auth.currentUser!.id;
 
   @override
   void initState() {
@@ -146,7 +147,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       }
     });
 
-    // Fetch dishes
+    // Fetch favorites
+    ref.read(registershoprepoProvider).fetchFavorites(userid: userid, ref: ref);
   }
 
   void onclick() {
