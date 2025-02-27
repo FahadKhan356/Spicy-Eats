@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
+import 'package:spicy_eats/Register%20shop/models/registershop.dart';
 import 'package:spicy_eats/commons/CartCard.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/main.dart';
@@ -12,11 +13,13 @@ class DummyBasket extends ConsumerStatefulWidget {
   List<DishData> dishes = [];
   static const String routename = "/Dummy_basket";
   String restuid;
+  RestaurantData restaurantData;
   DummyBasket({
     super.key,
     //required this.cart,
     required this.dishes,
     required this.restuid,
+    required this.restaurantData,
   });
   // List<CartModelNew> cart = [];
 
@@ -50,7 +53,11 @@ class _DummyBasketState extends ConsumerState<DummyBasket> {
             onPressed: () => Navigator.pushNamed(
               context,
               MyFinalScrollScreen.routename,
-              arguments: widget.restuid,
+              arguments: {
+                'restuid': widget.restuid,
+                'restaurantdata': widget.restaurantData,
+                // 'restaurantdata': ,
+              },
             ),
           ),
           title: const Text(

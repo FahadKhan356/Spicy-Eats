@@ -79,6 +79,7 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
           // cart: argument['cart'],
           dishes: argument['dishes'],
           restuid: argument['restuid'],
+          restaurantData: argument['restdata'],
         );
       });
 

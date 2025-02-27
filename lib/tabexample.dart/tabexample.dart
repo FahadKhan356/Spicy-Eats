@@ -210,6 +210,7 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                                 // 'cart': cart,
                                 'dishes': dishes,
                                 'restuid': widget.restuid,
+                                'restdata': widget.restaurantData,
                               });
                           cartFetched = false;
                           ref.read(DummyLogicProvider).getTotalPrice(ref);
