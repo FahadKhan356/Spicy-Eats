@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:spicy_eats/Practice%20for%20cart/screens/DummyBasket.dart';
 import 'package:spicy_eats/Practice%20for%20cart/screens/DummyCart.dart';
@@ -19,6 +17,7 @@ import 'package:spicy_eats/features/Restaurant_Menu/menu_Item_detail_screen.dart
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/screens/restaurant_menu.dart';
 import 'package:spicy_eats/features/authentication/otp.dart';
+import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 import 'package:spicy_eats/tabexample.dart/tabexample.dart';
 
 Route<dynamic> generateRoutes(RouteSettings settings) {
@@ -124,6 +123,14 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
         );
       });
 
+    //DishMenuScreen
+    case DishMenuScreen.routename:
+      return MaterialPageRoute(builder: (context) {
+        final argument = settings.arguments as DishData;
+        return DishMenuScreen(
+          dish: argument,
+        );
+      });
     default:
       return MaterialPageRoute(
         builder: (context) => const Scaffold(

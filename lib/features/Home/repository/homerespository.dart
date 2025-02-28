@@ -5,7 +5,6 @@ import 'package:spicy_eats/Register%20shop/repository/registershop_repository.da
 import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/main.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 var homeRepositoryController = Provider((ref) => HomeRepository());
 

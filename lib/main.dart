@@ -20,6 +20,7 @@ import 'package:spicy_eats/Register%20shop/widgets/TimePicker.dart';
 import 'package:spicy_eats/Supabse%20Backend/supabase_config.dart';
 import 'package:spicy_eats/features/Home/screens/home_screen.dart';
 import 'package:spicy_eats/features/authentication/passwordless_signup.dart';
+import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 import 'package:spicy_eats/routes.dart';
 import 'package:spicy_eats/synctabgpt.dart';
 import 'package:spicy_eats/tabexample.dart/tabexample.dart';
@@ -88,6 +89,7 @@ class _MyAppState extends ConsumerState<MyApp> {
             appBarTheme: AppBarTheme(backgroundColor: Colors.white)),
         home: Scaffold(
           body:
+              // DishMenuScreen(),
               //MyFinalScrollScreen(),
               //MyCustomSliverScreen(),
               //CustomScrollTransition(),
