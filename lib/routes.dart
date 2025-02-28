@@ -126,9 +126,10 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
     //DishMenuScreen
     case DishMenuScreen.routename:
       return MaterialPageRoute(builder: (context) {
-        final argument = settings.arguments as DishData;
+        final argument = settings.arguments as Map;
         return DishMenuScreen(
-          dish: argument,
+          dish: argument['dish'],
+          isCart: argument['iscart'],
         );
       });
     default:

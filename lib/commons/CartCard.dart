@@ -45,7 +45,7 @@ class CartCard extends ConsumerWidget {
   build(BuildContext context, WidgetRef ref) {
     return InkWell(
       onTap: () => Navigator.pushNamed(context, DishMenuScreen.routename,
-          arguments: dish),
+          arguments: {'dish': dish, 'iscart': false}),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Container(

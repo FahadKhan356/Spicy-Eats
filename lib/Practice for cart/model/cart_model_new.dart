@@ -1,3 +1,5 @@
+import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
+
 class CartModelNew {
   final int? cart_id;
   int quantity;
@@ -9,6 +11,8 @@ class CartModelNew {
   final itemprice;
   final String? name;
   final String? description;
+  final Variation? variation;
+  int? variationId;
 
   CartModelNew({
     this.name,
@@ -21,6 +25,8 @@ class CartModelNew {
     this.tprice,
     this.created_at,
     this.image,
+    this.variation,
+    this.variationId,
   });
 
 //tomap / tojson
@@ -37,6 +43,8 @@ class CartModelNew {
       'itemprice': itemprice,
       'name': name,
       'description': description,
+      'variation': variation,
+      'variationId': variationId,
     };
   }
 //copywith
@@ -81,6 +89,8 @@ class CartModelNew {
       itemprice: json['itemprice'] ?? '',
       name: json['name'] ?? '',
       description: json['description'] ?? '',
+      variation: json['variation'],
+      variationId: json['variationId'] ?? 0,
     );
   }
 }

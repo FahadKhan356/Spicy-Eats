@@ -174,8 +174,8 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
     super.dispose();
     // bloc.tabController!.dispose();
     bloc.dispose();
-    // bloc.scrollController!.dispose();
-    // _opacityController.dispose();
+    bloc.scrollController!.dispose();
+    _opacityController.dispose();
   }
 
   @override

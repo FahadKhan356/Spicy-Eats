@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
 import 'package:spicy_eats/commons/restaurantModel.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
-import 'package:spicy_eats/features/dish%20menu/model/dishmenu_model.dart';
+import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
 import 'package:spicy_eats/features/dish%20menu/repository/dishmenu_repo.dart';
 
 // ignore: must_be_immutable
 class DishMenuScreen extends ConsumerStatefulWidget {
   static const String routename = '/DishMenuScreen';
   final DishData dish;
-  List<DishMenuModel> dishMenuList = [];
-  DishMenuScreen({super.key, required this.dish});
+  List<VariattionTitleModel> VariationList = [];
+  bool isCart = false;
+  CartModelNew? cartDish;
+  DishMenuScreen(
+      {super.key, required this.dish, this.cartDish, required this.isCart});
 
   @override
   ConsumerState<DishMenuScreen> createState() => _DishMenuScreenState();
@@ -25,12 +29,11 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen> {
         .then((value) {
       if (value != null) {
         setState(() {
-          setState(() {
-            widget.dishMenuList = value;
-          });
+          widget.VariationList = value;
+
           ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(widget.dishMenuList[0].variationTitle)));
-          print('${widget.dishMenuList[0].variationTitle}');
+              SnackBar(content: Text(widget.VariationList[0].variationTitle)));
+          print('${widget.VariationList[0].variationTitle}');
         });
         print('not fetch dishmenuList${value}');
       }
@@ -46,6 +49,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final selectedVariations = ref.watch(variationProvider);
     return Scaffold(
       backgroundColor: Colors.white,
       body: CustomScrollView(
@@ -98,8 +102,17 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen> {
           ),
           SliverList(
               delegate: SliverChildBuilderDelegate(
-            childCount: 4,
-            (context, index) => Padding(
+                  childCount: widget.VariationList.length,
+                  (context, titleVariationindex) {
+            final titleVariation = widget.VariationList[titleVariationindex];
+            if (widget.isCart && widget.cartDish?.variation != null) {
+              ref.read(variationProvider.notifier).state = {
+                ...ref.read(variationProvider),
+                widget.cartDish!.variationId!: widget.cartDish!.variation!,
+              };
+            }
+
+            return Padding(
               padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 10),
               child: Container(
                   padding: EdgeInsets.all(10),
@@ -113,60 +126,65 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen> {
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
-                              '..Choose Your Crust',
-                              style: TextStyle(fontSize: 22),
+                            Text(
+                              titleVariation.variationTitle.toString(),
+                              style: const TextStyle(fontSize: 22),
                             ),
                             ClipRRect(
                               borderRadius: BorderRadius.circular(5),
                               child: Container(
-                                padding: EdgeInsets.all(5),
-                                color: Colors.red,
-                                child: const Text(
-                                  'Required',
-                                  style: TextStyle(
-                                      fontSize: 14, color: Colors.white),
-                                ),
+                                padding: const EdgeInsets.all(5),
+                                color: titleVariation.isRequired
+                                    ? Colors.red
+                                    : Colors.green,
+                                child: titleVariation.isRequired
+                                    ? const Text(
+                                        'Required',
+                                        style: TextStyle(
+                                            fontSize: 14, color: Colors.white),
+                                      )
+                                    : const Text(
+                                        'optional',
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.black87),
+                                      ),
                               ),
                             ),
                           ]),
-                      const Text(
-                        'Select one',
-                        style: TextStyle(fontSize: 14),
+                      Text(
+                        titleVariation.subtitle.toString(),
+                        style: const TextStyle(fontSize: 14),
                       ),
-                      // ListView.builder(
-                      //     shrinkWrap: true,
-                      //     physics: NeverScrollableScrollPhysics(),
-                      //     itemCount: 5,
-                      //     itemBuilder: (context, index) {
-                      //       return const ListTile(
-                      //         title: Text(
-                      //           'Deep Pan',
-                      //           style: TextStyle(fontSize: 17),
-                      //         ),
-                      //         trailing: Text(
-                      //           'Free',
-                      //           style: TextStyle(fontSize: 17),
-                      //         ),
-                      //       );
-                      //     }),
+                      ...titleVariation.variations.map((variation) {
+                        final isSelected =
+                            selectedVariations[titleVariation.id]?.id ==
+                                variation.id;
 
-                      // ...widget.dishMenuList.map((e) =>
-
-                      //     CheckboxListTile(
-                      //       title: Text(e.variationName),
-                      //       subtitle:  e.variationPrice>0? Text('\$${e.variationPrice}') :  null,
-
-                      //       value:
-                      //      onChanged: (value) {}))
+                        return CheckboxListTile(
+                          title: Text(
+                              "${variation.variationName} (\$${variation.variationPrice})"),
+                          value: isSelected,
+                          onChanged: (value) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content:
+                                    Text(variation.variationPrice.toString())));
+                            ref.read(variationProvider.notifier).state = {
+                              ...selectedVariations,
+                              titleVariation.id:
+                                  value == true ? variation : null,
+                            };
+                          },
+                        );
+                      }),
                     ],
                   )),
-            ),
-          )),
-          SliverList(
-              delegate: SliverChildBuilderDelegate(
-                  childCount: widget.dishMenuList.length,
-                  (context, index) => Text('sdd'))),
+            );
+          })),
+          //   SliverList(
+          //       delegate: SliverChildBuilderDelegate(
+          //           childCount: widget.VariationList.length,
+          //           (context, index) => Text('sdd'))),
         ],
       ),
     );
