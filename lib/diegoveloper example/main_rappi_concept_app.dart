@@ -7,6 +7,7 @@ import 'package:spicy_eats/commons/CartCard.dart';
 import 'package:spicy_eats/diegoveloper%20example/bloc.dart';
 import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
+import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
 
 class Mian_rappi_concept_app extends ConsumerStatefulWidget {
   const Mian_rappi_concept_app({super.key});
@@ -330,11 +331,18 @@ class RappiCategory extends StatelessWidget {
 // ignore: non_constant_identifier_names
 class RappiProduct extends ConsumerStatefulWidget {
   RappiProduct(
-      {required this.dish, this.cartItem, this.qunatityindex, this.userId});
+      {required this.dish,
+      this.cartItem,
+      this.qunatityindex,
+      this.userId,
+      this.titleVariationList,
+      this.variattionTitle});
   final DishData dish;
   final CartModelNew? cartItem;
   final int? qunatityindex;
   final String? userId;
+  List<VariattionTitleModel>? titleVariationList;
+  VariattionTitleModel? variattionTitle;
 
   @override
   ConsumerState<RappiProduct> createState() => _RappiProductState();
@@ -352,18 +360,20 @@ class _RappiProductState extends ConsumerState<RappiProduct> {
     BuildContext context,
   ) {
     return CartCard(
-        // cardHeight: cardHeight,
-        elevation: 1,
-        cardColor: null,
-        dish: widget.dish,
-        imageHeight: 100,
-        imageWidth: 100,
-        cartItem: widget.cartItem!,
-        userId: widget.userId,
-        isCartScreen: true,
-        addbuttonHeight: 80,
-        buttonIncDecHeight: 60,
-        buttonIncDecWidth: 60,
-        quantityIndex: widget.qunatityindex);
+      // cardHeight: cardHeight,
+      elevation: 1,
+      cardColor: null,
+      dish: widget.dish,
+      imageHeight: 100,
+      imageWidth: 100,
+      cartItem: widget.cartItem!,
+      userId: widget.userId,
+      isCartScreen: true,
+      addbuttonHeight: 80,
+      buttonIncDecHeight: 60,
+      buttonIncDecWidth: 60,
+      quantityIndex: widget.qunatityindex,
+      titleVariationList: widget.titleVariationList,
+    );
   }
 }

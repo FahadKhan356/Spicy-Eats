@@ -1,13 +1,14 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
-import 'package:spicy_eats/features/Restaurant_Menu/screens/restaurant_menu.dart';
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
+import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
+import 'package:spicy_eats/features/dish%20menu/repository/dishmenu_repo.dart';
+import 'package:spicy_eats/main.dart';
 
-class CartCard extends ConsumerWidget {
+class CartCard extends ConsumerStatefulWidget {
   CartCard({
     super.key,
     this.cardHeight,
@@ -24,6 +25,7 @@ class CartCard extends ConsumerWidget {
     this.addbuttonWidth,
     this.buttonIncDecHeight,
     this.buttonIncDecWidth,
+    this.titleVariationList,
   });
   final double? cardHeight;
   final double? elevation;
@@ -39,22 +41,51 @@ class CartCard extends ConsumerWidget {
   double? addbuttonWidth;
   double? buttonIncDecHeight;
   double? buttonIncDecWidth;
+  List<VariattionTitleModel>? titleVariationList;
 
-  Debouncer _debouncer = Debouncer(milliseconds: 500);
   @override
-  build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CartCard> createState() => _CartCardState();
+}
+
+class _CartCardState extends ConsumerState<CartCard> {
+  final Debouncer _debouncer = Debouncer(milliseconds: 500);
+
+  // Future<void> fetchtitlevariation() async {
+  //   ref.read(dishMenuRepoProvider).fetchTitleVariation(context, dishid: null).then((value) {
+  //     if (value != null) {
+  //       setState(() {
+  //         widget.titleVariationList = value;
+
+  //       });
+  //       print("dsddasdadad");
+  //     }
+  //   });
+  // }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  build(
+    BuildContext context,
+  ) {
+    List<VariattionTitleModel>? variationLis;
+    VariattionTitleModel? variattionTitle;
     return InkWell(
       onTap: () => Navigator.pushNamed(context, DishMenuScreen.routename,
-          arguments: {'dish': dish, 'iscart': false}),
+          arguments: {'dish': widget.dish, 'iscart': false}),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Container(
-            height: cardHeight ?? 130,
+            height: widget.cardHeight ?? 130,
             width: double.maxFinite,
             child: Card(
                 margin: const EdgeInsets.symmetric(vertical: 10),
-                elevation: elevation ?? 5,
-                color: cardColor ?? Colors.white,
+                elevation: widget.elevation ?? 5,
+                color: widget.cardColor ?? Colors.white,
                 child: Row(
                   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -63,12 +94,12 @@ class CartCard extends ConsumerWidget {
                         children: [
                           Container(
                             // color: Colors.red,
-                            height: imageHeight,
-                            width: imageWidth,
+                            height: widget.imageHeight,
+                            width: widget.imageWidth,
                             child: Image.network(
-                              isCartScreen!
-                                  ? dish!.dish_imageurl.toString()
-                                  : cartItem!.image.toString(),
+                              widget.isCartScreen!
+                                  ? widget.dish!.dish_imageurl.toString()
+                                  : widget.cartItem!.image.toString(),
                               fit: BoxFit.contain,
                             ),
                           ),
@@ -83,18 +114,20 @@ class CartCard extends ConsumerWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    isCartScreen!
-                                        ? dish!.dish_name.toString()
-                                        : cartItem!.name.toString(),
+                                    widget.isCartScreen!
+                                        ? widget.dish!.dish_name.toString()
+                                        : widget.cartItem!.name.toString(),
                                     style: const TextStyle(
                                         fontSize: 15,
                                         color: Colors.black54,
                                         fontWeight: FontWeight.w500),
                                   ),
                                   Text(
-                                    isCartScreen!
-                                        ? dish!.dish_description.toString()
-                                        : cartItem!.description.toString(),
+                                    widget.isCartScreen!
+                                        ? widget.dish!.dish_description
+                                            .toString()
+                                        : widget.cartItem!.description
+                                            .toString(),
                                     maxLines: 1,
                                     style: const TextStyle(
                                         fontSize: 15,
@@ -102,9 +135,9 @@ class CartCard extends ConsumerWidget {
                                         overflow: TextOverflow.ellipsis,
                                         fontWeight: FontWeight.w500),
                                   ),
-                                  isCartScreen!
+                                  widget.isCartScreen!
                                       ? Text(
-                                          '\$${dish!.dish_price!.toStringAsFixed(1)}',
+                                          '\$${widget.dish!.dish_price!.toStringAsFixed(1)}',
                                           style: const TextStyle(
                                             fontSize: 17,
                                             fontWeight: FontWeight.bold,
@@ -112,7 +145,7 @@ class CartCard extends ConsumerWidget {
                                           ),
                                         )
                                       : Text(
-                                          '\$${cartItem!.tprice!.toStringAsFixed(1)}',
+                                          '\$${widget.cartItem!.tprice!.toStringAsFixed(1)}',
                                           style: const TextStyle(
                                             fontSize: 17,
                                             fontWeight: FontWeight.bold,
@@ -134,23 +167,90 @@ class CartCard extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            cartItem!.dish_id != dish!.dishid &&
-                                    isCartScreen == true
+                            widget.cartItem!.dish_id != widget.dish!.dishid &&
+                                    widget.isCartScreen == true
                                 ? InkWell(
-                                    onTap: () {
-                                      _debouncer.run(() {
-                                        ref.read(DummyLogicProvider).addToCart(
-                                              ref,
-                                              userId!,
-                                              dish!.dishid.toString(),
-                                              dish!.dish_price!.toDouble(),
-                                              dish!.dish_imageurl!,
-                                            );
+                                    onTap: () async {
+                                      _debouncer.run(() async {
+                                        final variationList = await ref
+                                            .read(dishMenuRepoProvider)
+                                            .fetchVariations(
+                                                dishid: widget.dish!.dishid!,
+                                                context: context);
+                                        if (variationList != null) {
+                                          variattionTitle =
+                                              variationList.firstWhere(
+                                                  (v) =>
+                                                      v.dishid ==
+                                                      widget.dish!.dishid,
+                                                  orElse: () =>
+                                                      VariattionTitleModel(
+                                                          id: null,
+                                                          variationTitle: '',
+                                                          isRequired: null,
+                                                          variations: [],
+                                                          maxSeleted: null,
+                                                          dishid: null));
+                                          print(
+                                              ' title variation id :  ${variattionTitle!.dishid}');
+                                          print(
+                                              '  dish id :  ${widget.dish!.dishid}');
+                                        }
+                                        if (variattionTitle != null) {
+                                          Navigator.pushNamed(
+                                              context, DishMenuScreen.routename,
+                                              arguments: {
+                                                'dish': widget.dish,
+                                                'iscart': false
+                                              });
+                                        } else {
+                                          ref
+                                              .read(DummyLogicProvider)
+                                              .addToCart(
+                                                  widget.dish!.dish_price,
+                                                  widget.dish!.dish_name,
+                                                  widget.dish!.dish_description,
+                                                  ref,
+                                                  supabaseClient
+                                                      .auth.currentUser!.id,
+                                                  widget.dish!.dishid
+                                                      .toString(),
+                                                  widget.dish!.dish_price!
+                                                      .toDouble(),
+                                                  widget.dish!.dish_imageurl!);
+                                        }
                                       });
+
+                                      // _debouncer.run(() {
+                                      //   if (variattionTitle!.dishid ==
+                                      //       widget.dish!.dishid) {
+                                      //     Navigator.pushNamed(
+                                      //         context, DishMenuScreen.routename,
+                                      //         arguments: {
+                                      //           'dish': widget.dish,
+                                      //           'iscart': false
+                                      //         });
+                                      //   } else {
+                                      //     ref
+                                      //         .read(DummyLogicProvider)
+                                      //         .addToCart(
+                                      //             widget.dish!.dish_price,
+                                      //             widget.dish!.dish_name,
+                                      //             widget.dish!.dish_description,
+                                      //             ref,
+                                      //             supabaseClient
+                                      //                 .auth.currentUser!.id,
+                                      //             widget.dish!.dishid
+                                      //                 .toString(),
+                                      //             widget.dish!.dish_price!
+                                      //                 .toDouble(),
+                                      //             widget.dish!.dish_imageurl!);
+                                      //   }
+                                      // });
                                     },
                                     child: Container(
-                                      height: addbuttonHeight ?? 50,
-                                      width: addbuttonWidth ?? 50,
+                                      height: widget.addbuttonHeight ?? 50,
+                                      width: widget.addbuttonWidth ?? 50,
                                       decoration: const BoxDecoration(
                                           boxShadow: [
                                             BoxShadow(
@@ -188,14 +288,18 @@ class CartCard extends ConsumerWidget {
                                                     .read(DummyLogicProvider)
                                                     .increaseQuantity(
                                                       ref,
-                                                      dish!.dishid!,
-                                                      dish!.dish_price!,
+                                                      widget.dish!.dishid!,
+                                                      widget.dish!.dish_price!,
                                                     );
                                               });
                                             },
                                             child: Container(
-                                              height: buttonIncDecHeight ?? 50,
-                                              width: buttonIncDecHeight ?? 50,
+                                              height:
+                                                  widget.buttonIncDecHeight ??
+                                                      50,
+                                              width:
+                                                  widget.buttonIncDecHeight ??
+                                                      50,
                                               decoration: const BoxDecoration(
                                                   color: Colors.black,
                                                   borderRadius:
@@ -219,7 +323,7 @@ class CartCard extends ConsumerWidget {
                                           //cartItem.quantity.toString(),
                                           ref
                                               .read(cartProvider.notifier)
-                                              .state[quantityIndex!]
+                                              .state[widget.quantityIndex!]
                                               .quantity
                                               .toString(),
                                           style: const TextStyle(fontSize: 20),
@@ -233,14 +337,17 @@ class CartCard extends ConsumerWidget {
                                                     .read(DummyLogicProvider)
                                                     .decreaseQuantity(
                                                       ref,
-                                                      dish!.dishid!,
-                                                      dish!.dish_price!,
+                                                      widget.dish!.dishid!,
+                                                      widget.dish!.dish_price!,
                                                     );
                                               });
                                             },
                                             child: Container(
-                                              height: buttonIncDecHeight ?? 50,
-                                              width: buttonIncDecWidth ?? 50,
+                                              height:
+                                                  widget.buttonIncDecHeight ??
+                                                      50,
+                                              width: widget.buttonIncDecWidth ??
+                                                  50,
                                               decoration: const BoxDecoration(
                                                   color: Colors.black,
                                                   borderRadius:
@@ -252,9 +359,10 @@ class CartCard extends ConsumerWidget {
                                                               Radius.circular(
                                                                   10))),
                                               child: Center(
-                                                  child: isCartScreen ==
+                                                  child: widget.isCartScreen ==
                                                               false &&
-                                                          cartItem!.quantity ==
+                                                          widget.cartItem!
+                                                                  .quantity ==
                                                               1
                                                       ? const Icon(
                                                           Icons.delete_rounded,

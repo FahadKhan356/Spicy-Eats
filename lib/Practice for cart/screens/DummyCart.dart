@@ -128,6 +128,9 @@ class _DummyCartState extends ConsumerState<DummyCart> {
                                   child: ElevatedButton(
                                     onPressed: () {
                                       ref.read(DummyLogicProvider).addToCart(
+                                          dish.dish_price,
+                                          dish.dish_name,
+                                          dish.dish_description,
                                           ref,
                                           supabaseClient.auth.currentUser!.id,
                                           dish.dishid.toString(),

@@ -10,14 +10,18 @@ import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
 import 'package:spicy_eats/Practice%20for%20cart/screens/DummyBasket.dart';
 import 'package:spicy_eats/Register%20shop/models/registershop.dart';
 import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
-import 'package:spicy_eats/commons/orderModel.dart';
 import 'package:spicy_eats/diegoveloper%20example/bloc.dart';
 import 'package:spicy_eats/diegoveloper%20example/main_rappi_concept_app.dart';
 import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
 import 'package:spicy_eats/features/Home/repository/homerespository.dart';
 import 'package:spicy_eats/features/Home/screens/home_screen.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
+import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
+import 'package:spicy_eats/features/dish%20menu/repository/dishmenu_repo.dart';
 import 'package:spicy_eats/main.dart';
+
+var titleVariationListProvider =
+    StateProvider<List<VariattionTitleModel>?>((ref) => null);
 
 class MyFinalScrollScreen extends ConsumerStatefulWidget {
   static const String routename = '/MyFinalScreen';
@@ -39,8 +43,8 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
   List<Categories> allcategories = [];
   // String restuid = 'd20a2270-b19b-462c-8a65-ba13ff8c0197';
   bool isTabPinned = false;
-  late AnimationController _opacityController;
-  late Animation _opacityAnimation;
+  // late AnimationController _opacityController;
+  // late Animation _opacityAnimation;
   double _imageHeight = 200;
   double _imageOpacity = 1;
   double _titletabOpacity = 0;
@@ -49,30 +53,7 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
   double _imageContainerSlide = 0.0;
   String? userId = supabaseClient.auth.currentUser!.id;
   bool cartFetched = false;
-  // void onScroll() {
-  //   print('inside the onscroll');
-  //   //bloc.scrollController = ScrollController();
-  //   //double offset1 = bloc.scrollController!.offset;
-  //   double newImatgeHeight = (300 - myOffset).clamp(150, 300);
-  //   double newImageOpacity = 1 - (myOffset / 100).clamp(0.3, 1);
-  //   double newTitleTabOpacity = (myOffset > 200) ? 1.00 : 0.0;
-  //   double newtabOpacity = (myOffset > 200) ? 1.0 : 0.0;
-  //   print('offset1 onscroll ${myOffset}');
-
-  //   if (bloc.scrollController!.hasClients) {
-  //     if (mounted) {
-  //       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-  //         setState(() {
-  //           print('offset1 onscroll ${myOffset}');
-  //           _imageHeight = newImatgeHeight;
-  //           _imageOpacity = newImageOpacity;
-  //           _titletabOpacity = newTitleTabOpacity;
-  //           _tabOpacity = newtabOpacity;
-  //         });
-  //       });
-  //     }
-  //   }
-  // }
+  List<VariattionTitleModel>? titleVariationList = [];
 
   Future fetchcategoriesAnddishes(String restuid) async {
     await ref
@@ -96,6 +77,18 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
         });
       }
     });
+
+    // await ref
+    //     .read(dishMenuRepoProvider)
+    //     .fetchTitleVariation(context)
+    //     .then((value) {
+    //   if (value != null) {
+    //     setState(() {
+    //       titleVariationList = value;
+    //     });
+    //   print("dsddasdadad");
+    //   }
+    // });
   }
 
   @override
@@ -111,8 +104,6 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                   TabController(length: allcategories.length, vsync: this);
               print('Number of tabs: ${bloc.tabs.length}');
               print('TabController length: ${bloc.tabController?.length}');
-              // bloc.tabController =
-              //     TabController(length: bloc.tabs.length, vsync: this);
             });
           }
 
@@ -122,6 +113,19 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
             // onScroll();
           });
         });
+
+        //   ref
+        //       .read(dishMenuRepoProvider)
+        //       .fetchTitleVariation(context)
+        //       .then((value) {
+        //     if (value != null) {
+        //       // setState(() {
+        //       //   titleVariationList = value;
+        //       // });
+        //       ref.read(titleVariationListProvider.notifier).state = value;
+        //       print("dsddasdadad");
+        //     }
+        //   });
       }
     });
 
@@ -154,7 +158,7 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
         setState(() {
           myOffset = bloc.scrollController!.offset;
 
-          print('offset1 onscroll ${myOffset}');
+          // print('offset1 onscroll ${myOffset}');
           _imageHeight = newImatgeHeight;
           _imageOpacity = newImageOpacity;
           _titletabOpacity = newTitleTabOpacity;
@@ -162,7 +166,7 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
           _imageContainerRadius = newContainerRadius;
           // _imageContainerSlide = newContainerSlide;
 
-          print("Scroll Offset: $myOffset");
+          // print("Scroll Offset: $myOffset");
         });
       });
     }
@@ -174,14 +178,14 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
     super.dispose();
     // bloc.tabController!.dispose();
     bloc.dispose();
-    bloc.scrollController!.dispose();
-    _opacityController.dispose();
+    // bloc.scrollController!.dispose();
+    // _opacityController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final cart = ref.watch(cartProvider);
-    final size = MediaQuery.of(context).size;
+    // final size = MediaQuery.of(context).size;
     // final centeredOffset = (size.width / 150) - 2;
     return SafeArea(
       child: Scaffold(
@@ -390,7 +394,7 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                                       children: [
                                         Expanded(
                                           child: Padding(
-                                            padding: EdgeInsets.symmetric(
+                                            padding: const EdgeInsets.symmetric(
                                                 horizontal: 10),
                                             child: Container(
                                               height: 5,
@@ -398,7 +402,7 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                                             ),
                                           ),
                                         ),
-                                        Text(
+                                        const Text(
                                           'Menu',
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold),
@@ -421,6 +425,18 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                                   ],
                                 )),
                             ...List.generate(bloc.items.length, (index) {
+                              final titleVariation =
+                                  titleVariationList!.firstWhere(
+                                (v) => v.dishid == bloc.items[index].product,
+                                orElse: () => VariattionTitleModel(
+                                    id: null,
+                                    variationTitle: '',
+                                    isRequired: null,
+                                    variations: [],
+                                    maxSeleted: null,
+                                    dishid: null),
+                              );
+
                               final items = bloc.items[index];
                               final cartIndex = cart.firstWhere(
                                   (dish) =>
@@ -430,6 +446,7 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                                       CartModelNew(dish_id: 0, quantity: 0));
                               final quantityindex = cart.indexWhere((dish) =>
                                   dish.dish_id == items.product?.dishid);
+
                               if (bloc.items[index].isCategory) {
                                 return RappiCategory(
                                     category: bloc.items[index].category);
@@ -439,6 +456,8 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                                   cartItem: cartIndex,
                                   qunatityindex: quantityindex,
                                   userId: supabaseClient.auth.currentUser!.id,
+                                  titleVariationList: titleVariationList,
+                                  variattionTitle: titleVariation,
                                 );
                               }
                             }),

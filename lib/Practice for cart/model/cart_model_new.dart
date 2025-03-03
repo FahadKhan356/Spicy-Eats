@@ -11,7 +11,7 @@ class CartModelNew {
   final itemprice;
   final String? name;
   final String? description;
-  final Variation? variation;
+  final List<Variation>? variation;
   int? variationId;
 
   CartModelNew({
@@ -62,6 +62,7 @@ class CartModelNew {
     String? description,
   }) {
     return CartModelNew(
+      variation: variation ?? this.variation,
       cart_id: cart_id ?? this.cart_id,
       tprice: tprice ?? this.tprice,
       user_id: user_id ?? this.user_id,
@@ -76,6 +77,9 @@ class CartModelNew {
 
 //from json
   factory CartModelNew.fromjson(Map<String, dynamic> json) {
+    final variation = json['variation'] as List? ?? [];
+    List<Variation> variationList =
+        variation.map((e) => Variation.fromjson(e)).toList();
     return CartModelNew(
       cart_id: json['id'] ?? 0,
       quantity: json['quantity'] ?? 0,
@@ -86,10 +90,13 @@ class CartModelNew {
       user_id: json['user_id'] ?? '',
       created_at: json['created_at'] ?? '',
       image: json['image'] ?? '',
-      itemprice: json['itemprice'] ?? '',
+      itemprice: json['itemprice'] ?? 0.0,
       name: json['name'] ?? '',
       description: json['description'] ?? '',
-      variation: json['variation'],
+      variation: variationList ?? [],
+      //  (json['variation'] as List<dynamic>)
+      //     .map((e) => Variation.fromjson(e))
+      //     .toList(),
       variationId: json['variationId'] ?? 0,
     );
   }

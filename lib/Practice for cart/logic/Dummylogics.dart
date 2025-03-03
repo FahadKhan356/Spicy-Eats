@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
+import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
 import 'package:spicy_eats/main.dart';
 
 var cartProvider = StateProvider<List<CartModelNew>>((ref) => []);
@@ -63,8 +64,8 @@ class Dummylogics {
   }
 
   //addtocart
-  Future<void> addToCart(WidgetRef ref, String userId, String dishId,
-      double price, String image) async {
+  Future<void> addToCart(itemprice, name, description, WidgetRef ref,
+      String userId, String dishId, double price, String image) async {
     _mutex.run(() async {
       final cart = ref.read(cartProvider.notifier);
       final items = cart.state;
@@ -88,6 +89,9 @@ class Dummylogics {
           'quantity': 1,
           'tprice': price,
           'image': image,
+          'itemprice': itemprice,
+          'name': name,
+          'description': description,
         }).select();
 
         if (response.isNotEmpty) {

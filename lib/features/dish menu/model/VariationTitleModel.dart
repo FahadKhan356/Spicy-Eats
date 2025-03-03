@@ -1,17 +1,20 @@
 class VariattionTitleModel {
-  int id;
-  String variationTitle;
-  bool isRequired;
+  int? id;
+  String? variationTitle;
+  bool? isRequired;
   String? subtitle;
-  List<Variation> variations;
+  List<Variation>? variations;
+  int? maxSeleted;
+  int? dishid;
 
-  VariattionTitleModel({
-    required this.id,
-    required this.variationTitle,
-    required this.isRequired,
-    required this.variations,
-    this.subtitle,
-  });
+  VariattionTitleModel(
+      {required this.id,
+      required this.variationTitle,
+      required this.isRequired,
+      required this.variations,
+      this.subtitle,
+      required this.maxSeleted,
+      required this.dishid});
 
 //tojson
   Map<String, dynamic> tojson() {
@@ -20,28 +23,31 @@ class VariattionTitleModel {
       'title': variationTitle,
       'isRequired': isRequired,
       'subtitle': subtitle,
+      'maxSeleted': maxSeleted,
+      'dishid': dishid,
     };
   }
 
 //fromjson
   factory VariattionTitleModel.fromjson(Map<String, dynamic> json) {
     return VariattionTitleModel(
-      id: json['id'] ?? 0,
-      variationTitle: json['title'] ?? '',
-      isRequired: json['isRequired'] ?? false,
-      subtitle: json['subtitle'] ?? '',
-      variations: (json['variations'] as List)
-          .map((e) => Variation.fromjson(e))
-          .toList(),
-    );
+        id: json['id'] ?? 0,
+        variationTitle: json['title'] ?? '',
+        isRequired: json['isRequired'] ?? false,
+        subtitle: json['subtitle'] ?? '',
+        variations: (json['variations'] as List)
+            .map((e) => Variation.fromjson(e))
+            .toList(),
+        maxSeleted: json['maxSeleted'] ?? 0,
+        dishid: json['dishid'] ?? 0);
   }
 }
 
 class Variation {
-  int id;
-  String variationName;
-  double variationPrice;
-  int variation_id;
+  int? id;
+  String? variationName;
+  double? variationPrice;
+  int? variation_id;
 
   Variation(
       {required this.id,

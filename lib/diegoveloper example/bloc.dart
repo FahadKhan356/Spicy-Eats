@@ -112,10 +112,10 @@ class RappiBloc with ChangeNotifier {
         if (scrollController!.offset >= tab.offsetFrom &&
             scrollController!.offset < tab.offsetTo &&
             !tab.selected!) {
-          print('Scrolled to category: ${tab.category.category_name}');
-          print('Scroll position: ${scrollController!.offset}');
-          print(
-              'Category offsetFrom: ${tab.offsetFrom}, offsetTo: ${tab.offsetTo}');
+          // print('Scrolled to category: ${tab.category.category_name}');
+          // print('Scroll position: ${scrollController!.offset}');
+          // print(
+          //     'Category offsetFrom: ${tab.offsetFrom}, offsetTo: ${tab.offsetTo}');
           // print('Scroll offset: ${scrollController!.offset}');
           onCategoryTab(i, animationRequired: false);
           tabController!.animateTo(i);
