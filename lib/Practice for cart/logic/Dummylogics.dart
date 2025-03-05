@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
+import 'package:spicy_eats/commons/ItemQuantity.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
 import 'package:spicy_eats/main.dart';
 
@@ -64,8 +65,18 @@ class Dummylogics {
   }
 
   //addtocart
-  Future<void> addToCart(itemprice, name, description, WidgetRef ref,
-      String userId, String dishId, double price, String image) async {
+  Future<void> addToCart(
+      itemprice,
+      name,
+      description,
+      WidgetRef ref,
+      String userId,
+      int dishId,
+      double price,
+      String image,
+      List<Variation>? variations,
+      bool isdishScreen,
+      quantity) async {
     _mutex.run(() async {
       final cart = ref.read(cartProvider.notifier);
       final items = cart.state;
@@ -73,25 +84,35 @@ class Dummylogics {
 
       final index = items.indexWhere((item) => item.dish_id == dishId);
 
-      if (index != -1) {
+      if (index != -1 && items[index].variation == null) {
         // If item exists, update quantity
         items[index].quantity++;
         items[index].tprice = items[index].quantity * price;
         await supabaseClient.from('cart').update({
           'quantity': items[index].quantity,
-          'total_price': items[index].tprice,
+          'tprice': items[index].tprice,
         }).eq('id', items[index].cart_id!);
       } else {
+        final itemquantity = quantity * price;
+
+        // final allvariationtotal = items[index].variation!.fold(
+        //     0,
+        //     (previousValue, element) =>
+        //         previousValue + element.variationPrice!.toInt());
+        // print('all variation total is ${allvariationtotal}');
         // Insert new item
         final response = await supabaseClient.from('cart').insert({
           'user_id': userId,
           'dish_id': dishId,
-          'quantity': 1,
-          'tprice': price,
+          'quantity': isdishScreen ? quantity : 1,
+          'tprice': itemquantity,
           'image': image,
           'itemprice': itemprice,
           'name': name,
           'description': description,
+          'variations': variations != null
+              ? variations.map((v) => v.tojson()).toList()
+              : [],
         }).select();
 
         if (response.isNotEmpty) {

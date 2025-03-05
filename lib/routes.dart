@@ -130,6 +130,7 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
         return DishMenuScreen(
           dish: argument['dish'],
           isCart: argument['iscart'],
+          cartDish: argument['cartdish'],
         );
       });
     default:

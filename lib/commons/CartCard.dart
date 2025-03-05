@@ -76,7 +76,11 @@ class _CartCardState extends ConsumerState<CartCard> {
     VariattionTitleModel? variattionTitle;
     return InkWell(
       onTap: () => Navigator.pushNamed(context, DishMenuScreen.routename,
-          arguments: {'dish': widget.dish, 'iscart': false}),
+          arguments: {
+            'dish': widget.dish,
+            'iscart': false,
+            'cartdish': widget.cartItem
+          }),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Container(
@@ -201,7 +205,8 @@ class _CartCardState extends ConsumerState<CartCard> {
                                               context, DishMenuScreen.routename,
                                               arguments: {
                                                 'dish': widget.dish,
-                                                'iscart': false
+                                                'iscart': false,
+                                                'cartdish': widget.cartItem
                                               });
                                         } else {
                                           ref
@@ -213,11 +218,13 @@ class _CartCardState extends ConsumerState<CartCard> {
                                                   ref,
                                                   supabaseClient
                                                       .auth.currentUser!.id,
-                                                  widget.dish!.dishid
-                                                      .toString(),
+                                                  widget.dish!.dishid!,
                                                   widget.dish!.dish_price!
                                                       .toDouble(),
-                                                  widget.dish!.dish_imageurl!);
+                                                  widget.dish!.dish_imageurl!,
+                                                  null,
+                                                  false,
+                                                  0);
                                         }
                                       });
 

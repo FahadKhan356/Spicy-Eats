@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
 import 'package:spicy_eats/features/dish%20menu/repository/dishmenu_repo.dart';
+import 'package:spicy_eats/main.dart';
+
+var addbuttonprovider = StateProvider<bool?>((ref) => null);
+var quantityPrvider = StateProvider<int>((ref) => 1);
+final variationListProvider = StateProvider<List<Variation>?>((ref) => null);
 
 // ignore: must_be_immutable
 class DishMenuScreen extends ConsumerStatefulWidget {
@@ -12,6 +18,7 @@ class DishMenuScreen extends ConsumerStatefulWidget {
   List<VariattionTitleModel> variationList = [];
   bool isCart = false;
   CartModelNew? cartDish;
+  bool isbasket = false;
   DishMenuScreen(
       {super.key, required this.dish, this.cartDish, required this.isCart});
 
@@ -20,6 +27,7 @@ class DishMenuScreen extends ConsumerStatefulWidget {
 }
 
 class _DishMenuScreenState extends ConsumerState<DishMenuScreen> {
+  final Debouncer _debouncer = Debouncer(milliseconds: 500);
   Future<void> fetchVariations(int dishId) async {
     ref
         .read(dishMenuRepoProvider)
@@ -47,7 +55,9 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final quantity = ref.watch(quantityPrvider);
     final selectedVariations = ref.watch(variationProvider);
+    final variationlist1 = ref.read(variationListProvider);
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
@@ -118,9 +128,9 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen> {
                   padding:
                       const EdgeInsets.symmetric(vertical: 50, horizontal: 10),
                   child: Container(
-                      padding: EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: Colors.lightGreen[100],
+                        color: Colors.black12,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Column(
@@ -161,10 +171,15 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen> {
                             style: const TextStyle(fontSize: 14),
                           ),
                           ...titleVariation.variations!.map((variation) {
-                            final selectedlist =
-                                selectedVariations[titleVariation.id] ?? [];
-                            final isSelected =
-                                selectedlist.any((v) => v.id == variation.id);
+                            final variationlist =
+                                ref.watch(variationListProvider) ?? [];
+                            final isselected =
+                                variationlist.any((v) => v.id == variation.id);
+
+                            // final selectedlist =
+                            //     selectedVariations[titleVariation.id] ?? [];
+                            // final isSelected =
+                            // selectedlist.any((v) => v.id == variation.id);
                             // selectedVariations[titleVariation.id]?.id ==
                             //     variation.id;
 
@@ -183,24 +198,33 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen> {
                                         const Text(" Free")
                                       ],
                                     ),
-                              value: isSelected,
+                              value: isselected, //isSelected,
                               onChanged: (value) {
                                 final updatedList =
-                                    List<Variation>.from(selectedlist);
+                                    List<Variation>.from(variationlist);
                                 if (value == true) {
                                   if (titleVariation.maxSeleted == null ||
-                                      updatedList.length <
+                                      // updatedList.length <
+                                      //     titleVariation.maxSeleted!
+                                      updatedList
+                                              .where((v) =>
+                                                  v.variation_id ==
+                                                  titleVariation.id)
+                                              .length <
                                           titleVariation.maxSeleted!) {
                                     updatedList.add(
                                       Variation(
-                                          id: variation.id,
-                                          variationName:
-                                              variation.variationName,
-                                          variationPrice:
-                                              variation.variationPrice,
-                                          variation_id: variation.variation_id),
+                                        id: variation.id,
+                                        variationName: variation.variationName,
+                                        variationPrice:
+                                            variation.variationPrice,
+                                        variation_id: variation.variation_id,
+                                        selected: true,
+                                      ),
                                     );
                                   } else {
+                                    // ref.read(addbuttonprovider.notifier).state =
+                                    //     false;
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
                                             content: Text(
@@ -211,10 +235,31 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen> {
                                       .removeWhere((v) => v.id == variation.id);
                                 }
 
-                                ref.read(variationProvider.notifier).state = {
-                                  ...selectedVariations,
-                                  titleVariation.id!: updatedList,
-                                };
+                                // ref.read(variationProvider.notifier).state = {
+                                //   ...selectedVariations,
+                                //   titleVariation.id!: updatedList,
+                                // };
+
+                                ref.read(variationListProvider.notifier).state =
+                                    updatedList;
+
+                                if (titleVariation.isRequired == true &&
+                                    updatedList
+                                            .where((element) =>
+                                                element.id == variation.id)
+                                            .length ==
+                                        titleVariation.maxSeleted!) {
+                                  ref.read(addbuttonprovider.notifier).state =
+                                      true;
+                                } else if (titleVariation.isRequired == true &&
+                                    updatedList
+                                            .where((element) =>
+                                                element.id == variation.id)
+                                            .length <
+                                        titleVariation.maxSeleted!) {
+                                  ref.read(addbuttonprovider.notifier).state =
+                                      false;
+                                }
                               },
                             );
                           }),
@@ -239,259 +284,165 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen> {
               right: 0,
               child: Container(
                 decoration: const BoxDecoration(
-                    color: Colors.white,
-                    border: Border(
-                        top: BorderSide(
-                      color: Colors.black26,
-                    ))),
+                  color: Colors.white,
+                  // border: Border(
+                  //     top: BorderSide(
+                  //   color: Colors.black26,
+                  // ),
+                  // ),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black12, spreadRadius: 2, blurRadius: 3)
+                  ],
+                ),
                 height: 80,
                 width: double.maxFinite,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    //  Flexible(
-                    //     flex: 0,
-                    //     child: Container(
-                    //       // color: Colors.amber,
-                    //       child: Column(
-                    //         crossAxisAlignment: CrossAxisAlignment.end,
-                    //         mainAxisAlignment: MainAxisAlignment.end,
-                    //         children: [
-                    //           widget.cartItem!.dish_id != widget.dish!.dishid &&
-                    //                   widget.isCartScreen == true
-                    //               ? InkWell(
-                    //                   onTap: () async {
-                    //                     _debouncer.run(() async {
-                    //                       final variationList = await ref
-                    //                           .read(dishMenuRepoProvider)
-                    //                           .fetchVariations(
-                    //                               dishid: widget.dish!.dishid!,
-                    //                               context: context);
-                    //                       if (variationList != null) {
-                    //                         variattionTitle =
-                    //                             variationList.firstWhere(
-                    //                                 (v) =>
-                    //                                     v.dishid ==
-                    //                                     widget.dish!.dishid,
-                    //                                 orElse: () =>
-                    //                                     VariattionTitleModel(
-                    //                                         id: null,
-                    //                                         variationTitle: '',
-                    //                                         isRequired: null,
-                    //                                         variations: [],
-                    //                                         maxSeleted: null,
-                    //                                         dishid: null));
-                    //                         print(
-                    //                             ' title variation id :  ${variattionTitle!.dishid}');
-                    //                         print(
-                    //                             '  dish id :  ${widget.dish!.dishid}');
-                    //                       }
-                    //                       if (variattionTitle != null) {
-                    //                         Navigator.pushNamed(
-                    //                             context, DishMenuScreen.routename,
-                    //                             arguments: {
-                    //                               'dish': widget.dish,
-                    //                               'iscart': false
-                    //                             });
-                    //                       } else {
-                    //                         ref
-                    //                             .read(DummyLogicProvider)
-                    //                             .addToCart(
-                    //                                 widget.dish!.dish_price,
-                    //                                 widget.dish!.dish_name,
-                    //                                 widget.dish!.dish_description,
-                    //                                 ref,
-                    //                                 supabaseClient
-                    //                                     .auth.currentUser!.id,
-                    //                                 widget.dish!.dishid
-                    //                                     .toString(),
-                    //                                 widget.dish!.dish_price!
-                    //                                     .toDouble(),
-                    //                                 widget.dish!.dish_imageurl!);
-                    //                       }
-                    //                     });
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        // mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              _debouncer.run(() {
+                                // ref.read(DummyLogicProvider).increaseQuantity(
+                                //       ref,
+                                //       widget.dish!.dishid!,
+                                //       widget.dish!.dish_price!,
+                                //     );
 
-                    //                     // _debouncer.run(() {
-                    //                     //   if (variattionTitle!.dishid ==
-                    //                     //       widget.dish!.dishid) {
-                    //                     //     Navigator.pushNamed(
-                    //                     //         context, DishMenuScreen.routename,
-                    //                     //         arguments: {
-                    //                     //           'dish': widget.dish,
-                    //                     //           'iscart': false
-                    //                     //         });
-                    //                     //   } else {
-                    //                     //     ref
-                    //                     //         .read(DummyLogicProvider)
-                    //                     //         .addToCart(
-                    //                     //             widget.dish!.dish_price,
-                    //                     //             widget.dish!.dish_name,
-                    //                     //             widget.dish!.dish_description,
-                    //                     //             ref,
-                    //                     //             supabaseClient
-                    //                     //                 .auth.currentUser!.id,
-                    //                     //             widget.dish!.dishid
-                    //                     //                 .toString(),
-                    //                     //             widget.dish!.dish_price!
-                    //                     //                 .toDouble(),
-                    //                     //             widget.dish!.dish_imageurl!);
-                    //                     //   }
-                    //                     // });
-                    //                   },
-                    //                   child: Container(
-                    //                     height: widget.addbuttonHeight ?? 50,
-                    //                     width: widget.addbuttonWidth ?? 50,
-                    //                     decoration: const BoxDecoration(
-                    //                         boxShadow: [
-                    //                           BoxShadow(
-                    //                               color: Colors.black54,
-                    //                               blurRadius: 6,
-                    //                               offset: Offset(-1, -1),
-                    //                               spreadRadius: 1)
-                    //                         ],
-                    //                         color: Colors.black,
-                    //                         borderRadius: BorderRadius.only(
-                    //                             topLeft: Radius.circular(10),
-                    //                             bottomRight:
-                    //                                 Radius.circular(10))),
-                    //                     child: const Align(
-                    //                       alignment: Alignment.center,
-                    //                       child: Icon(
-                    //                         Icons.add,
-                    //                         size: 20,
-                    //                         color: Colors.white,
-                    //                       ),
-                    //                     ),
-                    //                   ),
-                    //                 )
-                    //               : Expanded(
-                    //                   child: Column(
-                    //                     // mainAxisSize: MainAxisSize.min,
-                    //                     mainAxisAlignment:
-                    //                         MainAxisAlignment.spaceBetween,
-                    //                     children: [
-                    //                       Expanded(
-                    //                         child: InkWell(
-                    //                           onTap: () {
-                    //                             _debouncer.run(() {
-                    //                               ref
-                    //                                   .read(DummyLogicProvider)
-                    //                                   .increaseQuantity(
-                    //                                     ref,
-                    //                                     widget.dish!.dishid!,
-                    //                                     widget.dish!.dish_price!,
-                    //                                   );
-                    //                             });
-                    //                           },
-                    //                           child: Container(
-                    //                             height:
-                    //                                 widget.buttonIncDecHeight ??
-                    //                                     50,
-                    //                             width:
-                    //                                 widget.buttonIncDecHeight ??
-                    //                                     50,
-                    //                             decoration: const BoxDecoration(
-                    //                                 color: Colors.black,
-                    //                                 borderRadius:
-                    //                                     BorderRadius.only(
-                    //                                         topRight:
-                    //                                             Radius.circular(
-                    //                                                 10),
-                    //                                         bottomLeft:
-                    //                                             Radius.circular(
-                    //                                                 10))),
-                    //                             child: const Icon(
-                    //                               Icons.add,
-                    //                               size: 20,
-                    //                               color: Colors.white,
-                    //                             ),
-                    //                           ),
-                    //                         ),
-                    //                       ),
-                    //                       const SizedBox(width: 5),
-                    //                       Text(
-                    //                         //cartItem.quantity.toString(),
-                    //                         ref
-                    //                             .read(cartProvider.notifier)
-                    //                             .state[widget.quantityIndex!]
-                    //                             .quantity
-                    //                             .toString(),
-                    //                         style: const TextStyle(fontSize: 20),
-                    //                       ),
-                    //                       const SizedBox(width: 5),
-                    //                       Expanded(
-                    //                         child: InkWell(
-                    //                           onTap: () {
-                    //                             _debouncer.run(() {
-                    //                               ref
-                    //                                   .read(DummyLogicProvider)
-                    //                                   .decreaseQuantity(
-                    //                                     ref,
-                    //                                     widget.dish!.dishid!,
-                    //                                     widget.dish!.dish_price!,
-                    //                                   );
-                    //                             });
-                    //                           },
-                    //                           child: Container(
-                    //                             height:
-                    //                                 widget.buttonIncDecHeight ??
-                    //                                     50,
-                    //                             width: widget.buttonIncDecWidth ??
-                    //                                 50,
-                    //                             decoration: const BoxDecoration(
-                    //                                 color: Colors.black,
-                    //                                 borderRadius:
-                    //                                     BorderRadius.only(
-                    //                                         topLeft:
-                    //                                             Radius.circular(
-                    //                                                 10),
-                    //                                         bottomRight:
-                    //                                             Radius.circular(
-                    //                                                 10))),
-                    //                             child: Center(
-                    //                                 child: widget.isCartScreen ==
-                    //                                             false &&
-                    //                                         widget.cartItem!
-                    //                                                 .quantity ==
-                    //                                             1
-                    //                                     ? const Icon(
-                    //                                         Icons.delete_rounded,
-                    //                                         size: 20,
-                    //                                         color: Colors.white,
-                    //                                       )
-                    //                                     : const Icon(
-                    //                                         Icons
-                    //                                             .minimize_outlined,
-                    //                                         size: 20,
-                    //                                         color: Colors.white,
-                    //                                       )),
-                    //                           ),
-                    //                         ),
-                    //                       ),
-                    //                     ],
-                    //                   ),
-                    //                 ),
-                    //         ],
-                    //       ),
-                    //     ),
-                    //   ),
-                    SizedBox(
-                      height: 50,
-                      width: 150,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            )),
-                        child: const Text(
-                          'Add to Cart',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        onPressed: () {},
+                                ref.read(quantityPrvider.notifier).state++;
+                              });
+                            },
+                            child: Container(
+                              height: 40,
+                              width: 40,
+                              decoration: BoxDecoration(
+                                  color: ref.watch(addbuttonprovider) == true
+                                      ? Colors.black
+                                      : Colors.white,
+                                  borderRadius: BorderRadius.circular(10)
+                                  // BorderRadius.only(
+                                  //     topRight: Radius.circular(10),
+                                  //     bottomLeft: Radius.circular(10)
+                                  //     )
+
+                                  ),
+                              child: Icon(
+                                Icons.add,
+                                size: 20,
+                                color: ref.watch(addbuttonprovider) == true
+                                    ? Colors.white
+                                    : Colors.black12,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            quantity.toString(),
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: ref.watch(addbuttonprovider) == true
+                                  ? Colors.black
+                                  : Colors.black12,
+                            ),
+                          ),
+                          const SizedBox(width: 5),
+                          InkWell(
+                            onTap: () {
+                              _debouncer.run(() {
+                                // ref.read(DummyLogicProvider).decreaseQuantity(
+                                //       ref,
+                                //       widget.dish!.dishid!,
+                                //       widget.dish!.dish_price!,
+                                //     );
+                                if (quantity > 0) {
+                                  ref.read(quantityPrvider.notifier).state--;
+                                }
+                              });
+                            },
+                            child: Container(
+                              height: 40,
+                              width: 40,
+                              decoration: BoxDecoration(
+                                color: ref.watch(addbuttonprovider) == true
+                                    ? Colors.black
+                                    : Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                // BorderRadius.only(
+                                //     topLeft: Radius.circular(10),
+                                //     bottomRight: Radius.circular(10),
+                                //     )
+                              ),
+                              child: Center(
+                                  child:
+                                      // widget.isCartScreen ==
+                                      // false &&
+                                      //     widget.cartItem!
+                                      //             .quantity ==
+                                      //         1
+                                      // ? const Icon(
+                                      //     Icons.delete_rounded,
+                                      //     size: 20,
+                                      //     color: Colors.white,
+                                      //   )
+                                      // :
+                                      Icon(
+                                Icons.minimize_outlined,
+                                size: 20,
+                                color: ref.watch(addbuttonprovider) == true
+                                    ? Colors.white
+                                    : Colors.black12,
+                              )),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+                      SizedBox(
+                        height: 50,
+                        width: 150,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  ref.watch(addbuttonprovider) == true
+                                      ? Colors.black
+                                      : Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              )),
+                          child: Text(
+                            'Add to Cart',
+                            style: TextStyle(
+                                color: ref.watch(addbuttonprovider) == true
+                                    ? Colors.white
+                                    : Colors.black12),
+                          ),
+                          onPressed: () {
+                            _debouncer.run(() {
+                              ref.read(DummyLogicProvider).addToCart(
+                                  widget.dish!.dish_price,
+                                  widget.dish!.dish_name,
+                                  widget.dish!.dish_description,
+                                  ref,
+                                  supabaseClient.auth.currentUser!.id,
+                                  widget.dish!.dishid!,
+                                  widget.dish!.dish_price!.toDouble(),
+                                  widget.dish!.dish_imageurl!,
+                                  ref
+                                      .read(variationListProvider.notifier)
+                                      .state,
+                                  true,
+                                  quantity);
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               )
               // SizedBox(

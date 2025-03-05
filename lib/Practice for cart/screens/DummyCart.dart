@@ -133,9 +133,12 @@ class _DummyCartState extends ConsumerState<DummyCart> {
                                           dish.dish_description,
                                           ref,
                                           supabaseClient.auth.currentUser!.id,
-                                          dish.dishid.toString(),
+                                          dish.dishid!,
                                           dish.dish_price!.toDouble(),
-                                          dish.dish_imageurl!);
+                                          dish.dish_imageurl!,
+                                          null,
+                                          false,
+                                          0);
                                     },
                                     style: ElevatedButton.styleFrom(
                                       shape: const RoundedRectangleBorder(

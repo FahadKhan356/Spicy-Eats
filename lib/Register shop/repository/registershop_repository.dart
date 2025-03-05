@@ -112,8 +112,6 @@ class RegisterShopRepository {
       //throw e.toString();
       throw Exception(e);
       // print(e.toString());
-
-      return null;
     }
   }
 //fetch rest uid
