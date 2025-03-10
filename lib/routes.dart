@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:spicy_eats/Practice%20for%20cart/screens/DummyBasket.dart';
 import 'package:spicy_eats/Practice%20for%20cart/screens/DummyCart.dart';
 import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
+import 'package:spicy_eats/commons/routeAnimation.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/dashboard/DrawerScreens/Menu/ineroverview.dart';
 import 'package:spicy_eats/Register%20shop/models/registershop.dart';
@@ -18,6 +19,7 @@ import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/screens/restaurant_menu.dart';
 import 'package:spicy_eats/features/authentication/otp.dart';
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
+import 'package:spicy_eats/features/dish%20menu/dishmenuVAriation.dart';
 import 'package:spicy_eats/tabexample.dart/tabexample.dart';
 
 Route<dynamic> generateRoutes(RouteSettings settings) {
@@ -133,6 +135,16 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
           cartDish: argument['cartdish'],
         );
       });
+    case DishMenuVariation.routename:
+      final argument = settings.arguments as Map;
+      return customRouteAnimation(
+        DishMenuVariation(
+          dish: argument['dish'],
+          isCart: argument['iscart'],
+          cartDish: argument['cartdish'],
+        ),
+      );
+
     default:
       return MaterialPageRoute(
         builder: (context) => const Scaffold(

@@ -43,8 +43,7 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
   List<Categories> allcategories = [];
   // String restuid = 'd20a2270-b19b-462c-8a65-ba13ff8c0197';
   bool isTabPinned = false;
-  // late AnimationController _opacityController;
-  // late Animation _opacityAnimation;
+
   double _imageHeight = 200;
   double _imageOpacity = 1;
   double _titletabOpacity = 0;
@@ -77,18 +76,6 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
         });
       }
     });
-
-    // await ref
-    //     .read(dishMenuRepoProvider)
-    //     .fetchTitleVariation(context)
-    //     .then((value) {
-    //   if (value != null) {
-    //     setState(() {
-    //       titleVariationList = value;
-    //     });
-    //   print("dsddasdadad");
-    //   }
-    // });
   }
 
   @override
@@ -113,19 +100,6 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
             // onScroll();
           });
         });
-
-        //   ref
-        //       .read(dishMenuRepoProvider)
-        //       .fetchTitleVariation(context)
-        //       .then((value) {
-        //     if (value != null) {
-        //       // setState(() {
-        //       //   titleVariationList = value;
-        //       // });
-        //       ref.read(titleVariationListProvider.notifier).state = value;
-        //       print("dsddasdadad");
-        //     }
-        //   });
       }
     });
 
@@ -136,12 +110,6 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
         print('${cart[0].tprice}');
       }
     });
-
-    // bloc.scrollController = ScrollController();
-    // bloc.scrollController!.addListener(() {
-    //   updateOffset();
-    //   onScroll();
-    // }); // Update the offset when scrolling
   }
 
   void updateOffset() {
@@ -192,37 +160,55 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
           floatingActionButton: cart.isNotEmpty
               ? Align(
                   alignment: Alignment.bottomCenter,
-                  child: FloatingActionButton(
-                      backgroundColor: Colors.black,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.shopping_cart,
-                            color: Colors.white,
-                          ),
-                          Text(
-                            cart.length.toString(),
-                            style: const TextStyle(color: Colors.white),
-                          ), // Dynamic cart count
-                        ],
-                      ),
-                      onPressed: () {
-                        if (cartFetched) {
-                          Navigator.pushNamed(context, DummyBasket.routename,
-                              arguments: {
-                                // 'cart': cart,
-                                'dishes': dishes,
-                                'restuid': widget.restuid,
-                                'restdata': widget.restaurantData,
-                              });
-                          cartFetched = false;
-                          ref.read(DummyLogicProvider).getTotalPrice(ref);
-                        }
-                      }),
-                )
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 100),
+                    child: Container(
+                      decoration: const BoxDecoration(
+                          // boxShadow: [
+                          //   BoxShadow(
+                          //       color: Colors.black54,
+                          //       blurRadius: 6,
+                          //       offset: Offset(-1, -1),
+                          //       spreadRadius: 1)
+                          // ],
+                          color: Colors.black,
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      height: 50,
+                      width: double.maxFinite,
+                    ),
+                  )
+
+                  // FloatingActionButton(
+                  //     backgroundColor: Colors.black,
+                  //     child: Row(
+                  //       mainAxisAlignment: MainAxisAlignment.center,
+                  //       children: [
+                  //         const Icon(
+                  //           Icons.shopping_cart,
+                  //           color: Colors.white,
+                  //         ),
+                  //         Text(
+                  //           cart.length.toString(),
+                  //           style: const TextStyle(color: Colors.white),
+                  //         ), // Dynamic cart count
+                  //       ],
+                  //     ),
+                  //     onPressed: () {
+                  //       if (cartFetched) {
+                  //         Navigator.pushNamed(context, DummyBasket.routename,
+                  //             arguments: {
+                  //               // 'cart': cart,
+                  //               'dishes': dishes,
+                  //               'restuid': widget.restuid,
+                  //               'restdata': widget.restaurantData,
+                  //             });
+                  //         cartFetched = false;
+                  //         ref.read(DummyLogicProvider).getTotalPrice(ref);
+                  //       }
+                  //     }),
+                  )
               : const SizedBox(),
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.white, //Colors.white,
           body: allcategories.isEmpty
               ? const Center(
                   child: CircularProgressIndicator(),
@@ -236,17 +222,36 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
                           height: _imageHeight,
-                          color: Colors.black,
+                          color: Colors.white,
                           child: AnimatedOpacity(
                             duration: const Duration(milliseconds: 300),
                             opacity: _imageOpacity,
                             curve: Curves.easeIn,
-                            child: Image.network(
-                              //'https://mrqaapzhzeqvarrtfkgv.supabase.co/storage/v1/object/public/Restaurant_Registeration//8d019a6b-b66a-466e-99b9-c66f9745ba70/Restaurant_covers',
-                              widget.restaurantData.restaurantImageUrl
-                                  .toString(),
-                              fit: BoxFit.cover,
+                            child: ClipRRect(
+                              borderRadius: const BorderRadius.only(
+                                  bottomLeft: Radius.circular(15),
+                                  bottomRight: Radius.circular(15)),
+                              child: Image.network(
+                                //'https://mrqaapzhzeqvarrtfkgv.supabase.co/storage/v1/object/public/Restaurant_Registeration//8d019a6b-b66a-466e-99b9-c66f9745ba70/Restaurant_covers',
+                                widget.restaurantData.restaurantImageUrl
+                                    .toString(),
+                                fit: BoxFit.cover,
+                              ),
                             ),
+                          ),
+                        )),
+                    Positioned(
+                        top: 210,
+                        left: 0,
+                        right: 0,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                                height: 80,
+                                width: double.maxFinite,
+                                color: Colors.black26),
                           ),
                         )),
                     Positioned(
@@ -257,13 +262,13 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                               icon: const Icon(
                                 Icons.arrow_back,
                                 size: 25,
-                                color: Colors.white,
+                                color: Colors.black,
                               ),
                               onPressed: () {
                                 Navigator.pushNamed(
                                     context, HomeScreen.routename);
                               })
-                          : SizedBox(),
+                          : const SizedBox(),
                     ),
 
                     AnimatedBuilder(
@@ -330,19 +335,6 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold),
                                           ),
-                                          // Row(
-                                          //   children: [
-                                          //     Icon(
-                                          //       Icons.star,
-                                          //       color: Colors.yellow,
-                                          //       size: 25,
-                                          //     ),
-                                          //     Text('4.2',
-                                          //         style: TextStyle(
-                                          //             fontWeight:
-                                          //                 FontWeight.bold)),
-                                          //   ],
-                                          // )
                                           RatingBar.builder(
                                             initialRating: 1.0,
                                             itemSize: 25,
@@ -424,18 +416,54 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                                     ),
                                   ],
                                 )),
+                            // GridView.builder(
+                            //     physics: NeverScrollableScrollPhysics(),
+                            //     shrinkWrap: true,
+                            //     gridDelegate:
+                            //         SliverGridDelegateWithFixedCrossAxisCount(
+                            //       crossAxisCount: 2,
+                            //     ),
+                            //     itemCount: bloc.items.length,
+                            //     itemBuilder: (context, index) {
+                            //       final items = bloc.items[index];
+                            //       final cartIndex = cart.firstWhere(
+                            //           (dish) =>
+                            //               dish.dish_id ==
+                            //               bloc.items[index].product?.dishid,
+                            //           orElse: () => CartModelNew(
+                            //               dish_id: 0, quantity: 0));
+                            //       final quantityindex = cart.indexWhere(
+                            //           (dish) =>
+                            //               dish.dish_id ==
+                            //               items.product?.dishid);
+
+                            //       if (bloc.items[index].isCategory) {
+                            //         return RappiCategory(
+                            //             category: bloc.items[index].category);
+                            //       } else {
+                            //         return RappiProduct(
+                            //           dish: bloc.items[index].product!,
+                            //           cartItem: cartIndex,
+                            //           qunatityindex: quantityindex,
+                            //           userId:
+                            //               supabaseClient.auth.currentUser!.id,
+                            //           titleVariationList: titleVariationList,
+                            //           // variattionTitle: titleVariation,
+                            //         );
+                            //       }
+                            //     }),
                             ...List.generate(bloc.items.length, (index) {
-                              final titleVariation =
-                                  titleVariationList!.firstWhere(
-                                (v) => v.dishid == bloc.items[index].product,
-                                orElse: () => VariattionTitleModel(
-                                    id: null,
-                                    variationTitle: '',
-                                    isRequired: null,
-                                    variations: [],
-                                    maxSeleted: null,
-                                    dishid: null),
-                              );
+                              // final titleVariation =
+                              //     titleVariationList!.firstWhere(
+                              //   (v) => v.dishid == bloc.items[index].product,
+                              //   orElse: () => VariattionTitleModel(
+                              //       id: null,
+                              //       variationTitle: '',
+                              //       isRequired: null,
+                              //       variations: [],
+                              //       maxSeleted: null,
+                              //       dishid: null),
+                              // );
 
                               final items = bloc.items[index];
                               final cartIndex = cart.firstWhere(
@@ -457,33 +485,13 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                                   qunatityindex: quantityindex,
                                   userId: supabaseClient.auth.currentUser!.id,
                                   titleVariationList: titleVariationList,
-                                  variattionTitle: titleVariation,
+                                  // variattionTitle: titleVariation,
                                 );
                               }
                             }),
                           ])),
                     ),
-                    // Positioned(
-                    //     top: myOffset <= 300
-                    //         ? _imageHeight - 30
-                    //         : _imageHeight - 145,
-                    //     // right: (60 - 60) / 2,
-                    //     left: (MediaQuery.of(context).size.width - 60) / 2,
-                    //     child: AnimatedContainer(
-                    //       duration: const Duration(milliseconds: 400),
-                    //       curve: Curves.easeInOut,
-                    //       child: ClipRRect(
-                    //         borderRadius:
-                    //             BorderRadius.circular(_imageContainerRadius),
-                    //         child: Container(
-                    //           height: 60,
-                    //           width: 60,
-                    //           color: Colors.amber,
-                    //         ),
-                    //       ),
-                    //     ),
 
-                    //     ),
                     Positioned(
                       top: 0,
                       left: 5,
@@ -497,7 +505,7 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                             icon: const Icon(
                               Icons.arrow_back_rounded,
                               size: 25,
-                              color: Colors.white,
+                              color: Colors.black,
                             )),
                       ),
                     ),
@@ -505,10 +513,6 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                       top: myOffset >= 100
                           ? _imageHeight - 90
                           : _imageHeight - 145,
-                      // top: myOffset <= 50
-                      //     ? _imageHeight - 30
-                      //     : _imageHeight - 145,
-                      //right: (MediaQuery.of(context).size.width - 60) / 1.1,
                       left: myOffset >= 110
                           ? (MediaQuery.of(context).size.width - 80) / 1
                           : (MediaQuery.of(context).size.width - 60) / 5,
@@ -522,7 +526,7 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                               color: myOffset >= 110
-                                  ? Colors.white
+                                  ? Colors.black
                                   : Colors.transparent),
                         ),
                       ),

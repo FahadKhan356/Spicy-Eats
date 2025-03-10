@@ -23,10 +23,12 @@ import 'package:spicy_eats/features/authentication/passwordless_signup.dart';
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 import 'package:spicy_eats/routes.dart';
 import 'package:spicy_eats/synctabgpt.dart';
+import 'package:spicy_eats/tabexample.dart/newmainui.dart';
 import 'package:spicy_eats/tabexample.dart/tabexample.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'SyncTabBar/home_sliver_with_scrollable_tabs.dart';
+import 'cart example/basketpage.dart';
 
 // final currentIndexProvider = StateProvider((ref) => 0);
 
@@ -88,19 +90,20 @@ class _MyAppState extends ConsumerState<MyApp> {
             tabBarTheme: TabBarTheme(),
             appBarTheme: AppBarTheme(backgroundColor: Colors.white)),
         home: Scaffold(
-          body:
-              // DishMenuScreen(),
-              //MyFinalScrollScreen(),
-              //MyCustomSliverScreen(),
-              //CustomScrollTransition(),
-              //Mian_rappi_concept_app(),
-              // SliverAppBarWithDynamicTabs()
-              // QuantityButton1(),
+          body: NewMainUI(),
+          //  AnimatedAddButton()
+          // DishMenuScreen(),
+          //MyFinalScrollScreen(),
+          //MyCustomSliverScreen(),
+          //CustomScrollTransition(),
+          //Mian_rappi_concept_app(),
+          // SliverAppBarWithDynamicTabs()
+          // QuantityButton1(),
 
-              //BasketScreen(dish: null, totalprice: 122, quantity: 2),
-              supabaseClient.auth.currentSession != null
-                  ? const Home()
-                  : PasswordlessScreen(ref: ref),
+          //BasketScreen(dish: null, totalprice: 122, quantity: 2),
+          // supabaseClient.auth.currentSession != null
+          //     ? const Home()
+          //     : PasswordlessScreen(ref: ref),
           // supabaseClient.auth.currentSession != null
           //     ? screen[currentindex]
           //     : PasswordlessScreen(

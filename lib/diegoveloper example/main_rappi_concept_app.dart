@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
@@ -7,7 +8,10 @@ import 'package:spicy_eats/commons/CartCard.dart';
 import 'package:spicy_eats/diegoveloper%20example/bloc.dart';
 import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
+import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
+import 'package:spicy_eats/features/dish%20menu/dishmenuVariation.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
+import 'package:spicy_eats/features/dish%20menu/repository/dishmenu_repo.dart';
 
 class Mian_rappi_concept_app extends ConsumerStatefulWidget {
   const Mian_rappi_concept_app({super.key});
@@ -283,26 +287,57 @@ class _Mian_rappi_concept_appState extends ConsumerState<Mian_rappi_concept_app>
   }
 }
 
-Widget Rappi_tab_widget({RapitabCategory? category}) {
-  return Card(
-    margin: const EdgeInsets.all(5),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-    borderOnForeground: false,
-    color: category!.selected! ? Colors.white : Colors.black,
-    elevation: category.selected! ? 6 : 0,
-    shadowColor: Colors.black12,
-    child: Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Text(
-        category.category.category_name.toString(),
-        style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-            color: category.selected! ? Colors.black : Colors.white),
-      ),
-    ),
-  );
+class Rappi_tab_widget extends StatefulWidget {
+  RapitabCategory? category;
+  Rappi_tab_widget({super.key, required this.category});
+
+  @override
+  State<Rappi_tab_widget> createState() => _Rapp_tab_widgetState();
 }
+
+class _Rapp_tab_widgetState extends State<Rappi_tab_widget> {
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.all(5),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      borderOnForeground: false,
+      color: widget.category!.selected! ? Colors.black : Colors.white,
+      elevation: widget.category!.selected! ? 6 : 0,
+      shadowColor: Colors.black12,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          widget.category!.category.category_name.toString(),
+          style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: widget.category!.selected! ? Colors.white : Colors.black),
+        ),
+      ),
+    );
+  }
+}
+//  Rappi_tab_widget({RapitabCategory? category}) {
+//   return Card(
+//     margin: const EdgeInsets.all(5),
+//     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+//     borderOnForeground: false,
+//     color: category!.selected! ? Colors.black : Colors.white,
+//     elevation: category.selected! ? 6 : 0,
+//     shadowColor: Colors.black12,
+//     child: Padding(
+//       padding: const EdgeInsets.all(8.0),
+//       child: Text(
+//         category.category.category_name.toString(),
+//         style: TextStyle(
+//             fontSize: 15,
+//             fontWeight: FontWeight.bold,
+//             color: category.selected! ? Colors.white : Colors.black),
+//       ),
+//     ),
+//   );
+// }
 
 // ignore: non_constant_identifier_names
 class RappiCategory extends StatelessWidget {
@@ -322,7 +357,7 @@ class RappiCategory extends StatelessWidget {
               child: Text(
                 category!.category_name,
                 style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
             )));
   }
@@ -330,19 +365,20 @@ class RappiCategory extends StatelessWidget {
 
 // ignore: non_constant_identifier_names
 class RappiProduct extends ConsumerStatefulWidget {
-  RappiProduct(
-      {required this.dish,
-      this.cartItem,
-      this.qunatityindex,
-      this.userId,
-      this.titleVariationList,
-      this.variattionTitle});
+  RappiProduct({
+    required this.dish,
+    this.cartItem,
+    this.qunatityindex,
+    this.userId,
+    this.titleVariationList,
+    // this.variattionTitle
+  });
   final DishData dish;
   final CartModelNew? cartItem;
   final int? qunatityindex;
   final String? userId;
   List<VariattionTitleModel>? titleVariationList;
-  VariattionTitleModel? variattionTitle;
+  // VariattionTitleModel? variattionTitle;
 
   @override
   ConsumerState<RappiProduct> createState() => _RappiProductState();
@@ -350,30 +386,41 @@ class RappiProduct extends ConsumerStatefulWidget {
 
 class _RappiProductState extends ConsumerState<RappiProduct> {
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
   Widget build(
     BuildContext context,
   ) {
-    return CartCard(
-      // cardHeight: cardHeight,
-      elevation: 1,
-      cardColor: null,
-      dish: widget.dish,
-      imageHeight: 100,
-      imageWidth: 100,
-      cartItem: widget.cartItem!,
-      userId: widget.userId,
-      isCartScreen: true,
-      addbuttonHeight: 80,
-      buttonIncDecHeight: 60,
-      buttonIncDecWidth: 60,
-      quantityIndex: widget.qunatityindex,
-      titleVariationList: widget.titleVariationList,
+    return InkWell(
+      onTap: () {
+        widget.dish.isVariation!
+            ? Navigator.pushNamed(context, DishMenuVariation.routename,
+                arguments: {
+                    'dish': widget.dish,
+                    'iscart': false,
+                    'cartdish': widget.cartItem,
+                    'isbasket': false,
+                  })
+            : Navigator.pushNamed(context, DishMenuScreen.routename,
+                arguments: {
+                    'dish': widget.dish,
+                    'iscart': false,
+                    'cartdish': widget.cartItem,
+                    'isbasket': false,
+                  });
+      },
+      child: CartCard(
+        elevation: 20,
+        cardColor: null,
+        dish: widget.dish,
+        imageHeight: 120,
+        imageWidth: 120,
+        cartItem: widget.cartItem!,
+        userId: widget.userId,
+        addbuttonHeight: 40,
+        buttonIncDecHeight: 40,
+        buttonIncDecWidth: 40,
+        quantityIndex: widget.qunatityindex,
+        titleVariationList: widget.titleVariationList,
+      ),
     );
   }
 }

@@ -35,11 +35,6 @@ class RappiBloc with ChangeNotifier {
       final categoryDishes = categoryDishesMap[category.category_id] ?? [];
 
       if (i > 0) {
-        // Calculate offsetFrom based on the previous category's dishes
-        // final previousCategoryDishes =
-        //     categoryDishesMap[categories[i - 1].category_id] ?? [];
-        // offsetFrom +=
-        //     categoryHeight + (previousCategoryDishes.length * productHeight);
         offsetFrom = tabs[i - 1].offsetTo;
       }
       if (i < categories.length - 1) {
@@ -91,38 +86,24 @@ class RappiBloc with ChangeNotifier {
     }));
   }
 
-  // void _onScrollingListener() {
-  //   if (_listen) {
-  //     for (int i = 0; i < tabs.length; i++) {
-  //       final tab = tabs[i];
-  //       if (scrollController!.offset >= tab.offsetFrom &&
-  //           scrollController!.offset <= tab.offsetTo &&
-  //           !tab.selected!) {
-  //         onCategoryTab(i, animationRequired: false);
-  //         tabController!.animateTo(i);
-  //         break;
-  //       }
-  //     }
-  //   }
-  // }
   void _onScrollingListener() {
-    if (_listen) {
-      for (int i = 0; i < tabs.length; i++) {
-        final tab = tabs[i];
-        if (scrollController!.offset >= tab.offsetFrom &&
-            scrollController!.offset < tab.offsetTo &&
-            !tab.selected!) {
-          // print('Scrolled to category: ${tab.category.category_name}');
-          // print('Scroll position: ${scrollController!.offset}');
-          // print(
-          //     'Category offsetFrom: ${tab.offsetFrom}, offsetTo: ${tab.offsetTo}');
-          // print('Scroll offset: ${scrollController!.offset}');
-          onCategoryTab(i, animationRequired: false);
-          tabController!.animateTo(i);
-          break;
-        }
+    if (!_listen) return; // Avoid unintended updates
+    // if (_listen) {
+    for (int i = 0; i < tabs.length; i++) {
+      final tab = tabs[i];
+      if (scrollController!.offset >= tab.offsetFrom &&
+          scrollController!.offset < tab.offsetTo &&
+          !tab.selected!) {
+        _listen = false; // Temporarily disable listener
+        onCategoryTab(i, animationRequired: false);
+        tabController!.animateTo(i);
+        _listen = true; // Re-enable after update
+
+        notifyListeners(); //gpt
+        break;
       }
     }
+    // }
   }
 
   @override
@@ -145,11 +126,7 @@ class RappiBloc with ChangeNotifier {
           selected: selected.category.category_name ==
               tabs[i].category.category_name);
     }
-    // if (selected.offsetFrom == null) {
-    //   print(
-    //       'offsetFrom is null for category: ${selected.category.category_name}');
-    //   return;
-    // }
+
     if (animationRequired) {
       _listen = false;
       await scrollController!.animateTo(
@@ -157,6 +134,7 @@ class RappiBloc with ChangeNotifier {
         duration: const Duration(milliseconds: 300),
         curve: Curves.bounceOut,
       );
+      await Future.delayed(Duration(milliseconds: 100));
       _listen = true;
     }
 

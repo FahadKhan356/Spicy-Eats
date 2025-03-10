@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
+import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
 import 'package:spicy_eats/commons/ItemQuantity.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
 import 'package:spicy_eats/main.dart';
@@ -172,6 +173,39 @@ class Dummylogics {
     });
   }
 
+  //deccrese quantity in basket
+
+  Future<void> decreaseQuantityBasket(
+      {required int dishid, required WidgetRef ref, required price}) async {
+    await _mutex.run(() async {
+      final cart = ref.read(cartProvider.notifier);
+      final items = cart.state;
+      final index = items.indexWhere((element) => element.dish_id == dishid);
+      final cartTPrice = ref.read(cartPriceSumProvider.notifier);
+
+      if (index != -1) {
+        if (items[index].quantity > 1) {
+          items[index].quantity--;
+          final result = items[index].quantity * price;
+          items[index].tprice = result.toDouble();
+          await supabaseClient.from('cart').update({
+            'quantity': items[index].quantity,
+            'tprice': items[index].quantity * price.toDouble()
+          }).eq('id', items[index].cart_id!);
+        } else {
+          await supabaseClient
+              .from('cart')
+              .delete()
+              .eq('id', items[index].cart_id!);
+          items.removeAt(index);
+        }
+
+        cart.state = List.from(items);
+        cartTPrice.state = getTotalPrice(ref);
+      }
+    });
+  }
+
 //decrease qunatity
   Future<void> decreaseQuantity(WidgetRef ref, int? dishId, int price) async {
     await _mutex.run(() async {
@@ -223,10 +257,78 @@ class Dummylogics {
     cartTPrice.state = getTotalPrice(ref);
     print('car total price check ${cartTPrice.state}');
   }
+//increse quantity in basket
+
+  Future<void> increaseQuantityBasket(
+      {required int cartid, required WidgetRef ref, required price}) async {
+    try {
+      final cart = ref.read(cartProvider.notifier);
+      final items = cart.state;
+      final index = items.indexWhere((element) => element.cart_id == cartid);
+      final cartTPrice = ref.read(cartPriceSumProvider.notifier);
+
+      if (index != -1) {
+        items[index].quantity++;
+        final result = items[index].quantity * price;
+        items[index].tprice = result.toDouble();
+        supabaseClient.from('cart').update({
+          'quantity': items[index].quantity,
+          'tprice': items[index].tprice,
+        }).eq('id', cartid);
+
+        cart.state = List.from(items);
+        cartTPrice.state = getTotalPrice(ref);
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+//remove item in basket
+
+  Future<void> removeitembasket({
+    required int cartid,
+    required WidgetRef ref,
+  }) async {
+    try {
+      final cart = ref.read(cartProvider.notifier);
+      final items = cart.state;
+      final index = items.indexWhere((element) => element.cart_id == cartid);
+      final cartTPrice = ref.read(cartPriceSumProvider.notifier);
+
+      if (index != -1) {
+        items.removeWhere((element) => element.cart_id == cartid);
+
+        supabaseClient.from('cart').delete().eq('id', cartid);
+
+        cart.state = List.from(items);
+        cartTPrice.state = getTotalPrice(ref);
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 
   //calculate total pirce
   double getTotalPrice(WidgetRef ref) {
     final cart = ref.watch(cartProvider);
     return cart.fold(0, (sum, item) => sum + item.tprice!);
   }
+
+  int getTotalQuantityofdish(WidgetRef ref, int dishid) {
+    final cart = ref.watch(cartProvider);
+    return cart.fold(
+        0, (sum, item) => item.dish_id == dishid ? sum + item.quantity : sum);
+  }
+
+  // int getquantitytotal(WidgetRef ref, int dishid) {
+  //   int quantity = 0;
+  //   final cart = ref.watch(cartProvider);
+  //   for (int i = 0; i < cart.length; i++) {
+  //     if (cart[i].dish_id == dishid) {
+  //       quantity += cart[i].quantity;
+  //     }
+  //   }
+  //   return quantity;
+  // }
 }

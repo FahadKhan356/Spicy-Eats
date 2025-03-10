@@ -48,61 +48,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   @override
   void initState() {
     fetchInitialData();
-    // print('_email is: ${supabaseClient.auth.currentUser?.email}');
-    // setState(() => isloading = true);
-    // //fetch restaurants
-    // await ref
-    //     .read(registershopcontrollerProvider)
-    //     .fetchrestaurants(supabaseClient.auth.currentUser!.id);
-    // //fetch rest_uid
-    // await ref
-    //     .read(registershopcontrollerProvider)
-    //     .fetchRestUid(supabaseClient.auth.currentUser!.id);
-
-    // //storing restaurants objects to list
-    // await ref
-    //     .read(registershopcontrollerProvider)
-    //     .fetchrestaurants(supabaseClient.auth.currentUser!.id)
-    //     .then((restaurant) {
-    //   //  setState(() => isloading = true);
-    //   if (restaurant != null) {
-    //     setState(() {
-    //       restaurantData = restaurant;
-    //     });
-    //     print('rest_email is: ${restaurantData[0].address}');
-    //     print('rest_hours are: ${restaurantData[0].deliveryArea}');
-    //   }
-    // });
-    // //storing rest_uid to a variable
-    // await ref
-    //     .read(registershopcontrollerProvider)
-    //     .fetchRestUid(supabaseClient.auth.currentUser!.id)
-    //     .then((value) {
-    //   if (value != null) {
-    //     ref.watch(rest_ui_Provider.notifier).state = value;
-    //     print('initialize restuid provider ${ref.read(rest_ui_Provider)}');
-    //     setState(() {
-    //       rest_uid = value;
-    //     });
-    //     //print('rest_uuid is: ${rest_uid}' + '${ref.read(rest_ui_Provider)}');
-    //   }
-    // });
-    // setState(() => isloading = false);
-
-    // await ref.read(homeControllerProvider).fetchDishes(restuid: rest_uid);
-    // await ref
-    //     .read(homeControllerProvider)
-    //     .fetchDishes(restuid: rest_uid)
-    //     .then((dishes) {
-    //   if (dishes != null) {
-    //     setState(() {
-    //       dishList = dishes;
-    //       print('${dishList[0].cusine!}');
-    //     });
-    //   }
-    // });
-
-    /////////////////////////
 
     super.initState();
     _animationcontroller = AnimationController(

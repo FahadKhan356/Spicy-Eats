@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
 import 'package:spicy_eats/Register%20shop/models/registershop.dart';
 import 'package:spicy_eats/commons/CartCard.dart';
+import 'package:spicy_eats/commons/basketcard.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/main.dart';
 import 'package:spicy_eats/tabexample.dart/tabexample.dart';
@@ -84,7 +85,8 @@ class _DummyBasketState extends ConsumerState<DummyBasket> {
                             (dish) => dish.dishid == cart[index].dish_id,
                             orElse: () => DishData(),
                           );
-                          return CartCard(
+                          return BasketCard(
+                              titleVariationList: [],
                               cardHeight: 120,
                               elevation: 5,
                               cardColor: Colors.white,

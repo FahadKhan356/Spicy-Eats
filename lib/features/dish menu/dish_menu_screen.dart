@@ -1,4 +1,8 @@
+import 'dart:async';
+
+import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
@@ -7,7 +11,6 @@ import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
 import 'package:spicy_eats/features/dish%20menu/repository/dishmenu_repo.dart';
 import 'package:spicy_eats/main.dart';
 
-var addbuttonprovider = StateProvider<bool?>((ref) => null);
 var quantityPrvider = StateProvider<int>((ref) => 1);
 final variationListProvider = StateProvider<List<Variation>?>((ref) => null);
 
@@ -15,10 +18,11 @@ final variationListProvider = StateProvider<List<Variation>?>((ref) => null);
 class DishMenuScreen extends ConsumerStatefulWidget {
   static const String routename = '/DishMenuScreen';
   final DishData? dish;
-  List<VariattionTitleModel> variationList = [];
+  List<VariattionTitleModel>? variationList = [];
   bool isCart = false;
   CartModelNew? cartDish;
   bool isbasket = false;
+
   DishMenuScreen(
       {super.key, required this.dish, this.cartDish, required this.isCart});
 
@@ -26,7 +30,16 @@ class DishMenuScreen extends ConsumerStatefulWidget {
   ConsumerState<DishMenuScreen> createState() => _DishMenuScreenState();
 }
 
-class _DishMenuScreenState extends ConsumerState<DishMenuScreen> {
+class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
+    with SingleTickerProviderStateMixin {
+  ScrollController? _scrollController;
+  AnimationController? _animationController;
+  Animation<double>? _opacityanimation;
+  Animation<Offset>? _offsetanimation;
+
+  bool isExpanded = false;
+
+  bool? withvariation;
   final Debouncer _debouncer = Debouncer(milliseconds: 500);
   Future<void> fetchVariations(int dishId) async {
     ref
@@ -35,11 +48,12 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen> {
         .then((value) {
       if (value != null) {
         setState(() {
+          // withvariation = false;
           widget.variationList = value;
 
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(widget.variationList[0].variationTitle!)));
-          print('${widget.variationList[0].variationTitle}');
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(widget.variationList![0].variationTitle!)));
+          print('${widget.variationList![0].variationTitle}');
         });
         print('not fetch dishmenuList${value}');
       }
@@ -50,22 +64,66 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    fetchVariations(widget.dish!.dishid!);
+    _scrollController = ScrollController();
+    _animationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 200));
+    _opacityanimation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
+        parent: _animationController!, curve: Curves.bounceOut));
+    _offsetanimation =
+        Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero).animate(
+            CurvedAnimation(
+                parent: _animationController!, curve: Curves.bounceOut));
+    _scrollController!.addListener(() {
+      if (_scrollController!.offset > 150) {
+        _animationController!.forward();
+      } else {
+        _animationController!.reverse();
+      }
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        withvariation = false;
+      });
+      fetchVariations(widget.dish!.dishid!);
+      ref.read(quantityPrvider.notifier).state = 1;
+    });
+  }
+
+  Timer? _colapsetimer;
+  void startTimer() {
+    _colapsetimer!.cancel();
+    _colapsetimer = Timer(const Duration(seconds: 2), () {
+      setState(() {
+        isExpanded = false;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final quantity = ref.watch(quantityPrvider);
-    final selectedVariations = ref.watch(variationProvider);
-    final variationlist1 = ref.read(variationListProvider);
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
         children: [
           CustomScrollView(
+            controller: _scrollController,
             slivers: [
               SliverAppBar(
-                // title: Text('data'),
+                title: AnimatedBuilder(
+                  animation: _animationController!,
+                  builder: (context, child) =>
+                      Transform.translate(offset: _offsetanimation!.value),
+                  child: Opacity(
+                    opacity: _opacityanimation!.value,
+                    child: Text(
+                      "Dish screen",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                ),
                 expandedHeight: 200,
                 pinned: true,
                 flexibleSpace: FlexibleSpaceBar(
@@ -86,9 +144,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen> {
                           Text(
                             widget.dish!.dish_name!,
                             style: const TextStyle(
-                                // color: Colors.white,
-                                fontSize: 30,
-                                fontWeight: FontWeight.bold),
+                                fontSize: 30, fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(
                             height: 5,
@@ -96,181 +152,17 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen> {
                           Text(
                             ' from Rs ${widget.dish!.dish_price}',
                             style: const TextStyle(
-                                // color: Colors.white,
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold),
+                                fontSize: 17, fontWeight: FontWeight.bold),
                           ),
                           Text(
                             widget.dish!.dish_description!,
                             style: const TextStyle(
-                                // color: Colors.white,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w300),
+                                fontSize: 13, fontWeight: FontWeight.w300),
                           ),
                         ]),
                   ),
                 ),
               ),
-              SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                      childCount: widget.variationList.length,
-                      (context, titleVariationindex) {
-                final titleVariation =
-                    widget.variationList[titleVariationindex];
-                if (widget.isCart && widget.cartDish?.variation != null) {
-                  ref.read(variationProvider.notifier).state = {
-                    ...ref.read(variationProvider),
-                    widget.cartDish!.variationId!: widget.cartDish!.variation!,
-                  };
-                }
-
-                return Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 50, horizontal: 10),
-                  child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.black12,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  titleVariation.variationTitle.toString(),
-                                  style: const TextStyle(fontSize: 22),
-                                ),
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(5),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(5),
-                                    color: titleVariation.isRequired!
-                                        ? Colors.red
-                                        : Colors.green,
-                                    child: titleVariation.isRequired!
-                                        ? const Text(
-                                            'Required',
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.white),
-                                          )
-                                        : const Text(
-                                            'optional',
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.black87),
-                                          ),
-                                  ),
-                                ),
-                              ]),
-                          Text(
-                            titleVariation.subtitle.toString(),
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                          ...titleVariation.variations!.map((variation) {
-                            final variationlist =
-                                ref.watch(variationListProvider) ?? [];
-                            final isselected =
-                                variationlist.any((v) => v.id == variation.id);
-
-                            // final selectedlist =
-                            //     selectedVariations[titleVariation.id] ?? [];
-                            // final isSelected =
-                            // selectedlist.any((v) => v.id == variation.id);
-                            // selectedVariations[titleVariation.id]?.id ==
-                            //     variation.id;
-
-                            return CheckboxListTile(
-                              title: variation.variationPrice! > 0
-                                  ? Row(
-                                      children: [
-                                        Text(("${variation.variationName})")),
-                                        Text(
-                                            " (\$${variation.variationPrice})"),
-                                      ],
-                                    )
-                                  : Row(
-                                      children: [
-                                        Text(("${variation.variationName}")),
-                                        const Text(" Free")
-                                      ],
-                                    ),
-                              value: isselected, //isSelected,
-                              onChanged: (value) {
-                                final updatedList =
-                                    List<Variation>.from(variationlist);
-                                if (value == true) {
-                                  if (titleVariation.maxSeleted == null ||
-                                      // updatedList.length <
-                                      //     titleVariation.maxSeleted!
-                                      updatedList
-                                              .where((v) =>
-                                                  v.variation_id ==
-                                                  titleVariation.id)
-                                              .length <
-                                          titleVariation.maxSeleted!) {
-                                    updatedList.add(
-                                      Variation(
-                                        id: variation.id,
-                                        variationName: variation.variationName,
-                                        variationPrice:
-                                            variation.variationPrice,
-                                        variation_id: variation.variation_id,
-                                        selected: true,
-                                      ),
-                                    );
-                                  } else {
-                                    // ref.read(addbuttonprovider.notifier).state =
-                                    //     false;
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                            content: Text(
-                                                'you can only select upto ${titleVariation.maxSeleted} options')));
-                                  }
-                                } else {
-                                  updatedList
-                                      .removeWhere((v) => v.id == variation.id);
-                                }
-
-                                // ref.read(variationProvider.notifier).state = {
-                                //   ...selectedVariations,
-                                //   titleVariation.id!: updatedList,
-                                // };
-
-                                ref.read(variationListProvider.notifier).state =
-                                    updatedList;
-
-                                if (titleVariation.isRequired == true &&
-                                    updatedList
-                                            .where((element) =>
-                                                element.id == variation.id)
-                                            .length ==
-                                        titleVariation.maxSeleted!) {
-                                  ref.read(addbuttonprovider.notifier).state =
-                                      true;
-                                } else if (titleVariation.isRequired == true &&
-                                    updatedList
-                                            .where((element) =>
-                                                element.id == variation.id)
-                                            .length <
-                                        titleVariation.maxSeleted!) {
-                                  ref.read(addbuttonprovider.notifier).state =
-                                      false;
-                                }
-                              },
-                            );
-                          }),
-                        ],
-                      )),
-                );
-              })),
-              //   SliverList(
-              //       delegate: SliverChildBuilderDelegate(
-              //           childCount: widget.VariationList.length,
-              //           (context, index) => Text('sdd'))),
               const SliverToBoxAdapter(
                 child: SizedBox(
                   height: 100,
@@ -285,11 +177,6 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen> {
               child: Container(
                 decoration: const BoxDecoration(
                   color: Colors.white,
-                  // border: Border(
-                  //     top: BorderSide(
-                  //   color: Colors.black26,
-                  // ),
-                  // ),
                   boxShadow: [
                     BoxShadow(
                         color: Colors.black12, spreadRadius: 2, blurRadius: 3)
@@ -303,63 +190,32 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
-                        // mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           InkWell(
-                            onTap: () {
-                              _debouncer.run(() {
-                                // ref.read(DummyLogicProvider).increaseQuantity(
-                                //       ref,
-                                //       widget.dish!.dishid!,
-                                //       widget.dish!.dish_price!,
-                                //     );
-
-                                ref.read(quantityPrvider.notifier).state++;
-                              });
-                            },
-                            child: Container(
-                              height: 40,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                  color: ref.watch(addbuttonprovider) == true
-                                      ? Colors.black
-                                      : Colors.white,
-                                  borderRadius: BorderRadius.circular(10)
-                                  // BorderRadius.only(
-                                  //     topRight: Radius.circular(10),
-                                  //     bottomLeft: Radius.circular(10)
-                                  //     )
-
-                                  ),
-                              child: Icon(
-                                Icons.add,
-                                size: 20,
-                                color: ref.watch(addbuttonprovider) == true
-                                    ? Colors.white
-                                    : Colors.black12,
-                              ),
-                            ),
-                          ),
+                              onTap: () {
+                                _debouncer.run(() {
+                                  ref.read(quantityPrvider.notifier).state++;
+                                });
+                              },
+                              child: Container(
+                                height: 40,
+                                width: 40,
+                                decoration: BoxDecoration(
+                                    color: Colors.black,
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Icon(Icons.add,
+                                    size: 20, color: Colors.white),
+                              )),
                           const SizedBox(width: 5),
                           Text(
                             quantity.toString(),
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: ref.watch(addbuttonprovider) == true
-                                  ? Colors.black
-                                  : Colors.black12,
-                            ),
+                            style: TextStyle(fontSize: 20, color: Colors.black),
                           ),
                           const SizedBox(width: 5),
                           InkWell(
                             onTap: () {
                               _debouncer.run(() {
-                                // ref.read(DummyLogicProvider).decreaseQuantity(
-                                //       ref,
-                                //       widget.dish!.dishid!,
-                                //       widget.dish!.dish_price!,
-                                //     );
                                 if (quantity > 0) {
                                   ref.read(quantityPrvider.notifier).state--;
                                 }
@@ -369,34 +225,14 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen> {
                               height: 40,
                               width: 40,
                               decoration: BoxDecoration(
-                                color: ref.watch(addbuttonprovider) == true
-                                    ? Colors.black
-                                    : Colors.white,
+                                color: Colors.black,
                                 borderRadius: BorderRadius.circular(10),
-                                // BorderRadius.only(
-                                //     topLeft: Radius.circular(10),
-                                //     bottomRight: Radius.circular(10),
-                                //     )
                               ),
                               child: Center(
-                                  child:
-                                      // widget.isCartScreen ==
-                                      // false &&
-                                      //     widget.cartItem!
-                                      //             .quantity ==
-                                      //         1
-                                      // ? const Icon(
-                                      //     Icons.delete_rounded,
-                                      //     size: 20,
-                                      //     color: Colors.white,
-                                      //   )
-                                      // :
-                                      Icon(
+                                  child: Icon(
                                 Icons.minimize_outlined,
                                 size: 20,
-                                color: ref.watch(addbuttonprovider) == true
-                                    ? Colors.white
-                                    : Colors.black12,
+                                color: Colors.white,
                               )),
                             ),
                           ),
@@ -407,19 +243,13 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen> {
                         width: 150,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  ref.watch(addbuttonprovider) == true
-                                      ? Colors.black
-                                      : Colors.white,
+                              backgroundColor: Colors.black,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               )),
                           child: Text(
                             'Add to Cart',
-                            style: TextStyle(
-                                color: ref.watch(addbuttonprovider) == true
-                                    ? Colors.white
-                                    : Colors.black12),
+                            style: TextStyle(color: Colors.white),
                           ),
                           onPressed: () {
                             _debouncer.run(() {
@@ -444,15 +274,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen> {
                     ],
                   ),
                 ),
-              )
-              // SizedBox(
-              //   height: 100,
-              //   width: double.maxFinite,
-              //   child: ElevatedButton(
-              //     child: const Text('dsdsd'),
-              //     onPressed: () {},
-              //   ),
-              )
+              ))
         ],
       ),
     );
