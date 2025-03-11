@@ -27,6 +27,7 @@ class _NewMainUIState extends ConsumerState<NewMainUI>
   List<DishData> dishes = [];
   List<Categories> allcategories = [];
   List<VariattionTitleModel>? titleVariationList = [];
+  bool showTabBar = false;
   bool isTabControllerReady = false; // Track initialization
   Future fetchcategoriesAnddishes(String restuid) async {
     await ref
@@ -74,9 +75,9 @@ class _NewMainUIState extends ConsumerState<NewMainUI>
           }
 
           bloc.init(this, dishes: dishes, categories: allcategories);
-          bloc.scrollController!.addListener(() {
-            // onScroll();
-          });
+          // bloc.scrollController!.addListener(() {
+          //   _scrollListener();
+          // });
         });
       }
     });
@@ -90,6 +91,21 @@ class _NewMainUIState extends ConsumerState<NewMainUI>
     // });
   }
 
+  // void _scrollListener() {
+  //   double offset = bloc.scrollController!.offset;
+  //   double triggerOffset = 250; // Change based on your UI
+
+  //   if (offset >= triggerOffset && !showTabBar) {
+  //     setState(() {
+  //       showTabBar = true;
+  //     });
+  //   } else if (offset < triggerOffset && showTabBar) {
+  //     setState(() {
+  //       showTabBar = false;
+  //     });
+  //   }
+  // }
+
   @override
   Widget build(BuildContext context) {
     final cart = ref.watch(cartProvider);
@@ -99,30 +115,47 @@ class _NewMainUIState extends ConsumerState<NewMainUI>
         slivers: [
           SliverAppBar(
             pinned: true,
-            expandedHeight: 300,
-            collapsedHeight: 100,
+            expandedHeight: 250,
+            // collapsedHeight: 100,
+            // bottom: PreferredSize(
+            //   preferredSize: const Size.fromHeight(10),
+            //   child: Container(
+            //       color: Colors.pink,
+            //       height: 60,
+            //       width: double.maxFinite,
+            //       child: isTabControllerReady // Only build when ready
+            //           ? AnimatedBuilder(
+            //               animation: bloc,
+            //               builder: (_, __) {
+            //                 return TabBar(
+            //                     padding: EdgeInsets.zero,
+            //                     dividerColor: Colors.transparent,
+            //                     indicatorColor: Colors.transparent,
+            //                     onTap: (index) => bloc.onCategoryTab(index),
+            //                     isScrollable: true,
+            //                     controller: bloc.tabController,
+            //                     tabs: bloc.tabs
+            //                         .map((e) => Rappi_tab_widget(category: e))
+            //                         .toList());
+            //               },
+            //             )
+            //           : CircularProgressIndicator()),
+            // ),
             flexibleSpace: FlexibleSpaceBar(
-              title: Container(
-                  color: Colors.pink,
-                  height: 60,
-                  width: double.maxFinite,
-                  child: isTabControllerReady // Only build when ready
-                      ? TabBar(
-                          padding: EdgeInsets.zero,
-                          dividerColor: Colors.transparent,
-                          indicatorColor: Colors.transparent,
-                          onTap: bloc.onCategoryTab,
-                          isScrollable: true,
-                          controller: bloc.tabController,
-                          tabs: bloc.tabs
-                              .map((e) => Rappi_tab_widget(category: e))
-                              .toList())
-                      : CircularProgressIndicator()),
               background: Image.network(
                 'https://mrqaapzhzeqvarrtfkgv.supabase.co/storage/v1/object/public/Restaurant_Registeration//8d019a6b-b66a-466e-99b9-c66f9745ba70/Restaurant_covers',
               ),
             ),
           ),
+          isTabControllerReady
+              ? SliverPersistentHeader(
+                  pinned: true,
+                  delegate: _SliverTabBar(
+                    isTabControllerReady: isTabControllerReady,
+                    bloc: bloc,
+                  ),
+                )
+              : const SliverToBoxAdapter(child: SizedBox()),
           SliverList(
               delegate: SliverChildBuilderDelegate(
                   childCount: bloc.items.length, (context, index) {
@@ -145,5 +178,51 @@ class _NewMainUIState extends ConsumerState<NewMainUI>
         ],
       ),
     );
+  }
+}
+
+class _SliverTabBar extends SliverPersistentHeaderDelegate {
+  RappiBloc bloc;
+  bool isTabControllerReady;
+  _SliverTabBar({required this.bloc, required this.isTabControllerReady});
+
+  @override
+  // TODO: implement maxExtent
+  double get maxExtent => 50;
+
+  @override
+  // TODO: implement minExtent
+  double get minExtent => 50;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      decoration: BoxDecoration(
+          color: Colors.red,
+          borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(10),
+              bottomRight: Radius.circular(10))),
+      child: AnimatedBuilder(
+          animation: bloc,
+          builder: (_, __) {
+            return TabBar(
+              tabs:
+                  bloc.tabs.map((e) => Rappi_tab_widget(category: e)).toList(),
+              padding: EdgeInsets.zero,
+              dividerColor: Colors.transparent,
+              indicatorColor: Colors.transparent,
+              onTap: (index) => bloc.onCategoryTab(index),
+              isScrollable: true,
+              controller: bloc.tabController,
+            );
+          }),
+    );
+  }
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+    // TODO: implement shouldRebuild
+    return true;
   }
 }

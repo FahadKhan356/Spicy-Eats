@@ -298,12 +298,13 @@ class Rappi_tab_widget extends StatefulWidget {
 class _Rapp_tab_widgetState extends State<Rappi_tab_widget> {
   @override
   Widget build(BuildContext context) {
+    final isSelected = widget.category!.selected ?? false;
     return Card(
       margin: const EdgeInsets.all(5),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       borderOnForeground: false,
-      color: widget.category!.selected! ? Colors.black : Colors.white,
-      elevation: widget.category!.selected! ? 6 : 0,
+      color: isSelected ? Colors.black : Colors.white,
+      elevation: isSelected ? 6 : 0,
       shadowColor: Colors.black12,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -312,7 +313,7 @@ class _Rapp_tab_widgetState extends State<Rappi_tab_widget> {
           style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.bold,
-              color: widget.category!.selected! ? Colors.white : Colors.black),
+              color: isSelected ? Colors.white : Colors.black),
         ),
       ),
     );

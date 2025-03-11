@@ -14,6 +14,7 @@ class RappiBloc with ChangeNotifier {
 
   ScrollController? scrollController;
   TabController? tabController;
+
   void init(TickerProvider ticker,
       {List<DishData>? dishes, List<Categories>? categories}) {
     // tabController = TabController(length: categories!.length, vsync: ticker);
@@ -138,6 +139,7 @@ class RappiBloc with ChangeNotifier {
       _listen = true;
     }
 
+    tabController!.index = index; //deepseek code // Update TabController index
     notifyListeners();
   }
 }
