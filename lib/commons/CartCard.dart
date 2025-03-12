@@ -140,7 +140,7 @@ class _CartCardState extends ConsumerState<CartCard> {
           height: widget.cardHeight ?? 130,
           width: double.maxFinite,
           child: Card(
-              surfaceTintColor: Colors.white,
+              surfaceTintColor: const Color.fromRGBO(189, 189, 189, 1),
               margin: const EdgeInsets.symmetric(vertical: 10),
               elevation: 1, // widget.elevation ?? 5,
               color: widget.cardColor ?? Colors.white,

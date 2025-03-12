@@ -22,6 +22,7 @@ import 'package:spicy_eats/features/Restaurant_Menu/screens/restaurant_menu.dart
 import 'dart:math' as math;
 
 import 'package:spicy_eats/main.dart';
+import 'package:spicy_eats/tabexample.dart/RestaurantMenuScreen.dart';
 import 'package:spicy_eats/tabexample.dart/tabexample.dart';
 
 var searchProvider = StateProvider<bool>((ref) => false);
@@ -417,41 +418,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                     print(MediaQuery.of(context).size.width);
 
                                     Navigator.pushNamed(
-                                        // context, RestaurantMenu.routename,
-                                        // arguments: {
-                                        //   'restaurant': restaurantData[index],
-                                        //   // 'dishes': dishList,
-                                        //   'rest_uid':
-                                        //       restaurantData[index].restuid,
-                                        // }
-                                        //     });
-                                        // Navigator.pushNamed(
-
-                                        //for myfinalscreen
-                                        context,
-                                        MyFinalScrollScreen.routename,
-                                        arguments: {
-                                          'restuid':
-                                              restaurantData[index].restuid,
-                                          'restaurantdata':
-                                              restaurantData[index],
-                                        }
-                                        //for dummycart
-
-                                        // context,
-                                        // DummyCart.routename,
-                                        // arguments: restaurantData[index].restuid,
-                                        // context,
-
-                                        //for homesliverscrollabletabs
-
-                                        // HomeSliverWithScrollableTabs.routename,
-                                        // arguments: {
-                                        //   'restuid':
-                                        //       restaurantData[index].restuid,
-                                        //   'restaurantdata': restaurantData[index],
-                                        // },
-                                        );
+                                      context, RestaurantMenuScreen.routename,
+                                      arguments: restaurantData[index],
+                                      // {
+                                      //   // 'restuid':
+                                      //   //     restaurantData[index].restuid,
+                                      //   'restaurantData':
+                                      //       restaurantData[index],
+                                      // }
+                                    );
                                   },
                                   child: RestaurantContainer(
                                     name: restaurantData[index]

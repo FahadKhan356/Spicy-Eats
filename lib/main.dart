@@ -1,34 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/MyCustomSliverScreen.dart';
-import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/register_restaurant.dart';
-import 'package:spicy_eats/animatedButton.dart';
-import 'package:spicy_eats/diegoveloper%20example/main_rappi_concept_app.dart';
-import 'package:spicy_eats/features/Basket/screens/basket.dart';
-import 'package:spicy_eats/features/Home/screens/Home.dart';
-import 'package:spicy_eats/features/dashboard/DrawerScreens/Menu/SubScreens/AddItemScreen.dart';
-import 'package:spicy_eats/features/dashboard/DrawerScreens/Menu/overview.dart';
-import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/businessInformation.dart';
-import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/legalstuffscreen.dart';
-import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/paymentmethodescreen.dart';
-import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/widgets/map.dart';
-import 'package:spicy_eats/Register%20shop/widgets/Lists.dart';
-import 'package:spicy_eats/Register%20shop/widgets/TimePicker.dart';
-import 'package:spicy_eats/Supabse%20Backend/supabase_config.dart';
-import 'package:spicy_eats/features/Home/screens/home_screen.dart';
-import 'package:spicy_eats/features/authentication/passwordless_signup.dart';
-import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
-import 'package:spicy_eats/routes.dart';
-import 'package:spicy_eats/synctabgpt.dart';
-import 'package:spicy_eats/tabexample.dart/newmainui.dart';
-import 'package:spicy_eats/tabexample.dart/tabexample.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'SyncTabBar/home_sliver_with_scrollable_tabs.dart';
-import 'cart example/basketpage.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'package:spicy_eats/Supabse%20Backend/supabase_config.dart';
+import 'package:spicy_eats/features/Home/screens/Home.dart';
+import 'package:spicy_eats/features/authentication/passwordless_signup.dart';
+
+import 'package:spicy_eats/routes.dart';
+
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 // final currentIndexProvider = StateProvider((ref) => 0);
 
@@ -90,20 +72,20 @@ class _MyAppState extends ConsumerState<MyApp> {
             tabBarTheme: TabBarTheme(),
             appBarTheme: AppBarTheme(backgroundColor: Colors.white)),
         home: Scaffold(
-          body: NewMainUI(),
-          //  AnimatedAddButton()
-          // DishMenuScreen(),
-          //MyFinalScrollScreen(),
-          //MyCustomSliverScreen(),
-          //CustomScrollTransition(),
-          //Mian_rappi_concept_app(),
-          // SliverAppBarWithDynamicTabs()
-          // QuantityButton1(),
+          body:
+              //  AnimatedAddButton()
+              // DishMenuScreen(),
+              //MyFinalScrollScreen(),
+              //MyCustomSliverScreen(),
+              //CustomScrollTransition(),
+              //Mian_rappi_concept_app(),
+              // SliverAppBarWithDynamicTabs()
+              // QuantityButton1(),
 
-          //BasketScreen(dish: null, totalprice: 122, quantity: 2),
-          // supabaseClient.auth.currentSession != null
-          //     ? const Home()
-          //     : PasswordlessScreen(ref: ref),
+              //BasketScreen(dish: null, totalprice: 122, quantity: 2),
+              supabaseClient.auth.currentSession != null
+                  ? const Home()
+                  : PasswordlessScreen(ref: ref),
           // supabaseClient.auth.currentSession != null
           //     ? screen[currentindex]
           //     : PasswordlessScreen(
