@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/Register%20shop/models/registershop.dart';
+import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/businessInformation.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/widgets/map.dart';
 import 'package:spicy_eats/Register%20shop/widgets/restauarantTextfield.dart';
@@ -15,7 +15,7 @@ var restaurantNameProvider = StateProvider<String?>((ref) => null);
 final restaurantPhoneNumberProvider = StateProvider<int?>((ref) => 0);
 
 final restaurantDataProvider =
-    StateProvider<RestaurantData>((ref) => RestaurantData());
+    StateProvider<RestaurantModel>((ref) => RestaurantModel());
 
 class RegisterRestaurant extends ConsumerStatefulWidget {
   static const String routename = '/register-restaurant';

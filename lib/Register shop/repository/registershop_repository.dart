@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/Register%20shop/models/registershop.dart';
+import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/Register%20shop/utils/commonImageUpload.dart';
 import 'package:spicy_eats/main.dart';
 
@@ -92,7 +92,7 @@ class RegisterShopRepository {
   }
 
 //fetch restaurants
-  Future<List<RestaurantData>?> fetchRestaurant() async {
+  Future<List<RestaurantModel>?> fetchRestaurant() async {
     try {
       List<dynamic> response =
           await supabaseClient.from('restaurants').select('*');
@@ -103,8 +103,8 @@ class RegisterShopRepository {
       }
 
       // restaurant = RestaurantData.fromJson(response);
-      List<RestaurantData> restaurant = response
-          .map((restauarantdata) => RestaurantData.fromJson(restauarantdata))
+      List<RestaurantModel> restaurant = response
+          .map((restauarantdata) => RestaurantModel.fromJson(restauarantdata))
           .toList();
       return restaurant;
       // Return the list of RestaurantData objects

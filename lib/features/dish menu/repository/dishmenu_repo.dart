@@ -50,4 +50,20 @@ class DishMenuRepository {
     }
     return null;
   }
+
+  Future<List<int>?> fetchfrequentlybuy({required int maindishid}) async {
+    try {
+      final res = await supabaseClient
+          .from('frequently_bought')
+          .select('freq_bought')
+          .eq('main_dishid', maindishid)
+          .single();
+      if (res.isEmpty) return [];
+      final frequentlybuyList = List<int>.from(res['freq_bought']);
+
+      return frequentlybuyList;
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }

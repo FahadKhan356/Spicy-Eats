@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
 import 'package:spicy_eats/Practice%20for%20cart/screens/DummyBasket.dart';
-import 'package:spicy_eats/Register%20shop/models/registershop.dart';
+import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
 import 'package:spicy_eats/diegoveloper%20example/bloc.dart';
 import 'package:spicy_eats/diegoveloper%20example/main_rappi_concept_app.dart';
@@ -26,7 +26,7 @@ var titleVariationListProvider =
 class MyFinalScrollScreen extends ConsumerStatefulWidget {
   static const String routename = '/MyFinalScreen';
   final String? restuid;
-  final RestaurantData restaurantData;
+  final RestaurantModel restaurantData;
   const MyFinalScrollScreen(
       {super.key, this.restuid, required this.restaurantData});
 
@@ -480,6 +480,7 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                                     category: bloc.items[index].category);
                               } else {
                                 return RappiProduct(
+                                  dishes: dishes,
                                   dish: bloc.items[index].product!,
                                   cartItem: cartIndex,
                                   qunatityindex: quantityindex,

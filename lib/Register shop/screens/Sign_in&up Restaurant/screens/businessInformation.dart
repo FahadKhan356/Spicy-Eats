@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
-import 'package:spicy_eats/Register%20shop/models/registershop.dart';
+import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/legalstuffscreen.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/paymentmethodescreen.dart';
 import 'package:spicy_eats/Register%20shop/widgets/Mybottomsheet.dart';
@@ -33,7 +33,7 @@ class BusinessDetailsScreen extends ConsumerStatefulWidget {
 }
 
 class _BusinessDetailsScreenState extends ConsumerState<BusinessDetailsScreen> {
-  List<RestaurantData>? restaurants;
+  List<RestaurantModel>? restaurants;
   @override
   void initState() {
     // TODO: implement initState

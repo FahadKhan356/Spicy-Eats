@@ -1,11 +1,11 @@
-class RestaurantData {
+class RestaurantModel {
   String? restuid;
   String? restaurantName;
   int? deliveryFee;
   int? minTime;
   int? maxTime;
   double? averageRatings;
-  // int? totalRatings;
+  int? totalRatings;
   String? address;
   int? phoneNumber;
   String? deliveryArea;
@@ -24,13 +24,13 @@ class RestaurantData {
   String? restaurantImageUrl;
   String? restaurantLogoImageUrl;
 
-  RestaurantData copywith(
+  RestaurantModel copywith(
       {String? restaurantName,
       int? deliveryFee,
       int? minTime,
       int? maxTime,
       double? averageRatings,
-      // int? totalRatings,
+      int? totalRatings,
       String? address,
       int? phoneNumber,
       String? deliveryArea,
@@ -47,12 +47,12 @@ class RestaurantData {
       String? paymentMethod,
       Map<String, Map<String, dynamic>>? openingHours,
       String? restaurantImageUrl}) {
-    return RestaurantData(
+    return RestaurantModel(
       phoneNumber: phoneNumber ?? this.phoneNumber,
       address: address ?? this.address,
       restaurantName: restaurantName ?? this.restaurantName,
       averageRatings: averageRatings ?? this.averageRatings,
-      // totalRatings: totalRatings ?? this.totalRatings,
+      totalRatings: totalRatings ?? this.totalRatings,
       email: email ?? this.email,
       lat: lat ?? this.lat,
       long: long ?? this.long,
@@ -73,12 +73,12 @@ class RestaurantData {
     );
   }
 
-  RestaurantData({
+  RestaurantModel({
     this.phoneNumber,
     this.address,
     this.restaurantName,
     this.averageRatings,
-    // this.totalRatings,
+    this.totalRatings,
     this.email,
     this.lat,
     this.long,
@@ -107,7 +107,7 @@ class RestaurantData {
       'minTime': minTime,
       'maxTime': maxTime,
       'average_ratings': averageRatings,
-      // 'total_ratngs': totalRatings,
+      'total_ratngs': totalRatings,
       'address': address,
       'phoneNumber': phoneNumber,
       'deliveryArea': deliveryArea,
@@ -129,20 +129,20 @@ class RestaurantData {
     };
   }
 
-  factory RestaurantData.fromJson(Map<String, dynamic> json) {
+  factory RestaurantModel.fromJson(Map<String, dynamic> json) {
     Map<String, Map<String, dynamic>> openingHours = {};
     if (json['openingHours'] != null) {
       openingHours =
           Map<String, Map<String, dynamic>>.from(json['openingHours']);
     }
 
-    return RestaurantData(
+    return RestaurantModel(
       restaurantName: json['restaurantName'] ?? '',
       deliveryFee: json['deliveryFee'] ?? 0.0,
       minTime: json['minTime'] ?? 0,
       maxTime: json['maxTime'] ?? 0,
       averageRatings: json['average_ratings'] ?? 0.0,
-      // totalRatings: json['total_ratings'] ?? 0,
+      totalRatings: json['total_ratings'] ?? 0,
       address: json['address'] ?? '',
       phoneNumber: json['phoneNumber'] ?? 0,
       deliveryArea: json['deliveryArea'] ?? 0.0,

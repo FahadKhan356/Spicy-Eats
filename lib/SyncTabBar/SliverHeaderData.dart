@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:spicy_eats/Register%20shop/models/registershop.dart';
+import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 
 class SliverHeaderData extends StatelessWidget {
   SliverHeaderData({
     required this.restaurantdata,
   });
 
-  final RestaurantData restaurantdata;
+  final RestaurantModel restaurantdata;
 
   @override
   Widget build(BuildContext context) {

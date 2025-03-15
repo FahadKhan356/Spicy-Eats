@@ -5,7 +5,7 @@ import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
 import 'package:spicy_eats/commons/routeAnimation.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/dashboard/DrawerScreens/Menu/ineroverview.dart';
-import 'package:spicy_eats/Register%20shop/models/registershop.dart';
+import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/businessInformation.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/legalstuffscreen.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/paymentmethodescreen.dart';
@@ -103,7 +103,7 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
       });
     case PaymentMethodScreen.routename:
       return MaterialPageRoute(builder: (context) {
-        var restaurants = settings.arguments as List<RestaurantData>?;
+        var restaurants = settings.arguments as List<RestaurantModel>?;
         return PaymentMethodScreen(
           restaurants: restaurants!,
         );
@@ -140,6 +140,7 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
       final argument = settings.arguments as Map;
       return customRouteAnimation(
         DishMenuVariation(
+          dishes: argument['dishes'],
           dish: argument['dish'],
           isCart: argument['iscart'],
           cartDish: argument['cartdish'],

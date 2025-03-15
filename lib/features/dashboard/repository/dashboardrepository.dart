@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/utils/commonImageUpload.dart';
 import 'package:spicy_eats/commons/categoriesmodel.dart';
-import 'package:spicy_eats/commons/mysnackbar.dart';
 import 'package:spicy_eats/main.dart';
 
 var dashboardRepositoryProvider = Provider((ref) => DashBoardRepository());

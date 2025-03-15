@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/Register%20shop/models/registershop.dart';
+import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/businessInformation.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/legalstuffscreen.dart';
@@ -106,7 +106,7 @@ class RegisterShopContoller {
     }
   }
 
-  Future<List<RestaurantData>?> fetchrestaurants() async {
+  Future<List<RestaurantModel>?> fetchrestaurants() async {
     return await registerShopRepository.fetchRestaurant();
   }
 

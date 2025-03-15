@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:spicy_eats/Practice%20for%20cart/screens/DummyCart.dart';
 import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
-import 'package:spicy_eats/Register%20shop/models/registershop.dart';
+import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
 import 'package:spicy_eats/Register%20shop/widgets/Lists.dart';
 import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
@@ -41,7 +41,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   late Animation<double> _animationbody;
   bool clicked = false;
   var uid;
-  List<RestaurantData> restaurantData = [];
+  List<RestaurantModel> restaurantData = [];
   List<String>? restuid;
   List<DishData> dishList = [];
   final userid = supabaseClient.auth.currentUser!.id;
@@ -113,7 +113,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   String? rest_name;
-  RestaurantData? restaurant;
+  RestaurantModel? restaurant;
 
   @override
   Widget build(BuildContext context) {

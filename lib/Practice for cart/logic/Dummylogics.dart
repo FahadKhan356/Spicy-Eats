@@ -129,7 +129,7 @@ class Dummylogics {
   }
 
 //increase quantity
-  Future<void> increaseQuantity(WidgetRef ref, int dishId, int price) async {
+  Future<void> increaseQuantity(WidgetRef ref, int dishId, double price) async {
     await _mutex.run(() async {
       // print('inside the increase quantity..');
       final cart = ref.read(cartProvider.notifier);
@@ -190,7 +190,7 @@ class Dummylogics {
           items[index].tprice = result.toDouble();
           await supabaseClient.from('cart').update({
             'quantity': items[index].quantity,
-            'tprice': items[index].quantity * price.toDouble()
+            'tprice': items[index].quantity * price,
           }).eq('id', items[index].cart_id!);
         } else {
           await supabaseClient
@@ -207,7 +207,8 @@ class Dummylogics {
   }
 
 //decrease qunatity
-  Future<void> decreaseQuantity(WidgetRef ref, int? dishId, int price) async {
+  Future<void> decreaseQuantity(
+      WidgetRef ref, int? dishId, double price) async {
     await _mutex.run(() async {
       final cart = ref.read(cartProvider.notifier);
       final items = cart.state;
@@ -219,7 +220,7 @@ class Dummylogics {
         if (items[index].quantity > 1) {
           items[index].quantity--;
           items[index].tprice = 0;
-          items[index].tprice = items[index].quantity * price.toDouble();
+          items[index].tprice = items[index].quantity * price;
           print(items[index].tprice);
 
           await supabaseClient.from('cart').update({

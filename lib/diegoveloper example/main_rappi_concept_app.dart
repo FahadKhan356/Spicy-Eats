@@ -269,6 +269,7 @@ class _Mian_rappi_concept_appState extends ConsumerState<Mian_rappi_concept_app>
                                           category: bloc.items[index].category);
                                     } else {
                                       return RappiProduct(
+                                        dishes: dishes,
                                         dish: bloc.items[index].product!,
                                       );
                                     }
@@ -367,6 +368,7 @@ class RappiCategory extends StatelessWidget {
 // ignore: non_constant_identifier_names
 class RappiProduct extends ConsumerStatefulWidget {
   RappiProduct({
+    required this.dishes,
     required this.dish,
     this.cartItem,
     this.qunatityindex,
@@ -374,6 +376,7 @@ class RappiProduct extends ConsumerStatefulWidget {
     this.titleVariationList,
     // this.variattionTitle
   });
+  List<DishData> dishes = [];
   final DishData dish;
   final CartModelNew? cartItem;
   final int? qunatityindex;
@@ -395,6 +398,7 @@ class _RappiProductState extends ConsumerState<RappiProduct> {
         widget.dish.isVariation!
             ? Navigator.pushNamed(context, DishMenuVariation.routename,
                 arguments: {
+                    'dishes': widget.dishes,
                     'dish': widget.dish,
                     'iscart': false,
                     'cartdish': widget.cartItem,

@@ -5,12 +5,16 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
-import 'package:spicy_eats/Register%20shop/models/registershop.dart';
+import 'package:spicy_eats/Practice%20for%20cart/screens/DummyBasket.dart';
+import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
+import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
+import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
 import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
 
 import 'package:spicy_eats/diegoveloper%20example/bloc.dart';
 import 'package:spicy_eats/diegoveloper%20example/main_rappi_concept_app.dart';
 import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
+import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
 import 'package:spicy_eats/main.dart';
@@ -18,7 +22,7 @@ import 'package:spicy_eats/main.dart';
 class RestaurantMenuScreen extends ConsumerStatefulWidget {
   static const String routename = 'RestaurantMenuScreen/';
   final String restuid = 'd20a2270-b19b-462c-8a65-ba13ff8c0197';
-  RestaurantData restaurantData;
+  RestaurantModel restaurantData;
   RestaurantMenuScreen({
     super.key,
     required this.restaurantData,
@@ -37,6 +41,8 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
   List<VariattionTitleModel>? titleVariationList = [];
   bool showTabBar = false;
   bool isTabControllerReady = false; // Track initialization
+  bool cartFetched = false;
+  final userId = supabaseClient.auth.currentUser!.id;
   Future fetchcategoriesAnddishes(String restuid) async {
     await ref
         .read(homeControllerProvider)
@@ -90,13 +96,13 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
       }
     });
 
-    // ref.read(DummyLogicProvider).fetchCart(ref, userId!).then((value) {
-    //   cartFetched = true;
-    //   final cart = ref.read(cartProvider.notifier).state;
-    //   if (cart.isNotEmpty) {
-    //     print('${cart[0].tprice}');
-    // }
-    // });
+    ref.read(DummyLogicProvider).fetchCart(ref, userId!).then((value) {
+      cartFetched = true;
+      final cart = ref.read(cartProvider.notifier).state;
+      if (cart.isNotEmpty) {
+        print('${cart[0].tprice}');
+      }
+    });
   }
 
   void _scrollListener() {
@@ -116,8 +122,40 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
 
   @override
   Widget build(BuildContext context) {
+    final isfav =
+        ref.watch(favoriteProvider)[widget.restaurantData.restuid] ?? false;
     final cart = ref.watch(cartProvider);
     return Scaffold(
+      floatingActionButton: Align(
+        alignment: Alignment.bottomCenter,
+        child: FloatingActionButton(
+            backgroundColor: Colors.black,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.shopping_cart,
+                  color: Colors.white,
+                ),
+                Text(
+                  cart.length.toString(),
+                  style: const TextStyle(color: Colors.white),
+                ), // Dynamic cart count
+              ],
+            ),
+            onPressed: () {
+              if (cartFetched) {
+                Navigator.pushNamed(context, DummyBasket.routename, arguments: {
+                  // 'cart': cart,
+                  'dishes': dishes,
+                  'restuid': widget.restuid,
+                  'restdata': widget.restaurantData,
+                });
+                cartFetched = false;
+                ref.read(DummyLogicProvider).getTotalPrice(ref);
+              }
+            }),
+      ),
       backgroundColor: Colors.white,
       body: CustomScrollView(
         controller: bloc.scrollController,
@@ -125,35 +163,56 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
           SliverAppBar(
             stretch: true,
             centerTitle: true,
-            leading: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Container(
-                  height: 30,
-                  width: 30,
-                  color: Colors.white,
-                  child: const Icon(
-                    Icons.arrow_back,
-                    size: 22,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ),
-            actions: [
-              Padding(
+            leading: InkWell(
+              splashColor: Colors.orange,
+              // highlightColor: Colors.red,
+              onTap: () => Navigator.pushNamed(context, Home.routename),
+              child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Container(
                     height: 30,
                     width: 30,
-                    color: Colors.white,
+                    color: Colors.white.withOpacity(0.5),
                     child: const Icon(
-                      Icons.favorite_outline_sharp,
+                      Icons.arrow_back,
                       size: 22,
                       color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            actions: [
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: InkWell(
+                    hoverColor: Colors.red,
+                    onTap: () => ref
+                        .read(registershoprepoProvider)
+                        .togglefavorites(
+                            userid: supabaseClient.auth.currentUser!.id,
+                            restid: widget.restaurantData.restuid!,
+                            ref: ref,
+                            context: context),
+                    child: Container(
+                      height: 40,
+                      width: 40,
+                      color: Colors.white.withOpacity(0.5),
+                      child: isfav
+                          ? const Icon(
+                              Icons.favorite,
+                              size: 22,
+                              color: Colors.red,
+                            )
+                          : const Icon(
+                              Icons.favorite_outline_sharp,
+                              size: 22,
+                              color: Colors.black,
+                            ),
                     ),
                   ),
                 ),
@@ -172,9 +231,9 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const Text(
-                            'Albaik',
-                            style: TextStyle(
+                          Text(
+                            '${widget.restaurantData.restaurantName}',
+                            style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold),
@@ -188,7 +247,10 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   RatingBar.builder(
-                                      initialRating: 4,
+                                      allowHalfRating: true,
+                                      initialRating: widget
+                                          .restaurantData.averageRatings!
+                                          .toDouble(),
                                       itemSize: 15,
                                       itemCount: 5,
                                       itemBuilder: (context, index) =>
@@ -200,9 +262,9 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
                                   const SizedBox(
                                     width: 5,
                                   ),
-                                  const Text(
-                                    '4.0',
-                                    style: TextStyle(
+                                  Text(
+                                    '${widget.restaurantData.averageRatings}',
+                                    style: const TextStyle(
                                         color: Colors.black, fontSize: 15),
                                   ),
                                   const SizedBox(
@@ -220,9 +282,9 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
                                   const SizedBox(
                                     width: 5,
                                   ),
-                                  const Text(
-                                    '1000+ Ratings',
-                                    style: TextStyle(
+                                  Text(
+                                    '${widget.restaurantData.totalRatings} Ratings',
+                                    style: const TextStyle(
                                         color: Colors.black, fontSize: 15),
                                   ),
                                 ]
@@ -256,6 +318,7 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
               ? SliverPersistentHeader(
                   pinned: true,
                   delegate: _SliverTabBar(
+                    isshowtabbar: showTabBar,
                     isTabControllerReady: isTabControllerReady,
                     bloc: bloc,
                   ),
@@ -264,64 +327,69 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 60),
-              child: ClipRRect(
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                width: double.maxFinite,
+                height: 80,
+
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.black12, width: 1.5),
                   borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 10),
-                    width: double.maxFinite,
-                    height: 80,
-                    color: Colors.black,
-                    //const Color.fromRGBO(209, 209, 209, 1),
-                    //Color.fromARGB(255, 247, 208, 158).withOpacity(0.2),
-                    child: Row(
-                      children: [
-                        ClipRRect(
+                ),
+                //const Color.fromRGBO(209, 209, 209, 1),
+                //Color.fromARGB(255, 247, 208, 158).withOpacity(0.2),
+                child: Row(
+                  children: [
+                    Container(
+                      height: 60,
+                      width: 60,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(color: Colors.black12, width: 1.5),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Icon(
+                        Icons.electric_bike_sharp,
+                        size: 30,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: Container(
+                        height: 70,
+                        width: 60,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.black12, width: 1.5),
                           borderRadius: BorderRadius.circular(10),
-                          child: Container(
-                            height: 70,
-                            width: 60,
-                            color: Colors.white,
-                            child: const Icon(
-                              Icons.electric_bike_sharp,
-                              size: 30,
-                            ),
-                          ),
                         ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Container(
-                              height: 70,
-                              width: 60,
-                              color: Colors.white,
-                              child: const Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Delivery : 5-20 min',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Delivery Fee : \$2.5',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.green),
-                                  )
-                                ],
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              ' Delivery : ${widget.restaurantData.minTime} - ${widget.restaurantData.maxTime} ',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                          ),
-                        )
-                      ],
-                    ),
-                  )),
+                            Text(
+                              'Delivery Fee : \$${widget.restaurantData.deliveryFee}',
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black),
+                            )
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
             ),
           ),
           SliverList(
@@ -334,6 +402,7 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
               return RappiCategory(category: bloc.items[index].category);
             } else {
               return RappiProduct(
+                dishes: dishes,
                 dish: bloc.items[index].product!,
                 cartItem: cartIndex,
                 // qunatityindex: quantityindex,
@@ -353,8 +422,12 @@ const double headertitle = 60;
 
 class _SliverTabBar extends SliverPersistentHeaderDelegate {
   RappiBloc bloc;
+  bool isshowtabbar;
   bool isTabControllerReady;
-  _SliverTabBar({required this.bloc, required this.isTabControllerReady});
+  _SliverTabBar(
+      {required this.bloc,
+      required this.isTabControllerReady,
+      required this.isshowtabbar});
 
   @override
   // TODO: implement maxExtent
@@ -371,10 +444,12 @@ class _SliverTabBar extends SliverPersistentHeaderDelegate {
       height: headertitle,
       decoration: BoxDecoration(
           boxShadow: [
-            BoxShadow(
-                offset: Offset(0.0, 2.0),
-                color: Colors.black.withOpacity(0.3),
-                blurRadius: 5)
+            isshowtabbar
+                ? BoxShadow(
+                    offset: Offset(0.0, 2.0),
+                    color: Colors.black.withOpacity(0.3),
+                    blurRadius: 5)
+                : BoxShadow(color: Colors.transparent)
           ],
           // border: Border.symmetric(
           //     horizontal: BorderSide(width: 5, color: Colors.black87)),

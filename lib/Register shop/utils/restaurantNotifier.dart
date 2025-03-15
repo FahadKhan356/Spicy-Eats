@@ -1,14 +1,14 @@
 import 'dart:typed_data';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/Register%20shop/models/registershop.dart';
+import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 
 final restaurantstateProvider =
-    StateNotifierProvider<RestaurantNotifier, RestaurantData>(
+    StateNotifierProvider<RestaurantNotifier, RestaurantModel>(
         (ref) => RestaurantNotifier());
 
-class RestaurantNotifier extends StateNotifier<RestaurantData> {
-  RestaurantNotifier() : super(RestaurantData());
+class RestaurantNotifier extends StateNotifier<RestaurantModel> {
+  RestaurantNotifier() : super(RestaurantModel());
 
   void setRestaurantData({
     String? restaurantName,

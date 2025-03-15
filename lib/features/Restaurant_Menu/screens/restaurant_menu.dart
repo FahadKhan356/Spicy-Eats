@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/Register%20shop/models/registershop.dart';
+import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/commons/ItemQuantity.dart';
 import 'package:spicy_eats/commons/mysnackbar.dart';
 import 'package:spicy_eats/commons/quantity_button.dart';
@@ -11,7 +11,7 @@ final quantityProvider = StateProvider<List<ItemQuantity>>((ref) => []);
 
 class RestaurantMenu extends ConsumerStatefulWidget {
   static const String routename = "/restaurant-menu";
-  final RestaurantData? restaurant;
+  final RestaurantModel? restaurant;
   //List<DishData>? dishData;
   final String? rest_uid;
 

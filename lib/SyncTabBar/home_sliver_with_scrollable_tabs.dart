@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/Register%20shop/models/registershop.dart';
+import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/SyncTabBar/CategoryModel.dart';
 import 'package:spicy_eats/SyncTabBar/FlexibleSpaceBarHeader.dart';
 import 'package:spicy_eats/SyncTabBar/HeaderSliver.dart';
@@ -31,7 +31,7 @@ final headerNotifier =
 class HomeSliverWithScrollableTabs extends ConsumerStatefulWidget {
   static const String routename = '/homeSliver_screen';
   final String restuid;
-  final RestaurantData? restaurantdata;
+  final RestaurantModel? restaurantdata;
   const HomeSliverWithScrollableTabs(
       {super.key, required this.restuid, required this.restaurantdata});
 
@@ -289,7 +289,7 @@ class _HomeSliverWithScrollableTabsState
 
 //BackgroundSliver
 class BackgroundSliver extends StatelessWidget {
-  final RestaurantData? restaurantdata;
+  final RestaurantModel? restaurantdata;
   BackgroundSliver({super.key, this.restaurantdata});
 
   @override

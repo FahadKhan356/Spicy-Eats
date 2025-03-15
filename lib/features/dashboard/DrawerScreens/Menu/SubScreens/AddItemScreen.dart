@@ -7,7 +7,7 @@ import 'package:flutter/widgets.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
-import 'package:spicy_eats/Register%20shop/models/registershop.dart';
+import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/commons/categoriesmodel.dart';
 import 'package:spicy_eats/commons/orderModel.dart';
 import 'package:spicy_eats/features/dashboard/controller/dashboardcontroller.dart';
@@ -49,7 +49,7 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
   }
 
   List<Categories>? categoriesList = [];
-  List<RestaurantData>? restaurants = [];
+  List<RestaurantModel>? restaurants = [];
   String? restid;
 
   @override

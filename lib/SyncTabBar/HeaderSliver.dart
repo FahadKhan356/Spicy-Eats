@@ -1,6 +1,6 @@
 //HeaderSliver
 import 'package:flutter/material.dart';
-import 'package:spicy_eats/Register%20shop/models/registershop.dart';
+import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/SyncTabBar/ListItemHeaderSliver.dart';
 import 'package:spicy_eats/SyncTabBar/SliverHeaderData.dart';
 import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
@@ -15,7 +15,7 @@ class HeaderSliver extends SliverPersistentHeaderDelegate {
       required this.restauarantdata});
 
   List<Categories> listCategory;
-  final RestaurantData restauarantdata;
+  final RestaurantModel restauarantdata;
   final headernotifier;
   @override
   Widget build(

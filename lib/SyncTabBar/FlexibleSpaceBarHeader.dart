@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:spicy_eats/Register%20shop/models/registershop.dart';
+import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
 
 class FlexibleSpaceBarHeader extends StatelessWidget {
-  final RestaurantData? restaurantdata;
+  final RestaurantModel? restaurantdata;
   FlexibleSpaceBarHeader(
       {super.key, required this.valueScroll, this.restaurantdata});
   final double valueScroll;

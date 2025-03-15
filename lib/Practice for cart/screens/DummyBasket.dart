@@ -3,18 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
-import 'package:spicy_eats/Register%20shop/models/registershop.dart';
+import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/commons/CartCard.dart';
 import 'package:spicy_eats/commons/basketcard.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/main.dart';
+import 'package:spicy_eats/tabexample.dart/RestaurantMenuScreen.dart';
 import 'package:spicy_eats/tabexample.dart/tabexample.dart';
 
 class DummyBasket extends ConsumerStatefulWidget {
   List<DishData> dishes = [];
   static const String routename = "/Dummy_basket";
   String restuid;
-  RestaurantData restaurantData;
+  RestaurantModel restaurantData;
   DummyBasket({
     super.key,
     //required this.cart,
@@ -53,12 +54,8 @@ class _DummyBasketState extends ConsumerState<DummyBasket> {
             ),
             onPressed: () => Navigator.pushNamed(
               context,
-              MyFinalScrollScreen.routename,
-              arguments: {
-                'restuid': widget.restuid,
-                'restaurantdata': widget.restaurantData,
-                // 'restaurantdata': ,
-              },
+              RestaurantMenuScreen.routename,
+              arguments: widget.restaurantData,
             ),
           ),
           title: const Text(
