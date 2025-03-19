@@ -77,7 +77,7 @@ class CartModelNew {
 
 //from json
   factory CartModelNew.fromjson(Map<String, dynamic> json) {
-    final variation = json['variation'] as List? ?? [];
+    final variation = json['variations'] as List? ?? [];
     List<Variation> variationList =
         variation.map((e) => Variation.fromjson(e)).toList();
     return CartModelNew(

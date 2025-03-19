@@ -87,7 +87,7 @@ class _CartCardState extends ConsumerState<CartCard> {
         .indexWhere((element) => element.dish_id == dish.dishid);
     if (isInCart == -1) {
       ref.read(DummyLogicProvider).addToCart(
-          dish.dish_price,
+          dish.dish_price!,
           dish.dish_name,
           dish.dish_description,
           ref,
@@ -278,6 +278,16 @@ class _CartCardState extends ConsumerState<CartCard> {
                                         child: Column(
                                           children: [
                                             iconButton(Icons.add, () {
+                                              final currentcarmodel =
+                                                  cartlistener.firstWhere(
+                                                      (e) =>
+                                                          e.dish_id ==
+                                                          dish.dishid,
+                                                      orElse: () =>
+                                                          CartModelNew(
+                                                              quantity: 1));
+
+                                              print(currentcarmodel.cart_id);
                                               increaseQuantity(
                                                   dishid: dish.dishid!);
                                             }),
@@ -300,18 +310,18 @@ class _CartCardState extends ConsumerState<CartCard> {
                                                             color:
                                                                 Colors.white),
                                                       )
-                                                    : Text(
+                                                    : const Text(
                                                         '0',
                                                         key: ValueKey<int>(0),
-                                                        style: const TextStyle(
+                                                        style: TextStyle(
                                                             fontSize: 16,
                                                             color:
                                                                 Colors.white),
                                                       )),
-                                            iconButton(
-                                                Icons.remove,
-                                                () => decreaseQuantity(
-                                                    dishid: dish.dishid!))
+                                            iconButton(Icons.remove, () {
+                                              decreaseQuantity(
+                                                  dishid: dish.dishid!);
+                                            })
                                           ],
                                         ),
                                       )

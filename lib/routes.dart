@@ -15,7 +15,6 @@ import 'package:spicy_eats/commons/restaurantModel.dart';
 import 'package:spicy_eats/features/Basket/screens/basket.dart';
 import 'package:spicy_eats/features/Home/screens/home_screen.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/menu_Item_detail_screen.dart';
-import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/screens/restaurant_menu.dart';
 import 'package:spicy_eats/features/authentication/otp.dart';
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
@@ -143,6 +142,7 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
           dishes: argument['dishes'],
           dish: argument['dish'],
           isCart: argument['iscart'],
+          restaurantData: argument['restaurantdata'],
           cartDish: argument['cartdish'],
         ),
       );

@@ -1,15 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
 import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
-import 'package:spicy_eats/commons/CartCard.dart';
 import 'package:spicy_eats/commons/basketcard.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
+import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
+import 'package:spicy_eats/features/dish%20menu/dishmenuVariation.dart';
 import 'package:spicy_eats/main.dart';
 import 'package:spicy_eats/tabexample.dart/RestaurantMenuScreen.dart';
-import 'package:spicy_eats/tabexample.dart/tabexample.dart';
 
 class DummyBasket extends ConsumerStatefulWidget {
   List<DishData> dishes = [];
@@ -38,6 +36,7 @@ class _DummyBasketState extends ConsumerState<DummyBasket> {
 
   @override
   Widget build(BuildContext context) {
+    final dishesList = ref.watch(dishesListProvider);
     final userId = supabaseClient.auth.currentUser!.id;
     var carttotalamount = ref.read(DummyLogicProvider).getTotalPrice(ref);
     final cart = ref.watch(cartProvider);
@@ -82,18 +81,43 @@ class _DummyBasketState extends ConsumerState<DummyBasket> {
                             (dish) => dish.dishid == cart[index].dish_id,
                             orElse: () => DishData(),
                           );
-                          return BasketCard(
-                              titleVariationList: [],
-                              cardHeight: 120,
-                              elevation: 5,
-                              cardColor: Colors.white,
-                              dish: dishindex,
-                              imageHeight: 50,
-                              imageWidth: 50,
-                              cartItem: cartitem,
-                              userId: userId,
-                              isCartScreen: false,
-                              quantityIndex: index);
+                          return InkWell(
+                            onTap: () {
+                              if (dishindex.isVariation!) {
+                                Navigator.pushNamed(
+                                    context, DishMenuVariation.routename,
+                                    arguments: {
+                                      'dishes': dishesList,
+                                      'dish': dishindex,
+                                      'iscart': true,
+                                      'cartdish': cartitem,
+                                      'restaurantData': ref
+                                          .read(restaurantProvider.notifier)
+                                          .state,
+                                    });
+                              } else {
+                                Navigator.pushNamed(
+                                    context, DishMenuScreen.routename,
+                                    arguments: {
+                                      'dishes': dishesList,
+                                      'dish': dishindex,
+                                      'iscart': true,
+                                    });
+                              }
+                            },
+                            child: BasketCard(
+                                titleVariationList: [],
+                                cardHeight: 120,
+                                elevation: 5,
+                                cardColor: Colors.white,
+                                dish: dishindex,
+                                imageHeight: 70,
+                                imageWidth: 70,
+                                cartItem: cartitem,
+                                userId: userId,
+                                isCartScreen: false,
+                                quantityIndex: index),
+                          );
                         },
                       ),
                       const SizedBox(height: 20),
@@ -121,10 +145,10 @@ class _DummyBasketState extends ConsumerState<DummyBasket> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Row(
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Products'),
+                        Text('Products'),
                         Text('\$12.33'),
                       ],
                     ),
@@ -147,15 +171,15 @@ class _DummyBasketState extends ConsumerState<DummyBasket> {
                         width: double.maxFinite,
                         child: ElevatedButton(
                           onPressed: () {},
-                          child: const Text(
-                            "PROCEED TO CHECKOUT",
-                            style: TextStyle(color: Colors.white),
-                          ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.black,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
+                          ),
+                          child: const Text(
+                            "PROCEED TO CHECKOUT",
+                            style: TextStyle(color: Colors.white),
                           ),
                         ),
                       ),

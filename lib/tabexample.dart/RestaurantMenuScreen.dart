@@ -19,6 +19,9 @@ import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
 import 'package:spicy_eats/main.dart';
 
+var dishesListProvider = StateProvider<List<DishData>?>((ref) => []);
+var restaurantProvider = StateProvider<RestaurantModel?>((ref) => null);
+
 class RestaurantMenuScreen extends ConsumerStatefulWidget {
   static const String routename = 'RestaurantMenuScreen/';
   final String restuid = 'd20a2270-b19b-462c-8a65-ba13ff8c0197';
@@ -52,6 +55,9 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
         setState(() {
           dishes = value;
         });
+
+        ref.read(dishesListProvider.notifier).state = value;
+        ref.read(restaurantProvider.notifier).state = widget.restaurantData;
       }
     });
     await ref
@@ -402,6 +408,7 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
               return RappiCategory(category: bloc.items[index].category);
             } else {
               return RappiProduct(
+                restaurantData: widget.restaurantData,
                 dishes: dishes,
                 dish: bloc.items[index].product!,
                 cartItem: cartIndex,

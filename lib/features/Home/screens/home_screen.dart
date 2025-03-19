@@ -1,15 +1,11 @@
 import 'dart:convert';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:spicy_eats/Practice%20for%20cart/screens/DummyCart.dart';
 import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
 import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
-import 'package:spicy_eats/Register%20shop/widgets/Lists.dart';
 import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
 import 'package:spicy_eats/commons/restaurantModel.dart';
 import 'package:spicy_eats/commons/restaurant_container.dart';
@@ -18,12 +14,10 @@ import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
 import 'package:spicy_eats/features/Home/screens/homedrawer.dart';
 import 'package:spicy_eats/features/Home/screens/widgets/cusineslist.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
-import 'package:spicy_eats/features/Restaurant_Menu/screens/restaurant_menu.dart';
 import 'dart:math' as math;
 
 import 'package:spicy_eats/main.dart';
 import 'package:spicy_eats/tabexample.dart/RestaurantMenuScreen.dart';
-import 'package:spicy_eats/tabexample.dart/tabexample.dart';
 
 var searchProvider = StateProvider<bool>((ref) => false);
 

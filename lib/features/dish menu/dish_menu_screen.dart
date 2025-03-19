@@ -204,13 +204,14 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                                 decoration: BoxDecoration(
                                     color: Colors.black,
                                     borderRadius: BorderRadius.circular(10)),
-                                child: Icon(Icons.add,
+                                child: const Icon(Icons.add,
                                     size: 20, color: Colors.white),
                               )),
                           const SizedBox(width: 5),
                           Text(
                             quantity.toString(),
-                            style: TextStyle(fontSize: 20, color: Colors.black),
+                            style: const TextStyle(
+                                fontSize: 20, color: Colors.black),
                           ),
                           const SizedBox(width: 5),
                           InkWell(
@@ -247,14 +248,17 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               )),
-                          child: Text(
+                          child: const Text(
                             'Add to Cart',
                             style: TextStyle(color: Colors.white),
                           ),
                           onPressed: () {
                             _debouncer.run(() {
+                              // final cartlistner =
+                              //     ref.read(cartProvider.notifier).state;
+
                               ref.read(DummyLogicProvider).addToCart(
-                                  widget.dish!.dish_price,
+                                  widget.dish!.dish_price!,
                                   widget.dish!.dish_name,
                                   widget.dish!.dish_description,
                                   ref,
@@ -262,9 +266,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                                   widget.dish!.dishid!,
                                   widget.dish!.dish_price!.toDouble(),
                                   widget.dish!.dish_imageurl!,
-                                  ref
-                                      .read(variationListProvider.notifier)
-                                      .state,
+                                  null,
                                   true,
                                   quantity);
                             });

@@ -9,6 +9,7 @@ class DishData {
   double? dish_discount;
   String? category_id;
   bool? isVariation;
+  String? restuid;
 
   DishData({
     this.dishid,
@@ -21,6 +22,7 @@ class DishData {
     this.dish_discount,
     this.category_id,
     this.isVariation,
+    this.restuid,
   });
 
 //tojson
@@ -36,21 +38,24 @@ class DishData {
       'cusine': cusine,
       'category_id': category_id,
       'isVariation': isVariation,
+      'rest_uid': restuid,
     };
   }
 
 //fromjson
   factory DishData.fromJson(Map<String, dynamic> json) {
     return DishData(
-        dishid: json['id'] ?? 0,
-        dish_name: json['dish_name'] ?? '',
-        dish_price: json['dish_price'] ?? 0.0,
-        dish_discount: json['dish_discount'] ?? 0.0,
-        dish_description: json['dish_description'] ?? '',
-        dish_imageurl: json['dish_imageurl'] ?? '',
-        dish_schedule_meal: json['dish_schedule_meal'] ?? '',
-        cusine: json['cusine'] ?? '',
-        category_id: json['category_id'] ?? '',
-        isVariation: json['isVariation'] ?? false);
+      dishid: json['id'] ?? 0,
+      dish_name: json['dish_name'] ?? '',
+      dish_price: json['dish_price'] ?? 0.0,
+      dish_discount: json['dish_discount'] ?? 0.0,
+      dish_description: json['dish_description'] ?? '',
+      dish_imageurl: json['dish_imageurl'] ?? '',
+      dish_schedule_meal: json['dish_schedule_meal'] ?? '',
+      cusine: json['cusine'] ?? '',
+      category_id: json['category_id'] ?? '',
+      isVariation: json['isVariation'] ?? false,
+      restuid: json['rest_uid'] ?? '',
+    );
   }
 }

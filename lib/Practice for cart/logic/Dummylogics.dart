@@ -4,8 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
-import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
-import 'package:spicy_eats/commons/ItemQuantity.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
 import 'package:spicy_eats/main.dart';
 
@@ -65,28 +63,60 @@ class Dummylogics {
     }
   }
 
+// update cart
+
+  Future<void> updateCart(WidgetRef ref, int dishId, double price,
+      List<Variation>? variations, quantity) async {
+    final cart = ref.read(cartProvider.notifier);
+    final item = cart.state;
+    final cartTprice = ref.read(cartPriceSumProvider.notifier);
+
+    final index = item.indexWhere((element) => element.dish_id == dishId);
+    if (index != -1) {
+      item[index].quantity = quantity;
+      final totalprice = item[index].itemprice * quantity;
+      item[index].variation != variations;
+      final response = await supabaseClient.from('cart').update({
+        'quantity': quantity,
+        'variations': variations != null
+            ? variations.map((e) => e.tojson()).toList()
+            : [],
+        'tprice': totalprice,
+      }).eq('id', item[index].cart_id!);
+
+      if (response != null) {
+        final items = response.map((e) => CartModelNew.fromjson(e)).toList();
+        item.add(items);
+      }
+    }
+    cart.state = List.from(item);
+    cartTprice.state = getTotalPrice(ref);
+    print('car total price check ${cartTprice.state}');
+  }
+
   //addtocart
   Future<void> addToCart(
-      itemprice,
-      name,
-      description,
-      WidgetRef ref,
-      String userId,
-      int dishId,
-      double price,
-      String image,
-      List<Variation>? variations,
-      bool isdishScreen,
-      quantity) async {
-    _mutex.run(() async {
+    double itemprice,
+    name,
+    description,
+    WidgetRef ref,
+    String userId,
+    int dishId,
+    double price,
+    String image,
+    List<Variation>? variations,
+    bool isdishScreen,
+    int quantity,
+  ) async {
+    await _mutex.run(() async {
       final cart = ref.read(cartProvider.notifier);
       final items = cart.state;
       final cartTPrice = ref.read(cartPriceSumProvider.notifier);
 
       final index = items.indexWhere((item) => item.dish_id == dishId);
 
-      if (index != -1 && items[index].variation == null) {
-        // If item exists, update quantity
+      if (index != -1 && variations == null) {
+        //If item exists, update quantity
         items[index].quantity++;
         items[index].tprice = items[index].quantity * price;
         await supabaseClient.from('cart').update({
@@ -105,7 +135,7 @@ class Dummylogics {
         final response = await supabaseClient.from('cart').insert({
           'user_id': userId,
           'dish_id': dishId,
-          'quantity': isdishScreen ? quantity : 1,
+          'quantity': quantity,
           'tprice': itemquantity,
           'image': image,
           'itemprice': itemprice,
@@ -176,11 +206,11 @@ class Dummylogics {
   //deccrese quantity in basket
 
   Future<void> decreaseQuantityBasket(
-      {required int dishid, required WidgetRef ref, required price}) async {
+      {required int cartid, required WidgetRef ref, required price}) async {
     await _mutex.run(() async {
       final cart = ref.read(cartProvider.notifier);
       final items = cart.state;
-      final index = items.indexWhere((element) => element.dish_id == dishid);
+      final index = items.indexWhere((element) => element.cart_id == cartid);
       final cartTPrice = ref.read(cartPriceSumProvider.notifier);
 
       if (index != -1) {
@@ -214,8 +244,11 @@ class Dummylogics {
       final items = cart.state;
       final cartTPrice = ref.read(cartPriceSumProvider.notifier);
 
-      final index = items.indexWhere((item) => item.dish_id == dishId);
-
+      //final index = items.indexWhere((item) => item.dish_id == dishId);
+      final index = ref
+          .read(cartProvider.notifier)
+          .state
+          .indexWhere((element) => element.dish_id == dishId);
       if (index != -1) {
         if (items[index].quantity > 1) {
           items[index].quantity--;
@@ -224,14 +257,14 @@ class Dummylogics {
           print(items[index].tprice);
 
           await supabaseClient.from('cart').update({
-            'quantity': items[index].quantity,
-            'tprice': items[index].tprice
-          }).eq('id', items[index].cart_id!);
+            'quantity': ref.read(cartProvider.notifier).state[index].quantity,
+            'tprice': ref.read(cartProvider.notifier).state[index].tprice,
+          }).eq('id', ref.read(cartProvider.notifier).state[index].cart_id!);
         } else {
           await supabaseClient
               .from('cart')
               .delete()
-              .eq('id', items[index].cart_id!);
+              .eq('id', ref.read(cartProvider.notifier).state[index].cart_id!);
           if (items.isNotEmpty) {
             items.removeAt(index);
           }
@@ -272,7 +305,7 @@ class Dummylogics {
         items[index].quantity++;
         final result = items[index].quantity * price;
         items[index].tprice = result.toDouble();
-        supabaseClient.from('cart').update({
+        await supabaseClient.from('cart').update({
           'quantity': items[index].quantity,
           'tprice': items[index].tprice,
         }).eq('id', cartid);
@@ -300,7 +333,7 @@ class Dummylogics {
       if (index != -1) {
         items.removeWhere((element) => element.cart_id == cartid);
 
-        supabaseClient.from('cart').delete().eq('id', cartid);
+        await supabaseClient.from('cart').delete().eq('id', cartid);
 
         cart.state = List.from(items);
         cartTPrice.state = getTotalPrice(ref);

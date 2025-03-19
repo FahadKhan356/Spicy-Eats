@@ -5,33 +5,42 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
+import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
+import 'package:spicy_eats/features/Basket/model/CartModel.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
+import 'package:spicy_eats/features/Restaurant_Menu/screens/restaurant_menu.dart';
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
 import 'package:spicy_eats/features/dish%20menu/repository/dishmenu_repo.dart';
 import 'package:spicy_eats/main.dart';
+import 'package:spicy_eats/tabexample.dart/RestaurantMenuScreen.dart';
 
 final variationListProvider = StateProvider<List<Variation>?>((ref) => null);
-final freqDishesProvider = StateProvider<List<DishData>?>((ref) => null);
+final freqDishesProvider = StateProvider<List<DishData>?>((ref) => []);
 
 // ignore: must_be_immutable
 class DishMenuVariation extends ConsumerStatefulWidget {
   static const String routename = '/DishMenuVariation';
   final DishData? dish;
+  RestaurantModel? restaurantData;
   List<DishData>? dishes = [];
   List<VariattionTitleModel>? variationList = [];
-  bool isCart = false;
+  bool? isCart;
+  // CartModel? cartitem;
   CartModelNew? cartDish;
   bool isbasket = false;
   List<int> dishesids = [];
   List<DishData>? freqdihses = [];
+  int updateQuantity = 0;
 
-  DishMenuVariation(
-      {super.key,
-      required this.dish,
-      this.cartDish,
-      required this.isCart,
-      required this.dishes});
+  DishMenuVariation({
+    super.key,
+    required this.dish,
+    this.cartDish,
+    required this.isCart,
+    required this.dishes,
+    required this.restaurantData,
+  });
 
   @override
   ConsumerState<DishMenuVariation> createState() => _DishMenuScreenState();
@@ -44,6 +53,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
   Animation<Offset>? _offsetanimation;
   ScrollController? scrollController;
   bool? withvariation;
+  bool isloader = true;
 
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
@@ -56,8 +66,13 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
       if (value != null) {
         setState(() {
           widget.variationList = value;
-          withvariation = false;
+          if (widget.isCart!) {
+            withvariation = true;
+          } else {
+            withvariation = false;
+          }
         });
+        print('with variation : $withvariation!');
       }
     });
 
@@ -74,13 +89,21 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
 
     for (var dish in widget.dishesids) {
       final item =
-          widget.dishes!.where((element) => element.dishid == dish).toList();
-      widget.freqdihses!.addAll(item);
+          widget.dishes?.where((element) => element.dishid == dish).toList();
+      widget.freqdihses!.addAll(item!);
     }
 
     // if (widget.freqdihses != null) {
     //   ref.read(freqDishesProvider.notifier).state = widget.freqdihses;
     // }
+
+    if (widget.isCart == true) {
+      ref.read(variationListProvider.notifier).state =
+          widget.cartDish!.variation;
+      print(widget.cartDish!.variation?.length);
+    }
+
+    widget.updateQuantity = widget.cartDish!.quantity;
   }
 
   @override
@@ -116,12 +139,17 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
       fetchVariations(widget.dish!.dishid!);
       ref.read(variationListProvider.notifier).state = null;
       ref.read(freqDishesProvider.notifier).state = null;
+      setState(() {
+        isloader = false;
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final quantity = ref.watch(quantityPrvider);
+    var quantity = ref.watch(quantityPrvider);
+
+    var freqDish = ref.watch(freqDishesProvider);
 
     return SafeArea(
       child: ScaffoldMessenger(
@@ -130,299 +158,394 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
           backgroundColor: Colors.white,
           body: Stack(
             children: [
-              CustomScrollView(
-                controller: scrollController,
-                slivers: [
-                  SliverAppBar(
-                    title: AnimatedBuilder(
-                        animation: animationController!,
-                        builder: (context, child) {
-                          return Transform.translate(
-                              offset: _offsetanimation!.value,
-                              child: Opacity(
-                                  opacity: _opacityanimation!.value,
-                                  child: const Text(
-                                    'Variation',
-                                    style: TextStyle(color: Colors.black),
-                                  )));
-                        }),
-                    expandedHeight: 200,
-                    pinned: true,
-                    flexibleSpace: FlexibleSpaceBar(
-                      background: Image.network(
-                        widget.dish!.dish_imageurl!,
-                        fit: BoxFit.contain,
+              if (isloader)
+                const CircularProgressIndicator()
+              else
+                CustomScrollView(
+                  controller: scrollController,
+                  slivers: [
+                    SliverAppBar(
+                      title: AnimatedBuilder(
+                          animation: animationController!,
+                          builder: (context, child) {
+                            return Transform.translate(
+                                offset: _offsetanimation!.value,
+                                child: Opacity(
+                                    opacity: _opacityanimation!.value,
+                                    child: const Text(
+                                      'Variation',
+                                      style: TextStyle(color: Colors.black),
+                                    )));
+                          }),
+                      expandedHeight: 200,
+                      pinned: true,
+                      flexibleSpace: FlexibleSpaceBar(
+                        background: Image.network(
+                          widget.dish!.dish_imageurl!,
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                widget.dish!.dish_name!,
-                                style: const TextStyle(
-                                    fontSize: 30, fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                ' from Rs ${widget.dish!.dish_price}',
-                                style: const TextStyle(
-                                    fontSize: 17, fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                widget.dish!.dish_description!,
-                                style: const TextStyle(
-                                    fontSize: 13, fontWeight: FontWeight.w300),
-                              ),
-                            ]),
-                      ),
-                    ),
-                  ),
-                  SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                          childCount: widget.variationList!.length,
-                          (context, titleVariationindex) {
-                    final titleVariation =
-                        widget.variationList![titleVariationindex];
-
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 20, horizontal: 10),
-                      child: Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: Colors.black12,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  widget.dish!.dish_name!,
+                                  style: const TextStyle(
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  ' from Rs ${widget.dish!.dish_price}',
+                                  style: const TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                widget.isCart!
+                                    ? Text('dsadaddaaaaaaaaaaaaaa',
+                                        style: const TextStyle(
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.bold))
+                                    : SizedBox(),
+                                Text(
+                                  widget.dish!.dish_description!,
+                                  style: const TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w300),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      titleVariation.variationTitle.toString(),
-                                      style: const TextStyle(fontSize: 22),
+                                    const Text('Already in your cart'),
+                                    const SizedBox(
+                                      height: 10,
                                     ),
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(5),
-                                      child: Container(
-                                        padding: const EdgeInsets.all(5),
-                                        color: titleVariation.isRequired!
-                                            ? Colors.red
-                                            : Colors.green,
-                                        child: titleVariation.isRequired!
-                                            ? const Text(
-                                                'Required',
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: Colors.white),
-                                              )
-                                            : const Text(
-                                                'optional',
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: Colors.black87),
-                                              ),
-                                      ),
-                                    ),
-                                  ]),
-                              Text(
-                                titleVariation.subtitle.toString(),
-                                style: const TextStyle(fontSize: 14),
-                              ),
-                              ...titleVariation.variations!.map((variation) {
-                                final variationlist =
-                                    ref.watch(variationListProvider) ?? [];
-                                final isselected = variationlist
-                                    .any((v) => v.id == variation.id);
-
-                                return CheckboxListTile(
-                                  title: variation.variationPrice! > 0
-                                      ? Row(
-                                          children: [
-                                            Text(
-                                                ("${variation.variationName})")),
-                                            Text(
-                                                " (\$${variation.variationPrice})"),
-                                          ],
-                                        )
-                                      : Row(
-                                          children: [
-                                            Text(
-                                                ("${variation.variationName}")),
-                                            const Text(" Free")
-                                          ],
+                                    Container(
+                                        height: 50,
+                                        width: double.maxFinite,
+                                        padding: const EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          color: Colors.black12,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          border: Border.all(
+                                              width: 1, color: Colors.black38),
                                         ),
-                                  value: isselected, //isSelected,
-                                  onChanged: (value) {
-                                    final updatedList =
-                                        List<Variation>.from(variationlist);
-                                    if (value == true) {
-                                      if (titleVariation.maxSeleted == null ||
-                                          updatedList
-                                                  .where((v) =>
-                                                      v.variation_id ==
-                                                      titleVariation.id)
-                                                  .length <
-                                              titleVariation.maxSeleted!) {
-                                        updatedList.add(
-                                          Variation(
-                                            id: variation.id,
-                                            variationName:
-                                                variation.variationName,
-                                            variationPrice:
-                                                variation.variationPrice,
-                                            variation_id:
-                                                variation.variation_id,
-                                            selected: true,
-                                          ),
-                                        );
-                                        if (titleVariation.isRequired!) {
-                                          withvariation = true;
-                                        }
-                                      } else {
-                                        if (scaffoldMessengerKey.currentState !=
-                                            null) {
-                                          scaffoldMessengerKey.currentState!
-                                              .showSnackBar(SnackBar(
-                                            content: Text(
-                                              'you can only select upto ${titleVariation.maxSeleted} options',
-                                              style: const TextStyle(
-                                                  color: Colors.white),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text(
+                                                    '${widget.cartDish!.quantity}x'),
+                                                const SizedBox(
+                                                  width: 20,
+                                                ),
+                                                Text(
+                                                    '${widget.cartDish!.name}'),
+                                              ],
                                             ),
-                                            margin: const EdgeInsets.only(
-                                              bottom:
-                                                  100, // Adjust this value to keep the SnackBar above the bottom UI
-                                              left: 20,
-                                              right: 20,
-                                            ),
-                                            behavior: SnackBarBehavior.floating,
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10)),
-                                            backgroundColor: Colors.black,
-                                          ));
-                                        }
-                                      }
-                                    } else if (titleVariation.isRequired!) {
-                                      updatedList.removeWhere(
-                                          (v) => v.id == variation.id);
-                                      withvariation = false;
-                                    } else {
-                                      updatedList.removeWhere(
-                                          (v) => v.id == variation.id);
-                                    }
+                                            const Text('Edit in cart'),
+                                          ],
+                                        )),
+                                  ],
+                                ),
+                              ]),
+                        ),
+                      ),
+                    ),
+                    SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                            childCount: widget.variationList!.length,
+                            (context, titleVariationindex) {
+                      final titleVariation =
+                          widget.variationList![titleVariationindex];
 
-                                    ref
-                                        .read(variationListProvider.notifier)
-                                        .state = updatedList;
-                                  },
-                                );
-                              }),
-                            ],
-                          )),
-                    );
-                  })),
-                  const SliverToBoxAdapter(
-                      child: Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10),
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 20, horizontal: 10),
+                        child: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Colors.black12,
+                              borderRadius: BorderRadius.circular(10),
+                              border:
+                                  Border.all(width: 1, color: Colors.black38),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        titleVariation.variationTitle
+                                            .toString(),
+                                        style: const TextStyle(fontSize: 22),
+                                      ),
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(5),
+                                        child: Container(
+                                          padding: const EdgeInsets.all(5),
+                                          color: titleVariation.isRequired!
+                                              ? Colors.red
+                                              : Colors.green,
+                                          child: titleVariation.isRequired!
+                                              ? const Text(
+                                                  'Required',
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.white),
+                                                )
+                                              : const Text(
+                                                  'optional',
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.black87),
+                                                ),
+                                        ),
+                                      ),
+                                    ]),
+                                Text(
+                                  titleVariation.subtitle.toString(),
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                                ...titleVariation.variations!.map((variation) {
+                                  final variationlist =
+                                      ref.watch(variationListProvider) ?? [];
+                                  final isselected = variationlist
+                                      .any((v) => v.id == variation.id);
+
+                                  return CheckboxListTile(
+                                    checkColor: Colors.white,
+                                    activeColor: Colors.black,
+                                    title: variation.variationPrice! > 0
+                                        ? Row(
+                                            children: [
+                                              Text(
+                                                  ("${variation.variationName})")),
+                                              Text(
+                                                  " (\$${variation.variationPrice})"),
+                                            ],
+                                          )
+                                        : Row(
+                                            children: [
+                                              Text(
+                                                  ("${variation.variationName}")),
+                                              const Text(" Free")
+                                            ],
+                                          ),
+                                    value: isselected, //isSelected,
+                                    onChanged: (value) {
+                                      final updatedList =
+                                          List<Variation>.from(variationlist);
+                                      if (value == true) {
+                                        if (titleVariation.maxSeleted == null ||
+                                            updatedList
+                                                    .where((v) =>
+                                                        v.variation_id ==
+                                                        titleVariation.id)
+                                                    .length <
+                                                titleVariation.maxSeleted!) {
+                                          updatedList.add(
+                                            Variation(
+                                              id: variation.id,
+                                              variationName:
+                                                  variation.variationName,
+                                              variationPrice:
+                                                  variation.variationPrice,
+                                              variation_id:
+                                                  variation.variation_id,
+                                              selected: true,
+                                            ),
+                                          );
+                                          if (titleVariation.isRequired!) {
+                                            withvariation = true;
+                                          }
+                                        } else {
+                                          if (scaffoldMessengerKey
+                                                  .currentState !=
+                                              null) {
+                                            scaffoldMessengerKey.currentState!
+                                                .showSnackBar(SnackBar(
+                                              content: Text(
+                                                'you can only select upto ${titleVariation.maxSeleted} options',
+                                                style: const TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                              margin: const EdgeInsets.only(
+                                                bottom:
+                                                    100, // Adjust this value to keep the SnackBar above the bottom UI
+                                                left: 20,
+                                                right: 20,
+                                              ),
+                                              behavior:
+                                                  SnackBarBehavior.floating,
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)),
+                                              backgroundColor: Colors.black,
+                                            ));
+                                          }
+                                        }
+                                      } else if (titleVariation.isRequired!) {
+                                        updatedList.removeWhere(
+                                            (v) => v.id == variation.id);
+                                        withvariation = false;
+                                      } else {
+                                        updatedList.removeWhere(
+                                            (v) => v.id == variation.id);
+                                      }
+
+                                      ref
+                                          .read(variationListProvider.notifier)
+                                          .state = updatedList;
+                                    },
+                                  );
+                                }),
+                              ],
+                            )),
+                      );
+                    })),
+                    const SliverToBoxAdapter(
+                        child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                       child: Text(
                         'Frequently Bought Together',
                         style: TextStyle(
                             fontSize: 25, fontWeight: FontWeight.bold),
                       ),
-                    ),
-                  )),
-                  widget.freqdihses != null
-                      ? SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                              childCount: widget.freqdihses!.length,
-                              (context, index) {
-                            final freqdish = widget.freqdihses![index];
-                            final freqdishes =
-                                ref.watch(freqDishesProvider) ?? [];
-                            final selected = freqdishes.any(
-                              (element) => element.dishid == freqdish.dishid,
-                            );
-                            return CheckboxListTile(
-                                // title: Text(
-                                //   freqdish.dish_name.toString(),
-                                // ),
-                                subtitle: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Colors.black12,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        height: 80,
-                                        width: 80,
-                                        child: Image.network(
-                                          freqdish.dish_imageurl!,
-                                          fit: BoxFit.cover,
+                    )),
+                    widget.freqdihses != null
+                        ? SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                                childCount: widget.freqdihses!.length,
+                                (context, index) {
+                              final freqdish = widget.freqdihses![index];
+                              final freqdishes =
+                                  ref.watch(freqDishesProvider) ?? [];
+                              final selected = freqdishes.any(
+                                (element) => element.dishid == freqdish.dishid,
+                              );
+                              return CheckboxListTile(
+                                  checkColor: Colors.white,
+                                  activeColor: Colors.black,
+                                  // title: Text(
+                                  //   freqdish.dish_name.toString(),
+                                  // ),
+                                  subtitle: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.white,
+                                      border: Border.all(
+                                          width: 1, color: Colors.black38),
+                                    ),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Container(
+                                          height: 80,
+                                          width: 80,
+                                          color: Colors.white,
+                                          child: Image.network(
+                                            freqdish.dish_imageurl!,
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
-                                      ),
-                                      Column(
-                                        children: [
-                                          Text(
-                                            freqdish.dish_name.toString(),
-                                          ),
-                                          Text(
-                                            freqdish.dish_price.toString(),
-                                          ),
-                                          Text(
-                                            freqdish.dish_discount.toString(),
-                                          )
-                                        ],
-                                      ),
-                                    ],
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              freqdish.dish_name.toString(),
+                                              style: const TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            Text(
+                                              '\$${freqdish.dish_price}',
+                                              style: const TextStyle(
+                                                color: Colors.red,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                                decoration:
+                                                    TextDecoration.lineThrough,
+                                                decorationColor: Colors.red,
+                                                decorationThickness: 2,
+                                              ),
+                                            ),
+                                            Text(
+                                              '\$${freqdish.dish_discount}',
+                                              style: const TextStyle(
+                                                color: Colors.green,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                                // decoration:
+                                                //     TextDecoration.lineThrough,
+                                                // decorationColor: Colors.red,
+                                                // decorationThickness: 2,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                value: selected,
-                                onChanged: (value) {
-                                  final newUpdatedList =
-                                      List<DishData>.from(freqdishes);
-                                  if (value == true) {
-                                    newUpdatedList.add(DishData(
-                                      dishid: freqdish.dishid,
-                                      dish_description:
-                                          freqdish.dish_description,
-                                      dish_price: freqdish.dish_price,
-                                      dish_discount: freqdish.dish_discount,
-                                      dish_imageurl: freqdish.dish_imageurl,
-                                      dish_name: freqdish.dish_name,
-                                      dish_schedule_meal: '',
-                                    ));
-                                  } else {
-                                    newUpdatedList.removeWhere((element) =>
-                                        element.dishid == freqdish.dishid);
-                                  }
-                                  ref.read(freqDishesProvider.notifier).state =
-                                      newUpdatedList;
-                                });
-                          }),
-                        )
-                      : const SliverToBoxAdapter(
-                          child: CircularProgressIndicator(),
-                        ),
-                  const SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: 100,
+                                  value: selected,
+                                  onChanged: (value) {
+                                    final newUpdatedList =
+                                        List<DishData>.from(freqdishes);
+                                    if (value == true) {
+                                      newUpdatedList.add(DishData(
+                                        dishid: freqdish.dishid,
+                                        dish_description:
+                                            freqdish.dish_description,
+                                        dish_price: freqdish.dish_price,
+                                        dish_discount: freqdish.dish_discount,
+                                        dish_imageurl: freqdish.dish_imageurl,
+                                        dish_name: freqdish.dish_name,
+                                        dish_schedule_meal: '',
+                                      ));
+                                    } else {
+                                      newUpdatedList.removeWhere((element) =>
+                                          element.dishid == freqdish.dishid);
+                                    }
+                                    ref
+                                        .read(freqDishesProvider.notifier)
+                                        .state = newUpdatedList;
+                                  });
+                            }),
+                          )
+                        : const SliverToBoxAdapter(
+                            child: CircularProgressIndicator(),
+                          ),
+                    const SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: 100,
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
               (widget.variationList != null &&
                       widget.variationList!.isNotEmpty &&
                       widget.variationList!.indexWhere((element) =>
@@ -454,16 +577,25 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   InkWell(
-                                      onTap: withvariation!
-                                          ? () {
-                                              _debouncer.run(() {
-                                                ref
-                                                    .read(quantityPrvider
-                                                        .notifier)
-                                                    .state++;
-                                              });
-                                            }
-                                          : () {},
+                                      onTap: () {
+                                        _debouncer.run(() {
+                                          print('in the quantity provider');
+                                          if (quantity > 0 &&
+                                              widget.isCart == false) {
+                                            ref
+                                                .read(quantityPrvider.notifier)
+                                                .state++;
+                                          } else if (widget.isCart == true) {
+                                            print(
+                                                'before in the just quantity $quantity');
+                                            setState(() {
+                                              widget.updateQuantity++;
+                                            });
+                                            print(
+                                                'after in the just quantity $quantity');
+                                          }
+                                        });
+                                      },
                                       child: Container(
                                         height: 40,
                                         width: 40,
@@ -489,31 +621,51 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                                           scale: animation,
                                           child: child,
                                         )),
-                                    child: Text(
-                                      key: ValueKey<int>(quantity),
-                                      quantity.toString(),
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: withvariation!
-                                            ? Colors.black
-                                            : Colors.black12,
-                                      ),
-                                    ),
+                                    child: widget.isCart!
+                                        ? Text(
+                                            key: ValueKey<int>(
+                                                widget.updateQuantity),
+                                            widget.updateQuantity.toString(),
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              color: withvariation!
+                                                  ? Colors.black
+                                                  : Colors.black12,
+                                            ),
+                                          )
+                                        : Text(
+                                            key: ValueKey<int>(quantity),
+                                            quantity.toString(),
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              color: withvariation!
+                                                  ? Colors.black
+                                                  : Colors.black12,
+                                            ),
+                                          ),
                                   ),
                                   const SizedBox(width: 5),
                                   InkWell(
-                                    onTap: withvariation!
-                                        ? () {
-                                            _debouncer.run(() {
-                                              if (quantity > 0) {
-                                                ref
-                                                    .read(quantityPrvider
-                                                        .notifier)
-                                                    .state--;
-                                              }
-                                            });
-                                          }
-                                        : () {},
+                                    onTap: () {
+                                      _debouncer.run(() {
+                                        print('in the quantity provider');
+                                        if (quantity > 0 &&
+                                            widget.isCart == false) {
+                                          ref
+                                              .read(quantityPrvider.notifier)
+                                              .state--;
+                                        } else if (widget.updateQuantity > 0 &&
+                                            widget.isCart == true) {
+                                          print(
+                                              'before in the just quantity $quantity');
+                                          setState(() {
+                                            widget.updateQuantity--;
+                                          });
+                                          print(
+                                              'after in the just quantity $quantity');
+                                        }
+                                      });
+                                    },
                                     child: Container(
                                       height: 40,
                                       width: 40,
@@ -549,30 +701,141 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                                               BorderRadius.circular(10),
                                         )),
                                     onPressed: quantity > 0 && withvariation!
-                                        ? () {
-                                            _debouncer.run(() {
-                                              ref
-                                                  .read(DummyLogicProvider)
-                                                  .addToCart(
-                                                      widget.dish!.dish_price,
-                                                      widget.dish!.dish_name,
-                                                      widget.dish!
-                                                          .dish_description,
-                                                      ref,
-                                                      supabaseClient
-                                                          .auth.currentUser!.id,
-                                                      widget.dish!.dishid!,
-                                                      widget.dish!.dish_price!
-                                                          .toDouble(),
-                                                      widget
-                                                          .dish!.dish_imageurl!,
-                                                      ref
-                                                          .read(
-                                                              variationListProvider
-                                                                  .notifier)
-                                                          .state,
-                                                      true,
-                                                      quantity);
+                                        ? () async {
+                                            _debouncer.run(() async {
+                                              setState(() {
+                                                isloader = true;
+                                              });
+
+                                              if (withvariation! &&
+                                                  widget.isCart == true &&
+                                                  widget.updateQuantity > 0) {
+                                                await ref
+                                                    .read(DummyLogicProvider)
+                                                    .updateCart(
+                                                        ref,
+                                                        widget.dish!.dishid!,
+                                                        widget
+                                                            .dish!.dish_price!,
+                                                        ref
+                                                            .read(
+                                                                variationListProvider
+                                                                    .notifier)
+                                                            .state,
+                                                        widget.updateQuantity);
+                                              } else if (withvariation! &&
+                                                  widget.isCart == false &&
+                                                  quantity > 0) {
+                                                await ref
+                                                    .read(DummyLogicProvider)
+                                                    .addToCart(
+                                                        widget.dish!.dish_price!
+                                                            .toDouble(),
+                                                        widget.dish!.dish_name,
+                                                        widget.dish!
+                                                            .dish_description,
+                                                        ref,
+                                                        supabaseClient.auth
+                                                            .currentUser!.id,
+                                                        widget.dish!.dishid!,
+                                                        widget.dish!.dish_price!
+                                                            .toDouble(),
+                                                        widget.dish!
+                                                            .dish_imageurl!,
+                                                        ref
+                                                            .read(
+                                                                variationListProvider
+                                                                    .notifier)
+                                                            .state,
+                                                        true,
+                                                        quantity);
+
+                                                ref
+                                                    .read(quantityPrvider
+                                                        .notifier)
+                                                    .state = 1;
+                                              } else if (widget.isCart ==
+                                                      true &&
+                                                  withvariation == true &&
+                                                  widget.updateQuantity == 0) {
+                                                ref
+                                                    .read(DummyLogicProvider)
+                                                    .removeitembasket(
+                                                        cartid: widget
+                                                            .cartDish!.cart_id!,
+                                                        ref: ref);
+                                              } else {
+                                                print("nothing");
+                                              }
+                                              // await ref
+                                              //     .read(DummyLogicProvider)
+                                              //     .addToCart(
+                                              //         widget.dish!.dish_price!
+                                              //             .toDouble(),
+                                              //         widget.dish!.dish_name,
+                                              //         widget.dish!
+                                              //             .dish_description,
+                                              //         ref,
+                                              //         supabaseClient
+                                              //             .auth.currentUser!.id,
+                                              //         widget.dish!.dishid!,
+                                              //         widget.dish!.dish_price!
+                                              //             .toDouble(),
+                                              //         widget
+                                              //             .dish!.dish_imageurl!,
+                                              //         ref
+                                              //             .read(
+                                              //                 variationListProvider
+                                              //                     .notifier)
+                                              //             .state,
+                                              //         true,
+                                              //         quantity);
+
+                                              print(
+                                                  ' before Frequently bought together dishes: $freqDish');
+                                              if (freqDish != null) {
+                                                print(
+                                                    ' after Frequently bought together dishes:${freqDish[0].dish_name}');
+                                                for (int i = 0;
+                                                    i < freqDish.length;
+                                                    i++) {
+                                                  await ref
+                                                      .read(DummyLogicProvider)
+                                                      .addToCart(
+                                                          freqDish[i]
+                                                              .dish_price!
+                                                              .toDouble(),
+                                                          freqDish[i].dish_name,
+                                                          freqDish[i]
+                                                              .dish_description,
+                                                          ref,
+                                                          supabaseClient.auth
+                                                              .currentUser!.id,
+                                                          freqDish[i].dishid!,
+                                                          freqDish[i]
+                                                              .dish_price!
+                                                              .toDouble(),
+                                                          freqDish[i]
+                                                              .dish_imageurl!,
+                                                          null,
+                                                          true,
+                                                          1);
+                                                }
+                                              } else {
+                                                print(
+                                                    'No frequently bought together dishes found.'); // Debug log
+                                              }
+                                              Navigator.pushNamed(
+                                                  context,
+                                                  RestaurantMenuScreen
+                                                      .routename,
+                                                  arguments: ref
+                                                      .read(restaurantProvider
+                                                          .notifier)
+                                                      .state);
+                                            });
+                                            setState(() {
+                                              isloader = false;
                                             });
                                           }
                                         : () {
@@ -595,13 +858,30 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                                               );
                                             }
                                           },
-                                    child: Text(
-                                      'Add to Cart',
-                                      style: TextStyle(
-                                          color: withvariation!
-                                              ? Colors.white
-                                              : Colors.black12),
-                                    ),
+                                    child: widget.isCart! &&
+                                            widget.updateQuantity == 0
+                                        ? Text(
+                                            'Remove to Cart',
+                                            style: TextStyle(
+                                                color: withvariation!
+                                                    ? Colors.white
+                                                    : Colors.black12),
+                                          )
+                                        : widget.isCart!
+                                            ? Text(
+                                                'Update Cart',
+                                                style: TextStyle(
+                                                    color: withvariation!
+                                                        ? Colors.white
+                                                        : Colors.black12),
+                                              )
+                                            : Text(
+                                                'Add to Cart',
+                                                style: TextStyle(
+                                                    color: withvariation!
+                                                        ? Colors.white
+                                                        : Colors.black12),
+                                              ),
                                   ),
                                 );
                               }),

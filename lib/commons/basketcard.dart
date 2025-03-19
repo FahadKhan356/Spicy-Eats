@@ -62,10 +62,11 @@ class _CartCardState extends ConsumerState<BasketCard> {
     // final quantityindex=cartlistener.indexWhere((element) => element.cart_id=,)
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Container(
+      child: SizedBox(
           height: widget.cardHeight ?? 130,
           width: double.maxFinite,
           child: Card(
+              surfaceTintColor: Colors.white,
               margin: const EdgeInsets.symmetric(vertical: 10),
               elevation: widget.elevation ?? 5,
               color: widget.cardColor ?? Colors.white,
@@ -205,11 +206,13 @@ class _CartCardState extends ConsumerState<BasketCard> {
                                     child: InkWell(
                                       onTap: () {
                                         _debouncer.run(() async {
+                                          //  final carid=cartlistener.firstWhere((element) => element.cart_id)
+
                                           await ref
                                               .read(DummyLogicProvider)
                                               .decreaseQuantityBasket(
-                                                  dishid:
-                                                      widget.cartItem!.dish_id!,
+                                                  cartid:
+                                                      widget.cartItem!.cart_id!,
                                                   ref: ref,
                                                   price: widget
                                                       .cartItem!.itemprice!);
@@ -228,7 +231,7 @@ class _CartCardState extends ConsumerState<BasketCard> {
                                             child:
                                                 widget.cartItem!.quantity == 1
                                                     ? const Icon(
-                                                        Icons.delete_rounded,
+                                                        Icons.delete_outlined,
                                                         size: 20,
                                                         color: Colors.white,
                                                       )

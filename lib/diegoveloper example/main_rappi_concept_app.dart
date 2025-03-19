@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
+import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
 import 'package:spicy_eats/commons/CartCard.dart';
 import 'package:spicy_eats/diegoveloper%20example/bloc.dart';
@@ -28,6 +29,7 @@ class _Mian_rappi_concept_appState extends ConsumerState<Mian_rappi_concept_app>
   final bloc = RappiBloc();
   double myOffset = 0.0;
   List<DishData> dishes = [];
+  RestaurantModel? restaurantData;
   List<Categories> allcategories = [];
   String restuid = 'd20a2270-b19b-462c-8a65-ba13ff8c0197';
   bool isTabPinned = false;
@@ -269,6 +271,7 @@ class _Mian_rappi_concept_appState extends ConsumerState<Mian_rappi_concept_app>
                                           category: bloc.items[index].category);
                                     } else {
                                       return RappiProduct(
+                                        restaurantData: restaurantData,
                                         dishes: dishes,
                                         dish: bloc.items[index].product!,
                                       );
@@ -375,6 +378,7 @@ class RappiProduct extends ConsumerStatefulWidget {
     this.userId,
     this.titleVariationList,
     // this.variattionTitle
+    required this.restaurantData,
   });
   List<DishData> dishes = [];
   final DishData dish;
@@ -382,6 +386,7 @@ class RappiProduct extends ConsumerStatefulWidget {
   final int? qunatityindex;
   final String? userId;
   List<VariattionTitleModel>? titleVariationList;
+  RestaurantModel? restaurantData;
   // VariattionTitleModel? variattionTitle;
 
   @override
@@ -403,6 +408,7 @@ class _RappiProductState extends ConsumerState<RappiProduct> {
                     'iscart': false,
                     'cartdish': widget.cartItem,
                     'isbasket': false,
+                    'restaurantdata': widget.restaurantData,
                   })
             : Navigator.pushNamed(context, DishMenuScreen.routename,
                 arguments: {

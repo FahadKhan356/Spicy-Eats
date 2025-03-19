@@ -480,6 +480,7 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                                     category: bloc.items[index].category);
                               } else {
                                 return RappiProduct(
+                                  restaurantData: widget.restaurantData,
                                   dishes: dishes,
                                   dish: bloc.items[index].product!,
                                   cartItem: cartIndex,
