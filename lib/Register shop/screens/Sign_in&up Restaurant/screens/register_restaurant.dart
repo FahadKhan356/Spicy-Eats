@@ -14,9 +14,6 @@ var restaurantEmailProvider = StateProvider<String?>((ref) => null);
 var restaurantNameProvider = StateProvider<String?>((ref) => null);
 final restaurantPhoneNumberProvider = StateProvider<int?>((ref) => 0);
 
-final restaurantDataProvider =
-    StateProvider<RestaurantModel>((ref) => RestaurantModel());
-
 class RegisterRestaurant extends ConsumerStatefulWidget {
   static const String routename = '/register-restaurant';
   const RegisterRestaurant({super.key});

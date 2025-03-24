@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
@@ -72,17 +73,24 @@ class _CartCardState extends ConsumerState<BasketCard> {
               color: widget.cardColor ?? Colors.white,
               child: Row(
                   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
                       child: Row(
                         children: [
-                          Container(
-                            // color: Colors.red,
-                            height: widget.imageHeight,
-                            width: widget.imageWidth,
-                            child: Image.network(
-                              widget.cartItem!.image.toString(),
-                              fit: BoxFit.contain,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Container(
+                                color: Colors.grey[100],
+                                height: widget.imageHeight,
+                                width: widget.imageWidth,
+                                child: Image.network(
+                                  widget.cartItem!.image.toString(),
+                                  fit: BoxFit.fitHeight,
+                                ),
+                              ),
                             ),
                           ),
                           const SizedBox(
@@ -90,44 +98,100 @@ class _CartCardState extends ConsumerState<BasketCard> {
                           ),
                           Expanded(
                             child: Container(
+                              padding: const EdgeInsets.only(top: 10),
                               // color: Colors.blue,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Text(
                                     widget.cartItem!.name.toString(),
                                     style: const TextStyle(
                                         fontSize: 15,
-                                        color: Colors.black54,
+                                        color: Colors.black,
                                         fontWeight: FontWeight.w500),
                                   ),
+                                  // Text(
+                                  //   widget.cartItem!.description.toString(),
+                                  //   maxLines: 1,
+                                  //   style: const TextStyle(
+                                  //       fontSize: 15,
+                                  //       color: Colors.black54,
+                                  //       overflow: TextOverflow.ellipsis,
+                                  //       fontWeight: FontWeight.w500),
+                                  // ),
+                                  // widget.isCartScreen!
+                                  //     ? Text(
+                                  //         '\$${widget.dish!.dish_price!.toStringAsFixed(1)}',
+                                  //         style: const TextStyle(
+                                  //             fontSize: 17,
+                                  //             fontWeight: FontWeight.bold,
+                                  //             color: Colors.red),
+                                  //       )
+                                  //     :
                                   Text(
-                                    widget.cartItem!.description.toString(),
-                                    maxLines: 1,
+                                    '\$${widget.cartItem!.tprice!.toStringAsFixed(1)}',
                                     style: const TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.black54,
-                                        overflow: TextOverflow.ellipsis,
-                                        fontWeight: FontWeight.w500),
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.red),
                                   ),
-                                  widget.isCartScreen!
-                                      ? Text(
-                                          '\$${widget.dish!.dish_price!.toStringAsFixed(1)}',
-                                          style: const TextStyle(
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.green,
-                                          ),
+                                  widget.cartItem!.variation != null
+                                      ? Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: widget.cartItem!.variation!
+                                              .map((e) => Row(
+                                                    children: [
+                                                      Text(e.variationName!),
+                                                      const SizedBox(
+                                                        width: 5,
+                                                      ),
+                                                      const Text('-',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.black,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold)),
+                                                      const SizedBox(
+                                                        width: 5,
+                                                      ),
+                                                      e.variationPrice == 0
+                                                          ? const Text(
+                                                              'Free',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black),
+                                                            )
+                                                          : ClipRRect(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          5),
+                                                              child: Container(
+                                                                padding: const EdgeInsets
+                                                                    .symmetric(
+                                                                    horizontal:
+                                                                        5),
+                                                                color: Colors
+                                                                    .black,
+                                                                child: Text(
+                                                                  '\$${e.variationPrice}',
+                                                                  style: const TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                ),
+                                                              ),
+                                                            )
+                                                    ],
+                                                  ))
+                                              .toList(),
                                         )
-                                      : Text(
-                                          '\$${widget.cartItem!.tprice!.toStringAsFixed(1)}',
-                                          style: const TextStyle(
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.green,
-                                          ),
-                                        ),
+                                      : const SizedBox()
                                 ],
                               ),
                             ),
@@ -172,16 +236,16 @@ class _CartCardState extends ConsumerState<BasketCard> {
                                       child: Container(
                                         height: widget.buttonIncDecHeight ?? 50,
                                         width: widget.buttonIncDecHeight ?? 50,
-                                        decoration: const BoxDecoration(
-                                            color: Colors.black,
+                                        decoration: BoxDecoration(
+                                            color: Colors.grey[100],
                                             borderRadius: BorderRadius.only(
                                                 topRight: Radius.circular(10),
                                                 bottomLeft:
                                                     Radius.circular(10))),
                                         child: const Icon(
                                           Icons.add,
-                                          size: 20,
-                                          color: Colors.white,
+                                          size: 24,
+                                          color: Colors.black,
                                         ),
                                       ),
                                     ),
@@ -193,6 +257,7 @@ class _CartCardState extends ConsumerState<BasketCard> {
                                         .state[widget.quantityIndex!]
                                         .quantity
                                         .toString(),
+                                    style: const TextStyle(fontSize: 18),
                                   ),
                                   // Text(
                                   //     style: const TextStyle(fontSize: 20),
@@ -221,8 +286,8 @@ class _CartCardState extends ConsumerState<BasketCard> {
                                       child: Container(
                                         height: widget.buttonIncDecHeight ?? 50,
                                         width: widget.buttonIncDecWidth ?? 50,
-                                        decoration: const BoxDecoration(
-                                            color: Colors.black,
+                                        decoration: BoxDecoration(
+                                            color: Colors.grey[100],
                                             borderRadius: BorderRadius.only(
                                                 topLeft: Radius.circular(10),
                                                 bottomRight:
@@ -232,13 +297,13 @@ class _CartCardState extends ConsumerState<BasketCard> {
                                                 widget.cartItem!.quantity == 1
                                                     ? const Icon(
                                                         Icons.delete_outlined,
-                                                        size: 20,
-                                                        color: Colors.white,
+                                                        size: 24,
+                                                        color: Colors.black,
                                                       )
                                                     : const Icon(
                                                         Icons.minimize_outlined,
-                                                        size: 20,
-                                                        color: Colors.white,
+                                                        size: 24,
+                                                        color: Colors.black,
                                                       )),
                                       ),
                                     ),

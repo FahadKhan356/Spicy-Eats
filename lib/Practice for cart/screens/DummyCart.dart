@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
-import 'package:spicy_eats/Practice%20for%20cart/screens/DummyBasket.dart';
+import 'package:spicy_eats/Practice%20for%20cart/screens/BasketScreen.dart';
 import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
 import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
@@ -76,7 +76,7 @@ class _DummyCartState extends ConsumerState<DummyCart> {
             ],
           ),
           onPressed: () =>
-              Navigator.popAndPushNamed(context, DummyBasket.routename),
+              Navigator.popAndPushNamed(context, BasketScreen.routename),
         ),
       ),
       body: CustomScrollView(
@@ -135,10 +135,12 @@ class _DummyCartState extends ConsumerState<DummyCart> {
                                           supabaseClient.auth.currentUser!.id,
                                           dish.dishid!,
                                           dish.dish_price!.toDouble(),
+                                          dish.dish_discount,
                                           dish.dish_imageurl!,
                                           null,
                                           false,
-                                          0);
+                                          0,
+                                          null);
                                     },
                                     style: ElevatedButton.styleFrom(
                                       shape: const RoundedRectangleBorder(

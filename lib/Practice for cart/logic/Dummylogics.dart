@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
+import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
 import 'package:spicy_eats/main.dart';
 
@@ -102,11 +103,13 @@ class Dummylogics {
     WidgetRef ref,
     String userId,
     int dishId,
-    double price,
+    double? discountprice,
+    double? price,
     String image,
     List<Variation>? variations,
     bool isdishScreen,
     int quantity,
+    List<DishData>? freqboughts,
   ) async {
     await _mutex.run(() async {
       final cart = ref.read(cartProvider.notifier);
@@ -118,13 +121,17 @@ class Dummylogics {
       if (index != -1 && variations == null) {
         //If item exists, update quantity
         items[index].quantity++;
-        items[index].tprice = items[index].quantity * price;
+        items[index].tprice = discountprice != null
+            ? items[index].quantity * discountprice
+            : items[index].quantity * price!;
         await supabaseClient.from('cart').update({
           'quantity': items[index].quantity,
           'tprice': items[index].tprice,
         }).eq('id', items[index].cart_id!);
       } else {
-        final itemquantity = quantity * price;
+        final itemquantity = discountprice != null
+            ? quantity * discountprice
+            : quantity * price!;
 
         // final allvariationtotal = items[index].variation!.fold(
         //     0,
@@ -144,6 +151,9 @@ class Dummylogics {
           'variations': variations != null
               ? variations.map((v) => v.tojson()).toList()
               : [],
+          'frequently_boughtList': freqboughts != null
+              ? freqboughts.map((e) => e.tojson()).toList()
+              : []
         }).select();
 
         if (response.isNotEmpty) {
@@ -346,7 +356,22 @@ class Dummylogics {
   //calculate total pirce
   double getTotalPrice(WidgetRef ref) {
     final cart = ref.watch(cartProvider);
-    return cart.fold(0, (sum, item) => sum + item.tprice!);
+    var variationtotal = 0.0;
+    var alltprices = 0.0;
+    var sum = 0.0;
+    alltprices = cart.fold(
+        0.0, (previousValue, element) => previousValue + element.tprice!);
+
+    cart.fold(0.0, (previousValue, element) {
+      if (element.variation != null) {
+        for (var items in element.variation!) {
+          variationtotal = items.variationPrice! * element.quantity;
+        }
+      }
+      return variationtotal;
+    });
+    sum = alltprices + variationtotal;
+    return sum;
   }
 
   int getTotalQuantityofdish(WidgetRef ref, int dishid) {

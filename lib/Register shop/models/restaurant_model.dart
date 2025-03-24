@@ -23,6 +23,7 @@ class RestaurantModel {
   Map<String, Map<String, dynamic>>? openingHours;
   String? restaurantImageUrl;
   String? restaurantLogoImageUrl;
+  int? platformfee;
 
   RestaurantModel copywith(
       {String? restaurantName,
@@ -98,6 +99,7 @@ class RestaurantModel {
     this.restaurantImageUrl,
     this.restuid,
     this.restaurantLogoImageUrl,
+    this.platformfee,
   });
 
   Map<String, dynamic> toJson() {
@@ -126,6 +128,7 @@ class RestaurantModel {
       'restaurantImageUrl': restaurantImageUrl,
       'rest_uid': restuid,
       'restLogoUrl': restaurantLogoImageUrl,
+      'platformfee': platformfee,
     };
   }
 
@@ -162,6 +165,7 @@ class RestaurantModel {
       //json['openinHours'],
       restuid: json['rest_uid'],
       restaurantLogoImageUrl: json['restLogoUrl'],
+      platformfee: json['platformfee'] ?? 0,
     );
   }
 }

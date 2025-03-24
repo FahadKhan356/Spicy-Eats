@@ -48,6 +48,8 @@ dependencies:
   just_audio: ^0.9.17  # Ensure you have the correct version
   # vibration: ^1.9.0
   flutter_rating_bar: ^4.0.1
+  skeletonizer: ^1.4.3
+  google_maps_flutter: ^2.6.1
 
 
 

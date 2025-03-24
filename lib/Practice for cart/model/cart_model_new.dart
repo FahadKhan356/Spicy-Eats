@@ -1,3 +1,4 @@
+import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
 
 class CartModelNew {
@@ -13,6 +14,7 @@ class CartModelNew {
   final String? description;
   final List<Variation>? variation;
   int? variationId;
+  final List<DishData>? freqboughts;
 
   CartModelNew({
     this.name,
@@ -27,6 +29,7 @@ class CartModelNew {
     this.image,
     this.variation,
     this.variationId,
+    this.freqboughts,
   });
 
 //tomap / tojson
@@ -45,6 +48,7 @@ class CartModelNew {
       'description': description,
       'variation': variation,
       'variationId': variationId,
+      'frequently_boughtList': freqboughts,
     };
   }
 //copywith
@@ -77,27 +81,30 @@ class CartModelNew {
 
 //from json
   factory CartModelNew.fromjson(Map<String, dynamic> json) {
+    final freqboughts = json['frequently_boughtList'] as List? ?? [];
+    List<DishData> freqboughtslist =
+        freqboughts.map((e) => DishData.fromJson(e)).toList();
     final variation = json['variations'] as List? ?? [];
     List<Variation> variationList =
         variation.map((e) => Variation.fromjson(e)).toList();
     return CartModelNew(
-      cart_id: json['id'] ?? 0,
-      quantity: json['quantity'] ?? 0,
-      dish_id: json['dish_id'] ?? 0,
-      tprice:
-          json['tprice'] != null ? (json['tprice'] as num).toDouble() : null,
-      //json['tprice'] != null ? (json['tprice'] as num).toDouble() : null,
-      user_id: json['user_id'] ?? '',
-      created_at: json['created_at'] ?? '',
-      image: json['image'] ?? '',
-      itemprice: json['itemprice'] ?? 0.0,
-      name: json['name'] ?? '',
-      description: json['description'] ?? '',
-      variation: variationList ?? [],
-      //  (json['variation'] as List<dynamic>)
-      //     .map((e) => Variation.fromjson(e))
-      //     .toList(),
-      variationId: json['variationId'] ?? 0,
-    );
+        cart_id: json['id'] ?? 0,
+        quantity: json['quantity'] ?? 0,
+        dish_id: json['dish_id'] ?? 0,
+        tprice:
+            json['tprice'] != null ? (json['tprice'] as num).toDouble() : null,
+        //json['tprice'] != null ? (json['tprice'] as num).toDouble() : null,
+        user_id: json['user_id'] ?? '',
+        created_at: json['created_at'] ?? '',
+        image: json['image'] ?? '',
+        itemprice: json['itemprice'] ?? 0.0,
+        name: json['name'] ?? '',
+        description: json['description'] ?? '',
+        variation: variationList ?? [],
+        //  (json['variation'] as List<dynamic>)
+        //     .map((e) => Variation.fromjson(e))
+        //     .toList(),
+        variationId: json['variationId'] ?? 0,
+        freqboughts: freqboughtslist ?? []);
   }
 }

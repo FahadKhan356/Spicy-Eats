@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:spicy_eats/Practice%20for%20cart/screens/DummyBasket.dart';
+import 'package:spicy_eats/Practice%20for%20cart/screens/BasketScreen.dart';
 import 'package:spicy_eats/Practice%20for%20cart/screens/DummyCart.dart';
 import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
 import 'package:spicy_eats/commons/routeAnimation.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
+import 'package:spicy_eats/features/Payment/PaymentScreen.dart';
 import 'package:spicy_eats/features/dashboard/DrawerScreens/Menu/ineroverview.dart';
 import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/businessInformation.dart';
@@ -12,7 +13,6 @@ import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/scree
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/register_restaurant.dart';
 import 'package:spicy_eats/Register%20shop/screens/shophome.dart';
 import 'package:spicy_eats/commons/restaurantModel.dart';
-import 'package:spicy_eats/features/Basket/screens/basket.dart';
 import 'package:spicy_eats/features/Home/screens/home_screen.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/menu_Item_detail_screen.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/screens/restaurant_menu.dart';
@@ -55,17 +55,6 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
             restaurantdata: argument['restaurantdata']);
       });
 
-    case BasketScreen.routename:
-      return MaterialPageRoute(builder: (context) {
-        final argument = settings.arguments as Map;
-        return BasketScreen(
-          dish: argument['dish'],
-          totalprice: argument['totalprice'],
-          quantity: argument['quantity'],
-          cartlist: argument['cartlist'],
-          dishes: argument['dishes'] ?? [],
-        );
-      });
     case DummyCart.routename:
       return MaterialPageRoute(builder: (context) {
         final argument = settings.arguments as String;
@@ -73,19 +62,19 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
           restuid: argument,
         );
       });
-    case DummyBasket.routename:
+    case BasketScreen.routename:
       return MaterialPageRoute(builder: (context) {
         final argument = settings.arguments as Map;
-        return DummyBasket(
+        return BasketScreen(
           // cart: argument['cart'],
           dishes: argument['dishes'],
-          restuid: argument['restuid'],
+
           restaurantData: argument['restdata'],
         );
       });
 
     case Home.routename:
-      return MaterialPageRoute(builder: (_) => const Home());
+      return MaterialPageRoute(builder: (_) => Home());
 
     case ShopHome.routename:
       return MaterialPageRoute(builder: (context) {
@@ -127,14 +116,17 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
 
     //DishMenuScreen
     case DishMenuScreen.routename:
-      return MaterialPageRoute(builder: (context) {
-        final argument = settings.arguments as Map;
-        return DishMenuScreen(
+      // return MaterialPageRoute(builder: (context) {
+      final argument = settings.arguments as Map;
+      return customRouteAnimation(
+        DishMenuScreen(
           dish: argument['dish'],
           isCart: argument['iscart'],
           cartDish: argument['cartdish'],
-        );
-      });
+          isdishscreen: argument['isdishscreen'],
+        ),
+      );
+    // });
     case DishMenuVariation.routename:
       final argument = settings.arguments as Map;
       return customRouteAnimation(
@@ -144,14 +136,17 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
           isCart: argument['iscart'],
           restaurantData: argument['restaurantdata'],
           cartDish: argument['cartdish'],
+          isdishscreen: argument['isdishscreen'],
+          carts: argument['carts'],
         ),
       );
+    case PaymentScreen.routename:
+      return customRouteAnimation(const PaymentScreen());
 
     case RestaurantMenuScreen.routename:
       final argument = settings.arguments as dynamic;
       return customRouteAnimation(
           RestaurantMenuScreen(restaurantData: argument));
-
     default:
       return MaterialPageRoute(
         builder: (context) => const Scaffold(

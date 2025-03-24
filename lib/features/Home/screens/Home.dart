@@ -6,8 +6,9 @@ import 'package:spicy_eats/main.dart';
 var currentIndexProvider = StateProvider<int>((ref) => 0);
 
 class Home extends ConsumerStatefulWidget {
+  bool? isloader = false;
   static const String routename = '/Home';
-  const Home({super.key});
+  Home({super.key});
 
   @override
   ConsumerState<Home> createState() => _HomeState();
@@ -32,6 +33,6 @@ class _HomeState extends ConsumerState<Home> {
                 unselectedItemColor: Colors.black38,
                 elevation: 2,
               )
-            : null);
+            : const CircularProgressIndicator());
   }
 }

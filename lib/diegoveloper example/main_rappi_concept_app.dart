@@ -400,7 +400,7 @@ class _RappiProductState extends ConsumerState<RappiProduct> {
   ) {
     return InkWell(
       onTap: () {
-        widget.dish.isVariation!
+        widget.dish.isVariation
             ? Navigator.pushNamed(context, DishMenuVariation.routename,
                 arguments: {
                     'dishes': widget.dishes,
@@ -409,6 +409,7 @@ class _RappiProductState extends ConsumerState<RappiProduct> {
                     'cartdish': widget.cartItem,
                     'isbasket': false,
                     'restaurantdata': widget.restaurantData,
+                    'isdishscreen': true,
                   })
             : Navigator.pushNamed(context, DishMenuScreen.routename,
                 arguments: {
@@ -416,10 +417,11 @@ class _RappiProductState extends ConsumerState<RappiProduct> {
                     'iscart': false,
                     'cartdish': widget.cartItem,
                     'isbasket': false,
+                    'isdishscreen': true,
                   });
       },
       child: CartCard(
-        elevation: 20,
+        elevation: 0,
         cardColor: null,
         dish: widget.dish,
         imageHeight: 120,

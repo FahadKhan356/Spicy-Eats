@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/paymentmethodescreen.dart';
 
 import 'package:spicy_eats/Supabse%20Backend/supabase_config.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
+import 'package:spicy_eats/features/Payment/PaymentScreen.dart';
 import 'package:spicy_eats/features/authentication/passwordless_signup.dart';
 
 import 'package:spicy_eats/routes.dart';
@@ -73,6 +75,7 @@ class _MyAppState extends ConsumerState<MyApp> {
             appBarTheme: AppBarTheme(backgroundColor: Colors.white)),
         home: Scaffold(
           body:
+              // PaymentScreen()
               //  AnimatedAddButton()
               // DishMenuScreen(),
               //MyFinalScrollScreen(),
@@ -84,7 +87,7 @@ class _MyAppState extends ConsumerState<MyApp> {
 
               //BasketScreen(dish: null, totalprice: 122, quantity: 2),
               supabaseClient.auth.currentSession != null
-                  ? const Home()
+                  ? Home()
                   : PasswordlessScreen(ref: ref),
           // supabaseClient.auth.currentSession != null
           //     ? screen[currentindex]

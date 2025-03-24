@@ -94,10 +94,12 @@ class _CartCardState extends ConsumerState<CartCard> {
           supabaseClient.auth.currentUser!.id,
           dish.dishid!,
           dish.dish_price!.toDouble(),
+          widget.dish!.dish_discount,
           dish.dish_imageurl!,
           [],
           false,
-          1);
+          1,
+          null);
     }
     expandbutton();
   }
@@ -140,7 +142,7 @@ class _CartCardState extends ConsumerState<CartCard> {
           height: widget.cardHeight ?? 130,
           width: double.maxFinite,
           child: Card(
-              surfaceTintColor: const Color.fromRGBO(189, 189, 189, 1),
+              surfaceTintColor: Colors.white,
               margin: const EdgeInsets.symmetric(vertical: 10),
               elevation: 1, // widget.elevation ?? 5,
               color: widget.cardColor ?? Colors.white,
@@ -220,6 +222,7 @@ class _CartCardState extends ConsumerState<CartCard> {
                                           'iscart': false,
                                           'cartdish': widget.cartItem,
                                           'isbasket': false,
+                                          'isdishscreen': true,
                                         });
                                     // }
                                   });
@@ -242,7 +245,7 @@ class _CartCardState extends ConsumerState<CartCard> {
                                   child: Align(
                                     alignment: Alignment.center,
                                     child: cart!.dish_id == dish.dishid &&
-                                            dish.isVariation!
+                                            dish.isVariation
                                         ? Text(
                                             quantity.toString(),
                                             style: const TextStyle(
