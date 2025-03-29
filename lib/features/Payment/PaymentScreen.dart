@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
-import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/register_restaurant.dart';
-import 'package:spicy_eats/features/Payment/repo/ProfileRepo.dart';
+import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/paymentmethodescreen.dart';
+import 'package:spicy_eats/features/Payment/repo/paymentRepo.dart';
+import 'package:spicy_eats/features/Payment/utils/optionsModel.dart';
+import 'package:spicy_eats/features/Profile/repo/ProfileRepo.dart';
 import 'package:spicy_eats/tabexample.dart/RestaurantMenuScreen.dart';
+
+var selectedmethodProvider = StateProvider<String>((ref) => 'Cash on Delivery');
+var onclickprovier = StateProvider<bool>((ref) => false);
 
 class PaymentScreen extends ConsumerStatefulWidget {
   static const String routename = '/Payment-screen';
@@ -14,10 +19,94 @@ class PaymentScreen extends ConsumerStatefulWidget {
 }
 
 class _PaymentScreenState extends ConsumerState<PaymentScreen> {
-  var cartTotal = 0.0;
+  List<PaymentOptions> paymentoption = [
+    PaymentOptions(
+        option: 'Cash on Delivery',
+        imagurl:
+            'https://toppng.com/uploads/preview/see-the-source-image-cash-on-delivery-now-available-11563353301vi2pno7jfy.png'),
+    PaymentOptions(
+      option: 'Credit or Debit Card',
+      imagurl:
+          'https://cdn2.iconfinder.com/data/icons/business-finance-material-flat-design/24/Pay-With_Master_Card-512.png',
+    ),
+  ];
 
+  void paymentModelbottomsheet(BuildContext context) {
+    showModalBottomSheet(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        context: context,
+        builder: (context) => StatefulBuilder(
+              builder: (context, setState) => Wrap(children: [
+                // AppBar(
+                //   centerTitle: true,
+                //   title: const Text('Select Payment Methods'),
+                // ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                      color: Colors.white,
+                      child: Column(
+                        children: paymentoption.map((option) {
+                          return RadioListTile<String>(
+                              selectedTileColor: Colors.black,
+                              activeColor: Colors.black,
+                              title: Row(
+                                children: [
+                                  Container(
+                                    height: 30,
+                                    width: 30,
+                                    child: Image.network(
+                                      option.imagurl,
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              const Icon(Icons.error_sharp),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(option.option),
+                                ],
+                              ),
+                              value: option.option,
+                              groupValue: ref.watch(selectedmethodProvider),
+                              onChanged: (value) {
+                                Navigator.pop(context);
+
+                                ref
+                                    .read(selectedmethodProvider.notifier)
+                                    .state = value!;
+                                print(ref
+                                    .read(selectedmethodProvider.notifier)
+                                    .state);
+                                if (ref
+                                        .read(selectedmethodProvider.notifier)
+                                        .state ==
+                                    'Credit or Debit Card') {
+                                  ref
+                                      .read(paymentRepProvider)
+                                      .paymentSheetInitializtion(
+                                          amount: cartTotal,
+                                          currency: 'USD',
+                                          context: context);
+                                }
+                              });
+                        }).toList(),
+                      )),
+                ),
+                const SizedBox(
+                  height: 50,
+                ),
+              ]),
+            ));
+  }
+
+  double cartTotal = 0.0;
+  bool onclick = false;
   @override
   Widget build(BuildContext context) {
+    final selectedmethod = ref.watch(selectedmethodProvider);
     final restaurant = ref.watch(restaurantProvider);
 
     final subTotal = ref.read(DummyLogicProvider).getTotalPrice(ref);
@@ -48,7 +137,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
+                            const Row(
                               children: [
                                 Icon(
                                   Icons.location_on_sharp,
@@ -69,8 +158,8 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                               child: Row(
                                 children: [
                                   Text(ref.read(userDataProvider)![0].name!,
-                                      style: TextStyle(fontSize: 15)),
-                                  SizedBox(width: 20),
+                                      style: const TextStyle(fontSize: 15)),
+                                  const SizedBox(width: 20),
                                   Text(
                                       ref
                                           .read(userDataProvider)![0]
@@ -245,12 +334,16 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                         style: ElevatedButton.styleFrom(
                           surfaceTintColor: Colors.white,
                           shape: RoundedRectangleBorder(
-                              side: BorderSide(width: 2, color: Colors.black),
+                              side: const BorderSide(
+                                  width: 2, color: Colors.black),
                               borderRadius: BorderRadius.circular(10)),
                           backgroundColor: Colors.white,
                         ),
-                        onPressed: () {},
-                        child: const Text("Payment Methode",
+                        onPressed: () {
+                          paymentModelbottomsheet(context);
+                          ref.read(onclickprovier.notifier).state = true;
+                        },
+                        child: const Text("Payment Method",
                             style:
                                 TextStyle(fontSize: 15, color: Colors.black)),
                       ),
@@ -271,16 +364,20 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                   ),
                   const SizedBox(height: 10),
                   ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      minimumSize: const Size(double.infinity, 50),
-                      backgroundColor: Colors.black,
-                    ),
-                    child: const Text("Checkout",
-                        style: TextStyle(fontSize: 18, color: Colors.white)),
-                  ),
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        minimumSize: const Size(double.infinity, 50),
+                        backgroundColor: Colors.black,
+                      ),
+                      child: selectedmethod == 'Cash on Delivery'
+                          ? Text("Confirm Payment via Cash",
+                              style:
+                                  TextStyle(fontSize: 18, color: Colors.white))
+                          : Text("Add Card Details & Confirm",
+                              style: TextStyle(
+                                  fontSize: 15, color: Colors.white))),
                 ],
               ),
             ),

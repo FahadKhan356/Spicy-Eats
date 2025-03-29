@@ -1,24 +1,19 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/paymentmethodescreen.dart';
-
 import 'package:spicy_eats/Supabse%20Backend/supabase_config.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
-import 'package:spicy_eats/features/Payment/PaymentScreen.dart';
 import 'package:spicy_eats/features/authentication/passwordless_signup.dart';
-
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:spicy_eats/routes.dart';
-
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
-// final currentIndexProvider = StateProvider((ref) => 0);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Supabase.initialize(url: supabaseUrl, anonKey: supabasekey);
+  await dotenv.load(fileName: 'lib/.env');
+  Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
   // debugPaintSizeEnabled = true;
   runApp(const ProviderScope(child: MyApp()));
 }
@@ -43,7 +38,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     _authstateSubscription =
         supabaseClient.auth.onAuthStateChange.listen((event) {
       setState(() {});
-      // _refreshSession();
+      //   // _refreshSession();
     });
   }
 
@@ -51,7 +46,7 @@ class _MyAppState extends ConsumerState<MyApp> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    _authstateSubscription.cancel();
+    // _authstateSubscription.cancel();
   }
 
   Future<void> _refreshSession() async {

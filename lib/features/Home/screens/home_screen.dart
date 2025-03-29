@@ -10,7 +10,7 @@ import 'package:spicy_eats/commons/restaurant_container.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/Home/screens/homedrawer.dart';
 import 'package:spicy_eats/features/Home/screens/widgets/cusineslist.dart';
-import 'package:spicy_eats/features/Payment/repo/ProfileRepo.dart';
+import 'package:spicy_eats/features/Profile/repo/ProfileRepo.dart';
 import 'dart:math' as math;
 
 import 'package:spicy_eats/main.dart';
