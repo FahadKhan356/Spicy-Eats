@@ -584,6 +584,14 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                                         dish_schedule_meal: '',
                                       ));
                                     } else {
+                                      ref
+                                          .read(freqDishesProvider.notifier)
+                                          .update((state) {
+                                        return state = state!
+                                            .where((element) => !newUpdatedList
+                                                .contains(element.dish_name))
+                                            .toList();
+                                      });
                                       newUpdatedList.removeWhere((element) =>
                                           element.dishid == freqdish.dishid);
                                     }
@@ -808,7 +816,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                                                               .dish!.dish_price!
                                                               .toDouble(),
                                                           widget.dish!
-                                                              .dish_discount!,
+                                                              .dish_discount,
                                                           widget.dish!
                                                               .dish_imageurl!,
                                                           ref
@@ -869,7 +877,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
 
                                                 print(
                                                     ' before Frequently bought together dishes: $freqDish');
-                                                if (freqDish != null) {
+                                                if (freqDish!.isNotEmpty) {
                                                   print(
                                                       ' after Frequently bought together dishes:${freqDish[0].dish_name}');
                                                   for (int i = 0;

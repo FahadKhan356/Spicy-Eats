@@ -170,7 +170,7 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
                           arguments: {
                             // 'cart': cart,
                             'dishes': dishes,
-                            'restuid': widget.restuid,
+                            'restuid': widget.restaurantData.restuid,
                             'restdata': widget.restaurantData,
                           });
                       cartFetched = false;

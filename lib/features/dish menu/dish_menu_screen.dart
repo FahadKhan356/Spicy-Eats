@@ -1,10 +1,7 @@
 import 'dart:async';
-import 'dart:math';
 
-import 'package:flutter/animation.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
