@@ -175,7 +175,8 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                                       horizontal: 5, vertical: 10),
                                   child: Row(
                                     children: [
-                                      Text(ref.read(userDataProvider)![0].name!,
+                                      Text(
+                                          '${ref.read(userProvider)!.firstname!} ${ref.read(userProvider)!.lastname}',
                                           style: const TextStyle(fontSize: 15)),
                                       const SizedBox(width: 20),
                                       Text(
@@ -404,7 +405,8 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                               ref.read(orderRepoProvider).storeOrder(
                                     orders: cart,
                                     orderedFrom: restaurant.restaurantName!,
-                                    deliveredTo: ref.read(userProvider)!.name!,
+                                    deliveredTo:
+                                        '${ref.read(userProvider)!.firstname!} ${ref.read(userProvider)!.lastname}',
                                     paytype: ref
                                         .read(selectedmethodProvider.notifier)
                                         .state!,
@@ -438,7 +440,8 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                               ref.read(orderRepoProvider).storeOrder(
                                     orders: cart,
                                     orderedFrom: restaurant.restaurantName!,
-                                    deliveredTo: ref.read(userProvider)!.name!,
+                                    deliveredTo:
+                                        '${ref.read(userProvider)!.firstname!} ${ref.read(userProvider)!.lastname}',
                                     paytype: ref
                                         .read(selectedmethodProvider.notifier)
                                         .state!,

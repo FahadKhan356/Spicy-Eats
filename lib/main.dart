@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Supabse%20Backend/supabase_config.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
+import 'package:spicy_eats/features/Profile/screen/ProfileScreen.dart';
 import 'package:spicy_eats/features/authentication/passwordless_signup.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:spicy_eats/features/splashscreen/SplashScreen.dart';
 import 'package:spicy_eats/routes.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -68,48 +70,48 @@ class _MyAppState extends ConsumerState<MyApp> {
             //drawerTheme: DrawerThemeData(backgroundColor: Colors.),
             tabBarTheme: TabBarTheme(),
             appBarTheme: AppBarTheme(backgroundColor: Colors.white)),
-        home: Scaffold(
-          body:
-              // PaymentScreen()
-              //  AnimatedAddButton()
-              // DishMenuScreen(),
-              //MyFinalScrollScreen(),
-              //MyCustomSliverScreen(),
-              //CustomScrollTransition(),
-              //Mian_rappi_concept_app(),
-              // SliverAppBarWithDynamicTabs()
-              // QuantityButton1(),
+        home: Scaffold(body: SplashScreen()
+            //ProfileScreen(),
+            // PaymentScreen()
+            //  AnimatedAddButton()
+            // DishMenuScreen(),
+            //MyFinalScrollScreen(),
+            //MyCustomSliverScreen(),
+            //CustomScrollTransition(),
+            //Mian_rappi_concept_app(),
+            // SliverAppBarWithDynamicTabs()
+            // QuantityButton1(),
 
-              //BasketScreen(dish: null, totalprice: 122, quantity: 2),
-              supabaseClient.auth.currentSession != null
-                  ? Home()
-                  : PasswordlessScreen(ref: ref),
-          // supabaseClient.auth.currentSession != null
-          //     ? screen[currentindex]
-          //     : PasswordlessScreen(
-          //         ref: ref,
-          //       ),
-          //AddItemScreen(),
-          //supabaseClient.auth.currentSession != null
-          //     ? screen[currentindex]
-          //     : PasswordlessScreen(
-          //         ref: ref,
-          //       ),
-          //AddItemScreen(),
-          //supabaseClient.auth.currentSession != null
-          //     ? screen[currentindex]
-          //     : PasswordlessScreen(
-          //         ref: ref,
-          //       ),
-          //TimePicker(),
+            //BasketScreen(dish: null, totalprice: 122, quantity: 2),
+            // supabaseClient.auth.currentSession != null
+            //     ? Home()
+            //     : PasswordlessScreen(ref: ref),
+            // supabaseClient.auth.currentSession != null
+            //     ? screen[currentindex]
+            //     : PasswordlessScreen(
+            //         ref: ref,
+            //       ),
+            //AddItemScreen(),
+            //supabaseClient.auth.currentSession != null
+            //     ? screen[currentindex]
+            //     : PasswordlessScreen(
+            //         ref: ref,
+            //       ),
+            //AddItemScreen(),
+            //supabaseClient.auth.currentSession != null
+            //     ? screen[currentindex]
+            //     : PasswordlessScreen(
+            //         ref: ref,
+            //       ),
+            //TimePicker(),
 
-          //Shapes(),
-          //TimePicker(),
-          // supabaseClient.auth.currentSession != null
-          //     ? screen[currentindex]
-          //     : PasswordlessScreen(
-          //         ref: ref,
-          //       ),
-        ));
+            //Shapes(),
+            //TimePicker(),
+            // supabaseClient.auth.currentSession != null
+            //     ? screen[currentindex]
+            //     : PasswordlessScreen(
+            //         ref: ref,
+            //       ),
+            ));
   }
 }

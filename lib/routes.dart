@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/screens/BasketScreen.dart';
 import 'package:spicy_eats/Practice%20for%20cart/screens/DummyCart.dart';
 import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
 import 'package:spicy_eats/commons/routeAnimation.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/Payment/PaymentScreen.dart';
+import 'package:spicy_eats/features/Profile/commons/EditScreen.dart';
+import 'package:spicy_eats/features/Profile/screen/ProfileScreen.dart';
+import 'package:spicy_eats/features/authentication/passwordless_signup.dart';
 import 'package:spicy_eats/features/dashboard/DrawerScreens/Menu/ineroverview.dart';
 import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/businessInformation.dart';
@@ -147,6 +151,21 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
       final argument = settings.arguments as dynamic;
       return customRouteAnimation(
           RestaurantMenuScreen(restaurantData: argument));
+
+    case ProfileScreen.routename:
+      return MaterialPageRoute(builder: (_) => ProfileScreen());
+
+    case EditScreen.routname:
+      return MaterialPageRoute(builder: (_) {
+        final argument = settings.arguments as String;
+        return EditScreen(editType: argument);
+      });
+
+    case PasswordlessScreen.routename:
+      return MaterialPageRoute(builder: (_) {
+        final ref = settings.arguments as WidgetRef;
+        return PasswordlessScreen(ref: ref);
+      });
     default:
       return MaterialPageRoute(
         builder: (context) => const Scaffold(

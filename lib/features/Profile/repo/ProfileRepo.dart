@@ -32,4 +32,30 @@ class ProfileRepo {
       throw Exception(e);
     }
   }
+
+  Future<void> updatePersonalDetails(WidgetRef ref, String? firstname,
+      String? lastname, String userid, String? email, String? contactno) async {
+    final user = ref.watch(userProvider);
+    try {
+      if (firstname != user!.firstname) {
+        await supabaseClient.from('users').update({
+          'firstname': firstname,
+        }).eq('id', userid);
+      } else if (lastname != user.lastname) {
+        await supabaseClient.from('users').update({
+          'lastname': lastname,
+        }).eq('id', userid);
+      } else if (email != user.email) {
+        await supabaseClient.from('users').update({
+          'email': email,
+        }).eq('id', userid);
+      } else {
+        await supabaseClient.from('users').update({
+          'contactno': int.parse(contactno!),
+        }).eq('id', userid);
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 }

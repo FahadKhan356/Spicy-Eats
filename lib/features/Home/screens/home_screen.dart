@@ -102,7 +102,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         .fetchCurrentUserData(userid: userid, ref: ref);
 
     await ref.read(profileRepoProvider).fetchuser(userid, ref);
-    print(ref.read(userProvider)!.name.toString());
   }
 
   void onclick() {

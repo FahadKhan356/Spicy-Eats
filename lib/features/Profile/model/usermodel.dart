@@ -2,7 +2,8 @@ class User {
   String? id;
   DateTime? createAt;
   String? email;
-  String? name;
+  String? firstname;
+  String? lastname;
   double? latitude;
   double? longitude;
   String? address;
@@ -12,7 +13,8 @@ class User {
     this.id,
     this.createAt,
     this.email,
-    this.name,
+    this.firstname,
+    this.lastname,
     this.latitude,
     this.longitude,
     this.address,
@@ -25,7 +27,8 @@ class User {
       'id': id,
       'created_at': DateTime.now(),
       "email": email,
-      "name": name,
+      "firstname": firstname,
+      "lastname": lastname,
       "latitude": latitude,
       'longitude': longitude,
       "address": address,
@@ -40,7 +43,8 @@ class User {
       id: json['id'] ?? '',
       createAt: DateTime.parse(json['created_at']),
       email: json['email'] ?? '',
-      name: json['name'] ?? '',
+      firstname: json['firstname'] ?? '',
+      lastname: json['lastname'] ?? '',
       latitude: json['latitude'] ?? 0.0,
       longitude: json['longitude'] ?? 0.0,
       address: json['address'] ?? '',
