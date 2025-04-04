@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
 import 'package:spicy_eats/features/Profile/screen/ProfileScreen.dart';
+import 'package:spicy_eats/features/account/screen/accountscreen.dart';
 import 'package:spicy_eats/features/dashboard/DrawerScreens/Menu/MenuScreen.dart';
 import 'package:spicy_eats/Register%20shop/screens/shophome.dart';
 import 'package:spicy_eats/Register%20shop/widgets/drawerRow.dart';
@@ -27,10 +28,9 @@ List screens = [
 ];
 List screen = [
   const HomeScreen(),
-  // const OrdersScreen(),
 
   ShopHome(),
-  ProfileScreen(),
+  const AccountScreen(),
   // const Center(child: Text("Accont screen comming soon"))
 ];
 List<BottomNavigationBarItem> bitems = [

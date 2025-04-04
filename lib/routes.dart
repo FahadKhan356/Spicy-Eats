@@ -8,6 +8,7 @@ import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/Payment/PaymentScreen.dart';
 import 'package:spicy_eats/features/Profile/commons/EditScreen.dart';
 import 'package:spicy_eats/features/Profile/screen/ProfileScreen.dart';
+import 'package:spicy_eats/features/account/screen/accountscreen.dart';
 import 'package:spicy_eats/features/authentication/passwordless_signup.dart';
 import 'package:spicy_eats/features/dashboard/DrawerScreens/Menu/ineroverview.dart';
 import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
@@ -166,6 +167,9 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
         final ref = settings.arguments as WidgetRef;
         return PasswordlessScreen(ref: ref);
       });
+
+    case AccountScreen.routename:
+      return MaterialPageRoute(builder: (_) => const AccountScreen());
     default:
       return MaterialPageRoute(
         builder: (context) => const Scaffold(

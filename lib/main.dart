@@ -2,9 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Supabse%20Backend/supabase_config.dart';
-import 'package:spicy_eats/features/Home/screens/Home.dart';
-import 'package:spicy_eats/features/Profile/screen/ProfileScreen.dart';
-import 'package:spicy_eats/features/authentication/passwordless_signup.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:spicy_eats/features/splashscreen/SplashScreen.dart';
 import 'package:spicy_eats/routes.dart';
@@ -70,7 +67,9 @@ class _MyAppState extends ConsumerState<MyApp> {
             //drawerTheme: DrawerThemeData(backgroundColor: Colors.),
             tabBarTheme: TabBarTheme(),
             appBarTheme: AppBarTheme(backgroundColor: Colors.white)),
-        home: Scaffold(body: SplashScreen()
+        home: Scaffold(body: const SplashScreen()
+
+            //SplashScreen()
             //ProfileScreen(),
             // PaymentScreen()
             //  AnimatedAddButton()

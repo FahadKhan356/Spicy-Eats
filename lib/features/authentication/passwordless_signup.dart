@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -22,6 +24,20 @@ class _PhonenumberScreenState extends ConsumerState<PasswordlessScreen>
   bool _isTextFieldVisible = false;
   late final AnimationController _animationController;
   late Animation<double> _arrowRotation;
+  bool isdialog = false;
+  Timer? timer;
+
+  void startDialogtimer() {
+    setState(() {
+      isdialog = true;
+    });
+    timer = Timer(const Duration(seconds: 2), () {
+      setState(() {
+        isdialog = false;
+      });
+    });
+  }
+
   // late final StreamSubscription<AuthState> _streamSubscription;
   @override
   void initState() {
@@ -107,6 +123,7 @@ class _PhonenumberScreenState extends ConsumerState<PasswordlessScreen>
     signuppassController.dispose();
     signinpassController.dispose();
     _animationController.dispose();
+    timer?.cancel();
   }
 
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
@@ -340,7 +357,7 @@ class _PhonenumberScreenState extends ConsumerState<PasswordlessScreen>
                                   RotationTransition(
                                     turns: _arrowRotation,
                                     child: IconButton(
-                                      icon: Icon(Icons.arrow_drop_down),
+                                      icon: const Icon(Icons.arrow_drop_down),
                                       onPressed: () {
                                         updatebuttons(0, true);
                                       },
@@ -515,13 +532,17 @@ class _PhonenumberScreenState extends ConsumerState<PasswordlessScreen>
                                     passwrod: signuppassController.text.trim());
                               }
 
-                              showDialog(
-                                  context: context,
-                                  builder: (context) => const AlertDialog(
-                                        title: Text('Check your Email inbox'),
-                                        content: Text(
-                                            'Confirm form your email and redirects to main screen'),
-                                      ));
+                              startDialogtimer();
+                              isdialog
+                                  ? showDialog(
+                                      context: context,
+                                      builder: (context) => const AlertDialog(
+                                            title:
+                                                Text('Check your Email inbox'),
+                                            content: Text(
+                                                'Confirm form your email and redirects to main screen'),
+                                          ))
+                                  : const SizedBox();
                             }
                           },
                           style: ElevatedButton.styleFrom(

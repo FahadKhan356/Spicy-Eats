@@ -49,6 +49,8 @@ dependencies:
   flutter_stripe: ^11.0.0
   flutter_dotenv: ^5.2.1
   http: ^1.2.2
+  google_maps_flutter: ^2.2.3
+  
 
   
 # dependency_overrides:
