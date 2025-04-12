@@ -36,4 +36,8 @@ class AuthenticationController {
     authenticationRepository.login(
         context: context, email: email, password: passwrod);
   }
+
+  void logout(context, WidgetRef ref) {
+    authenticationRepository.logoutUser(context, ref);
+  }
 }

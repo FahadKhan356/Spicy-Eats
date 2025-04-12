@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/features/Profile/repo/ProfileRepo.dart';
 import 'package:spicy_eats/features/Profile/screen/ProfileScreen.dart';
 import 'package:spicy_eats/features/account/commons/RowContainer.dart';
+import 'package:spicy_eats/features/authentication/controller/AuthenicationController.dart';
+import 'package:spicy_eats/features/authentication/repository/AuthenticationRepository.dart';
 
 class AccountScreen extends ConsumerStatefulWidget {
   static const String routename = '/Account-screen';
@@ -15,6 +17,7 @@ class AccountScreen extends ConsumerStatefulWidget {
 class _AccountScreenState extends ConsumerState<AccountScreen> {
   @override
   Widget build(BuildContext context) {
+    final authController = ref.watch(authenticationControllerProvider);
     final user = ref.watch(userProvider);
     return SafeArea(
       child: Scaffold(
@@ -81,7 +84,9 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                           backgroundColor: Colors.black,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10))),
-                      onPressed: () {},
+                      onPressed: () {
+                        authController.logout(context, ref);
+                      },
                       child: const Text(
                         'Log out',
                         style: TextStyle(

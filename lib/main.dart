@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Supabse%20Backend/supabase_config.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/splashscreen/SplashScreen.dart';
 import 'package:spicy_eats/routes.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:app_links/app_links.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,17 +32,69 @@ class MyApp extends ConsumerStatefulWidget {
 int currentindex = 0;
 
 class _MyAppState extends ConsumerState<MyApp> {
+  GlobalKey<NavigatorState> navigatorkey = GlobalKey<NavigatorState>();
   late final StreamSubscription<AuthState> _authstateSubscription;
+  late final StreamSubscription<Uri?> _linksubscription;
+  final AppLinks _appLinks = AppLinks();
+
+  _initialAuth() {
+    _authstateSubscription =
+        supabaseClient.auth.onAuthStateChange.listen((event) {
+      final session = event.session;
+      if (session != null && navigatorkey.currentState != null) {
+        navigatorkey.currentState!.pushNamedAndRemoveUntil(
+          Home.routename,
+          (route) => false,
+          arguments: ref,
+        );
+      }
+    });
+  }
+
+  Future<void> _initializeDeeplink() async {
+    try {
+      final initialUri = await _appLinks.getInitialAppLink();
+      if (initialUri != null) {
+        handleDeeplink(initialUri);
+      }
+      _linksubscription = _appLinks.uriLinkStream.listen(handleDeeplink);
+    } catch (e) {
+      debugPrint('Error initializing deeplink $e');
+    }
+  }
+
+  Future<void> handleDeeplink(Uri uri) async {
+    if (uri.host == 'login-callback') {
+      try {
+        supabaseClient.auth.getSessionFromUrl(uri);
+      } catch (e) {
+        debugPrint('Error handling deep link: $e');
+      }
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _authstateSubscription =
-        supabaseClient.auth.onAuthStateChange.listen((event) {
-      setState(() {});
-      //   // _refreshSession();
-    });
+    _initialAuth();
+
+    _initializeDeeplink();
+    // _authstateSubscription =
+    //     supabaseClient.auth.onAuthStateChange.listen((data) {
+    //   final AuthChangeEvent event = data.event;
+    //   final Session? session = data.session;
+
+    //   if (event == AuthChangeEvent.signedIn && session != null) {
+    //     Navigator.pushNamedAndRemoveUntil(
+    //         context, Home.routename, (route) => false);
+    //   }
+    // });
   }
+  //     supabaseClient.auth.onAuthStateChange.listen((event) {
+  //   setState(() {});
+  //   //   // _refreshSession();
+  // });
 
   @override
   void dispose() {

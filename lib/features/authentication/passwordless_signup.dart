@@ -6,9 +6,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:spicy_eats/Register%20shop/widgets/restauarantTextfield.dart';
 import 'package:spicy_eats/commons/country.dart';
 import 'package:spicy_eats/commons/mysnackbar.dart';
+import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/Home/screens/home_screen.dart';
 import 'package:spicy_eats/features/authentication/controller/AuthenicationController.dart';
 import 'package:spicy_eats/main.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class PasswordlessScreen extends ConsumerStatefulWidget {
   final WidgetRef ref;
@@ -21,6 +23,7 @@ class PasswordlessScreen extends ConsumerStatefulWidget {
 
 class _PhonenumberScreenState extends ConsumerState<PasswordlessScreen>
     with SingleTickerProviderStateMixin {
+  StreamSubscription<AuthState>? _authSub;
   bool _isTextFieldVisible = false;
   late final AnimationController _animationController;
   late Animation<double> _arrowRotation;
@@ -28,19 +31,47 @@ class _PhonenumberScreenState extends ConsumerState<PasswordlessScreen>
   Timer? timer;
 
   void startDialogtimer() {
-    setState(() {
-      isdialog = true;
-    });
+    FocusScope.of(context).unfocus();
+
+    showDialog(
+        context: context,
+        builder: (context) => const AlertDialog(
+              title: Text('Check your Email inbox'),
+              content:
+                  Text('Confirm form your email and redirects to main screen'),
+            ));
     timer = Timer(const Duration(seconds: 2), () {
-      setState(() {
-        isdialog = false;
-      });
+      if (mounted) {
+        Navigator.of(context).pop(); // Dismiss the dialog
+      }
     });
+    // timer = Timer(const Duration(seconds: 2), () {
+    //   setState(() {
+    //     isdialog = false;
+    //   });
+    // });
   }
 
   // late final StreamSubscription<AuthState> _streamSubscription;
   @override
   void initState() {
+    _authSub = supabaseClient.auth.onAuthStateChange.listen((data) {
+      try {
+        final session = data.session;
+        final event = data.event;
+
+        if (event == AuthChangeEvent.signedIn && session != null) {
+          // User has signed in from magic link while on this screen
+          if (mounted) {
+            Navigator.pushNamedAndRemoveUntil(
+                context, Home.routename, (route) => false);
+          }
+        }
+      } catch (e, stack) {
+        print('Auth listener Error $e\n $stack');
+      }
+    });
+
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 700),
@@ -533,16 +564,6 @@ class _PhonenumberScreenState extends ConsumerState<PasswordlessScreen>
                               }
 
                               startDialogtimer();
-                              isdialog
-                                  ? showDialog(
-                                      context: context,
-                                      builder: (context) => const AlertDialog(
-                                            title:
-                                                Text('Check your Email inbox'),
-                                            content: Text(
-                                                'Confirm form your email and redirects to main screen'),
-                                          ))
-                                  : const SizedBox();
                             }
                           },
                           style: ElevatedButton.styleFrom(

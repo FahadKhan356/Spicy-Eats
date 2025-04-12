@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/commons/mysnackbar.dart';
+import 'package:spicy_eats/features/authentication/passwordless_signup.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final authenticationRepositoryProvider = Provider((ref) =>
@@ -98,5 +99,17 @@ class AuthenticationRepository {
       return false;
     }
     return value;
+  }
+
+  void logoutUser(context, WidgetRef ref) async {
+    try {
+      await supabaseClient.auth.signOut();
+
+      Navigator.pushNamedAndRemoveUntil(
+          context, PasswordlessScreen.routename, (route) => false,
+          arguments: ref);
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 }

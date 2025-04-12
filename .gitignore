@@ -30,6 +30,8 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+lib\.env
+lib\Supabse Backend\supabase_config.dart
 
 # Symbolication related
 app.*.symbols

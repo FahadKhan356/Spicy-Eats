@@ -12,14 +12,33 @@ class SplashScreen extends ConsumerStatefulWidget {
 }
 
 class _SplashScreenState extends ConsumerState<SplashScreen> {
-  onPersistence() {
-    Future.delayed(const Duration(seconds: 10), () {
-      supabaseClient.auth.currentSession != null
-          ? Navigator.pushNamed(context, Home.routename)
-          : Navigator.pushNamed(context, PasswordlessScreen.routename,
-              arguments: ref);
+  Future<void> onPersistence() async {
+    await Future.delayed(const Duration(seconds: 3), () {
+      // final session = supabaseClient.auth.currentSession;
+      if (!mounted) return;
+      final session = supabaseClient.auth.currentSession;
+      if (session != null) {
+        // Already logged in (like from magic link)
+        Navigator.pushNamedAndRemoveUntil(
+            context, Home.routename, (route) => false);
+      } else {
+        // Not logged in, show login screen
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          PasswordlessScreen.routename,
+          (route) => false,
+          arguments: ref,
+        );
+      }
     });
   }
+  //   Future.delayed(const Duration(seconds: 10), () {
+  //     supabaseClient.auth.currentSession != null
+  //         ? Navigator.pushNamed(context, Home.routename)
+  //         : Navigator.pushNamed(context, PasswordlessScreen.routename,
+  //             arguments: ref);
+  //   });
+  // }
 
   @override
   void initState() {
