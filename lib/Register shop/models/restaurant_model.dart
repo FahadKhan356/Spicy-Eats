@@ -1,7 +1,7 @@
 class RestaurantModel {
   String? restuid;
   String? restaurantName;
-  int? deliveryFee;
+  double? deliveryFee;
   int? minTime;
   int? maxTime;
   double? averageRatings;
@@ -23,11 +23,11 @@ class RestaurantModel {
   Map<String, Map<String, dynamic>>? openingHours;
   String? restaurantImageUrl;
   String? restaurantLogoImageUrl;
-  int? platformfee;
+  double? platformfee;
 
   RestaurantModel copywith(
       {String? restaurantName,
-      int? deliveryFee,
+      double? deliveryFee,
       int? minTime,
       int? maxTime,
       double? averageRatings,
@@ -165,7 +165,7 @@ class RestaurantModel {
       //json['openinHours'],
       restuid: json['rest_uid'],
       restaurantLogoImageUrl: json['restLogoUrl'],
-      platformfee: json['platformfee'] ?? 0,
+      platformfee: json['platformfee'] ?? 0.0,
     );
   }
 }

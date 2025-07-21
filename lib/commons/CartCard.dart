@@ -154,14 +154,18 @@ class _CartCardState extends ConsumerState<CartCard> {
                         children: [
                           // AnimatedAddButton(),
                           Container(
-                            // color: Colors.red,
-                            height: widget.imageHeight,
-                            width: widget.imageWidth,
-                            child: Image.network(
-                              widget.dish!.dish_imageurl.toString(),
-                              fit: BoxFit.contain,
-                            ),
-                          ),
+                              // color: Colors.red,
+                              height: widget.imageHeight,
+                              width: widget.imageWidth,
+                              child:
+                                  // const Text('asda'),
+                                  Image.network(
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const Icon(Icons.broken_image);
+                                },
+                                widget.dish!.dish_imageurl.toString(),
+                                fit: BoxFit.cover,
+                              )),
                           const SizedBox(
                             width: 5,
                           ),
@@ -374,147 +378,6 @@ class _CartCardState extends ConsumerState<CartCard> {
                                                 ),
                                               )),
                               ),
-
-                            // InkWell(
-                            //   onTap: () async {
-                            //     _debouncer.run(() async {
-                            //       ref.read(DummyLogicProvider).addToCart(
-                            //           widget.dish!.dish_price,
-                            //           widget.dish!.dish_name,
-                            //           widget.dish!.dish_description,
-                            //           ref,
-                            //           supabaseClient.auth.currentUser!.id,
-                            //           widget.dish!.dishid!,
-                            //           widget.dish!.dish_price!.toDouble(),
-                            //           widget.dish!.dish_imageurl!,
-                            //           null,
-                            //           false,
-                            //           1);
-                            //     });
-                            //   },
-                            //   child: Container(
-                            //     height: widget.addbuttonHeight ?? 50,
-                            //     width: widget.addbuttonWidth ?? 50,
-                            //     decoration: const BoxDecoration(
-                            //         // boxShadow: [
-                            //         //   BoxShadow(
-                            //         //       color: Colors.black54,
-                            //         //       blurRadius: 6,
-                            //         //       offset: Offset(-1, -1),
-                            //         //       spreadRadius: 1)
-                            //         // ],
-                            //         color: Colors.black,
-                            //         borderRadius: BorderRadius.only(
-                            //             topLeft: Radius.circular(10),
-                            //             bottomRight: Radius.circular(10))),
-                            //     child: const Align(
-                            //       alignment: Alignment.center,
-                            //       child: Icon(
-                            //         Icons.add,
-                            //         size: 20,
-                            //         color: Colors.white,
-                            //       ),
-                            //     ),
-                            //   ),
-                            // ),
-                            // if (dish.isVariation == false &&
-                            //     cart!.dish_id == dish.dishid)
-                            //   Expanded(
-                            //     child: Column(
-                            //       mainAxisAlignment:
-                            //           MainAxisAlignment.spaceBetween,
-                            //       children: [
-                            //         Expanded(
-                            //           child: InkWell(
-                            //             onTap: () {
-                            //               _debouncer.run(() {
-                            //                 ref
-                            //                     .read(DummyLogicProvider)
-                            //                     .increaseQuantity(
-                            //                       ref,
-                            //                       widget.dish!.dishid!,
-                            //                       widget.dish!.dish_price!,
-                            //                     );
-                            //               });
-                            //             },
-                            //             child: Container(
-                            //               height:
-                            //                   widget.buttonIncDecHeight ?? 50,
-                            //               width:
-                            //                   widget.buttonIncDecHeight ?? 50,
-                            //               decoration: const BoxDecoration(
-                            //                   color: Colors.black,
-                            //                   borderRadius: BorderRadius.only(
-                            //                       topRight: Radius.circular(10),
-                            //                       bottomLeft:
-                            //                           Radius.circular(10))),
-                            //               child: const Icon(
-                            //                 Icons.add,
-                            //                 size: 20,
-                            //                 color: Colors.white,
-                            //               ),
-                            //             ),
-                            //           ),
-                            //         ),
-                            //         const SizedBox(width: 5),
-                            //         Text(
-                            //           ref
-                            //               .read(cartProvider.notifier)
-                            //               .state[widget.quantityIndex!]
-                            //               .quantity
-                            //               .toString(),
-                            //         ),
-                            //         // Text(
-                            //         //     style: const TextStyle(fontSize: 20),
-                            //         //     cartlistener
-                            //         //         .where((element) =>
-                            //         //             element.dish_id == dish.dishid)
-                            //         //         .length
-                            //         //         .toString()),
-                            //         const SizedBox(width: 5),
-                            //         Expanded(
-                            //           child: InkWell(
-                            //             onTap: () {
-                            //               _debouncer.run(() {
-                            //                 ref
-                            //                     .read(DummyLogicProvider)
-                            //                     .decreaseQuantity(
-                            //                       ref,
-                            //                       widget.dish!.dishid!,
-                            //                       widget.dish!.dish_price!,
-                            //                     );
-                            //               });
-                            //             },
-                            //             child: Container(
-                            //               height:
-                            //                   widget.buttonIncDecHeight ?? 50,
-                            //               width: widget.buttonIncDecWidth ?? 50,
-                            //               decoration: const BoxDecoration(
-                            //                   color: Colors.black,
-                            //                   borderRadius: BorderRadius.only(
-                            //                       topLeft: Radius.circular(10),
-                            //                       bottomRight:
-                            //                           Radius.circular(10))),
-                            //               child: Center(
-                            //                   child:
-                            //                       widget.cartItem!.quantity == 1
-                            //                           ? const Icon(
-                            //                               Icons.delete_rounded,
-                            //                               size: 20,
-                            //                               color: Colors.white,
-                            //                             )
-                            //                           : const Icon(
-                            //                               Icons
-                            //                                   .minimize_outlined,
-                            //                               size: 20,
-                            //                               color: Colors.white,
-                            //                             )),
-                            //             ),
-                            //           ),
-                            //         ),
-                            //       ],
-                            //     ),
-                            // )
                           ])),
                     )
                   ]))),

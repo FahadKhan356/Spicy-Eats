@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -532,36 +533,47 @@ class _PhonenumberScreenState extends ConsumerState<PasswordlessScreen>
                         child: ElevatedButton(
                           onPressed: () async {
                             if (_form.currentState!.validate()) {
-                              if (_isTextFieldVisible == false &&
-                                  buttonsindex[0] == false &&
-                                  buttonsindex[1] == false) {
-                                mysnackbar(
-                                    context: context,
-                                    text: 'please provide fields');
+                              authController.signup(
+                                  context: context,
+                                  email: withpass_signin_emailController.text,
+                                  passwrod: signuppassController.text);
+                              // if (_isTextFieldVisible == false &&
+                              //     buttonsindex[0] == false &&
+                              //     buttonsindex[1] == false) {
+                              //   mysnackbar(
+                              //       context: context,
+                              //       text: 'please provide fields');
 
-                                return;
-                              }
+                              //   return;
+                              // }
 
-                              if (_isTextFieldVisible) {
-                                authController.signInWithMagicLink(
-                                    email: Nopass_emailController.text.trim(),
-                                    context: context);
-                              }
+                              // if (_isTextFieldVisible) {
+                              //   SnackBar(content: Text('sign in magic link'));
+                              //   // authController.signInWithMagicLink(
+                              //   //     email: Nopass_emailController.text.trim(),
+                              //   //     context: context);
+                              // }
 
-                              if (buttonsindex[1] == true) {
-                                authController.Login(
-                                    context: context,
-                                    email: withpass_signin_emailController.text
-                                        .trim(),
-                                    passwrod: signinpassController.text.trim());
-                              }
-                              if (buttonsindex[0] == true) {
-                                authController.signup(
-                                    context: context,
-                                    email: withpass_signup_emailController.text
-                                        .trim(),
-                                    passwrod: signuppassController.text.trim());
-                              }
+                              // if (buttonsindex[1] == true) {
+                              //   ScaffoldMessenger.of(context).showSnackBar(
+                              //       SnackBar(content: Text('sign in')));
+                              //   // authController.Login(
+                              //   //     context: context,
+                              //   //     email: withpass_signin_emailController.text
+                              //   //         .trim(),
+                              //   //     passwrod: signinpassController.text.trim());
+                              // }
+                              // if (buttonsindex[0] == true) {
+                              //   debugPrint('sign up');
+
+                              //   ScaffoldMessenger.of(context).showSnackBar(
+                              //       SnackBar(content: Text('sign up')));
+                              //   // authController.signup(
+                              //   //     context: context,
+                              //   //     email: withpass_signup_emailController.text
+                              //   //         .trim(),
+                              //   //     passwrod: signuppassController.text.trim());
+                              // }
 
                               startDialogtimer();
                             }

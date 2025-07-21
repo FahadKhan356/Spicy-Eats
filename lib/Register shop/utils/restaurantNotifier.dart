@@ -12,7 +12,7 @@ class RestaurantNotifier extends StateNotifier<RestaurantModel> {
 
   void setRestaurantData({
     String? restaurantName,
-    int? deliveryFee,
+    double? deliveryFee,
     int? minTime,
     int? maxTime,
     double? ratings,

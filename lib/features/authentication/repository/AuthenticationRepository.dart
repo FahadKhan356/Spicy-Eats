@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/commons/mysnackbar.dart';
+import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/authentication/passwordless_signup.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -37,20 +38,25 @@ class AuthenticationRepository {
       required String email,
       required String password}) async {
     try {
-      await supabaseClient.auth.signUp(
-          email: email,
-          password: password,
-          emailRedirectTo: 'io.supabase.spicyeats://login-callback/');
+      final res = await supabaseClient.auth.signUp(
+        email: email,
+        password: password,
+        // emailRedirectTo: 'io.supabase.spicyeats://login-callback/'
+      );
       await supabaseClient.from('users').insert({
         'id': supabaseClient.auth.currentSession?.user.id,
         'email': supabaseClient.auth.currentSession?.user.id,
       });
+      if (res.user != null) {
+        Navigator.pushNamedAndRemoveUntil(
+            context, Home.routename, (route) => false);
+      }
 
       mysnackbar(context: context, text: 'Authentication failed');
     } on AuthException catch (e) {
       mysnackbar(context: context, text: 'please enter email ${e.toString()}');
     } catch (e) {
-      mysnackbar(context: context, text: e.toString());
+      mysnackbar(context: context, text: 'error message in sign up $e');
     }
   }
 

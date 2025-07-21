@@ -199,7 +199,7 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
                     child: Container(
                       height: 30,
                       width: 30,
-                      color: Colors.white.withOpacity(0.5),
+                      color: Colors.white.withOpacity(0.2),
                       child: const Icon(
                         Icons.arrow_back,
                         size: 22,
@@ -226,7 +226,7 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
                       child: Container(
                         height: 40,
                         width: 40,
-                        color: Colors.white.withOpacity(0.5),
+                        color: Colors.white.withOpacity(0.2),
                         child: isfav
                             ? const Icon(
                                 Icons.favorite,
@@ -250,7 +250,7 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
               collapsedHeight: 80,
               flexibleSpace: FlexibleSpaceBar(
                 centerTitle: true,
-                titlePadding: EdgeInsets.only(bottom: 16, top: 10),
+                titlePadding: const EdgeInsets.only(bottom: 16, top: 10),
                 title: showTabBar
                     ? Center(
                         child: Column(
@@ -333,7 +333,7 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
                       bottomRight: Radius.circular(20)),
                   child: Image.network(
                     widget.restaurantData.restaurantImageUrl!,
-                    // 'https://mrqaapzhzeqvarrtfkgv.supabase.co/storage/v1/object/public/Restaurant_Registeration//8d019a6b-b66a-466e-99b9-c66f9745ba70/Restaurant_covers',
+                    //'https://mrqaapzhzeqvarrtfkgv.supabase.co/storage/v1/object/public/Restaurant_Registeration//8d019a6b-b66a-466e-99b9-c66f9745ba70/Restaurant_covers',
                     fit: BoxFit.cover,
                   ),
                 ),

@@ -228,9 +228,9 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                                   bottomLeft: Radius.circular(15),
                                   bottomRight: Radius.circular(15)),
                               child: Image.network(
-                                //'https://mrqaapzhzeqvarrtfkgv.supabase.co/storage/v1/object/public/Restaurant_Registeration//8d019a6b-b66a-466e-99b9-c66f9745ba70/Restaurant_covers',
-                                widget.restaurantData.restaurantImageUrl
-                                    .toString(),
+                                'https://mrqaapzhzeqvarrtfkgv.supabase.co/storage/v1/object/public/Restaurant_Registeration//8d019a6b-b66a-466e-99b9-c66f9745ba70/Restaurant_covers',
+                                // widget.restaurantData.restaurantImageUrl
+                                // .toString(),
                                 fit: BoxFit.cover,
                               ),
                             ),

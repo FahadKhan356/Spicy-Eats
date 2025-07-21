@@ -217,6 +217,9 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                         background: Image.network(
                           widget.dish!.dish_imageurl!,
                           fit: BoxFit.contain,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Icon(Icons.broken_image);
+                          },
                         ),
                       ),
                     ),
@@ -485,125 +488,125 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                             fontSize: 25, fontWeight: FontWeight.bold),
                       ),
                     )),
-                    widget.freqdihses != null
-                        ? SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                                childCount: widget.freqdihses!.length,
-                                (context, index) {
-                              final freqdish = widget.freqdihses![index];
-                              final freqdishes =
-                                  ref.watch(freqDishesProvider) ?? [];
-                              final selected = freqdishes.any(
-                                (element) =>
-                                    element.dish_name == freqdish.dish_name,
-                              );
-                              return CheckboxListTile(
-                                  checkColor: Colors.white,
-                                  activeColor: Colors.black,
+                    // widget.freqdihses != null
+                    //     ? SliverList(
+                    //         delegate: SliverChildBuilderDelegate(
+                    //             childCount: widget.freqdihses!.length,
+                    //             (context, index) {
+                    //           final freqdish = widget.freqdihses![index];
+                    //           final freqdishes =
+                    //               ref.watch(freqDishesProvider) ?? [];
+                    //           final selected = freqdishes.any(
+                    //             (element) =>
+                    //                 element.dish_name == freqdish.dish_name,
+                    //           );
+                    //           return CheckboxListTile(
+                    //               checkColor: Colors.white,
+                    //               activeColor: Colors.black,
 
-                                  // title: Text(
-                                  //   freqdish.dish_name.toString(),
-                                  // ),
-                                  subtitle: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.white,
-                                      border: Border.all(
-                                          width: 1, color: Colors.black38),
-                                    ),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Container(
-                                          height: 80,
-                                          width: 80,
-                                          color: Colors.white,
-                                          child: Image.network(
-                                            freqdish.dish_imageurl!,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              freqdish.dish_name.toString(),
-                                              style: const TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16,
-                                              ),
-                                            ),
-                                            Text(
-                                              '\$${freqdish.dish_price}',
-                                              style: const TextStyle(
-                                                color: Colors.red,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16,
-                                                decoration:
-                                                    TextDecoration.lineThrough,
-                                                decorationColor: Colors.red,
-                                                decorationThickness: 2,
-                                              ),
-                                            ),
-                                            Text(
-                                              '\$${freqdish.dish_discount}',
-                                              style: const TextStyle(
-                                                color: Colors.green,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16,
-                                                // decoration:
-                                                //     TextDecoration.lineThrough,
-                                                // decorationColor: Colors.red,
-                                                // decorationThickness: 2,
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  value: selected,
-                                  onChanged: (value) {
-                                    final newUpdatedList =
-                                        List<DishData>.from(freqdishes);
-                                    if (value == true) {
-                                      newUpdatedList.add(DishData(
-                                        isVariation: false,
-                                        dishid: freqdish.dishid,
-                                        dish_description:
-                                            freqdish.dish_description,
-                                        dish_price: freqdish.dish_price,
-                                        dish_discount: freqdish.dish_discount,
-                                        dish_imageurl: freqdish.dish_imageurl,
-                                        dish_name: freqdish.dish_name,
-                                        dish_schedule_meal: '',
-                                      ));
-                                    } else {
-                                      ref
-                                          .read(freqDishesProvider.notifier)
-                                          .update((state) {
-                                        return state = state!
-                                            .where((element) => !newUpdatedList
-                                                .contains(element.dish_name))
-                                            .toList();
-                                      });
-                                      newUpdatedList.removeWhere((element) =>
-                                          element.dishid == freqdish.dishid);
-                                    }
-                                    ref
-                                        .read(freqDishesProvider.notifier)
-                                        .state = newUpdatedList;
-                                  });
-                            }),
-                          )
-                        : const SliverToBoxAdapter(
-                            child: CircularProgressIndicator(),
-                          ),
+                    //               // title: Text(
+                    //               //   freqdish.dish_name.toString(),
+                    //               // ),
+                    //               subtitle: Container(
+                    //                 decoration: BoxDecoration(
+                    //                   borderRadius: BorderRadius.circular(10),
+                    //                   color: Colors.white,
+                    //                   border: Border.all(
+                    //                       width: 1, color: Colors.black38),
+                    //                 ),
+                    //                 child: Row(
+                    //                   crossAxisAlignment:
+                    //                       CrossAxisAlignment.center,
+                    //                   mainAxisAlignment:
+                    //                       MainAxisAlignment.spaceEvenly,
+                    //                   children: [
+                    //                     Container(
+                    //                       height: 80,
+                    //                       width: 80,
+                    //                       color: Colors.white,
+                    //                       child: Image.network(
+                    //                         freqdish.dish_imageurl!,
+                    //                         fit: BoxFit.cover,
+                    //                       ),
+                    //                     ),
+                    //                     Column(
+                    //                       crossAxisAlignment:
+                    //                           CrossAxisAlignment.start,
+                    //                       children: [
+                    //                         Text(
+                    //                           freqdish.dish_name.toString(),
+                    //                           style: const TextStyle(
+                    //                             color: Colors.black,
+                    //                             fontWeight: FontWeight.bold,
+                    //                             fontSize: 16,
+                    //                           ),
+                    //                         ),
+                    //                         Text(
+                    //                           '\$${freqdish.dish_price}',
+                    //                           style: const TextStyle(
+                    //                             color: Colors.red,
+                    //                             fontWeight: FontWeight.bold,
+                    //                             fontSize: 16,
+                    //                             decoration:
+                    //                                 TextDecoration.lineThrough,
+                    //                             decorationColor: Colors.red,
+                    //                             decorationThickness: 2,
+                    //                           ),
+                    //                         ),
+                    //                         Text(
+                    //                           '\$${freqdish.dish_discount}',
+                    //                           style: const TextStyle(
+                    //                             color: Colors.green,
+                    //                             fontWeight: FontWeight.bold,
+                    //                             fontSize: 16,
+                    //                             // decoration:
+                    //                             //     TextDecoration.lineThrough,
+                    //                             // decorationColor: Colors.red,
+                    //                             // decorationThickness: 2,
+                    //                           ),
+                    //                         )
+                    //                       ],
+                    //                     ),
+                    //                   ],
+                    //                 ),
+                    //               ),
+                    //               value: selected,
+                    //               onChanged: (value) {
+                    //                 final newUpdatedList =
+                    //                     List<DishData>.from(freqdishes);
+                    //                 if (value == true) {
+                    //                   newUpdatedList.add(DishData(
+                    //                     isVariation: false,
+                    //                     dishid: freqdish.dishid,
+                    //                     dish_description:
+                    //                         freqdish.dish_description,
+                    //                     dish_price: freqdish.dish_price,
+                    //                     dish_discount: freqdish.dish_discount,
+                    //                     dish_imageurl: freqdish.dish_imageurl,
+                    //                     dish_name: freqdish.dish_name,
+                    //                     dish_schedule_meal: '',
+                    //                   ));
+                    //                 } else {
+                    //                   ref
+                    //                       .read(freqDishesProvider.notifier)
+                    //                       .update((state) {
+                    //                     return state = state!
+                    //                         .where((element) => !newUpdatedList
+                    //                             .contains(element.dish_name))
+                    //                         .toList();
+                    //                   });
+                    //                   newUpdatedList.removeWhere((element) =>
+                    //                       element.dishid == freqdish.dishid);
+                    //                 }
+                    //                 ref
+                    //                     .read(freqDishesProvider.notifier)
+                    //                     .state = newUpdatedList;
+                    //               });
+                    //         }),
+                    //       )
+                    //     : const SliverToBoxAdapter(
+                    //         child: CircularProgressIndicator(),
+                    //       ),
                     const SliverToBoxAdapter(
                       child: SizedBox(
                         height: 100,

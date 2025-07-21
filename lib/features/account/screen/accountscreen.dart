@@ -4,7 +4,7 @@ import 'package:spicy_eats/features/Profile/repo/ProfileRepo.dart';
 import 'package:spicy_eats/features/Profile/screen/ProfileScreen.dart';
 import 'package:spicy_eats/features/account/commons/RowContainer.dart';
 import 'package:spicy_eats/features/authentication/controller/AuthenicationController.dart';
-import 'package:spicy_eats/features/authentication/repository/AuthenticationRepository.dart';
+import 'package:spicy_eats/features/orders/screens/order_screen.dart';
 
 class AccountScreen extends ConsumerStatefulWidget {
   static const String routename = '/Account-screen';
@@ -43,10 +43,10 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                       children: [
                         Text(
                           '${user!.firstname}${user.lastname}',
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 22),
                         ),
-                        Text(
+                        const Text(
                           'view profile',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         )
@@ -62,7 +62,10 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   rowContainer(
-                      icon: Icons.menu_book, onpressed: () {}, title: 'Orders'),
+                      icon: Icons.menu_book,
+                      onpressed: () =>
+                          Navigator.pushNamed(context, OrdersScreen.routename),
+                      title: 'Orders'),
                   rowContainer(
                       icon: Icons.favorite_border,
                       onpressed: () {},

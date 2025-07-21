@@ -12,7 +12,7 @@ class CusinesList extends StatelessWidget {
     return Container(
       height: size.width * 0.3,
       width: double.infinity,
-      //color: Colors.red,
+      // color: Colors.red,
       child: Column(
         children: [
           Expanded(
@@ -23,8 +23,8 @@ class CusinesList extends StatelessWidget {
                     children: [
                       Container(
                           margin: const EdgeInsets.all(10),
-                          height: size.width * 0.15,
-                          width: size.width * 0.15,
+                          height: size.width * 0.10,
+                          width: size.width * 0.10,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             // color: Colors.red,

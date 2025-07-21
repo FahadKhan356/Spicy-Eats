@@ -47,7 +47,8 @@ class _RestaurantContainerState extends ConsumerState<RestaurantContainer> {
               child: Stack(
                 children: [
                   Image.network(
-                    widget.image,
+                    // widget.image,
+                    'https://assets.epicurious.com/photos/62f16ed5fe4be95d5a460eed/1:1/w_4318,h_4318,c_limit/RoastChicken_RECIPE_080420_37993.jpg',
                     fit: BoxFit.cover,
                     width: double.maxFinite,
                   ),

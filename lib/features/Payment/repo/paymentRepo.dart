@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
+// import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
 import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
@@ -30,40 +30,40 @@ class PaymentRepo {
 
   Map<String, dynamic>? paymentintenddata = {};
 
-  showpaymentsheet(
-      BuildContext context, WidgetRef ref, List<CartModelNew> cart) async {
-    try {
-      final paymentResult =
-          await Stripe.instance.presentPaymentSheet().then((value) {
-        paymentintenddata = null;
-      }).onError((error, stackTrace) {
-        if (kDebugMode) {
-          print(error.toString() + stackTrace.toString());
-        }
-      });
-      if (paymentResult.status == PaymentIntentsStatus.Succeeded) {
-        clearingcart(ref: ref, cart: cart, context: context);
-        Navigator.pushNamed(context, Home.routename);
+  // showpaymentsheet(
+  //     BuildContext context, WidgetRef ref, List<CartModelNew> cart) async {
+  //   try {
+  //     final paymentResult =
+  //         await Stripe.instance.presentPaymentSheet().then((value) {
+  //       paymentintenddata = null;
+  //     }).onError((error, stackTrace) {
+  //       if (kDebugMode) {
+  //         print(error.toString() + stackTrace.toString());
+  //       }
+  //     });
+  //     // if (paymentResult.status == PaymentIntentsStatus.Succeeded) {
+  //     //   clearingcart(ref: ref, cart: cart, context: context);
+  //     //   Navigator.pushNamed(context, Home.routename);
 
-        // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        //   content: Text('order placed Successfully'),
-        //   behavior: SnackBarBehavior.floating,
-        //   margin: EdgeInsets.only(bottom: 150),
-        // ));
-      }
-    } on StripeException catch (error) {
-      if (kDebugMode) {
-        print(error);
-      }
-      showDialog(
-          context: context,
-          builder: (context) => const AlertDialog(
-                title: Text('Cancel'),
-              ));
-    } catch (e) {
-      print(e);
-    }
-  }
+  //       // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+  //       //   content: Text('order placed Successfully'),
+  //       //   behavior: SnackBarBehavior.floating,
+  //       //   margin: EdgeInsets.only(bottom: 150),
+  //       // ));
+  //     // }
+  //   } on StripeException catch (error) {
+  //     if (kDebugMode) {
+  //       print(error);
+  //     }
+  //     showDialog(
+  //         context: context,
+  //         builder: (context) => const AlertDialog(
+  //               title: Text('Cancel'),
+  //             ));
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 
   createintentpayment(double amount, String currency) async {
     try {
@@ -110,19 +110,19 @@ class PaymentRepo {
       }
 
       print("Received Payment Intent Data: $paymentintenddata");
-      await Stripe.instance
-          .initPaymentSheet(
-              paymentSheetParameters: SetupPaymentSheetParameters(
-        allowsDelayedPaymentMethods: true,
-        paymentIntentClientSecret: paymentintenddata!['client_secret'],
-        style: ThemeMode.light,
-        merchantDisplayName: 'any company',
-      ))
-          .then((value) {
-        print(value);
-      });
+      // await Stripe.instance
+      //     .initPaymentSheet(
+      //         paymentSheetParameters: SetupPaymentSheetParameters(
+      //   allowsDelayedPaymentMethods: true,
+      //   paymentIntentClientSecret: paymentintenddata!['client_secret'],
+      //   style: ThemeMode.light,
+      //   merchantDisplayName: 'any company',
+      // ))
+      //     .then((value) {
+      //   print(value);
+      // });
 
-      showpaymentsheet(context, ref, cart);
+      // showpaymentsheet(context, ref, cart);
     } catch (e) {
       print(e);
     }

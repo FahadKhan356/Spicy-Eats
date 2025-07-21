@@ -5,9 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Supabse%20Backend/supabase_config.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
+import 'package:spicy_eats/features/orders/screens/order_screen.dart';
 import 'package:spicy_eats/features/splashscreen/SplashScreen.dart';
 import 'package:spicy_eats/routes.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
+// import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:app_links/app_links.dart';
 
@@ -15,7 +16,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Supabase.initialize(url: supabaseUrl, anonKey: supabasekey);
   await dotenv.load(fileName: 'lib/.env');
-  Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
+  // Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
   // debugPaintSizeEnabled = true;
   runApp(const ProviderScope(child: MyApp()));
 }
@@ -77,9 +78,9 @@ class _MyAppState extends ConsumerState<MyApp> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _initialAuth();
+    // _initialAuth();
 
-    _initializeDeeplink();
+    // _initializeDeeplink();
     // _authstateSubscription =
     //     supabaseClient.auth.onAuthStateChange.listen((data) {
     //   final AuthChangeEvent event = data.event;
@@ -122,50 +123,50 @@ class _MyAppState extends ConsumerState<MyApp> {
             //drawerTheme: DrawerThemeData(backgroundColor: Colors.),
             tabBarTheme: TabBarTheme(),
             appBarTheme: AppBarTheme(backgroundColor: Colors.white)),
-        home: Scaffold(body: const SplashScreen()
+        home: const SplashScreen()
 
-            //SplashScreen()
-            //ProfileScreen(),
-            // PaymentScreen()
-            //  AnimatedAddButton()
-            // DishMenuScreen(),
-            //MyFinalScrollScreen(),
-            //MyCustomSliverScreen(),
-            //CustomScrollTransition(),
-            //Mian_rappi_concept_app(),
-            // SliverAppBarWithDynamicTabs()
-            // QuantityButton1(),
+        //SplashScreen()
+        //ProfileScreen(),
+        // PaymentScreen()
+        //  AnimatedAddButton()
+        // DishMenuScreen(),
+        //MyFinalScrollScreen(),
+        //MyCustomSliverScreen(),
+        //CustomScrollTransition(),
+        //Mian_rappi_concept_app(),
+        // SliverAppBarWithDynamicTabs()
+        // QuantityButton1(),
 
-            //BasketScreen(dish: null, totalprice: 122, quantity: 2),
-            // supabaseClient.auth.currentSession != null
-            //     ? Home()
-            //     : PasswordlessScreen(ref: ref),
-            // supabaseClient.auth.currentSession != null
-            //     ? screen[currentindex]
-            //     : PasswordlessScreen(
-            //         ref: ref,
-            //       ),
-            //AddItemScreen(),
-            //supabaseClient.auth.currentSession != null
-            //     ? screen[currentindex]
-            //     : PasswordlessScreen(
-            //         ref: ref,
-            //       ),
-            //AddItemScreen(),
-            //supabaseClient.auth.currentSession != null
-            //     ? screen[currentindex]
-            //     : PasswordlessScreen(
-            //         ref: ref,
-            //       ),
-            //TimePicker(),
+        //BasketScreen(dish: null, totalprice: 122, quantity: 2),
+        // supabaseClient.auth.currentSession != null
+        //     ? Home()
+        //     : PasswordlessScreen(ref: ref),
+        // supabaseClient.auth.currentSession != null
+        //     ? screen[currentindex]
+        //     : PasswordlessScreen(
+        //         ref: ref,
+        //       ),
+        //AddItemScreen(),
+        //supabaseClient.auth.currentSession != null
+        //     ? screen[currentindex]
+        //     : PasswordlessScreen(
+        //         ref: ref,
+        //       ),
+        //AddItemScreen(),
+        //supabaseClient.auth.currentSession != null
+        //     ? screen[currentindex]
+        //     : PasswordlessScreen(
+        //         ref: ref,
+        //       ),
+        //TimePicker(),
 
-            //Shapes(),
-            //TimePicker(),
-            // supabaseClient.auth.currentSession != null
-            //     ? screen[currentindex]
-            //     : PasswordlessScreen(
-            //         ref: ref,
-            //       ),
-            ));
+        //Shapes(),
+        //TimePicker(),
+        // supabaseClient.auth.currentSession != null
+        //     ? screen[currentindex]
+        //     : PasswordlessScreen(
+        //         ref: ref,
+        //       ),
+        );
   }
 }
