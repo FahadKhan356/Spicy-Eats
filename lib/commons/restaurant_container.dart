@@ -46,11 +46,14 @@ class _RestaurantContainerState extends ConsumerState<RestaurantContainer> {
               aspectRatio: 16 / 8,
               child: Stack(
                 children: [
-                  Image.network(
-                    // widget.image,
-                    'https://assets.epicurious.com/photos/62f16ed5fe4be95d5a460eed/1:1/w_4318,h_4318,c_limit/RoastChicken_RECIPE_080420_37993.jpg',
-                    fit: BoxFit.cover,
-                    width: double.maxFinite,
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.network(
+                      widget.image,
+                      // 'https://assets.epicurious.com/photos/62f16ed5fe4be95d5a460eed/1:1/w_4318,h_4318,c_limit/RoastChicken_RECIPE_080420_37993.jpg',
+                      fit: BoxFit.cover,
+                      width: double.maxFinite,
+                    ),
                   ),
                   Positioned(
                     right: size.width * 0.03,
@@ -68,12 +71,12 @@ class _RestaurantContainerState extends ConsumerState<RestaurantContainer> {
                           child: isFav
                               ? Icon(
                                   Icons.favorite,
-                                  size: size.width * 0.09,
-                                  color: Colors.red,
+                                  size: size.width * 0.06,
+                                  color: Colors.orange[900],
                                 )
                               : Icon(
                                   Icons.favorite_outline_rounded,
-                                  size: size.width * 0.09,
+                                  size: size.width * 0.06,
                                   color: Colors.white,
                                 )),
                     ),
@@ -94,7 +97,7 @@ class _RestaurantContainerState extends ConsumerState<RestaurantContainer> {
                       Text(
                         widget.name,
                         style: TextStyle(
-                            fontSize: size.width * 0.045,
+                            fontSize: size.width * 0.040,
                             color: Colors.black,
                             fontWeight: FontWeight.w500,
                             overflow: TextOverflow.ellipsis),
@@ -104,7 +107,7 @@ class _RestaurantContainerState extends ConsumerState<RestaurantContainer> {
                         Text(
                           "\$${widget.price}",
                           style: TextStyle(
-                              fontSize: size.width * 0.04,
+                              fontSize: size.width * 0.035,
                               color: Colors.black54,
                               fontWeight: FontWeight.bold),
                         ),
@@ -114,7 +117,7 @@ class _RestaurantContainerState extends ConsumerState<RestaurantContainer> {
                         Text(
                           "${widget.mindeliverytime}-${widget.maxdeliverytime}",
                           style: TextStyle(
-                              fontSize: size.width * 0.04,
+                              fontSize: size.width * 0.035,
                               color: Colors.black54,
                               fontWeight: FontWeight.bold),
                         ),
@@ -148,14 +151,14 @@ class _RestaurantContainerState extends ConsumerState<RestaurantContainer> {
                 height: size.width * 0.1,
                 width: size.width * 0.1,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: const Color(0xFFD1C4E9)),
+                    borderRadius: BorderRadius.circular(30),
+                    color: Colors.orange[900]),
                 child: Center(
                   child: Text(
                     widget.ratings.toString(),
                     style: TextStyle(
-                        fontSize: size.width * 0.04,
-                        color: Colors.black,
+                        fontSize: size.width * 0.035,
+                        color: Colors.white,
                         fontWeight: FontWeight.bold),
                   ),
                 ),

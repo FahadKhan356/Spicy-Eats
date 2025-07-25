@@ -195,10 +195,10 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(20),
                     child: Container(
-                      height: 30,
-                      width: 30,
+                      height: 40,
+                      width: 40,
                       color: Colors.white.withOpacity(0.2),
                       child: const Icon(
                         Icons.arrow_back,
@@ -213,7 +213,7 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(20),
                     child: InkWell(
                       hoverColor: Colors.red,
                       onTap: () => ref
@@ -228,10 +228,10 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
                         width: 40,
                         color: Colors.white.withOpacity(0.2),
                         child: isfav
-                            ? const Icon(
+                            ? Icon(
                                 Icons.favorite,
                                 size: 22,
-                                color: Colors.red,
+                                color: Colors.orange[900],
                               )
                             : const Icon(
                                 Icons.favorite_outline_sharp,
@@ -260,7 +260,7 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
                               '${widget.restaurantData.restaurantName}',
                               style: const TextStyle(
                                   color: Colors.black,
-                                  fontSize: 22,
+                                  fontSize: 20,
                                   fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(
@@ -272,6 +272,7 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     RatingBar.builder(
+                                        ignoreGestures: true,
                                         allowHalfRating: true,
                                         initialRating: widget
                                             .restaurantData.averageRatings!

@@ -137,251 +137,268 @@ class _CartCardState extends ConsumerState<CartCard> {
         ref.read(DummyLogicProvider).getTotalQuantityofdish(ref, dish!.dishid!);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Container(
-          height: widget.cardHeight ?? 130,
-          width: double.maxFinite,
-          child: Card(
-              surfaceTintColor: Colors.white,
-              margin: const EdgeInsets.symmetric(vertical: 10),
-              elevation: 1, // widget.elevation ?? 5,
-              color: widget.cardColor ?? Colors.white,
-              child: Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Row(
-                        children: [
-                          // AnimatedAddButton(),
-                          Container(
-                              // color: Colors.red,
-                              height: widget.imageHeight,
-                              width: widget.imageWidth,
-                              child:
-                                  // const Text('asda'),
-                                  Image.network(
-                                errorBuilder: (context, error, stackTrace) {
-                                  return const Icon(Icons.broken_image);
-                                },
-                                widget.dish!.dish_imageurl.toString(),
-                                fit: BoxFit.cover,
-                              )),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Expanded(
-                            child: Container(
-                              // color: Colors.blue,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    widget.dish!.dish_name.toString(),
-                                    style: const TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.black54,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                  Text(
-                                    widget.dish!.dish_description.toString(),
-                                    maxLines: 1,
-                                    style: const TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.black54,
-                                        overflow: TextOverflow.ellipsis,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                  Text(
-                                    '\$${widget.dish!.dish_price!.toStringAsFixed(1)}',
-                                    style: const TextStyle(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.green,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child:
+            //  Container(
+            //     height: widget.cardHeight ?? 160,
+            //     width: double.maxFinite,
+            // child:
+            Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.black26)),
+                height: widget.cardHeight ?? 130,
+                width: double.maxFinite,
+                // surfaceTintColor: Colors.orange,
+                margin: const EdgeInsets.symmetric(vertical: 10),
+                // elevation: 1, // widget.elevation ?? 5,
+                // color: widget.cardColor ?? Colors.orange,
+                child: Row(
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              // AnimatedAddButton(),
+                              SizedBox(
+                                  // color: Colors.red,
+                                  height: widget.imageHeight,
+                                  width: widget.imageWidth,
+                                  child:
+                                      // const Text('asda'),
+                                      ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.network(
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return const Icon(Icons.broken_image);
+                                      },
+                                      widget.dish!.dish_imageurl.toString(),
+                                      fit: BoxFit.cover,
                                     ),
-                                  )
-                                ],
+                                  )),
+                              const SizedBox(
+                                width: 5,
                               ),
-                            ),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      widget.dish!.dish_name.toString(),
+                                      style: const TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      widget.dish!.dish_description.toString(),
+                                      maxLines: 1,
+                                      style: const TextStyle(
+                                          fontSize: 13,
+                                          color: Colors.black87,
+                                          overflow: TextOverflow.ellipsis,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                    Text(
+                                      '\$${widget.dish!.dish_price!.toStringAsFixed(1)}',
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.orange[600],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
-                    Flexible(
-                      flex: 0,
-                      child: Container(
-                          // color: Colors.amber,
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                            if (dish.isVariation == true) ...[
-                              InkWell(
-                                onTap: () async {
-                                  _debouncer.run(() async {
-                                    Navigator.pushNamed(
-                                        context, DishMenuVariation.routename,
-                                        arguments: {
-                                          'dish': widget.dish,
-                                          'iscart': false,
-                                          'cartdish': widget.cartItem,
-                                          'isbasket': false,
-                                          'isdishscreen': true,
-                                        });
-                                    // }
-                                  });
-                                },
-                                child: Container(
-                                  height: widget.addbuttonHeight ?? 40,
-                                  width: widget.addbuttonWidth ?? 40,
+                      Flexible(
+                        flex: 0,
+                        child: Container(
+                            // color: Colors.amber,
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                              if (dish.isVariation == true) ...[
+                                InkWell(
+                                  onTap: () async {
+                                    _debouncer.run(() async {
+                                      Navigator.pushNamed(
+                                          context, DishMenuVariation.routename,
+                                          arguments: {
+                                            'dish': widget.dish,
+                                            'iscart': false,
+                                            'cartdish': widget.cartItem,
+                                            'isbasket': false,
+                                            'isdishscreen': true,
+                                          });
+                                      // }
+                                    });
+                                  },
+                                  child: Container(
+                                    height: widget.addbuttonHeight ?? 40,
+                                    width: widget.addbuttonWidth ?? 40,
+                                    decoration: const BoxDecoration(
+                                        // boxShadow: [
+                                        //   BoxShadow(
+                                        //       color: Colors.black54,
+                                        //       blurRadius: 6,
+                                        //       offset: Offset(-1, -1),
+                                        //       spreadRadius: 1)
+                                        // ],
+                                        color: Colors.black,
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(10),
+                                            bottomRight: Radius.circular(10))),
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: cart!.dish_id == dish.dishid &&
+                                              dish.isVariation
+                                          ? Text(
+                                              quantity.toString(),
+                                              style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16),
+                                            )
+                                          : const Icon(
+                                              Icons.add,
+                                              size: 25,
+                                              color: Colors.white,
+                                            ),
+                                    ),
+                                  ),
+                                ),
+                              ] else ...[
+                                const SizedBox()
+                              ],
+                              if (dish.isVariation == false)
+                                // && cart!.dish_id != dish.dishid)
+                                AnimatedContainer(
                                   decoration: const BoxDecoration(
-                                      // boxShadow: [
-                                      //   BoxShadow(
-                                      //       color: Colors.black54,
-                                      //       blurRadius: 6,
-                                      //       offset: Offset(-1, -1),
-                                      //       spreadRadius: 1)
-                                      // ],
                                       color: Colors.black,
                                       borderRadius: BorderRadius.only(
                                           topLeft: Radius.circular(10),
                                           bottomRight: Radius.circular(10))),
-                                  child: Align(
-                                    alignment: Alignment.center,
-                                    child: cart!.dish_id == dish.dishid &&
-                                            dish.isVariation
-                                        ? Text(
-                                            quantity.toString(),
-                                            style: const TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16),
-                                          )
-                                        : const Icon(
-                                            Icons.add,
-                                            size: 25,
-                                            color: Colors.white,
-                                          ),
-                                  ),
-                                ),
-                              ),
-                            ] else ...[
-                              const SizedBox()
-                            ],
-                            if (dish.isVariation == false)
-                              // && cart!.dish_id != dish.dishid)
-                              AnimatedContainer(
-                                decoration: const BoxDecoration(
-                                    color: Colors.black,
-                                    borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(10),
-                                        bottomRight: Radius.circular(10))),
-                                width: 40,
-                                height: isExpanded ? 100 : 40,
-                                curve: Curves.easeInOut,
-                                duration: const Duration(milliseconds: 300),
-                                child: isExpanded
-                                    ? FittedBox(
-                                        child: Column(
-                                          children: [
-                                            iconButton(Icons.add, () {
-                                              final currentcarmodel =
-                                                  cartlistener.firstWhere(
-                                                      (e) =>
-                                                          e.dish_id ==
-                                                          dish.dishid,
-                                                      orElse: () =>
-                                                          CartModelNew(
-                                                              quantity: 1));
+                                  width: 40,
+                                  height: isExpanded ? 100 : 40,
+                                  curve: Curves.easeInOut,
+                                  duration: const Duration(milliseconds: 300),
+                                  child: isExpanded
+                                      ? FittedBox(
+                                          child: Column(
+                                            children: [
+                                              iconButton(Icons.add, () {
+                                                final currentcarmodel =
+                                                    cartlistener.firstWhere(
+                                                        (e) =>
+                                                            e.dish_id ==
+                                                            dish.dishid,
+                                                        orElse: () =>
+                                                            CartModelNew(
+                                                                quantity: 1));
 
-                                              print(currentcarmodel.cart_id);
-                                              increaseQuantity(
-                                                  dishid: dish.dishid!);
-                                            }),
-                                            AnimatedSwitcher(
-                                                duration: const Duration(
-                                                    milliseconds: 200),
-                                                transitionBuilder:
-                                                    (child, animation) =>
-                                                        ScaleTransition(
-                                                          scale: animation,
-                                                          child: child,
-                                                        ),
-                                                child: index != -1
-                                                    ? Text(
-                                                        quantity.toString(),
-                                                        key: ValueKey<int>(
-                                                            quantity),
-                                                        style: const TextStyle(
-                                                            fontSize: 16,
-                                                            color:
-                                                                Colors.white),
-                                                      )
-                                                    : const Text(
-                                                        '0',
-                                                        key: ValueKey<int>(0),
-                                                        style: TextStyle(
-                                                            fontSize: 16,
-                                                            color:
-                                                                Colors.white),
-                                                      )),
-                                            iconButton(Icons.remove, () {
-                                              decreaseQuantity(
-                                                  dishid: dish.dishid!);
-                                            })
-                                          ],
-                                        ),
-                                      )
-                                    : InkWell(
-                                        onTap: () {
-                                          addtocart(dish: dish);
-                                        },
-                                        child: cartlistener.any((element) =>
-                                                element.dish_id == dish.dishid)
-                                            ? Container(
-                                                height: 40,
-                                                width: 40,
-                                                decoration: const BoxDecoration(
-                                                    // color: Colors.black,
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                            topLeft: Radius
-                                                                .circular(10),
-                                                            bottomRight:
-                                                                Radius.circular(
-                                                                    10))),
-                                                child: Center(
-                                                  child: Text(
-                                                    quantity.toString(),
-                                                    style: const TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.bold),
+                                                print(currentcarmodel.cart_id);
+                                                increaseQuantity(
+                                                    dishid: dish.dishid!);
+                                              }),
+                                              AnimatedSwitcher(
+                                                  duration: const Duration(
+                                                      milliseconds: 200),
+                                                  transitionBuilder:
+                                                      (child, animation) =>
+                                                          ScaleTransition(
+                                                            scale: animation,
+                                                            child: child,
+                                                          ),
+                                                  child: index != -1
+                                                      ? Text(
+                                                          quantity.toString(),
+                                                          key: ValueKey<int>(
+                                                              quantity),
+                                                          style:
+                                                              const TextStyle(
+                                                                  fontSize: 16,
+                                                                  color: Colors
+                                                                      .white),
+                                                        )
+                                                      : const Text(
+                                                          '0',
+                                                          key: ValueKey<int>(0),
+                                                          style: TextStyle(
+                                                              fontSize: 16,
+                                                              color:
+                                                                  Colors.white),
+                                                        )),
+                                              iconButton(Icons.remove, () {
+                                                decreaseQuantity(
+                                                    dishid: dish.dishid!);
+                                              })
+                                            ],
+                                          ),
+                                        )
+                                      : InkWell(
+                                          onTap: () {
+                                            addtocart(dish: dish);
+                                          },
+                                          child: cartlistener.any((element) =>
+                                                  element.dish_id ==
+                                                  dish.dishid)
+                                              ? Container(
+                                                  height: 40,
+                                                  width: 40,
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                          // color: Colors.black,
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                                  topLeft: Radius
+                                                                      .circular(
+                                                                          10),
+                                                                  bottomRight: Radius
+                                                                      .circular(
+                                                                          10))),
+                                                  child: Center(
+                                                    child: Text(
+                                                      quantity.toString(),
+                                                      style: const TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
                                                   ),
-                                                ),
-                                              )
-                                            : Container(
-                                                height: 40,
-                                                width: 40,
-                                                decoration: const BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                            topLeft: Radius
-                                                                .circular(10),
-                                                            bottomRight:
-                                                                Radius.circular(
-                                                                    10))),
-                                                child: const Icon(
-                                                  Icons.add,
-                                                  color: Colors.white,
-                                                ),
-                                              )),
-                              ),
-                          ])),
-                    )
-                  ]))),
-    );
+                                                )
+                                              : Container(
+                                                  height: 40,
+                                                  width: 40,
+                                                  decoration: const BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.only(
+                                                              topLeft: Radius
+                                                                  .circular(10),
+                                                              bottomRight:
+                                                                  Radius
+                                                                      .circular(
+                                                                          10))),
+                                                  child: const Icon(
+                                                    Icons.add,
+                                                    color: Colors.white,
+                                                  ),
+                                                )),
+                                ),
+                            ])),
+                      )
+                    ]))
+        // ),
+        );
   }
 }
 

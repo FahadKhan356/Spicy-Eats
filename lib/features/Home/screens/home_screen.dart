@@ -16,7 +16,7 @@ import 'dart:math' as math;
 import 'package:spicy_eats/main.dart';
 import 'package:spicy_eats/tabexample.dart/RestaurantMenuScreen.dart';
 
-var searchProvider = StateProvider<bool>((ref) => false);
+// var searchProvider = StateProvider<bool>((ref) => false);
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -124,6 +124,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    bool isSearch = false;
     final showCart = ref.watch(showCartButton);
     final cartsize = ref.watch(cartLength);
     var size = MediaQuery.of(context).size;
@@ -145,7 +146,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           backgroundColor: Colors.white,
           extendBody: true,
           appBar: PreferredSize(
-              preferredSize: ref.read(searchProvider.notifier).state == true
+              preferredSize: isSearch == false
                   ? Size.fromHeight(size.width * 0.29)
                   : Size.fromHeight(size.width * 0.18),
               child: AppBar(
@@ -190,101 +191,108 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                               ),
                             ]),
                           ),
-                          Row(
-                            children: [
-                              Container(
-                                height: 50,
-                                width: 50,
-                                decoration: BoxDecoration(
-                                    color:
-                                        const Color.fromARGB(255, 94, 81, 81),
-                                    //color: Colors.white70,
-                                    // color: Color(0x2E2E2E),
-                                    // color: Color.fromARGB(0, 92, 86, 86),
-                                    borderRadius: BorderRadius.circular(25)
-                                    // Hex color in Flutter
-                                    ),
-                                child: Center(
-                                  child: IconButton(
-                                    icon: const Icon(Icons.search,
-                                        size: 30, color: Colors.white),
-                                    onPressed: () {
-                                      //issearch = !issearch;
-                                      ref.read(searchProvider.notifier).state =
-                                          !ref
-                                              .read(searchProvider.notifier)
-                                              .state;
-                                    },
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Stack(
-                                children: [
-                                  Container(
-                                    height: 50,
-                                    width: 50,
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      isSearch = !isSearch;
+                                      print(isSearch);
+                                    });
+                                  },
+                                  child: Container(
+                                    height: 40,
+                                    width: 40,
                                     decoration: BoxDecoration(
-                                      color:
-                                          const Color.fromARGB(255, 94, 81, 81),
-
-                                      // color: Colors.red,
-                                      borderRadius: BorderRadius.circular(
-                                          size.width * 0.12 / 2),
-                                    ),
+                                        color: Colors.orange[900],
+                                        //color: Colors.white70,
+                                        // color: Color(0x2E2E2E),
+                                        // color: Color.fromARGB(0, 92, 86, 86),
+                                        borderRadius: BorderRadius.circular(20)
+                                        // Hex color in Flutter
+                                        ),
                                     child: Center(
                                       child: IconButton(
-                                          onPressed: () {},
-                                          icon: const Icon(
-                                            Icons.shopping_cart,
-                                            size: 30,
-                                            color: Colors.white,
-                                          )),
+                                        icon: const Icon(Icons.search,
+                                            size: 25, color: Colors.white),
+                                        onPressed: () {
+                                          setState(() {
+                                            isSearch = !isSearch;
+                                            print(isSearch);
+                                          });
+                                        },
+                                      ),
                                     ),
                                   ),
-                                  showCart
-                                      ? Positioned(
-                                          top: 5,
-                                          right: 0,
-                                          child: Container(
-                                            height: 25,
-                                            width: 25,
-                                            decoration: BoxDecoration(
-                                              color:
-                                                  Colors.red.withOpacity(0.8),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Stack(
+                                  children: [
+                                    Container(
+                                      height: 40,
+                                      width: 40,
+                                      decoration: BoxDecoration(
+                                        color: Colors.orange[900],
+                                        borderRadius: BorderRadius.circular(
+                                            // size.width * 0.12 / 2
+                                            20),
+                                      ),
+                                      child: Center(
+                                        child: IconButton(
+                                            onPressed: () {},
+                                            icon: const Icon(
+                                              Icons.shopping_cart,
+                                              size: 25,
+                                              color: Colors.white,
+                                            )),
+                                      ),
+                                    ),
+                                    showCart
+                                        ? Positioned(
+                                            top: 5,
+                                            right: 0,
+                                            child: Container(
+                                              height: 25,
+                                              width: 25,
+                                              decoration: BoxDecoration(
+                                                color:
+                                                    Colors.red.withOpacity(0.8),
 
-                                              // color: Colors.red,
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                12.5,
-                                                // size.width * 0.12 / 2
+                                                // color: Colors.red,
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                  12.5,
+                                                  // size.width * 0.12 / 2
+                                                ),
+                                              ),
+                                              child: Center(
+                                                child: Text(
+                                                  '$cartsize',
+                                                  style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
                                               ),
                                             ),
-                                            child: Center(
-                                              child: Text(
-                                                '$cartsize',
-                                                style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 15,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                      : const SizedBox(),
-                                ],
-                              ),
-                            ],
+                                          )
+                                        : const SizedBox(),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
                       const SizedBox(
                         height: 10,
                       ),
-                      ref.read(searchProvider.notifier).state == true
+                      isSearch == true
                           ? AnimatedSize(
                               duration: const Duration(microseconds: 900),
                               curve: Curves.linear,
@@ -344,6 +352,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                           child: SingleChildScrollView(
                             child: Column(
                               children: [
+                                const SizedBox(
+                                  height: 20,
+                                ),
                                 const CusinesList(),
                                 const SizedBox(height: 10),
                                 Padding(
@@ -373,25 +384,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                           arguments: restaurantData[index],
                                         );
                                       },
-                                      child: RestaurantContainer(
-                                        name: restaurantData[index]
-                                            .restaurantName
-                                            .toString(),
-                                        price: restaurantData[index]
-                                            .deliveryFee
-                                            .toString(),
-                                        image: restaurantData[index]
-                                            .restaurantImageUrl
-                                            .toString(),
-                                        mindeliverytime:
-                                            restaurantData[index].minTime!,
-                                        maxdeliverytime:
-                                            restaurantData[index].maxTime!,
-                                        ratings: restaurantData[index]
-                                            .averageRatings!,
-                                        restid: restaurantData[index].restuid!,
-                                        userid:
-                                            supabaseClient.auth.currentUser!.id,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10.0, vertical: 20),
+                                        child: RestaurantContainer(
+                                          name: restaurantData[index]
+                                              .restaurantName
+                                              .toString(),
+                                          price: restaurantData[index]
+                                              .deliveryFee
+                                              .toString(),
+                                          image: restaurantData[index]
+                                              .restaurantImageUrl
+                                              .toString(),
+                                          mindeliverytime:
+                                              restaurantData[index].minTime!,
+                                          maxdeliverytime:
+                                              restaurantData[index].maxTime!,
+                                          ratings: restaurantData[index]
+                                              .averageRatings!,
+                                          restid:
+                                              restaurantData[index].restuid!,
+                                          userid: supabaseClient
+                                              .auth.currentUser!.id,
+                                        ),
                                       ),
                                     ),
                                   ),

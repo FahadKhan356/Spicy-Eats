@@ -117,6 +117,7 @@ class _MapLocationPickerState extends State<CustomMap> {
   bool _move = false;
   Timer? _timer;
   final MapController _controller = MapController();
+  final TextEditingController _searchController = TextEditingController();
   final List<Location> _locationList = [];
   MapType _mapType = MapType.normal;
 
@@ -124,10 +125,38 @@ class _MapLocationPickerState extends State<CustomMap> {
 
   double _latitude = -6.984072660841485;
   double _longitude = 110.40950678599624;
+  Timer? _debounce;
+
+  void _onSearchChanged() {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+    _debounce = Timer(const Duration(milliseconds: 500), () async {
+      final value = _searchController.text;
+      if (value.isNotEmpty) {
+        _error = false;
+        setState(() {});
+        try {
+          _locationList.clear();
+          _locationList.addAll(await locationFromAddress(value));
+
+          if (_locationList.isEmpty) _error = true;
+        } catch (e) {
+          _error = true;
+        }
+      } else {
+        _locationList.clear();
+        _error = false;
+      }
+      setState(() {});
+    });
+  }
 
   @override
   void initState() {
     super.initState();
+    _searchController.addListener(() {
+      _searchController.addListener(_onSearchChanged);
+    });
     _latitude = widget.initialLatitude ?? -6.984072660841485;
     _longitude = widget.initialLongitude ?? 110.40950678599624;
 
@@ -159,47 +188,51 @@ class _MapLocationPickerState extends State<CustomMap> {
   }
 
   @override
+  void dispose() {
+    _searchController.dispose();
+    _searchController.removeListener(_onSearchChanged);
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Widget searchBar() {
       return widget.searchBarEnabled
           ? Column(
               children: [
-                Container(
-                  decoration: const BoxDecoration(boxShadow: [
-                    BoxShadow(
-                        color: Colors.black45,
-                        spreadRadius: 1,
-                        blurRadius: 4,
-                        offset: Offset(1, 1)),
-                  ]),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
                   child: TextField(
+                    controller: _searchController,
                     style: widget.searchTextStyle,
                     textInputAction: TextInputAction.search,
-                    onSubmitted: (value) async {
-                      if (value.isNotEmpty) {
-                        _error = false;
-                        setState(() {});
-                        try {
-                          _locationList.clear();
-                          _locationList
-                              .addAll(await locationFromAddress(value));
+                    // onSubmitted: (value) async {
+                    //   if (value.isNotEmpty) {
+                    //     _error = false;
+                    //     setState(() {});
+                    //     try {
+                    //       _locationList.clear();
+                    //       _locationList
+                    //           .addAll(await locationFromAddress(value));
 
-                          if (_locationList.isNotEmpty) {
-                          } else {
-                            _error = true;
-                          }
-                        } catch (e) {
-                          _error = true;
-                        }
-                        setState(() {});
-                      } else {
-                        _locationList.clear();
-                        _error = false;
-                        setState(() {});
-                      }
-                    },
+                    //       if (_locationList.isNotEmpty) {
+                    //       } else {
+                    //         _error = true;
+                    //       }
+                    //     } catch (e) {
+                    //       _error = true;
+                    //     }
+                    //     setState(() {});
+                    //   } else {
+                    //     _locationList.clear();
+                    //     _error = false;
+                    //     setState(() {});
+                    //   }
+                    // },
                     decoration: widget.searchBarDecoration ??
                         InputDecoration(
+                          border: InputBorder.none,
                           prefixIcon: Icon(
                             Icons.search,
                             color: widget.indicatorColor,
@@ -227,20 +260,24 @@ class _MapLocationPickerState extends State<CustomMap> {
                                   16);
                               _locationResult = result;
                               _locationList.clear();
+                              FocusScope.of(context).unfocus(); // ✅
+                              _searchController.clear();
                               setState(() {});
                             },
                           );
                         },
                         itemCount: _locationList.length,
                         shrinkWrap: true,
-                        physics: AlwaysScrollableScrollPhysics(),
+                        physics: const AlwaysScrollableScrollPhysics(),
                       )
                     : Container(),
                 _error
                     ? Container(
+                        decoration: BoxDecoration(
+                            color: widget.backgroundColor ?? Colors.white,
+                            borderRadius: BorderRadius.circular(10)),
                         width: double.infinity,
                         padding: const EdgeInsets.all(10),
-                        color: widget.backgroundColor ?? Colors.white,
                         child: Text(
                           "Location not found",
                           style: widget.searchTextStyle,
@@ -277,7 +314,7 @@ class _MapLocationPickerState extends State<CustomMap> {
                     children: [
                       widget.leadingIcon ??
                           Icon(
-                            Icons.location_city,
+                            Icons.location_on,
                             color: widget.indicatorColor,
                           ),
                       const SizedBox(
@@ -289,7 +326,7 @@ class _MapLocationPickerState extends State<CustomMap> {
                         children: [
                           Text(
                             _locationResult?.locationName ??
-                                "Location not found",
+                                "Name not found. Tap close by.",
                             style: widget.locationNameTextStyle ??
                                 Theme.of(context).textTheme.titleMedium,
                           ),
@@ -509,7 +546,7 @@ class _MapLocationPickerState extends State<CustomMap> {
       children: [
         TileLayer(
           urlTemplate: _mapType == MapType.normal
-              ? "http://tile.openstreetmap.org/{z}/{x}/{y}.png"
+              ? "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=7b2RKYzYW5lBAVIkQzK3" // ? "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
               : 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.jpg',
           userAgentPackageName: 'com.example.app',
         ),
@@ -586,6 +623,7 @@ class _LocationItemState extends State<LocationItem> {
   List<Placemark> _placemarks = [];
 
   _getLocationResult() async {
+    if (!mounted) return;
     _placemarks = await placemarkFromCoordinates(
         widget.data.latitude, widget.data.longitude);
     setState(() {});
@@ -594,6 +632,7 @@ class _LocationItemState extends State<LocationItem> {
   @override
   void initState() {
     super.initState();
+
     _getLocationResult();
   }
 

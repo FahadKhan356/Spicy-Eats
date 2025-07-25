@@ -424,7 +424,7 @@ class _RappiProductState extends ConsumerState<RappiProduct> {
         elevation: 0,
         cardColor: null,
         dish: widget.dish,
-        imageHeight: 120,
+        imageHeight: 140,
         imageWidth: 120,
         cartItem: widget.cartItem!,
         userId: widget.userId,
