@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
 import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
 import 'package:spicy_eats/diegoveloper%20example/bloc.dart';
 import 'package:spicy_eats/diegoveloper%20example/main_rappi_concept_app.dart';
+import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
 import 'package:spicy_eats/features/Home/repository/homerespository.dart';
 import 'package:spicy_eats/features/Home/screens/home_screen.dart';
@@ -99,7 +99,7 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
       }
     });
 
-    ref.read(DummyLogicProvider).fetchCart(ref, userId!).then((value) {
+    ref.read(cartReopProvider).fetchCart(ref, userId!).then((value) {
       cartFetched = true;
       final cart = ref.read(cartProvider.notifier).state;
       if (cart.isNotEmpty) {

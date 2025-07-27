@@ -10,7 +10,7 @@ import 'package:spicy_eats/main.dart';
 
 var cartProvider = StateProvider<List<CartModelNew>>((ref) => []);
 var cartPriceSumProvider = StateProvider<double>((ref) => 0);
-var DummyLogicProvider = Provider((ref) => Dummylogics());
+var cartReopProvider = Provider((ref) => CartRepository());
 
 //debouncer class to prevent race condition
 class Debouncer {
@@ -42,7 +42,7 @@ class Mutex {
   }
 }
 
-class Dummylogics {
+class CartRepository {
   final _mutex = Mutex();
   //fetch cart
   Future<void> fetchCart(WidgetRef ref, String userId) async {
@@ -120,7 +120,7 @@ class Dummylogics {
 
       if (index != -1 && variations == null) {
         //If item exists, update quantity
-        items[index].quantity++;
+        items[index].quantity += quantity;
         items[index].tprice = discountprice != null
             ? items[index].quantity * discountprice
             : items[index].quantity * price!;
@@ -330,7 +330,7 @@ class Dummylogics {
 
 //remove item in basket
 
-  Future<void> removeitembasket({
+  Future<void> removeItemFromBasket({
     required int cartid,
     required WidgetRef ref,
   }) async {

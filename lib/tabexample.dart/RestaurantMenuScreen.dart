@@ -1,8 +1,9 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
 import 'package:spicy_eats/Practice%20for%20cart/screens/BasketScreen.dart';
 import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
@@ -10,13 +11,14 @@ import 'package:spicy_eats/Register%20shop/repository/registershop_repository.da
 import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
 import 'package:spicy_eats/diegoveloper%20example/bloc.dart';
 import 'package:spicy_eats/diegoveloper%20example/main_rappi_concept_app.dart';
+import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
+import 'package:spicy_eats/features/dish%20menu/repository/dishmenu_repo.dart';
 import 'package:spicy_eats/main.dart';
 
-var dishesListProvider = StateProvider<List<DishData>?>((ref) => []);
 var restaurantProvider = StateProvider<RestaurantModel?>((ref) => null);
 
 class RestaurantMenuScreen extends ConsumerStatefulWidget {
@@ -106,7 +108,7 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
       }
     });
 
-    ref.read(DummyLogicProvider).fetchCart(ref, userId).then((value) {
+    ref.read(cartReopProvider).fetchCart(ref, userId).then((value) {
       cartFetched = true;
       final cart = ref.read(cartProvider.notifier).state;
       if (cart.isNotEmpty) {
@@ -174,7 +176,7 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
                             'restdata': widget.restaurantData,
                           });
                       cartFetched = false;
-                      ref.read(DummyLogicProvider).getTotalPrice(ref);
+                      ref.read(cartReopProvider).getTotalPrice(ref);
                     }
                   }),
             ),
@@ -470,40 +472,46 @@ class _SliverTabBar extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(
-      height: headertitle,
-      decoration: BoxDecoration(
-          boxShadow: [
-            isshowtabbar
-                ? BoxShadow(
-                    offset: Offset(0.0, 2.0),
-                    color: Colors.black.withOpacity(0.3),
-                    blurRadius: 5)
-                : BoxShadow(color: Colors.transparent)
-          ],
-          // border: Border.symmetric(
-          //     horizontal: BorderSide(width: 5, color: Colors.black87)),
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10),
-            topRight: Radius.circular(10),
-            // bottomLeft: Radius.circular(10),
-            // bottomRight: Radius.circular(10)
-          )),
-      child: AnimatedBuilder(
-          animation: bloc,
-          builder: (_, __) {
-            return TabBar(
-              tabs:
-                  bloc.tabs.map((e) => Rappi_tab_widget(category: e)).toList(),
-              padding: EdgeInsets.zero,
-              dividerColor: Colors.transparent,
-              indicatorColor: Colors.transparent,
-              onTap: (index) => bloc.onCategoryTab(index),
-              isScrollable: true,
-              controller: bloc.tabController,
-            );
-          }),
+    return ClipRRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Container(
+          height: headertitle,
+          decoration: BoxDecoration(
+              boxShadow: [
+                isshowtabbar
+                    ? BoxShadow(
+                        offset: Offset(0.0, 2.0),
+                        color: Colors.black.withOpacity(0.3),
+                        blurRadius: 5)
+                    : BoxShadow(color: Colors.transparent)
+              ],
+              // border: Border.symmetric(
+              //     horizontal: BorderSide(width: 5, color: Colors.black87)),
+              color: Colors.white.withOpacity(0.2),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+                // bottomLeft: Radius.circular(10),
+                // bottomRight: Radius.circular(10)
+              )),
+          child: AnimatedBuilder(
+              animation: bloc,
+              builder: (_, __) {
+                return TabBar(
+                  tabs: bloc.tabs
+                      .map((e) => Rappi_tab_widget(category: e))
+                      .toList(),
+                  padding: EdgeInsets.zero,
+                  dividerColor: Colors.transparent,
+                  indicatorColor: Colors.transparent,
+                  onTap: (index) => bloc.onCategoryTab(index),
+                  isScrollable: true,
+                  controller: bloc.tabController,
+                );
+              }),
+        ),
+      ),
     );
   }
 

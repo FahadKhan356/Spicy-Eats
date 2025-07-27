@@ -1,13 +1,16 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
 import 'package:spicy_eats/Practice%20for%20cart/screens/BasketScreen.dart';
+import 'package:spicy_eats/features/Basket/controller/CartController.dart';
+import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
+import 'package:spicy_eats/features/dish%20menu/controller/dish-menu_controller.dart';
 import 'package:spicy_eats/features/dish%20menu/dishmenuVariation.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
 import 'package:spicy_eats/features/dish%20menu/repository/dishmenu_repo.dart';
@@ -15,7 +18,7 @@ import 'package:spicy_eats/main.dart';
 import 'package:spicy_eats/tabexample.dart/RestaurantMenuScreen.dart';
 
 var quantityPrvider = StateProvider<int>((ref) => 1);
-final variationListProvider = StateProvider<List<Variation>?>((ref) => null);
+var updatedQuantityProvider = StateProvider<int>((ref) => 1);
 
 // ignore: must_be_immutable
 class DishMenuScreen extends ConsumerStatefulWidget {
@@ -47,27 +50,14 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
   AnimationController? _animationController;
   Animation<double>? _opacityanimation;
   Animation<Offset>? _offsetanimation;
-
   bool isExpanded = false;
-
   bool? withvariation;
   final Debouncer _debouncer = Debouncer(milliseconds: 500);
-  Future<void> fetchfrequentlybought() async {
-    setState(() {
-      isloading = true;
-    });
-    ref.read(freqDishesProvider.notifier).state = null;
-    if (widget.dish?.frequentlyid != null) {
-      widget.freqList = await ref.read(dishMenuRepoProvider).fetchfrequentlybuy(
-            freqid: widget.dish!.frequentlyid!,
-            ref: ref,
-          );
-      print("${widget.freqList!.length} list of freq");
 
-      setState(() {
-        isloading = false;
-      });
-    }
+  Future<void> fetchfrequentlybought() async {
+    widget.freqList = await ref
+        .read(dishMenuRepoProvider)
+        .fetchfrequentlybuy(freqid: widget.dish!.frequentlyid!, ref: ref);
   }
 
   @override
@@ -83,9 +73,10 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
         Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero).animate(
             CurvedAnimation(
                 parent: _animationController!, curve: Curves.bounceOut));
+
     _scrollController!.addListener(() {
       if (_scrollController!.hasClients && _scrollController!.offset > 50) {
-        print('${_scrollController!.offset}');
+        // print('${_scrollController!.offset}');
         _animationController!.forward();
       } else {
         _animationController!.reverse();
@@ -98,28 +89,33 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
       });
       fetchfrequentlybought();
       if (widget.isCart) {
+        ref.read(updatedQuantityProvider.notifier).state =
+            widget.cartDish!.quantity;
         widget.updatedquantity = widget.cartDish!.quantity;
+        debugPrint("cart qunatity dish menu: ${widget.cartDish!.quantity}");
       }
       ref.read(quantityPrvider.notifier).state = 1;
     });
   }
 
-  Timer? _colapsetimer;
-  void startTimer() {
-    _colapsetimer!.cancel();
-    _colapsetimer = Timer(const Duration(seconds: 2), () {
-      setState(() {
-        isExpanded = false;
-      });
-    });
-  }
+  // Timer? _colapsetimer;
+  // void startTimer() {
+  //   _colapsetimer!.cancel();
+  //   _colapsetimer = Timer(const Duration(seconds: 2), () {
+  //     setState(() {
+  //       isExpanded = false;
+  //     });
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
     final quantity = ref.watch(quantityPrvider);
+    final updatedQuantity = ref.watch(updatedQuantityProvider);
+    // final dummylogic=ref.read(DummyLogicProvider);
 
     final totalquantity = ref
-        .read(DummyLogicProvider)
+        .read(cartReopProvider)
         .getTotalQuantityofdish(ref, widget.dish!.dishid!);
 
     return Scaffold(
@@ -166,7 +162,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                   flexibleSpace: FlexibleSpaceBar(
                     background: Image.network(
                       widget.dish!.dish_imageurl!,
-                      fit: BoxFit.contain,
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
@@ -298,7 +294,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                     ),
                   ),
                 ),
-                widget.freqList != null
+                widget.freqList != null && widget.freqList!.isNotEmpty
                     ? SliverList(
                         delegate: SliverChildBuilderDelegate(
                             childCount: widget.freqList!.length,
@@ -333,10 +329,12 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                                         color: Colors.grey[100],
                                         borderRadius: BorderRadius.circular(10),
                                       ),
-                                      child: Image.network(
-                                        freqdish.dish_imageurl!,
-                                        fit: BoxFit.cover,
-                                      ),
+                                      child: freqdish.dish_imageurl != null
+                                          ? Image.network(
+                                              freqdish.dish_imageurl.toString(),
+                                              fit: BoxFit.cover,
+                                            )
+                                          : const CircularProgressIndicator(),
                                     ),
                                     const SizedBox(
                                       width: 20,
@@ -437,7 +435,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                         'asdsads',
                         style: TextStyle(color: Colors.black),
                       )),
-                const SliverToBoxAdapter(
+                SliverToBoxAdapter(
                   child: SizedBox(
                     height: 100,
                   ),
@@ -448,227 +446,326 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                 bottom: 0,
                 left: 0,
                 right: 0,
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.black12, spreadRadius: 2, blurRadius: 3)
-                    ],
-                  ),
-                  height: 80,
-                  width: double.maxFinite,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
+                child: ClipRRect(
+                  child: BackdropFilter(
+                    filter:
+                        ImageFilter.blur(sigmaX: 10, sigmaY: 10), // blur effect
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.1),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black12,
+                              spreadRadius: 2,
+                              blurRadius: 3)
+                        ],
+                      ),
+                      height: 80,
+                      width: double.maxFinite,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            InkWell(
-                                onTap: () {
-                                  if (widget.isCart) {
-                                    _debouncer.run(() {
-                                      setState(() {
-                                        widget.updatedquantity++;
-                                      });
-                                    });
-                                  } else {
-                                    _debouncer.run(() {
-                                      ref
-                                          .read(quantityPrvider.notifier)
-                                          .state++;
-                                    });
-                                  }
-                                },
-                                child: Container(
-                                  height: 40,
-                                  width: 40,
-                                  decoration: BoxDecoration(
-                                      color: Colors.black,
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: const Icon(Icons.add,
-                                      size: 20, color: Colors.white),
-                                )),
-                            const SizedBox(width: 5),
-                            widget.isCart
-                                ? Text(
-                                    widget.updatedquantity.toString(),
-                                    style: const TextStyle(
-                                        fontSize: 20, color: Colors.black),
-                                  )
-                                : Text(
-                                    quantity.toString(),
-                                    style: const TextStyle(
-                                        fontSize: 20, color: Colors.black),
-                                  ),
-                            const SizedBox(width: 5),
-                            InkWell(
-                              onTap: () {
-                                if (widget.isCart) {
-                                  _debouncer.run(() {
-                                    setState(() {
-                                      if (widget.updatedquantity > 0) {
-                                        widget.updatedquantity--;
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                InkWell(
+                                    onTap: () {
+                                      if (widget.isCart) {
+                                        _debouncer.run(() {
+                                          ref
+                                              .read(updatedQuantityProvider
+                                                  .notifier)
+                                              .state++;
+                                          // setState(() {
+                                          //   widget.updatedquantity++;
+                                          // });
+                                        });
+                                      } else {
+                                        _debouncer.run(() {
+                                          ref
+                                              .read(quantityPrvider.notifier)
+                                              .state++;
+                                        });
                                       }
-                                    });
-                                  });
-                                } else {
-                                  _debouncer.run(() {
-                                    if (ref
-                                            .read(quantityPrvider.notifier)
-                                            .state >
-                                        1) {
-                                      ref
-                                          .read(quantityPrvider.notifier)
-                                          .state--;
-                                    }
-                                  });
-                                }
-                              },
-                              child: Container(
-                                height: 40,
-                                width: 40,
-                                decoration: BoxDecoration(
-                                  color: Colors.black,
-                                  borderRadius: BorderRadius.circular(10),
+                                    },
+                                    child: Container(
+                                      height: 40,
+                                      width: 40,
+                                      decoration: BoxDecoration(
+                                          color: Colors.black,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: const Icon(Icons.add,
+                                          size: 20, color: Colors.white),
+                                    )),
+                                const SizedBox(width: 5),
+                                widget.isCart
+                                    ? Text(
+                                        // updatedQuantity.toString(),
+                                        ref
+                                            .read(updatedQuantityProvider
+                                                .notifier)
+                                            .state
+                                            .toString(),
+                                        style: const TextStyle(
+                                            fontSize: 20, color: Colors.black),
+                                      )
+                                    : Text(
+                                        quantity.toString(),
+                                        style: const TextStyle(
+                                            fontSize: 20, color: Colors.black),
+                                      ),
+                                const SizedBox(width: 5),
+                                InkWell(
+                                  onTap: () {
+                                    ref
+                                        .read(dishMenuControllerProvider)
+                                        .decreaseItemQuantity(
+                                          widget.isCart,
+                                          _debouncer,
+
+                                          ref,
+                                          // updatedQuantity:
+                                          //     widget.updatedquantity,
+                                        );
+                                    //   if (widget.isCart) {
+                                    //     _debouncer.run(() {
+                                    //       setState(() {
+                                    //         if (widget.updatedquantity > 0) {
+                                    //           widget.updatedquantity--;
+                                    //         }
+                                    //       });
+                                    //     });
+                                    //   } else {
+                                    //     _debouncer.run(() {
+                                    //       if (ref
+                                    //               .read(quantityPrvider.notifier)
+                                    //               .state >
+                                    //           1) {
+                                    //         ref
+                                    //             .read(quantityPrvider.notifier)
+                                    //             .state--;
+                                    //       }
+                                    //     });
+                                    //   }
+                                  },
+                                  child: Container(
+                                    height: 40,
+                                    width: 40,
+                                    decoration: BoxDecoration(
+                                      color: Colors.black,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: const Center(
+                                        child: Icon(
+                                      Icons.minimize_outlined,
+                                      size: 20,
+                                      color: Colors.white,
+                                    )),
+                                  ),
                                 ),
-                                child: const Center(
-                                    child: Icon(
-                                  Icons.minimize_outlined,
-                                  size: 20,
-                                  color: Colors.white,
-                                )),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 50,
+                              width: 150,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.black,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    )),
+                                child: widget.isCart && updatedQuantity > 0
+                                    ? const Text(
+                                        'Update to cart',
+                                        style: TextStyle(color: Colors.white),
+                                      )
+                                    : widget.isCart && updatedQuantity == 0
+                                        ? const Text(
+                                            'remove to cart',
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          )
+                                        : const Text(
+                                            'Add to cart',
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                onPressed: () {
+                                  ref
+                                      .read(cartControllerProvider)
+                                      .itemAddUpdateRemoveCart(
+                                          ref: ref,
+                                          debouncer: _debouncer,
+                                          refreshUI: (fn) => setState(() => ()),
+                                          isLoading: isloading,
+                                          isCart: widget.isCart,
+                                          updatedquantity: updatedQuantity,
+                                          dish: widget.dish!,
+                                          cartDish: widget.cartDish!,
+                                          quantity: quantity,
+                                          context: context);
+
+                                  debugPrint("quantiry : $quantity");
+                                  // _debouncer.run(() async {
+                                  //   setState(() {
+                                  //     isloading = true;
+                                  //   });
+
+                                  //   if (widget.isCart &&
+                                  //       widget.updatedquantity > 0) {
+                                  //     await ref
+                                  //         .read(cartControllerProvider)
+                                  //         .updateCart(
+                                  //             ref: ref,
+                                  //             dishId: widget.dish!.dishid!,
+                                  //             price: widget.dish!.dish_price!,
+                                  //             variations: null,
+                                  //             quantity: widget.updatedquantity);
+                                  //   } else if (widget.updatedquantity == 0 &&
+                                  //       widget.isCart) {
+                                  //     await ref
+                                  //         .read(cartControllerProvider)
+                                  //         .removeItemFromBasket(
+                                  //             cartId: widget.cartDish!.cart_id!,
+                                  //             ref: ref);
+                                  //   } else {
+                                  //     await ref
+                                  //         .read(cartControllerProvider)
+                                  //         .addToCart(
+                                  //             itemPrice:
+                                  //                 widget.dish!.dish_price!,
+                                  //             name: widget.dish!.dish_name,
+                                  //             description:
+                                  //                 widget.dish!.dish_description,
+                                  //             ref: ref,
+                                  //             userId: supabaseClient
+                                  //                 .auth.currentUser!.id,
+                                  //             dishId: widget.dish!.dishid!,
+                                  //             discountPrice:
+                                  //                 widget.dish!.dish_discount,
+                                  //             price: widget.dish!.dish_price!
+                                  //                 .toDouble(),
+                                  //             image:
+                                  //                 widget.dish!.dish_imageurl!,
+                                  //             variations: null,
+                                  //             isDishScreen: true,
+                                  //             quantity: quantity,
+                                  //             freqboughts: null);
+
+                                  //     // await ref
+                                  //     //     .read(DummyLogicProvider)
+                                  //     //     .addToCart(
+                                  //     //         widget.dish!.dish_price!,
+                                  //     //         widget.dish!.dish_name,
+                                  //     //         widget.dish!.dish_description,
+                                  //     //         ref,
+                                  //     //         supabaseClient
+                                  //     //             .auth.currentUser!.id,
+                                  //     //         widget.dish!.dishid!,
+                                  //     //         widget.dish!.dish_price!
+                                  //     //             .toDouble(),
+                                  //     //         widget.dish!.dish_discount,
+                                  //     //         widget.dish!.dish_imageurl!,
+                                  //     //         null,
+                                  //     //         true,
+                                  //     //         quantity,
+                                  //     //         null);
+                                  //     if (ref.read(freqDishesProvider) !=
+                                  //         null) {
+                                  //       for (int i = 0;
+                                  //           i <
+                                  //               ref
+                                  //                   .read(freqDishesProvider)!
+                                  //                   .length;
+                                  //           i++) {
+                                  //         final freqDish = ref
+                                  //             .read(freqDishesProvider.notifier)
+                                  //             .state;
+                                  //         await ref
+                                  //             .read(cartControllerProvider)
+                                  //             .addToCart(
+                                  //                 itemPrice:
+                                  //                     freqDish![i].dish_price!,
+                                  //                 name: freqDish[i].dish_name,
+                                  //                 description: freqDish[i]
+                                  //                     .dish_description,
+                                  //                 ref: ref,
+                                  //                 userId: supabaseClient.auth.currentUser!.id,
+                                  //                 dishId: freqDish[i].dishid,
+                                  //                 discountPrice:
+                                  //                     freqDish[i].dish_discount,
+                                  //                 price: freqDish[i].dish_price,
+                                  //                 image:
+                                  //                     freqDish[i].dish_imageurl,
+                                  //                 variations: null,
+                                  //                 isDishScreen: false,
+                                  //                 quantity: 1,
+                                  //                 freqboughts: null);
+
+                                  // await ref
+                                  //     .read(DummyLogicProvider)
+                                  //     .addToCart(
+                                  //         ref
+                                  //             .read(freqDishesProvider
+                                  //                 .notifier)
+                                  //             .state![i]
+                                  //             .dish_price!,
+                                  //         ref
+                                  //             .read(freqDishesProvider
+                                  //                 .notifier)
+                                  //             .state![i]
+                                  //             .dish_name,
+                                  //         ref
+                                  //             .read(freqDishesProvider
+                                  //                 .notifier)
+                                  //             .state![i]
+                                  //             .dish_description,
+                                  //         ref,
+                                  //         supabaseClient
+                                  //             .auth.currentUser!.id,
+                                  //         ref
+                                  //             .read(freqDishesProvider
+                                  //                 .notifier)
+                                  //             .state![i]
+                                  //             .dishid!,
+                                  //         ref
+                                  //             .read(freqDishesProvider
+                                  //                 .notifier)
+                                  //             .state![i]
+                                  //             .dish_price!,
+                                  //         widget.dish!.dish_discount,
+                                  //         ref
+                                  //             .read(freqDishesProvider
+                                  //                 .notifier)
+                                  //             .state![i]
+                                  //             .dish_imageurl!,
+                                  //         null,
+                                  //         false,
+                                  //         1,
+                                  //         null);
+                                  //       }
+                                  //     }
+                                  //   }
+                                  // });
+                                  // Navigator.pushNamed(
+                                  //   context,
+                                  //   RestaurantMenuScreen.routename,
+                                  //   arguments: ref
+                                  //       .read(restaurantProvider.notifier)
+                                  //       .state,
+                                  // );
+                                  // setState(() {
+                                  //   isloading = false;
+                                  // });
+                                },
                               ),
                             ),
                           ],
                         ),
-                        SizedBox(
-                          height: 50,
-                          width: 150,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.black,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                )),
-                            child: widget.isCart && widget.updatedquantity > 0
-                                ? const Text(
-                                    'Update to cart',
-                                    style: TextStyle(color: Colors.white),
-                                  )
-                                : widget.isCart && widget.updatedquantity == 0
-                                    ? const Text(
-                                        'remove to cart',
-                                        style: TextStyle(color: Colors.white),
-                                      )
-                                    : const Text(
-                                        'Add to cart',
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                            onPressed: () {
-                              _debouncer.run(() async {
-                                setState(() {
-                                  isloading = true;
-                                });
-                                // final cartlistner =
-                                //     ref.read(cartProvider.notifier).state;
-                                if (widget.isCart &&
-                                    widget.updatedquantity > 0) {
-                                  await ref.read(DummyLogicProvider).updateCart(
-                                      ref,
-                                      widget.dish!.dishid!,
-                                      widget.dish!.dish_price!,
-                                      null,
-                                      widget.updatedquantity);
-                                } else if (widget.updatedquantity == 0 &&
-                                    widget.isCart) {
-                                  await ref
-                                      .read(DummyLogicProvider)
-                                      .removeitembasket(
-                                          cartid: widget.cartDish!.cart_id!,
-                                          ref: ref);
-                                } else {
-                                  await ref.read(DummyLogicProvider).addToCart(
-                                      widget.dish!.dish_price!,
-                                      widget.dish!.dish_name,
-                                      widget.dish!.dish_description,
-                                      ref,
-                                      supabaseClient.auth.currentUser!.id,
-                                      widget.dish!.dishid!,
-                                      widget.dish!.dish_price!.toDouble(),
-                                      widget.dish!.dish_discount,
-                                      widget.dish!.dish_imageurl!,
-                                      null,
-                                      true,
-                                      quantity,
-                                      null);
-                                  if (ref.read(freqDishesProvider) != null) {
-                                    for (int i = 0;
-                                        i <
-                                            ref
-                                                .read(freqDishesProvider)!
-                                                .length;
-                                        i++) {
-                                      await ref
-                                          .read(DummyLogicProvider)
-                                          .addToCart(
-                                              ref
-                                                  .read(freqDishesProvider
-                                                      .notifier)
-                                                  .state![i]
-                                                  .dish_price!,
-                                              ref
-                                                  .read(freqDishesProvider
-                                                      .notifier)
-                                                  .state![i]
-                                                  .dish_name,
-                                              ref
-                                                  .read(freqDishesProvider
-                                                      .notifier)
-                                                  .state![i]
-                                                  .dish_description,
-                                              ref,
-                                              supabaseClient
-                                                  .auth.currentUser!.id,
-                                              ref
-                                                  .read(freqDishesProvider
-                                                      .notifier)
-                                                  .state![i]
-                                                  .dishid!,
-                                              ref
-                                                  .read(freqDishesProvider
-                                                      .notifier)
-                                                  .state![i]
-                                                  .dish_price!,
-                                              widget.dish!.dish_discount,
-                                              ref
-                                                  .read(freqDishesProvider
-                                                      .notifier)
-                                                  .state![i]
-                                                  .dish_imageurl!,
-                                              null,
-                                              false,
-                                              1,
-                                              null);
-                                    }
-                                  }
-                                }
-                              });
-                              Navigator.pushNamed(
-                                context,
-                                RestaurantMenuScreen.routename,
-                                arguments:
-                                    ref.read(restaurantProvider.notifier).state,
-                              );
-                              setState(() {
-                                isloading = false;
-                              });
-                            },
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ))

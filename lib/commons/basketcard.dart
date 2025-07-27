@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
 import 'package:spicy_eats/commons/restaurantModel.dart';
+import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 import 'package:spicy_eats/features/dish%20menu/dishmenuVAriation.dart';
@@ -224,7 +224,7 @@ class _CartCardState extends ConsumerState<BasketCard> {
                                           //       widget.dish!.dish_price!,
                                           //     );
                                           ref
-                                              .read(DummyLogicProvider)
+                                              .read(cartReopProvider)
                                               .increaseQuantityBasket(
                                                   cartid:
                                                       widget.cartItem!.cart_id!,
@@ -274,7 +274,7 @@ class _CartCardState extends ConsumerState<BasketCard> {
                                           //  final carid=cartlistener.firstWhere((element) => element.cart_id)
 
                                           await ref
-                                              .read(DummyLogicProvider)
+                                              .read(cartReopProvider)
                                               .decreaseQuantityBasket(
                                                   cartid:
                                                       widget.cartItem!.cart_id!,

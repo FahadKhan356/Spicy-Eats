@@ -2,14 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
+
 import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/paymentmethodescreen.dart';
 import 'package:spicy_eats/commons/basketcard.dart';
+import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Payment/PaymentScreen.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 import 'package:spicy_eats/features/dish%20menu/dishmenuVariation.dart';
+import 'package:spicy_eats/features/dish%20menu/repository/dishmenu_repo.dart';
 import 'package:spicy_eats/main.dart';
 import 'package:spicy_eats/tabexample.dart/RestaurantMenuScreen.dart';
 
@@ -36,7 +38,7 @@ class _DummyBasketState extends ConsumerState<BasketScreen> {
   Widget build(BuildContext context) {
     final dishesList = ref.watch(dishesListProvider);
     final userId = supabaseClient.auth.currentUser!.id;
-    var carttotalamount = ref.read(DummyLogicProvider).getTotalPrice(ref);
+    var carttotalamount = ref.read(cartReopProvider).getTotalPrice(ref);
     final cart = ref.watch(cartProvider);
     return SafeArea(
         child: Scaffold(

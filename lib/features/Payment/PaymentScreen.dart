@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
+import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/Payment/repo/paymentRepo.dart';
 import 'package:spicy_eats/features/Payment/utils/optionsModel.dart';
@@ -121,7 +121,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
     final selectedmethod = ref.watch(selectedmethodProvider);
     final restaurant = ref.watch(restaurantProvider);
 
-    final subTotal = ref.read(DummyLogicProvider).getTotalPrice(ref);
+    final subTotal = ref.read(cartReopProvider).getTotalPrice(ref);
     cartTotal = subTotal + restaurant!.deliveryFee! + restaurant.platformfee!;
 
     final cart = ref.watch(cartProvider);

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
 
 class AnimatedAddButton extends StatefulWidget {
   @override

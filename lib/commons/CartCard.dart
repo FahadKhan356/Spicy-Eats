@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/Practice%20for%20cart/logic/Dummylogics.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
 import 'package:spicy_eats/cart%20example/basketpage.dart';
 import 'package:spicy_eats/commons/restaurantModel.dart';
+import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 import 'package:spicy_eats/features/dish%20menu/dishmenuVAriation.dart';
@@ -86,7 +86,7 @@ class _CartCardState extends ConsumerState<CartCard> {
         .state
         .indexWhere((element) => element.dish_id == dish.dishid);
     if (isInCart == -1) {
-      ref.read(DummyLogicProvider).addToCart(
+      ref.read(cartReopProvider).addToCart(
           dish.dish_price!,
           dish.dish_name,
           dish.dish_description,
@@ -108,7 +108,7 @@ class _CartCardState extends ConsumerState<CartCard> {
     // final isInCart=ref.read(cartProvider.notifier).state.indexWhere((element) => element.dish_id==dishid);
     //  if(isInCart!=-1){
     ref
-        .read(DummyLogicProvider)
+        .read(cartReopProvider)
         .increaseQuantity(ref, widget.dish!.dishid!, widget.dish!.dish_price!);
     //  }
     startcollapseTimer();
@@ -118,7 +118,7 @@ class _CartCardState extends ConsumerState<CartCard> {
     // final isInCart=ref.read(cartProvider.notifier).state.indexWhere((element) => element.dish_id==dishid);
     //  if(isInCart!=-1){
     ref
-        .read(DummyLogicProvider)
+        .read(cartReopProvider)
         .decreaseQuantity(ref, widget.dish!.dishid!, widget.dish!.dish_price!);
     //  }
     startcollapseTimer();
@@ -134,7 +134,7 @@ class _CartCardState extends ConsumerState<CartCard> {
     final index =
         cartlistener.indexWhere((element) => element.dish_id == dish!.dishid!);
     final quantity =
-        ref.read(DummyLogicProvider).getTotalQuantityofdish(ref, dish!.dishid!);
+        ref.read(cartReopProvider).getTotalQuantityofdish(ref, dish!.dishid!);
 
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),

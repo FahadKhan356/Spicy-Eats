@@ -61,13 +61,13 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
             restaurantdata: argument['restaurantdata']);
       });
 
-    case DummyCart.routename:
-      return MaterialPageRoute(builder: (context) {
-        final argument = settings.arguments as String;
-        return DummyCart(
-          restuid: argument,
-        );
-      });
+    // case DummyCart.routename:
+    //   return MaterialPageRoute(builder: (context) {
+    //     final argument = settings.arguments as String;
+    //     return DummyCart(
+    //       restuid: argument,
+    //     );
+    //   });
     case BasketScreen.routename:
       return MaterialPageRoute(builder: (context) {
         final argument = settings.arguments as Map;
