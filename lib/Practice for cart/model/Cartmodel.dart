@@ -1,7 +1,7 @@
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
 
-class CartModelNew {
+class CartModel {
   final int? cart_id;
   int quantity;
   double? tprice;
@@ -9,14 +9,14 @@ class CartModelNew {
   final int? dish_id;
   final String? created_at;
   final String? image;
-  final itemprice;
+  double? itemprice;
   final String? name;
   final String? description;
   final List<Variation>? variation;
   int? variationId;
   final List<DishData>? freqboughts;
 
-  CartModelNew({
+  CartModel({
     this.name,
     this.description,
     this.itemprice,
@@ -51,9 +51,9 @@ class CartModelNew {
       'frequently_boughtList': freqboughts,
     };
   }
-//copywith
 
-  CartModelNew copyWith({
+//copywith
+  CartModel copyWith({
     int? cart_id,
     int? quantity,
     double? tprice,
@@ -61,33 +61,66 @@ class CartModelNew {
     int? dish_id,
     String? created_at,
     String? image,
-    int? itemprice,
+    double?
+        itemprice, // If you know the type, replace `var` with the actual type.
     String? name,
     String? description,
+    List<Variation>? variation,
+    int? variationId,
+    List<DishData>? freqboughts,
   }) {
-    return CartModelNew(
-      variation: variation ?? this.variation,
+    return CartModel(
       cart_id: cart_id ?? this.cart_id,
+      quantity: quantity ?? this.quantity,
       tprice: tprice ?? this.tprice,
       user_id: user_id ?? this.user_id,
       dish_id: dish_id ?? this.dish_id,
-      quantity: quantity ?? this.quantity,
+      created_at: created_at ?? this.created_at,
       image: image ?? this.image,
       itemprice: itemprice ?? this.itemprice,
       name: name ?? this.name,
       description: description ?? this.description,
+      variation: variation ?? this.variation,
+      variationId: variationId ?? this.variationId,
+      freqboughts: freqboughts ?? this.freqboughts,
     );
   }
 
+  // CartModel copyWith({
+  //   int? cart_id,
+  //   int? quantity,
+  //   double? tprice,
+  //   String? user_id,
+  //   int? dish_id,
+  //   String? created_at,
+  //   String? image,
+  //   int? itemprice,
+  //   String? name,
+  //   String? description,
+  // }) {
+  //   return CartModel(
+  //     variation: variation ?? this.variation,
+  //     cart_id: cart_id ?? this.cart_id,
+  //     tprice: tprice ?? this.tprice,
+  //     user_id: user_id ?? this.user_id,
+  //     dish_id: dish_id ?? this.dish_id,
+  //     quantity: quantity ?? this.quantity,
+  //     image: image ?? this.image,
+  //     itemprice: itemprice ?? this.itemprice,
+  //     name: name ?? this.name,
+  //     description: description ?? this.description,
+  //   );
+  // }
+
 //from json
-  factory CartModelNew.fromjson(Map<String, dynamic> json) {
+  factory CartModel.fromjson(Map<String, dynamic> json) {
     final freqboughts = json['frequently_boughtList'] as List? ?? [];
     List<DishData> freqboughtslist =
         freqboughts.map((e) => DishData.fromJson(e)).toList();
     final variation = json['variations'] as List? ?? [];
     List<Variation> variationList =
         variation.map((e) => Variation.fromjson(e)).toList();
-    return CartModelNew(
+    return CartModel(
         cart_id: json['id'] ?? 0,
         quantity: json['quantity'] ?? 0,
         dish_id: json['dish_id'] ?? 0,

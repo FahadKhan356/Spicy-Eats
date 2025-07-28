@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
+import 'package:spicy_eats/Practice%20for%20cart/model/Cartmodel.dart';
 import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
 import 'package:spicy_eats/diegoveloper%20example/bloc.dart';
@@ -467,7 +467,7 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                                       dish.dish_id ==
                                       bloc.items[index].product?.dishid,
                                   orElse: () =>
-                                      CartModelNew(dish_id: 0, quantity: 0));
+                                      CartModel(dish_id: 0, quantity: 0));
                               final quantityindex = cart.indexWhere((dish) =>
                                   dish.dish_id == items.product?.dishid);
 

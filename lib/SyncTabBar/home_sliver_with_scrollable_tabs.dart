@@ -12,7 +12,7 @@ import 'package:spicy_eats/SyncTabBar/SliverBodyItems.dart';
 import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
 import 'package:spicy_eats/SyncTabBar/headerTitle.dart';
 import 'package:spicy_eats/commons/ItemQuantity.dart';
-import 'package:spicy_eats/features/Basket/model/CartModel.dart';
+import 'package:spicy_eats/features/Basket/model/basketModel.dart';
 import 'package:spicy_eats/features/Basket/screens/basket.dart';
 import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
@@ -20,7 +20,7 @@ import 'package:spicy_eats/features/Restaurant_Menu/screens/restaurant_menu.dart
 
 var showCartButton = StateProvider<bool>((ref) => false);
 //var productProvider = StateProvider<DishData?>((ref) => null);
-var cartList = StateProvider<List<CartModel>>((ref) => []);
+var cartList = StateProvider<List<BasketModel>>((ref) => []);
 var cartLength = StateProvider<int?>((ref) => null);
 final globalOffsetValues = ValueNotifier<double>(0);
 //value to do the validations of the top icons

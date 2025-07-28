@@ -7,7 +7,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
-import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
+import 'package:spicy_eats/Practice%20for%20cart/model/Cartmodel.dart';
 import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/Payment/utils/optionsModel.dart';
@@ -97,7 +97,7 @@ class PaymentRepo {
       required String currency,
       required BuildContext context,
       required WidgetRef ref,
-      required List<CartModelNew> cart}) async {
+      required List<CartModel> cart}) async {
     try {
       print(
           "Initializing payment sheet with amount: $amount, currency: $currency");
@@ -131,7 +131,7 @@ class PaymentRepo {
 // for clearing cart adding order data and navigate to main screen
   Future<void> clearingcart({
     required WidgetRef ref,
-    required List<CartModelNew> cart,
+    required List<CartModel> cart,
     required BuildContext context,
   }) async {
     try {

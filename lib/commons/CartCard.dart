@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
+import 'package:spicy_eats/Practice%20for%20cart/model/Cartmodel.dart';
 import 'package:spicy_eats/cart%20example/basketpage.dart';
 import 'package:spicy_eats/commons/restaurantModel.dart';
 import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
@@ -37,7 +37,7 @@ class CartCard extends ConsumerStatefulWidget {
   final DishData? dish;
   final double? imageHeight;
   final double? imageWidth;
-  final CartModelNew? cartItem;
+  final CartModel? cartItem;
   final String? userId;
 
   int? quantityIndex;
@@ -301,9 +301,8 @@ class _CartCardState extends ConsumerState<CartCard> {
                                                         (e) =>
                                                             e.dish_id ==
                                                             dish.dishid,
-                                                        orElse: () =>
-                                                            CartModelNew(
-                                                                quantity: 1));
+                                                        orElse: () => CartModel(
+                                                            quantity: 1));
 
                                                 print(currentcarmodel.cart_id);
                                                 increaseQuantity(

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
 import 'package:spicy_eats/commons/ItemQuantity.dart';
 import 'package:spicy_eats/commons/quantity_button.dart';
-import 'package:spicy_eats/features/Basket/model/CartModel.dart';
+import 'package:spicy_eats/features/Basket/model/basketModel.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/screens/restaurant_menu.dart';
 
@@ -333,7 +333,7 @@ class _SliverBodyItemsState extends ConsumerState<SliverBodyItems> {
                                                               .update((state) {
                                                             return [
                                                               ...state,
-                                                              CartModel(
+                                                              BasketModel(
                                                                 itemId: product
                                                                     .dishid!,
                                                                 itemName: product
@@ -445,7 +445,7 @@ class _SliverBodyItemsState extends ConsumerState<SliverBodyItems> {
                                               print(
                                                   'itemtotalprice : $itemTotalprice');
 
-                                              var newcart = CartModel(
+                                              var newcart = BasketModel(
                                                   cartItemImageUrl:
                                                       product.dish_imageurl,
                                                   itemId: product.dishid!,

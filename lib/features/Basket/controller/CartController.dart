@@ -1,8 +1,8 @@
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
-import 'package:spicy_eats/features/Basket/model/CartModel.dart';
+import 'package:spicy_eats/Practice%20for%20cart/model/Cartmodel.dart';
+import 'package:spicy_eats/features/Basket/model/basketModel.dart';
 import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/screens/restaurant_menu.dart';
@@ -71,7 +71,7 @@ class CartController {
       required bool isCart,
       required int updatedquantity,
       required DishData dish,
-      required CartModelNew cartDish,
+      required CartModel cartDish,
       required int quantity,
       required BuildContext context}) async {
     debouncer.run(() async {

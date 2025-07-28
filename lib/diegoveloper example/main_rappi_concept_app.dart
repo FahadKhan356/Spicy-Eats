@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
+import 'package:spicy_eats/Practice%20for%20cart/model/Cartmodel.dart';
 import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
 import 'package:spicy_eats/commons/CartCard.dart';
@@ -382,7 +382,7 @@ class RappiProduct extends ConsumerStatefulWidget {
   });
   List<DishData> dishes = [];
   final DishData dish;
-  final CartModelNew? cartItem;
+  final CartModel? cartItem;
   final int? qunatityindex;
   final String? userId;
   List<VariattionTitleModel>? titleVariationList;

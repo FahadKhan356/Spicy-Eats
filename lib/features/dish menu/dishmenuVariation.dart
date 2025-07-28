@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
+import 'package:spicy_eats/Practice%20for%20cart/model/Cartmodel.dart';
 import 'package:spicy_eats/Practice%20for%20cart/screens/BasketScreen.dart';
 import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
@@ -28,12 +28,12 @@ class DishMenuVariation extends ConsumerStatefulWidget {
   bool? isCart;
   bool isdishscreen = false;
 
-  CartModelNew? cartDish;
+  CartModel? cartDish;
   bool isbasket = false;
   List<int> dishesids = [];
   List<DishData>? freqdihses = [];
   int updateQuantity = 0;
-  List<CartModelNew>? carts = [];
+  List<CartModel>? carts = [];
 
   DishMenuVariation({
     super.key,

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
+import 'package:spicy_eats/Practice%20for%20cart/model/Cartmodel.dart';
 import 'package:spicy_eats/Practice%20for%20cart/screens/BasketScreen.dart';
 import 'package:spicy_eats/features/Basket/controller/CartController.dart';
 import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
@@ -26,7 +26,7 @@ class DishMenuScreen extends ConsumerStatefulWidget {
   final DishData? dish;
   List<VariattionTitleModel>? variationList = [];
   bool isCart = false;
-  CartModelNew? cartDish;
+  CartModel? cartDish;
   bool isbasket = false;
   List<DishData>? freqList = [];
   int updatedquantity = 0;
@@ -55,9 +55,12 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
   final Debouncer _debouncer = Debouncer(milliseconds: 500);
 
   Future<void> fetchfrequentlybought() async {
-    widget.freqList = await ref
-        .read(dishMenuRepoProvider)
-        .fetchfrequentlybuy(freqid: widget.dish!.frequentlyid!, ref: ref);
+    final list = await ref
+        .read(dishMenuControllerProvider)
+        .fetchfrequentlybought(freqId: widget.dish!.frequentlyid!, ref: ref);
+    setState(() {
+      widget.freqList = list;
+    });
   }
 
   @override
@@ -87,7 +90,8 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
       setState(() {
         withvariation = false;
       });
-      fetchfrequentlybought();
+
+      // fetchfrequentlybought();
       if (widget.isCart) {
         ref.read(updatedQuantityProvider.notifier).state =
             widget.cartDish!.quantity;
@@ -96,23 +100,15 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
       }
       ref.read(quantityPrvider.notifier).state = 1;
     });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      fetchfrequentlybought();
+    });
   }
-
-  // Timer? _colapsetimer;
-  // void startTimer() {
-  //   _colapsetimer!.cancel();
-  //   _colapsetimer = Timer(const Duration(seconds: 2), () {
-  //     setState(() {
-  //       isExpanded = false;
-  //     });
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
     final quantity = ref.watch(quantityPrvider);
     final updatedQuantity = ref.watch(updatedQuantityProvider);
-    // final dummylogic=ref.read(DummyLogicProvider);
 
     final totalquantity = ref
         .read(cartReopProvider)
@@ -145,18 +141,6 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                       style: TextStyle(color: Colors.black),
                     ),
                   ),
-                  // AnimatedBuilder(
-                  //   animation: _animationController!,
-                  //   builder: (context, child) =>
-                  //       Transform.translate(offset: _offsetanimation!.value),
-                  //   child: Opacity(
-                  //     opacity: _opacityanimation!.value,
-                  //     child: const Text(
-                  //       "Dish screen",
-                  //       style: TextStyle(color: Colors.black),
-                  //     ),
-                  //   ),
-                  // ),
                   expandedHeight: 200,
                   pinned: true,
                   flexibleSpace: FlexibleSpaceBar(
@@ -360,10 +344,6 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                                                     color: Colors.black,
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 16,
-                                                    // decoration: TextDecoration
-                                                    //     .lineThrough,
-                                                    // decorationColor: Colors.red,
-                                                    // decorationThickness: 2,
                                                   ),
                                                 )
                                               : const SizedBox(),
@@ -431,13 +411,11 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                         }),
                       )
                     : const SliverToBoxAdapter(
-                        child: Text(
-                        'asdsads',
-                        style: TextStyle(color: Colors.black),
-                      )),
-                SliverToBoxAdapter(
+                        child: SizedBox(),
+                      ),
+                const SliverToBoxAdapter(
                   child: SizedBox(
-                    height: 100,
+                    height: 50,
                   ),
                 )
               ],
@@ -453,7 +431,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.1),
-                        boxShadow: [
+                        boxShadow: const [
                           BoxShadow(
                               color: Colors.black12,
                               spreadRadius: 2,
@@ -472,23 +450,10 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                               children: [
                                 InkWell(
                                     onTap: () {
-                                      if (widget.isCart) {
-                                        _debouncer.run(() {
-                                          ref
-                                              .read(updatedQuantityProvider
-                                                  .notifier)
-                                              .state++;
-                                          // setState(() {
-                                          //   widget.updatedquantity++;
-                                          // });
-                                        });
-                                      } else {
-                                        _debouncer.run(() {
-                                          ref
-                                              .read(quantityPrvider.notifier)
-                                              .state++;
-                                        });
-                                      }
+                                      ref
+                                          .read(dishMenuControllerProvider)
+                                          .increaseItemQuantity(
+                                              widget.isCart, _debouncer, ref);
                                     },
                                     child: Container(
                                       height: 40,
@@ -525,31 +490,8 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                                         .decreaseItemQuantity(
                                           widget.isCart,
                                           _debouncer,
-
                                           ref,
-                                          // updatedQuantity:
-                                          //     widget.updatedquantity,
                                         );
-                                    //   if (widget.isCart) {
-                                    //     _debouncer.run(() {
-                                    //       setState(() {
-                                    //         if (widget.updatedquantity > 0) {
-                                    //           widget.updatedquantity--;
-                                    //         }
-                                    //       });
-                                    //     });
-                                    //   } else {
-                                    //     _debouncer.run(() {
-                                    //       if (ref
-                                    //               .read(quantityPrvider.notifier)
-                                    //               .state >
-                                    //           1) {
-                                    //         ref
-                                    //             .read(quantityPrvider.notifier)
-                                    //             .state--;
-                                    //       }
-                                    //     });
-                                    //   }
                                   },
                                   child: Container(
                                     height: 40,
@@ -609,157 +551,6 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                                           context: context);
 
                                   debugPrint("quantiry : $quantity");
-                                  // _debouncer.run(() async {
-                                  //   setState(() {
-                                  //     isloading = true;
-                                  //   });
-
-                                  //   if (widget.isCart &&
-                                  //       widget.updatedquantity > 0) {
-                                  //     await ref
-                                  //         .read(cartControllerProvider)
-                                  //         .updateCart(
-                                  //             ref: ref,
-                                  //             dishId: widget.dish!.dishid!,
-                                  //             price: widget.dish!.dish_price!,
-                                  //             variations: null,
-                                  //             quantity: widget.updatedquantity);
-                                  //   } else if (widget.updatedquantity == 0 &&
-                                  //       widget.isCart) {
-                                  //     await ref
-                                  //         .read(cartControllerProvider)
-                                  //         .removeItemFromBasket(
-                                  //             cartId: widget.cartDish!.cart_id!,
-                                  //             ref: ref);
-                                  //   } else {
-                                  //     await ref
-                                  //         .read(cartControllerProvider)
-                                  //         .addToCart(
-                                  //             itemPrice:
-                                  //                 widget.dish!.dish_price!,
-                                  //             name: widget.dish!.dish_name,
-                                  //             description:
-                                  //                 widget.dish!.dish_description,
-                                  //             ref: ref,
-                                  //             userId: supabaseClient
-                                  //                 .auth.currentUser!.id,
-                                  //             dishId: widget.dish!.dishid!,
-                                  //             discountPrice:
-                                  //                 widget.dish!.dish_discount,
-                                  //             price: widget.dish!.dish_price!
-                                  //                 .toDouble(),
-                                  //             image:
-                                  //                 widget.dish!.dish_imageurl!,
-                                  //             variations: null,
-                                  //             isDishScreen: true,
-                                  //             quantity: quantity,
-                                  //             freqboughts: null);
-
-                                  //     // await ref
-                                  //     //     .read(DummyLogicProvider)
-                                  //     //     .addToCart(
-                                  //     //         widget.dish!.dish_price!,
-                                  //     //         widget.dish!.dish_name,
-                                  //     //         widget.dish!.dish_description,
-                                  //     //         ref,
-                                  //     //         supabaseClient
-                                  //     //             .auth.currentUser!.id,
-                                  //     //         widget.dish!.dishid!,
-                                  //     //         widget.dish!.dish_price!
-                                  //     //             .toDouble(),
-                                  //     //         widget.dish!.dish_discount,
-                                  //     //         widget.dish!.dish_imageurl!,
-                                  //     //         null,
-                                  //     //         true,
-                                  //     //         quantity,
-                                  //     //         null);
-                                  //     if (ref.read(freqDishesProvider) !=
-                                  //         null) {
-                                  //       for (int i = 0;
-                                  //           i <
-                                  //               ref
-                                  //                   .read(freqDishesProvider)!
-                                  //                   .length;
-                                  //           i++) {
-                                  //         final freqDish = ref
-                                  //             .read(freqDishesProvider.notifier)
-                                  //             .state;
-                                  //         await ref
-                                  //             .read(cartControllerProvider)
-                                  //             .addToCart(
-                                  //                 itemPrice:
-                                  //                     freqDish![i].dish_price!,
-                                  //                 name: freqDish[i].dish_name,
-                                  //                 description: freqDish[i]
-                                  //                     .dish_description,
-                                  //                 ref: ref,
-                                  //                 userId: supabaseClient.auth.currentUser!.id,
-                                  //                 dishId: freqDish[i].dishid,
-                                  //                 discountPrice:
-                                  //                     freqDish[i].dish_discount,
-                                  //                 price: freqDish[i].dish_price,
-                                  //                 image:
-                                  //                     freqDish[i].dish_imageurl,
-                                  //                 variations: null,
-                                  //                 isDishScreen: false,
-                                  //                 quantity: 1,
-                                  //                 freqboughts: null);
-
-                                  // await ref
-                                  //     .read(DummyLogicProvider)
-                                  //     .addToCart(
-                                  //         ref
-                                  //             .read(freqDishesProvider
-                                  //                 .notifier)
-                                  //             .state![i]
-                                  //             .dish_price!,
-                                  //         ref
-                                  //             .read(freqDishesProvider
-                                  //                 .notifier)
-                                  //             .state![i]
-                                  //             .dish_name,
-                                  //         ref
-                                  //             .read(freqDishesProvider
-                                  //                 .notifier)
-                                  //             .state![i]
-                                  //             .dish_description,
-                                  //         ref,
-                                  //         supabaseClient
-                                  //             .auth.currentUser!.id,
-                                  //         ref
-                                  //             .read(freqDishesProvider
-                                  //                 .notifier)
-                                  //             .state![i]
-                                  //             .dishid!,
-                                  //         ref
-                                  //             .read(freqDishesProvider
-                                  //                 .notifier)
-                                  //             .state![i]
-                                  //             .dish_price!,
-                                  //         widget.dish!.dish_discount,
-                                  //         ref
-                                  //             .read(freqDishesProvider
-                                  //                 .notifier)
-                                  //             .state![i]
-                                  //             .dish_imageurl!,
-                                  //         null,
-                                  //         false,
-                                  //         1,
-                                  //         null);
-                                  //       }
-                                  //     }
-                                  //   }
-                                  // });
-                                  // Navigator.pushNamed(
-                                  //   context,
-                                  //   RestaurantMenuScreen.routename,
-                                  //   arguments: ref
-                                  //       .read(restaurantProvider.notifier)
-                                  //       .state,
-                                  // );
-                                  // setState(() {
-                                  //   isloading = false;
-                                  // });
                                 },
                               ),
                             ),

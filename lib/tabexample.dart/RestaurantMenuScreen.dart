@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
+import 'package:spicy_eats/Practice%20for%20cart/model/Cartmodel.dart';
 import 'package:spicy_eats/Practice%20for%20cart/screens/BasketScreen.dart';
 import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
@@ -427,7 +427,7 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
                     childCount: bloc.items.length, (context, index) {
               final cartIndex = cart.firstWhere(
                   (dish) => dish.dish_id == bloc.items[index].product?.dishid,
-                  orElse: () => CartModelNew(dish_id: 0, quantity: 0));
+                  orElse: () => CartModel(dish_id: 0, quantity: 0));
               if (bloc.items[index].isCategory) {
                 return RappiCategory(category: bloc.items[index].category);
               } else {

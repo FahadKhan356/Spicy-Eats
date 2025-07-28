@@ -3,14 +3,16 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/Practice%20for%20cart/model/cart_model_new.dart';
+import 'package:spicy_eats/Practice%20for%20cart/model/Cartmodel.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
+import 'package:spicy_eats/features/Sqlight%20Database/CartLocalDatabase.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
 import 'package:spicy_eats/main.dart';
 
-var cartProvider = StateProvider<List<CartModelNew>>((ref) => []);
+var cartProvider = StateProvider<List<CartModel>>((ref) => []);
 var cartPriceSumProvider = StateProvider<double>((ref) => 0);
-var cartReopProvider = Provider((ref) => CartRepository());
+var cartReopProvider =
+    Provider((ref) => CartRepository(CartLocalDatabase.instance));
 
 //debouncer class to prevent race condition
 class Debouncer {
@@ -43,6 +45,10 @@ class Mutex {
 }
 
 class CartRepository {
+  final CartLocalDatabase _database;
+
+  CartRepository(this._database);
+
   final _mutex = Mutex();
   //fetch cart
   Future<void> fetchCart(WidgetRef ref, String userId) async {
@@ -55,8 +61,8 @@ class CartRepository {
         await supabaseClient.from('cart').select().eq('user_id', userId);
 
     if (response.isNotEmpty) {
-      List<CartModelNew> cartItems =
-          response.map((json) => CartModelNew.fromjson(json)).toList();
+      List<CartModel> cartItems =
+          response.map((json) => CartModel.fromjson(json)).toList();
       ref.read(cartProvider.notifier).state = cartItems;
       // cartlist.state = List.from(cartItems);
 
@@ -86,7 +92,7 @@ class CartRepository {
       }).eq('id', item[index].cart_id!);
 
       if (response != null) {
-        final items = response.map((e) => CartModelNew.fromjson(e)).toList();
+        final items = response.map((e) => CartModel.fromjson(e)).toList();
         item.add(items);
       }
     }
@@ -157,7 +163,7 @@ class CartRepository {
         }).select();
 
         if (response.isNotEmpty) {
-          final newItem = CartModelNew.fromjson(response.first);
+          final newItem = CartModel.fromjson(response.first);
           items.add(newItem);
         }
       }

@@ -1,11 +1,11 @@
-class CartModel {
+class BasketModel {
   final String itemName;
   final int itemId;
   int itemTotalQuantity;
   double? itemTotalPrice;
   String? cartItemImageUrl;
 
-  CartModel({
+  BasketModel({
     required this.itemName,
     required this.itemTotalPrice,
     required this.itemTotalQuantity,

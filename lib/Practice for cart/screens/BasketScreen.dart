@@ -26,7 +26,7 @@ class BasketScreen extends ConsumerStatefulWidget {
     required this.dishes,
     required this.restaurantData,
   });
-  // List<CartModelNew> cart = [];
+  // List<New> cart = [];
 
   @override
   ConsumerState<BasketScreen> createState() => _DummyBasketState();

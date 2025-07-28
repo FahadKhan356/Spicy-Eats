@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
 import 'package:spicy_eats/commons/quantity_button.dart';
-import 'package:spicy_eats/features/Basket/model/CartModel.dart';
+import 'package:spicy_eats/features/Basket/model/basketModel.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/screens/restaurant_menu.dart';
 
 class CartWidget extends ConsumerWidget {
@@ -18,7 +18,7 @@ class CartWidget extends ConsumerWidget {
   final int cartItemQuantity;
   final String cartItemimageUrl;
   final double cartItemTotalprice;
-  final CartModel cartitem;
+  final BasketModel cartitem;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -195,7 +195,7 @@ class CartWidget extends ConsumerWidget {
                               ref.read(cartList.notifier).update((state) {
                                 return [
                                   ...state,
-                                  CartModel(
+                                  BasketModel(
                                     itemId: cartitem.itemId,
                                     itemName: cartitem.itemName.toString(),
                                     itemTotalPrice: itemTotalprice,

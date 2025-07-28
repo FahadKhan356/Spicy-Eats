@@ -4,13 +4,13 @@ import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
 import 'package:spicy_eats/commons/ItemQuantity.dart';
 import 'package:spicy_eats/commons/quantity_button.dart';
 import 'package:spicy_eats/commons/restaurantModel.dart';
-import 'package:spicy_eats/features/Basket/model/CartModel.dart';
+import 'package:spicy_eats/features/Basket/model/basketModel.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/screens/restaurant_menu.dart';
 
 class BasketScreen extends ConsumerWidget {
   static const String routename = "/basketScreen";
-  final List<CartModel> cartlist;
+  final List<BasketModel> cartlist;
   final Dish? dish;
   final double? totalprice;
   final int? quantity;

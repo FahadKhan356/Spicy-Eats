@@ -27,9 +27,7 @@ class DishMenuController {
   Future<void> decreaseItemQuantity(
     bool isCart,
     debouncer,
-    // void Function(VoidCallback fn) refreshUI,
     ref,
-    // {required int updatedQuantity}
   ) async {
     debugPrint("before ${ref.read(updatedQuantityProvider.notifier).state}}");
     if (isCart) {
@@ -37,11 +35,6 @@ class DishMenuController {
         if (ref.read(updatedQuantityProvider.notifier).state > 0) {
           ref.read(updatedQuantityProvider.notifier).state--;
         }
-        // if (updatedQuantity > 0) {
-        //   refreshUI(() {
-        //     updatedQuantity--;
-        //   });
-        // }
         debugPrint("after ${ref.read(updatedQuantityProvider.notifier).state}");
       });
     } else {
@@ -51,7 +44,25 @@ class DishMenuController {
         }
       });
     }
-    debugPrint(
-        "Dish menu Controller: quantity:${ref.watch(quantityPrvider.notifier).state} Updatequantity:${ref.read(updatedQuantityProvider.notifier).state}  ");
+  }
+
+//for Increase quantity for showing in ui for already in cart item or for simple item
+  Future<void> increaseItemQuantity(
+    bool isCart,
+    debouncer,
+    ref,
+  ) async {
+    debugPrint("before ${ref.read(updatedQuantityProvider.notifier).state}}");
+    if (isCart) {
+      debouncer.run(() {
+        ref.read(updatedQuantityProvider.notifier).state++;
+
+        debugPrint("after ${ref.read(updatedQuantityProvider.notifier).state}");
+      });
+    } else {
+      debouncer.run(() {
+        ref.read(quantityPrvider.notifier).state++;
+      });
+    }
   }
 }
