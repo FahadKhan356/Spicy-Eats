@@ -99,13 +99,14 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
       }
     });
 
-    ref.read(cartReopProvider).fetchCart(ref, userId!).then((value) {
-      cartFetched = true;
-      final cart = ref.read(cartProvider.notifier).state;
-      if (cart.isNotEmpty) {
-        print('${cart[0].tprice}');
-      }
-    });
+    // ref.read(cartReopProvider).fetchCart(ref, userId!).then((value) {
+    //   cartFetched = true;
+    //   final cart = ref.read(cartProvider.notifier).state;
+    //   if (cart.isNotEmpty) {
+    //     print('${cart[0].tprice}');
+    //   }
+    // });
+    ref.read(cartReopProvider).initializeCart(userId: userId!, ref: ref);
   }
 
   void updateOffset() {
@@ -466,8 +467,8 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                                   (dish) =>
                                       dish.dish_id ==
                                       bloc.items[index].product?.dishid,
-                                  orElse: () =>
-                                      CartModel(dish_id: 0, quantity: 0));
+                                  orElse: () => Cartmodel(
+                                      created_at: '', dish_id: 0, quantity: 0));
                               final quantityindex = cart.indexWhere((dish) =>
                                   dish.dish_id == items.product?.dishid);
 

@@ -110,7 +110,7 @@ class RegisterShopRepository {
       // Return the list of RestaurantData objects
     } catch (e) {
       //throw e.toString();
-      throw Exception(e);
+      debugPrint("Failed Resatuarants Fetching $e");
       // print(e.toString());
     }
   }
@@ -203,7 +203,7 @@ class RegisterShopRepository {
         }
       }
     } catch (e) {
-      throw e.toString();
+      debugPrint("Failed Fetching Favorires $e");
     }
   }
 }

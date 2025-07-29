@@ -3,14 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/Cartmodel.dart';
-import 'package:spicy_eats/cart%20example/basketpage.dart';
-import 'package:spicy_eats/commons/restaurantModel.dart';
 import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
-import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 import 'package:spicy_eats/features/dish%20menu/dishmenuVAriation.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
-import 'package:spicy_eats/features/dish%20menu/repository/dishmenu_repo.dart';
 import 'package:spicy_eats/main.dart';
 
 class CartCard extends ConsumerStatefulWidget {
@@ -37,7 +33,7 @@ class CartCard extends ConsumerStatefulWidget {
   final DishData? dish;
   final double? imageHeight;
   final double? imageWidth;
-  final CartModel? cartItem;
+  final Cartmodel? cartItem;
   final String? userId;
 
   int? quantityIndex;
@@ -78,51 +74,51 @@ class _CartCardState extends ConsumerState<CartCard> {
     });
   }
 
-  void addtocart({
-    required DishData dish,
-  }) {
-    final isInCart = ref
-        .read(cartProvider.notifier)
-        .state
-        .indexWhere((element) => element.dish_id == dish.dishid);
-    if (isInCart == -1) {
-      ref.read(cartReopProvider).addToCart(
-          dish.dish_price!,
-          dish.dish_name,
-          dish.dish_description,
-          ref,
-          supabaseClient.auth.currentUser!.id,
-          dish.dishid!,
-          dish.dish_price!.toDouble(),
-          widget.dish!.dish_discount,
-          dish.dish_imageurl!,
-          [],
-          false,
-          1,
-          null);
-    }
-    expandbutton();
-  }
+  // void addtocart({
+  //   required DishData dish,
+  // }) {
+  //   final isInCart = ref
+  //       .read(cartProvider.notifier)
+  //       .state
+  //       .indexWhere((element) => element.dish_id == dish.dishid);
+  //   if (isInCart == -1) {
+  //     ref.read(cartReopProvider).addToCart(
+  //         dish.dish_price!,
+  //         dish.dish_name,
+  //         dish.dish_description,
+  //         ref,
+  //         supabaseClient.auth.currentUser!.id,
+  //         dish.dishid!,
+  //         dish.dish_price!.toDouble(),
+  //         widget.dish!.dish_discount,
+  //         dish.dish_imageurl!,
+  //         [],
+  //         false,
+  //         1,
+  //         null);
+  //   }
+  //   expandbutton();
+  // }
 
-  void increaseQuantity({required int dishid}) {
-    // final isInCart=ref.read(cartProvider.notifier).state.indexWhere((element) => element.dish_id==dishid);
-    //  if(isInCart!=-1){
-    ref
-        .read(cartReopProvider)
-        .increaseQuantity(ref, widget.dish!.dishid!, widget.dish!.dish_price!);
-    //  }
-    startcollapseTimer();
-  }
+  // void increaseQuantity({required int dishid}) {
+  //   // final isInCart=ref.read(cartProvider.notifier).state.indexWhere((element) => element.dish_id==dishid);
+  //   //  if(isInCart!=-1){
+  //   ref
+  //       .read(cartReopProvider)
+  //       .increaseQuantity(ref, widget.dish!.dishid!, widget.dish!.dish_price!);
+  //   //  }
+  //   startcollapseTimer();
+  // }
 
-  void decreaseQuantity({required int dishid}) {
-    // final isInCart=ref.read(cartProvider.notifier).state.indexWhere((element) => element.dish_id==dishid);
-    //  if(isInCart!=-1){
-    ref
-        .read(cartReopProvider)
-        .decreaseQuantity(ref, widget.dish!.dishid!, widget.dish!.dish_price!);
-    //  }
-    startcollapseTimer();
-  }
+  // void decreaseQuantity({required int dishid}) {
+  //   // final isInCart=ref.read(cartProvider.notifier).state.indexWhere((element) => element.dish_id==dishid);
+  //   //  if(isInCart!=-1){
+  //   ref
+  //       .read(cartReopProvider)
+  //       .decreaseQuantity(ref, widget.dish!.dishid!, widget.dish!.dish_price!);
+  //   //  }
+  //   startcollapseTimer();
+  // }
 
   @override
   Widget build(
@@ -301,12 +297,20 @@ class _CartCardState extends ConsumerState<CartCard> {
                                                         (e) =>
                                                             e.dish_id ==
                                                             dish.dishid,
-                                                        orElse: () => CartModel(
+                                                        orElse: () => Cartmodel(
+                                                            created_at: '',
                                                             quantity: 1));
 
                                                 print(currentcarmodel.cart_id);
-                                                increaseQuantity(
-                                                    dishid: dish.dishid!);
+                                                // increaseQuantity(
+                                                //     dishid: dish.dishid!);
+                                                ref
+                                                    .read(cartReopProvider)
+                                                    .incQuantity(
+                                                        ref: ref,
+                                                        dishId: dish.dishid!,
+                                                        price:
+                                                            dish.dish_price!);
                                               }),
                                               AnimatedSwitcher(
                                                   duration: const Duration(
@@ -337,15 +341,43 @@ class _CartCardState extends ConsumerState<CartCard> {
                                                                   Colors.white),
                                                         )),
                                               iconButton(Icons.remove, () {
-                                                decreaseQuantity(
-                                                    dishid: dish.dishid!);
+                                                // decreaseQuantity(
+                                                //     dishid: dish.dishid!);
+                                                ref
+                                                    .read(cartReopProvider)
+                                                    .decQuantity(
+                                                        ref: ref,
+                                                        dishId: dish.dishid!,
+                                                        price:
+                                                            dish.dish_price!);
                                               })
                                             ],
                                           ),
                                         )
                                       : InkWell(
                                           onTap: () {
-                                            addtocart(dish: dish);
+                                            ref
+                                                .read(cartReopProvider)
+                                                .addCartItem(
+                                                    itemprice: dish.dish_price!,
+                                                    name: dish.dish_name,
+                                                    description:
+                                                        dish.dish_description,
+                                                    ref: ref,
+                                                    userId: supabaseClient
+                                                        .auth.currentUser!.id,
+                                                    dishId: dish.dishid!,
+                                                    discountprice:
+                                                        dish.dish_discount,
+                                                    price: dish.dish_price,
+                                                    image: dish.dish_imageurl!,
+                                                    variations: null,
+                                                    isdishScreen: false,
+                                                    quantity: 1,
+                                                    freqboughts: null);
+
+                                            expandbutton();
+                                            // addtocart(dish: dish);
                                           },
                                           child: cartlistener.any((element) =>
                                                   element.dish_id ==

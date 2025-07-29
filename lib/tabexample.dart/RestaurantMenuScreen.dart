@@ -108,13 +108,14 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
       }
     });
 
-    ref.read(cartReopProvider).fetchCart(ref, userId).then((value) {
-      cartFetched = true;
-      final cart = ref.read(cartProvider.notifier).state;
-      if (cart.isNotEmpty) {
-        print('${cart[0].tprice}');
-      }
-    });
+    // ref.read(cartReopProvider).fetchCart(ref, userId).then((value) {
+    //   cartFetched = true;
+    //   final cart = ref.read(cartProvider.notifier).state;
+    //   if (cart.isNotEmpty) {
+    //     print('${cart[0].tprice}');
+    //   }
+    // });
+    ref.read(cartReopProvider).initializeCart(userId: userId, ref: ref);
   }
 
   void _scrollListener() {
@@ -427,7 +428,8 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
                     childCount: bloc.items.length, (context, index) {
               final cartIndex = cart.firstWhere(
                   (dish) => dish.dish_id == bloc.items[index].product?.dishid,
-                  orElse: () => CartModel(dish_id: 0, quantity: 0));
+                  orElse: () =>
+                      Cartmodel(created_at: '', dish_id: 0, quantity: 0));
               if (bloc.items[index].isCategory) {
                 return RappiCategory(category: bloc.items[index].category);
               } else {

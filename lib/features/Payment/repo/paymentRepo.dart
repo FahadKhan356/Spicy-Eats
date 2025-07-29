@@ -97,7 +97,7 @@ class PaymentRepo {
       required String currency,
       required BuildContext context,
       required WidgetRef ref,
-      required List<CartModel> cart}) async {
+      required List<Cartmodel> cart}) async {
     try {
       print(
           "Initializing payment sheet with amount: $amount, currency: $currency");
@@ -131,7 +131,7 @@ class PaymentRepo {
 // for clearing cart adding order data and navigate to main screen
   Future<void> clearingcart({
     required WidgetRef ref,
-    required List<CartModel> cart,
+    required List<Cartmodel> cart,
     required BuildContext context,
   }) async {
     try {

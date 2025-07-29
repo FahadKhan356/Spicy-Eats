@@ -28,12 +28,12 @@ class DishMenuVariation extends ConsumerStatefulWidget {
   bool? isCart;
   bool isdishscreen = false;
 
-  CartModel? cartDish;
+  Cartmodel? cartDish;
   bool isbasket = false;
   List<int> dishesids = [];
   List<DishData>? freqdihses = [];
   int updateQuantity = 0;
-  List<CartModel>? carts = [];
+  List<Cartmodel>? carts = [];
 
   DishMenuVariation({
     super.key,
@@ -164,12 +164,15 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
 
   @override
   Widget build(BuildContext context) {
+    final dish = widget.dish;
+    final userId = supabaseClient.auth.currentUser!.id;
     final totalquantity = ref
         .read(cartReopProvider)
         .getTotalQuantityofdish(ref, widget.dish!.dishid!);
     var quantity = ref.watch(quantityPrvider);
 
     var freqDish = ref.watch(freqDishesProvider);
+    final cartRepo = ref.watch(cartReopProvider);
 
     return SafeArea(
       child: ScaffoldMessenger(
@@ -684,76 +687,125 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                                                         widget.isCart == true &&
                                                         widget.updateQuantity >
                                                             0) {
-                                                      await ref
-                                                          .read(
-                                                              cartReopProvider)
-                                                          .updateCart(
-                                                              ref,
-                                                              widget.dish!
-                                                                  .dishid!,
-                                                              widget.dish!
-                                                                  .dish_price!,
-                                                              ref
-                                                                  .read(
-                                                                    variationListProvider
-                                                                        .notifier,
-                                                                  )
-                                                                  .state,
-                                                              widget
-                                                                  .updateQuantity);
+                                                      cartRepo.updateCartItems(
+                                                          dishId: widget
+                                                              .dish!.dishid!,
+                                                          ref: ref,
+                                                          price: widget.dish!
+                                                              .dish_price!,
+                                                          newQuantity: widget
+                                                              .updateQuantity,
+                                                          newVariations: ref
+                                                              .read(
+                                                                  variationListProvider
+                                                                      .notifier)
+                                                              .state!);
+
+                                                      // await ref
+                                                      //     .read(
+                                                      //         cartReopProvider)
+                                                      //     .updateCart(
+                                                      //         ref,
+                                                      //         widget.dish!
+                                                      //             .dishid!,
+                                                      //         widget.dish!
+                                                      //             .dish_price!,
+                                                      //         ref
+                                                      //             .read(
+                                                      //               variationListProvider
+                                                      //                   .notifier,
+                                                      //             )
+                                                      //             .state,
+                                                      //         widget
+                                                      //             .updateQuantity);
                                                     } else if (withvariation! &&
                                                         widget.isCart ==
                                                             false &&
                                                         quantity > 0) {
-                                                      await ref.read(cartReopProvider).addToCart(
-                                                          widget
-                                                              .dish!.dish_price!
-                                                              .toDouble(),
-                                                          widget
-                                                              .dish!.dish_name,
-                                                          widget.dish!
-                                                              .dish_description,
-                                                          ref,
-                                                          supabaseClient.auth
-                                                              .currentUser!.id,
-                                                          widget.dish!.dishid!,
-                                                          widget
-                                                              .dish!.dish_price!
-                                                              .toDouble(),
-                                                          widget.dish!
-                                                              .dish_discount,
-                                                          widget.dish!
-                                                              .dish_imageurl!,
-                                                          ref
-                                                              .read(
-                                                                  variationListProvider
-                                                                      .notifier)
-                                                              .state,
-                                                          true,
-                                                          quantity,
-                                                          ref
-                                                              .read(
-                                                                  freqDishesProvider
-                                                                      .notifier)
-                                                              .state);
+                                                      cartRepo.addCartItem(
+                                                        itemprice: dish!
+                                                            .dish_price!
+                                                            .toDouble(),
+                                                        name: dish.dish_name,
+                                                        description: dish
+                                                            .dish_description,
+                                                        ref: ref,
+                                                        userId: userId,
+                                                        dishId: dish.dishid!,
+                                                        discountprice:
+                                                            dish.dish_discount,
+                                                        price: dish.dish_price,
+                                                        image:
+                                                            dish.dish_imageurl!,
+                                                        variations: ref
+                                                            .read(
+                                                                variationListProvider
+                                                                    .notifier)
+                                                            .state,
+                                                        isdishScreen: true,
+                                                        quantity: quantity,
+                                                        freqboughts: ref
+                                                            .read(
+                                                                freqDishesProvider
+                                                                    .notifier)
+                                                            .state,
+                                                      );
 
-                                                      ref
-                                                          .read(quantityPrvider
-                                                              .notifier)
-                                                          .state = 1;
+                                                      // await ref.read(cartReopProvider).addToCart(
+                                                      //     widget
+                                                      //         .dish!.dish_price!
+                                                      //         .toDouble(),
+                                                      //     widget
+                                                      //         .dish!.dish_name,
+                                                      //     widget.dish!
+                                                      //         .dish_description,
+                                                      //     ref,
+                                                      //     supabaseClient.auth
+                                                      //         .currentUser!.id,
+                                                      //     widget.dish!.dishid!,
+                                                      //     widget
+                                                      //         .dish!.dish_price!
+                                                      //         .toDouble(),
+                                                      //     widget.dish!
+                                                      //         .dish_discount,
+                                                      //     widget.dish!
+                                                      //         .dish_imageurl!,
+                                                      //     ref
+                                                      //         .read(
+                                                      //             variationListProvider
+                                                      //                 .notifier)
+                                                      //         .state,
+                                                      //     true,
+                                                      //     quantity,
+                                                      //     ref
+                                                      //         .read(
+                                                      //             freqDishesProvider
+                                                      //                 .notifier)
+                                                      //         .state);
+
+                                                      // ref
+                                                      //     .read(quantityPrvider
+                                                      //         .notifier)
+                                                      //     .state = 1;
                                                     } else if (widget.isCart ==
                                                             true &&
                                                         withvariation == true &&
                                                         widget.updateQuantity ==
                                                             0) {
-                                                      ref
-                                                          .read(
-                                                              cartReopProvider)
-                                                          .removeItemFromBasket(
-                                                              cartid: widget
-                                                                  .cartDish!
-                                                                  .cart_id!,
-                                                              ref: ref);
+                                                      cartRepo.deleteCartItem(
+                                                          cartItemId: widget
+                                                              .cartDish!
+                                                              .cart_id!,
+                                                          ref: ref);
+
+                                                      // ref
+                                                      //     .read(
+                                                      //         cartReopProvider)
+                                                      //     .removeItemFromBasket(
+                                                      //         cartid: widget
+                                                      //             .cartDish!
+                                                      //             .cart_id!,
+                                                      //         ref: ref);
                                                     } else {
                                                       print("nothing");
                                                     }
@@ -785,41 +837,76 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                                                     // then we also have to add them into cart and and frequently items are also type of DishData objects
                                                     print(
                                                         ' before Frequently bought together dishes: $freqDish');
-                                                    if (freqDish!.isNotEmpty) {
+                                                    if (freqDish != null &&
+                                                        freqDish.isNotEmpty) {
                                                       print(
                                                           ' after Frequently bought together dishes:${freqDish[0].dish_name}');
                                                       for (int i = 0;
                                                           i < freqDish.length;
                                                           i++) {
-                                                        await ref
-                                                            .read(
-                                                                cartReopProvider)
-                                                            .addToCart(
-                                                                freqDish[i]
-                                                                    .dish_price!
-                                                                    .toDouble(),
-                                                                freqDish[i]
-                                                                    .dish_name,
-                                                                freqDish[i]
-                                                                    .dish_description,
-                                                                ref,
-                                                                supabaseClient
-                                                                    .auth
-                                                                    .currentUser!
-                                                                    .id,
-                                                                freqDish[i]
-                                                                    .dishid!,
-                                                                freqDish[i]
-                                                                    .dish_price!
-                                                                    .toDouble(),
-                                                                freqDish[i]
-                                                                    .dish_discount,
-                                                                freqDish[i]
-                                                                    .dish_imageurl!,
-                                                                null,
-                                                                true,
-                                                                1,
-                                                                null);
+                                                        cartRepo.addCartItem(
+                                                          itemprice: freqDish[i]
+                                                              .dish_price!
+                                                              .toDouble(),
+                                                          name: freqDish[i]
+                                                              .dish_name,
+                                                          description: freqDish[
+                                                                  i]
+                                                              .dish_description,
+                                                          ref: ref,
+                                                          userId: userId,
+                                                          dishId: freqDish[i]
+                                                              .dishid!,
+                                                          discountprice:
+                                                              freqDish[i]
+                                                                  .dish_discount,
+                                                          price: freqDish[i]
+                                                              .dish_price,
+                                                          image: freqDish[i]
+                                                              .dish_imageurl!,
+                                                          variations: ref
+                                                              .read(
+                                                                  variationListProvider
+                                                                      .notifier)
+                                                              .state,
+                                                          isdishScreen: true,
+                                                          quantity: quantity,
+                                                          freqboughts: ref
+                                                              .read(
+                                                                  freqDishesProvider
+                                                                      .notifier)
+                                                              .state,
+                                                        );
+
+                                                        // await ref
+                                                        //     .read(
+                                                        //         cartReopProvider)
+                                                        //     .addToCart(
+                                                        //         freqDish[i]
+                                                        //             .dish_price!
+                                                        //             .toDouble(),
+                                                        //         freqDish[i]
+                                                        //             .dish_name,
+                                                        //         freqDish[i]
+                                                        //             .dish_description,
+                                                        //         ref,
+                                                        //         supabaseClient
+                                                        //             .auth
+                                                        //             .currentUser!
+                                                        //             .id,
+                                                        //         freqDish[i]
+                                                        //             .dishid!,
+                                                        //         freqDish[i]
+                                                        //             .dish_price!
+                                                        //             .toDouble(),
+                                                        //         freqDish[i]
+                                                        //             .dish_discount,
+                                                        //         freqDish[i]
+                                                        //             .dish_imageurl!,
+                                                        //         null,
+                                                        //         true,
+                                                        //         1,
+                                                        //         null);
                                                       }
                                                     } else {
                                                       print(

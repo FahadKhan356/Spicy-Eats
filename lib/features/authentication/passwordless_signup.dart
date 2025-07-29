@@ -533,7 +533,7 @@ class _PhonenumberScreenState extends ConsumerState<PasswordlessScreen>
                         child: ElevatedButton(
                           onPressed: () async {
                             if (_form.currentState!.validate()) {
-                              authController.signup(
+                              authController.Login(
                                   context: context,
                                   email: withpass_signin_emailController.text,
                                   passwrod: signuppassController.text);

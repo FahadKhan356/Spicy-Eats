@@ -1,22 +1,22 @@
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
 
-class CartModel {
+class Cartmodel {
   final int? cart_id;
   int quantity;
   double? tprice;
   final String? user_id;
   final int? dish_id;
-  final String? created_at;
+  final String created_at;
   final String? image;
-  double? itemprice;
+  final itemprice;
   final String? name;
   final String? description;
   final List<Variation>? variation;
-  int? variationId;
+  // int? variationId;
   final List<DishData>? freqboughts;
 
-  CartModel({
+  Cartmodel({
     this.name,
     this.description,
     this.itemprice,
@@ -25,10 +25,10 @@ class CartModel {
     this.dish_id,
     this.user_id,
     this.tprice,
-    this.created_at,
+    required this.created_at,
     this.image,
     this.variation,
-    this.variationId,
+    // this.variationId,
     this.freqboughts,
   });
 
@@ -47,13 +47,13 @@ class CartModel {
       'name': name,
       'description': description,
       'variation': variation,
-      'variationId': variationId,
+      // 'variationId': variationId,
       'frequently_boughtList': freqboughts,
     };
   }
-
 //copywith
-  CartModel copyWith({
+
+  Cartmodel copyWith({
     int? cart_id,
     int? quantity,
     double? tprice,
@@ -61,66 +61,35 @@ class CartModel {
     int? dish_id,
     String? created_at,
     String? image,
-    double?
-        itemprice, // If you know the type, replace `var` with the actual type.
+    int? itemprice,
     String? name,
     String? description,
     List<Variation>? variation,
-    int? variationId,
-    List<DishData>? freqboughts,
   }) {
-    return CartModel(
+    return Cartmodel(
+      variation: variation ?? this.variation,
       cart_id: cart_id ?? this.cart_id,
-      quantity: quantity ?? this.quantity,
       tprice: tprice ?? this.tprice,
       user_id: user_id ?? this.user_id,
       dish_id: dish_id ?? this.dish_id,
-      created_at: created_at ?? this.created_at,
+      quantity: quantity ?? this.quantity,
       image: image ?? this.image,
       itemprice: itemprice ?? this.itemprice,
       name: name ?? this.name,
       description: description ?? this.description,
-      variation: variation ?? this.variation,
-      variationId: variationId ?? this.variationId,
-      freqboughts: freqboughts ?? this.freqboughts,
+      created_at: created_at ?? this.created_at,
     );
   }
 
-  // CartModel copyWith({
-  //   int? cart_id,
-  //   int? quantity,
-  //   double? tprice,
-  //   String? user_id,
-  //   int? dish_id,
-  //   String? created_at,
-  //   String? image,
-  //   int? itemprice,
-  //   String? name,
-  //   String? description,
-  // }) {
-  //   return CartModel(
-  //     variation: variation ?? this.variation,
-  //     cart_id: cart_id ?? this.cart_id,
-  //     tprice: tprice ?? this.tprice,
-  //     user_id: user_id ?? this.user_id,
-  //     dish_id: dish_id ?? this.dish_id,
-  //     quantity: quantity ?? this.quantity,
-  //     image: image ?? this.image,
-  //     itemprice: itemprice ?? this.itemprice,
-  //     name: name ?? this.name,
-  //     description: description ?? this.description,
-  //   );
-  // }
-
 //from json
-  factory CartModel.fromjson(Map<String, dynamic> json) {
+  factory Cartmodel.fromjson(Map<String, dynamic> json) {
     final freqboughts = json['frequently_boughtList'] as List? ?? [];
     List<DishData> freqboughtslist =
         freqboughts.map((e) => DishData.fromJson(e)).toList();
     final variation = json['variations'] as List? ?? [];
     List<Variation> variationList =
         variation.map((e) => Variation.fromjson(e)).toList();
-    return CartModel(
+    return Cartmodel(
         cart_id: json['id'] ?? 0,
         quantity: json['quantity'] ?? 0,
         dish_id: json['dish_id'] ?? 0,
@@ -137,7 +106,7 @@ class CartModel {
         //  (json['variation'] as List<dynamic>)
         //     .map((e) => Variation.fromjson(e))
         //     .toList(),
-        variationId: json['variationId'] ?? 0,
+        // variationId: json['variationId'] ?? 0,
         freqboughts: freqboughtslist ?? []);
   }
 }

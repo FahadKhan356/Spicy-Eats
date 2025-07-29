@@ -36,7 +36,7 @@ class BasketCard extends ConsumerStatefulWidget {
   final DishData? dish;
   final double? imageHeight;
   final double? imageWidth;
-  final CartModel? cartItem;
+  final Cartmodel? cartItem;
   final String? userId;
   bool? isCartScreen;
   int? quantityIndex;
@@ -54,9 +54,8 @@ class _CartCardState extends ConsumerState<BasketCard> {
   final Debouncer _debouncer = Debouncer(milliseconds: 500);
 
   @override
-  build(
-    BuildContext context,
-  ) {
+  build(BuildContext context) {
+    final cartRepo = ref.read(cartReopProvider);
     final cart = widget.cartItem;
     final dish = widget.dish;
     final cartlistener = ref.watch(cartProvider);
@@ -130,7 +129,7 @@ class _CartCardState extends ConsumerState<BasketCard> {
                                   //       )
                                   //     :
                                   Text(
-                                    '\$${widget.cartItem!.tprice!.toStringAsFixed(1)}',
+                                    '\$${widget.cartItem?.tprice?.toStringAsFixed(1) ?? ''}',
                                     style: const TextStyle(
                                         fontSize: 17,
                                         fontWeight: FontWeight.bold,
@@ -216,21 +215,19 @@ class _CartCardState extends ConsumerState<BasketCard> {
                                     child: InkWell(
                                       onTap: () {
                                         _debouncer.run(() {
+                                          cartRepo.incQuantity(
+                                              ref: ref,
+                                              dishId: widget.dish!.dishid!,
+                                              price: widget.dish!.dish_price!);
+
                                           // ref
-                                          //     .read(DummyLogicProvider)
-                                          //     .increaseQuantity(
-                                          //       ref,
-                                          //       widget.dish!.dishid!,
-                                          //       widget.dish!.dish_price!,
-                                          //     );
-                                          ref
-                                              .read(cartReopProvider)
-                                              .increaseQuantityBasket(
-                                                  cartid:
-                                                      widget.cartItem!.cart_id!,
-                                                  ref: ref,
-                                                  price:
-                                                      widget.dish!.dish_price);
+                                          //     .read(cartReopProvider)
+                                          //     .increaseQuantityBasket(
+                                          //         cartid:
+                                          //             widget.cartItem!.cart_id!,
+                                          //         ref: ref,
+                                          //         price:
+                                          //             widget.dish!.dish_price);
                                         });
                                       },
                                       child: Container(
@@ -271,16 +268,19 @@ class _CartCardState extends ConsumerState<BasketCard> {
                                     child: InkWell(
                                       onTap: () {
                                         _debouncer.run(() async {
-                                          //  final carid=cartlistener.firstWhere((element) => element.cart_id)
+                                          cartRepo.decQuantity(
+                                              ref: ref,
+                                              dishId: widget.dish!.dishid!,
+                                              price: widget.dish!.dish_price!);
 
-                                          await ref
-                                              .read(cartReopProvider)
-                                              .decreaseQuantityBasket(
-                                                  cartid:
-                                                      widget.cartItem!.cart_id!,
-                                                  ref: ref,
-                                                  price: widget
-                                                      .cartItem!.itemprice!);
+                                          // await ref
+                                          //     .read(cartReopProvider)
+                                          //     .decreaseQuantityBasket(
+                                          //         cartid:
+                                          //             widget.cartItem!.cart_id!,
+                                          //         ref: ref,
+                                          //         price: widget
+                                          //             .cartItem!.itemprice!);
                                         });
                                       },
                                       child: Container(

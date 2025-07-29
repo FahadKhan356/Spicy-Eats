@@ -6,6 +6,7 @@ import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/widge
 import 'package:spicy_eats/Supabse%20Backend/supabase_config.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
+import 'package:spicy_eats/features/Sqlight%20Database/CartLocalDatabase.dart';
 import 'package:spicy_eats/features/orders/screens/order_screen.dart';
 import 'package:spicy_eats/features/splashscreen/SplashScreen.dart';
 import 'package:spicy_eats/routes.dart';
@@ -15,6 +16,7 @@ import 'package:app_links/app_links.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await CartLocalDatabase.instance.database;
   Supabase.initialize(url: supabaseUrl, anonKey: supabasekey);
   await dotenv.load(fileName: 'lib/.env');
   // Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;

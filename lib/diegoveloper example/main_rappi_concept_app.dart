@@ -382,7 +382,7 @@ class RappiProduct extends ConsumerStatefulWidget {
   });
   List<DishData> dishes = [];
   final DishData dish;
-  final CartModel? cartItem;
+  final Cartmodel? cartItem;
   final int? qunatityindex;
   final String? userId;
   List<VariattionTitleModel>? titleVariationList;

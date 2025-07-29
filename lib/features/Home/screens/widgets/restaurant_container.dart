@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
 
@@ -49,6 +48,8 @@ class _RestaurantContainerState extends ConsumerState<RestaurantContainer> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image.network(
+                      errorBuilder: (context, obj, stack) =>
+                          const Icon(Icons.image),
                       widget.image,
                       // 'https://assets.epicurious.com/photos/62f16ed5fe4be95d5a460eed/1:1/w_4318,h_4318,c_limit/RoastChicken_RECIPE_080420_37993.jpg',
                       fit: BoxFit.cover,

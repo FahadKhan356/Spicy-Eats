@@ -1,5 +1,4 @@
-import 'package:spicy_eats/Practice%20for%20cart/model/Cartmodel.dart'
-    show CartModel;
+import 'package:spicy_eats/Practice%20for%20cart/model/Cartmodel.dart';
 
 class OrdersModel {
   int? id;
@@ -7,7 +6,7 @@ class OrdersModel {
   String? ordersId;
   String? orderedFrom;
   String? deliveredTo;
-  List<CartModel>? orderedItems;
+  List<Cartmodel>? orderedItems;
   String? payType;
 
   OrdersModel(
@@ -35,8 +34,8 @@ class OrdersModel {
 //fromjson
   factory OrdersModel.fromJson(Map<String, dynamic> json) {
     List<dynamic> orderslist = json['orderedItems'] as List ?? [];
-    List<CartModel> finalList =
-        orderslist.map((e) => CartModel.fromjson(e)).toList();
+    List<Cartmodel> finalList =
+        orderslist.map((e) => Cartmodel.fromjson(e)).toList();
     return OrdersModel(
       id: json['id'] ?? '',
       created_at: DateTime.parse(json['created_at']),
