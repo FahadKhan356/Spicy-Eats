@@ -5,7 +5,7 @@ import 'package:spicy_eats/Register%20shop/widgets/TimePicker.dart';
 
 class Closing_Time extends StatefulWidget {
   final String days;
-  Closing_Time({super.key, required this.days});
+  const Closing_Time({super.key, required this.days});
 
   @override
   State<Closing_Time> createState() => _Opening_TimeState();
@@ -17,7 +17,7 @@ class _Opening_TimeState extends State<Closing_Time> {
   int ampm = 0;
   @override
   Widget build(BuildContext context) {
-    final currentam_pm = openinghours[widget.days]!["closing_period"] ?? 'PM';
+    final currentamPm = openinghours[widget.days]!["closing_period"] ?? 'PM';
 
     final currentHours =
         openinghours[widget.days]!['closing_time']['hours'] ?? 0;
@@ -25,7 +25,7 @@ class _Opening_TimeState extends State<Closing_Time> {
         openinghours[widget.days]!['closing_time']['mins'] ?? 0;
     return Expanded(
       child: Container(
-        padding: EdgeInsets.all(5),
+        padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
             boxShadow: const [
               BoxShadow(
@@ -105,7 +105,7 @@ class _Opening_TimeState extends State<Closing_Time> {
                               });
                               print(value);
                             },
-                            physics: FixedExtentScrollPhysics(),
+                            physics: const FixedExtentScrollPhysics(),
                             diameterRatio: 1.0,
                             itemExtent: 40,
                             childDelegate: ListWheelChildBuilderDelegate(
@@ -128,7 +128,7 @@ class _Opening_TimeState extends State<Closing_Time> {
                   ),
                 ),
                 Expanded(
-                  child: Container(
+                  child: SizedBox(
                     height: 200,
                     child: Column(
                       children: [
@@ -147,7 +147,7 @@ class _Opening_TimeState extends State<Closing_Time> {
                                   });
                                   print(value);
                                 },
-                                physics: FixedExtentScrollPhysics(),
+                                physics: const FixedExtentScrollPhysics(),
                                 diameterRatio: 1.0,
                                 itemExtent: 40,
                                 childDelegate: ListWheelChildBuilderDelegate(
@@ -228,7 +228,7 @@ class _Opening_TimeState extends State<Closing_Time> {
                     width: 10,
                   ),
                   Text(
-                    currentam_pm.toString(),
+                    currentamPm.toString(),
                     style: GoogleFonts.aBeeZee(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,

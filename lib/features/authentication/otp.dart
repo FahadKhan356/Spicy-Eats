@@ -56,7 +56,7 @@ class OtpScreen extends StatelessWidget {
                   numberOfFields: 5,
                   borderWidth: 4,
                   enabledBorderColor: Colors.black,
-                  borderColor: Color(0xFF512DA8),
+                  borderColor: const Color(0xFF512DA8),
                   //set to true to show as box or false to show as dash
                   showFieldAsBox: true,
                   //runs when a code is typed in
@@ -69,14 +69,14 @@ class OtpScreen extends StatelessWidget {
                         context: context,
                         builder: (context) {
                           return AlertDialog(
-                            title: Text("Verification Code"),
+                            title: const Text("Verification Code"),
                             content: Text('Code entered is $verificationCode'),
                           );
                         });
                   }, // end onSubmit
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 20),
+                  padding: const EdgeInsets.only(top: 20),
                   child: Image.asset(
                     'lib/assets/images/pizza.png',
                     height: 300,

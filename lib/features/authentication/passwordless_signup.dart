@@ -16,7 +16,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class PasswordlessScreen extends ConsumerStatefulWidget {
   final WidgetRef ref;
   static const String routename = '/phonenumber-screen';
-  PasswordlessScreen({super.key, required this.ref});
+  const PasswordlessScreen({super.key, required this.ref});
 
   @override
   ConsumerState<PasswordlessScreen> createState() => _PhonenumberScreenState();
@@ -85,7 +85,7 @@ class _PhonenumberScreenState extends ConsumerState<PasswordlessScreen>
     if (user == null) {
       return;
     } else {
-      print('value of user ${user}');
+      print('value of user $user');
       uploaddata(user);
       Navigator.pushNamed(context, HomeScreen.routename);
       mysnackbar(context: context, text: 'data loaded to users table ');
@@ -94,17 +94,17 @@ class _PhonenumberScreenState extends ConsumerState<PasswordlessScreen>
 
   Future<bool> userExists(String email) async {
     var value;
-    final response;
+    final PostgrestList response;
     print('value ${value!}');
 
     try {
       response =
           await supabaseClient.from('auth.users').select().eq('email', email);
-      if (response.error != null) {
+      if (response != null) {
         return true;
       }
 
-      final data = response.data;
+      final data = response;
       value = data.isNotEmpty;
     } catch (e) {
       e.toString();

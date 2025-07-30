@@ -4,7 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:spicy_eats/main.dart';
 
 Future<File?> pickimage() async {
-  ImagePicker picker = await ImagePicker();
+  ImagePicker picker = ImagePicker();
   File? image;
   final photo = await picker.pickImage(source: ImageSource.gallery);
   if (photo != null) {
@@ -17,7 +17,7 @@ Future<String?> uploadImageToSupabaseStorage(
     {required File? file,
     required String folderName,
     required String imagePath}) async {
-  final publicUrlResponse;
+  final String publicUrlResponse;
   try {
     await supabaseClient.storage.from(folderName).upload(imagePath, file!);
     publicUrlResponse =

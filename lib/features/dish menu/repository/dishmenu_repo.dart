@@ -31,6 +31,7 @@ class DishMenuRepository {
           .showSnackBar(SnackBar(content: Text(e.toString())));
       // throw Exception(e);
     }
+    return null;
   }
 
   Future<List<VariattionTitleModel>?> fetchTitleVariation(
@@ -94,5 +95,6 @@ class DishMenuRepository {
         throw Exception(e.toString());
       }
     }
+    return null;
   }
 }

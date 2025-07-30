@@ -11,7 +11,7 @@ import 'package:spicy_eats/features/Restaurant_Menu/screens/restaurant_menu.dart
 final totalQuantityprovider = StateProvider<int?>((ref) => null);
 
 class SliverBodyItems extends ConsumerStatefulWidget {
-  SliverBodyItems({super.key, required this.listItems});
+  const SliverBodyItems({super.key, required this.listItems});
 
   //List<Product> listItems;
   final List<DishData> listItems;
@@ -44,6 +44,7 @@ class _SliverBodyItemsState extends ConsumerState<SliverBodyItems> {
   //   ref.read(quantityProvider.notifier).update((state) => tempItemQuantityList);
   // }
 
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 

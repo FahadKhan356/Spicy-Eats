@@ -26,7 +26,7 @@ var isSearchProvider = StateProvider<bool>((ref) => false);
 var categoryIdProvider = StateProvider<String?>((ref) => null);
 
 class AddItemScreen extends ConsumerStatefulWidget {
-  AddItemScreen({super.key});
+  const AddItemScreen({super.key});
 
   @override
   ConsumerState<AddItemScreen> createState() => _AddItemScreenState();
@@ -119,7 +119,7 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
     var selectedCategoryId = ref.watch(selectedCategoryIdProvider);
     final dashboardController = ref.read(dashboardControllerProvider);
     final isError = ref.watch(isErrorProvider);
-    final GlobalKey<FormState> _form = GlobalKey<FormState>();
+    final GlobalKey<FormState> form = GlobalKey<FormState>();
 
     final isSearch = ref.watch(isSearchProvider);
     final cusinesvalue = ref.watch(cusinesProvider);
@@ -131,7 +131,7 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
         child: Padding(
           padding: const EdgeInsets.all(30.0),
           child: Form(
-            key: _form,
+            key: form,
             child: Column(
               children: [
                 restaurants!.length == 1
@@ -500,7 +500,7 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
                         ],
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     Container(
@@ -601,7 +601,7 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
                     )
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 ///////////////////////////////////////////////////////
@@ -627,7 +627,7 @@ class _AddItemScreenState extends ConsumerState<AddItemScreen> {
                                 const SnackBar(content: Text("failed to add")));
                             return;
                           }
-                          if (_form.currentState?.validate() ?? false) {
+                          if (form.currentState?.validate() ?? false) {
                             // if (!isError) {
                             String userId = supabaseClient.auth.currentUser!.id;
                             dashboardController.uploadDish(

@@ -10,7 +10,7 @@ class SecondHeaderTitle extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(
+    return SizedBox(
       height: headertitle,
       // color: Colors.green,
       child: Column(

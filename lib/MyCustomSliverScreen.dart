@@ -134,7 +134,7 @@ class _MyCustomSliverScreenState extends State<MyCustomSliverScreen>
       body: NotificationListener<ScrollUpdateNotification>(
         onNotification: (notification) {
           final double offset = notification.metrics.pixels;
-          final double appBarHeight =
+          const double appBarHeight =
               120.0; // Height of the expanded SliverAppBar
 
           if (offset >= appBarHeight && !_isSliverAppBarPinned) {
@@ -169,7 +169,7 @@ class _MyCustomSliverScreenState extends State<MyCustomSliverScreen>
                       onTap: (index) {
                         _scrollController.animateTo(
                           _getSectionOffset(index),
-                          duration: Duration(milliseconds: 500),
+                          duration: const Duration(milliseconds: 500),
                           curve: Curves.easeInOut,
                         );
                       },
@@ -193,7 +193,7 @@ class _MyCustomSliverScreenState extends State<MyCustomSliverScreen>
                         alignment: Alignment.center,
                         child: Text(
                           _headers[i],
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontSize: 24, fontWeight: FontWeight.bold),
                         ),
                       );

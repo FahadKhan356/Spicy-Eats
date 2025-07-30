@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 
 class SliverHeaderData extends StatelessWidget {
-  SliverHeaderData({
+  const SliverHeaderData({
+    super.key,
     required this.restaurantdata,
   });
 
@@ -19,31 +20,31 @@ class SliverHeaderData extends StatelessWidget {
           //   'Asiatisch , koreanisch , Japanisch',
           //   style: TextStyle(fontSize: 14),
           // ),
-          SizedBox(
+          const SizedBox(
             height: 6,
           ),
           Center(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.access_time),
-                SizedBox(
+                const Icon(Icons.access_time),
+                const SizedBox(
                   width: 4,
                 ),
                 Text(
                     '${restaurantdata.maxTime} - ${restaurantdata.minTime} Min | ${restaurantdata.averageRatings}',
-                    style: TextStyle(fontSize: 15)),
-                SizedBox(
+                    style: const TextStyle(fontSize: 15)),
+                const SizedBox(
                   width: 6,
                 ),
-                Icon(
+                const Icon(
                   Icons.star,
                   size: 14,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 6,
                 ),
-                Text('\$6.5 fee', style: TextStyle(fontSize: 12)),
+                const Text('\$6.5 fee', style: TextStyle(fontSize: 12)),
               ],
             ),
           )

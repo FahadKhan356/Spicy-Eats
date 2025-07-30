@@ -346,12 +346,12 @@ class _Rapp_tab_widgetState extends State<Rappi_tab_widget> {
 
 // ignore: non_constant_identifier_names
 class RappiCategory extends StatelessWidget {
-  RappiCategory({required this.category});
+  const RappiCategory({super.key, required this.category});
   final Categories? category;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
         // color: Colors.red,
         height: 65,
         width: double.maxFinite,
@@ -371,6 +371,7 @@ class RappiCategory extends StatelessWidget {
 // ignore: non_constant_identifier_names
 class RappiProduct extends ConsumerStatefulWidget {
   RappiProduct({
+    super.key,
     required this.dishes,
     required this.dish,
     this.cartItem,

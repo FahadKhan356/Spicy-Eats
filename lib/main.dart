@@ -125,8 +125,8 @@ class _MyAppState extends ConsumerState<MyApp> {
         theme: ThemeData(
             useMaterial3: true,
             //drawerTheme: DrawerThemeData(backgroundColor: Colors.),
-            tabBarTheme: TabBarTheme(),
-            appBarTheme: AppBarTheme(backgroundColor: Colors.white)),
+            tabBarTheme: const TabBarTheme(),
+            appBarTheme: const AppBarTheme(backgroundColor: Colors.white)),
         home: const SplashScreen()
 
         // MyMap()

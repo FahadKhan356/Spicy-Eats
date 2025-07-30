@@ -6,7 +6,7 @@ import 'package:spicy_eats/Register%20shop/widgets/TimePicker.dart';
 
 class Opening_Time extends ConsumerStatefulWidget {
   final String days;
-  Opening_Time({super.key, required this.days});
+  const Opening_Time({super.key, required this.days});
 
   @override
   ConsumerState<Opening_Time> createState() => _Opening_TimeState();
@@ -20,7 +20,7 @@ class _Opening_TimeState extends ConsumerState<Opening_Time> {
   @override
   Widget build(BuildContext context) {
     // final openingTime = openinghours[widget.days]?['opening_time'] ?? {};
-    final currentam_pm = openinghours[widget.days]!["opening_period"] ?? 'AM';
+    final currentamPm = openinghours[widget.days]!["opening_period"] ?? 'AM';
 
     final currentHours =
         openinghours[widget.days]!['opening_time']['hours'] ?? 0;
@@ -141,7 +141,7 @@ class _Opening_TimeState extends ConsumerState<Opening_Time> {
                   ),
                 ),
                 Expanded(
-                  child: Container(
+                  child: SizedBox(
                     height: 200,
                     child: Column(
                       children: [
@@ -160,7 +160,7 @@ class _Opening_TimeState extends ConsumerState<Opening_Time> {
                                   });
                                   print(value);
                                 },
-                                physics: FixedExtentScrollPhysics(),
+                                physics: const FixedExtentScrollPhysics(),
                                 diameterRatio: 1.0,
                                 itemExtent: 40,
                                 childDelegate: ListWheelChildBuilderDelegate(
@@ -242,7 +242,7 @@ class _Opening_TimeState extends ConsumerState<Opening_Time> {
                       width: 10,
                     ),
                     Text(
-                      currentam_pm.toString(),
+                      currentamPm.toString(),
                       style: GoogleFonts.aBeeZee(
                         fontSize: 30,
                         fontWeight: FontWeight.bold,

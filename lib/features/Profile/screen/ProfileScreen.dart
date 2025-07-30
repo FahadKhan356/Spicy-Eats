@@ -8,7 +8,7 @@ import 'package:spicy_eats/features/Profile/repo/ProfileRepo.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   static const String routename = '/Profile-screen';
-  ProfileScreen({super.key});
+  const ProfileScreen({super.key});
 
   @override
   ConsumerState<ProfileScreen> createState() => _ProfileScreenState();

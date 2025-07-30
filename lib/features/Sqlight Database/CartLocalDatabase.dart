@@ -51,16 +51,16 @@ class CartLocalDatabase {
 //Update Cart Database Sqlight
 
   Future<int> updateCartItem(Cartmodel item) async {
-    final db = await _database!.database;
+    final db = _database!.database;
     return await db.update('cart_items', item.tojson(),
-        where: 'id=?', whereArgs: [item.cart_id]);
+        where: 'dish_id=?', whereArgs: [item.dish_id]);
   }
 
   //Add New Cart Item Database Sqlight
 
   Future<int> insertCartItem(Cartmodel item) async {
     try {
-      final db = await _database!.database;
+      final db = _database!.database;
       return await db.insert('cart_items', item.tojson());
     } catch (e) {
       debugPrint('Error in Inseting Cart Item $e');
@@ -83,7 +83,7 @@ class CartLocalDatabase {
 //Function For Completely Retrieve Cart Data From Local Database
   Future<List<Cartmodel>> getCartItems(String userId) async {
     try {
-      final db = await _database?.database;
+      final db = _database?.database;
       final maps = await db?.query(
         'cart_items',
         where: 'user_id = ?',

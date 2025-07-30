@@ -129,6 +129,7 @@ class _CartCardState extends ConsumerState<CartCard> {
     final cartlistener = ref.watch(cartProvider);
     final index =
         cartlistener.indexWhere((element) => element.dish_id == dish!.dishid!);
+
     final quantity =
         ref.read(cartReopProvider).getTotalQuantityofdish(ref, dish!.dishid!);
 
@@ -276,7 +277,7 @@ class _CartCardState extends ConsumerState<CartCard> {
                                 const SizedBox()
                               ],
                               if (dish.isVariation == false)
-                                // && cart!.dish_id != dish.dishid)
+                                //&& cart!.dish_id != dish.dishid)
                                 AnimatedContainer(
                                   decoration: const BoxDecoration(
                                       color: Colors.black,
@@ -356,28 +357,46 @@ class _CartCardState extends ConsumerState<CartCard> {
                                         )
                                       : InkWell(
                                           onTap: () {
-                                            ref
-                                                .read(cartReopProvider)
-                                                .addCartItem(
-                                                    itemprice: dish.dish_price!,
-                                                    name: dish.dish_name,
-                                                    description:
-                                                        dish.dish_description,
-                                                    ref: ref,
-                                                    userId: supabaseClient
-                                                        .auth.currentUser!.id,
-                                                    dishId: dish.dishid!,
-                                                    discountprice:
-                                                        dish.dish_discount,
-                                                    price: dish.dish_price,
-                                                    image: dish.dish_imageurl!,
-                                                    variations: null,
-                                                    isdishScreen: false,
-                                                    quantity: 1,
-                                                    freqboughts: null);
+                                            final isInCart = ref
+                                                .read(cartProvider.notifier)
+                                                .state
+                                                .indexWhere((element) =>
+                                                    element.dish_id ==
+                                                    dish.dishid);
+                                            if (isInCart == -1) {
+                                              ref
+                                                  .read(cartReopProvider)
+                                                  .addCartItem(
+                                                      itemprice:
+                                                          dish.dish_price!,
+                                                      name: dish.dish_name,
+                                                      description:
+                                                          dish.dish_description,
+                                                      ref: ref,
+                                                      userId: supabaseClient
+                                                          .auth.currentUser!.id,
+                                                      dishId: dish.dishid!,
+                                                      discountprice:
+                                                          dish.dish_discount,
+                                                      price: dish.dish_price,
+                                                      image:
+                                                          dish.dish_imageurl!,
+                                                      variations: null,
+                                                      isdishScreen: false,
+                                                      quantity: 1,
+                                                      freqboughts: null);
 
-                                            expandbutton();
-                                            // addtocart(dish: dish);
+                                              expandbutton();
+                                              // addtocart(dish: dish);
+                                            } else {
+                                              debugPrint(
+                                                  "outside before $isExpanded");
+                                              setState(() {
+                                                expandbutton();
+                                              });
+                                              debugPrint(
+                                                  "outside after $isExpanded");
+                                            }
                                           },
                                           child: cartlistener.any((element) =>
                                                   element.dish_id ==

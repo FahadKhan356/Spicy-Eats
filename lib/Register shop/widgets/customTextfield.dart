@@ -25,7 +25,7 @@ class CustomTextfield extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Text(
             title,
             style: TextStyle(fontSize: size.width * 0.045, color: Colors.black),

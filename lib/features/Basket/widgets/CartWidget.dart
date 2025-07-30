@@ -31,7 +31,7 @@ class CartWidget extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Container(
+              SizedBox(
                 height: 100,
                 width: 100,
                 child: Image.network(

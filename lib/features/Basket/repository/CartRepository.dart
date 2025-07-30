@@ -52,25 +52,6 @@ class CartRepository {
   CartRepository(this._database);
 
   final _mutex = Mutex();
-  //fetch cart
-  // Future<void> fetchCart(WidgetRef ref, String userId) async {
-  //   // final userId = supabaseClient.auth.currentUser!.id;
-  //   // final cartlist = ref.read(cartProvider.notifier);
-
-  //   if (userId.isEmpty) return;
-
-  //   final response =
-  //       await supabaseClient.from('cart').select().eq('user_id', userId);
-
-  //   if (response.isNotEmpty) {
-  //     List<Cartmodel> cartItems =
-  //         response.map((json) => Cartmodel.fromjson(json)).toList();
-  //     ref.read(cartProvider.notifier).state = cartItems;
-  //     // cartlist.state = List.from(cartItems);
-
-  //     print("cart fetched");
-  //   }
-  // }
 
 //Fetch Cart From Sqlight
   Future<void> initializeCart(
@@ -79,7 +60,7 @@ class CartRepository {
       final cartNotifier = ref.read(cartProvider.notifier);
 
       final data = await _database.getCartItems(userId);
-      if (data == null || data.isEmpty) {
+      if (data.isEmpty) {
         cartNotifier.state = [];
       } else {
         cartNotifier.state = data;
@@ -129,37 +110,6 @@ class CartRepository {
       debugPrint("Failed to Update $e");
     }
   }
-
-// update cart
-
-  // Future<void> updateCart(WidgetRef ref, int dishId, double price,
-  //     List<Variation>? variations, quantity) async {
-  //   final cart = ref.read(cartProvider.notifier);
-  //   final item = cart.state;
-  //   final cartTprice = ref.read(cartPriceSumProvider.notifier);
-
-  //   final index = item.indexWhere((element) => element.dish_id == dishId);
-  //   if (index != -1) {
-  //     item[index].quantity = quantity;
-  //     final totalprice = item[index].itemprice! * quantity;
-  //     item[index].variation != variations;
-  //     final response = await supabaseClient.from('cart').update({
-  //       'quantity': quantity,
-  //       'variations': variations != null
-  //           ? variations.map((e) => e.tojson()).toList()
-  //           : [],
-  //       'tprice': totalprice,
-  //     }).eq('id', item[index].cart_id!);
-
-  //     if (response != null) {
-  //       final items = response.map((e) => Cartmodel.fromjson(e)).toList();
-  //       item.add(items);
-  //     }
-  //   }
-  //   cart.state = List.from(item);
-  //   cartTprice.state = getTotalPrice(ref);
-  //   print('car total price check ${cartTprice.state}');
-  // }
 
 //Add CartItem Locally For Sqlight
   Future<void> addCartItem({
@@ -238,73 +188,6 @@ class CartRepository {
     }
   }
 
-  // //addtocart
-  // Future<void> addToCart(
-  //   double itemprice,
-  //   name,
-  //   description,
-  //   WidgetRef ref,
-  //   String userId,
-  //   int dishId,
-  //   double? discountprice,
-  //   double? price,
-  //   String image,
-  //   List<Variation>? variations,
-  //   bool isdishScreen,
-  //   int quantity,
-  //   List<DishData>? freqboughts,
-  // ) async {
-  //   await _mutex.run(() async {
-  //     final cart = ref.read(cartProvider.notifier);
-  //     final items = cart.state;
-  //     final cartTPrice = ref.read(cartPriceSumProvider.notifier);
-
-  //     final index = items.indexWhere((item) => item.dish_id == dishId);
-
-  //     if (index != -1 && variations == null) {
-  //       //If item exists, update quantity
-  //       items[index].quantity += quantity;
-  //       items[index].tprice = discountprice != null
-  //           ? items[index].quantity * discountprice
-  //           : items[index].quantity * price!;
-  //       await supabaseClient.from('cart').update({
-  //         'quantity': items[index].quantity,
-  //         'tprice': items[index].tprice,
-  //       }).eq('id', items[index].cart_id!);
-  //     } else {
-  //       final itemquantity = discountprice != null
-  //           ? quantity * discountprice
-  //           : quantity * price!;
-
-  //       final response = await supabaseClient.from('cart').insert({
-  //         'user_id': userId,
-  //         'dish_id': dishId,
-  //         'quantity': quantity,
-  //         'tprice': itemquantity,
-  //         'image': image,
-  //         'itemprice': itemprice,
-  //         'name': name,
-  //         'description': description,
-  //         'variations': variations != null
-  //             ? variations.map((v) => v.tojson()).toList()
-  //             : [],
-  //         'frequently_boughtList': freqboughts != null
-  //             ? freqboughts.map((e) => e.tojson()).toList()
-  //             : []
-  //       }).select();
-
-  //       if (response.isNotEmpty) {
-  //         final newItem = Cartmodel.fromjson(response.first);
-  //         items.add(newItem);
-  //       }
-  //     }
-
-  //     cart.state = List.from(items); // Update state
-  //     cartTPrice.state = getTotalPrice(ref);
-  //     print('car total price check ${cartTPrice.state}');
-  //   });
-  // }
-
 //Increase quantity Locally Sqlight
   Future<void> incQuantity(
       {required WidgetRef ref,
@@ -334,51 +217,6 @@ class CartRepository {
     priceNotifier.state =
         newCart.fold(0, (sum, item) => sum + (item.tprice ?? 0));
   }
-
-// //increase quantity
-//   Future<void> increaseQuantity(WidgetRef ref, int dishId, double price) async {
-//     await _mutex.run(() async {
-//       // print('inside the increase quantity..');
-//       final cart = ref.read(cartProvider.notifier);
-//       final items = cart.state;
-//       final cartTPrice = ref.read(cartPriceSumProvider.notifier);
-//       // print('dishid given by ui: $dishId');
-
-//       final index = ref
-//           .read(cartProvider.notifier)
-//           .state
-//           .indexWhere((item) => item.dish_id == dishId);
-
-//       print('dishid id in index: $index');
-
-//       print('cart id: ${ref.read(cartProvider.notifier).state[index].cart_id}');
-
-//       if (index != -1) {
-//         print(
-//             'before increase quantity:${ref.read(cartProvider.notifier).state[index].quantity}');
-
-//         ref.read(cartProvider.notifier).state[index].quantity++;
-//         final result = items[index].quantity * price.toDouble();
-
-//         items[index].tprice = result;
-
-//         print(
-//             'after increase quantity:${ref.read(cartProvider.notifier).state[index].quantity}');
-
-//         await supabaseClient.from('cart').update({
-//           'quantity': ref.read(cartProvider.notifier).state[index].quantity,
-//           'tprice': ref.read(cartProvider.notifier).state[index].tprice
-//         }).eq('id', ref.read(cartProvider.notifier).state[index].cart_id!);
-//       }
-
-//       ref.read(cartProvider.notifier).state =
-//           List.from(ref.read(cartProvider.notifier).state);
-//       cart.state = List.from(items); // Update state
-//       cartTPrice.state = getTotalPrice(ref);
-//       print('ended the increase quantity..');
-//       print('car total price check ${cartTPrice.state}');
-//     });
-//   }
 
 //Increase quantity Locally Sqlight
   Future<void> decQuantity(
@@ -418,165 +256,12 @@ class CartRepository {
     }
   }
 
-  //deccrese quantity in basket
-
-  // Future<void> decreaseQuantityBasket(
-  //     {required int cartid, required WidgetRef ref, required price}) async {
-  //   await _mutex.run(() async {
-  //     final cart = ref.read(cartProvider.notifier);
-  //     final items = cart.state;
-  //     final index = items.indexWhere((element) => element.cart_id == cartid);
-  //     final cartTPrice = ref.read(cartPriceSumProvider.notifier);
-
-  //     if (index != -1) {
-  //       if (items[index].quantity > 1) {
-  //         items[index].quantity--;
-  //         final result = items[index].quantity * price;
-  //         items[index].tprice = result.toDouble();
-  //         await supabaseClient.from('cart').update({
-  //           'quantity': items[index].quantity,
-  //           'tprice': items[index].quantity * price,
-  //         }).eq('id', items[index].cart_id!);
-  //       } else {
-  //         await supabaseClient
-  //             .from('cart')
-  //             .delete()
-  //             .eq('id', items[index].cart_id!);
-  //         items.removeAt(index);
-  //       }
-
-  //       cart.state = List.from(items);
-  //       cartTPrice.state = getTotalPrice(ref);
-  //     }
-  //   });
-  // }
-
-// //decrease qunatity
-//   Future<void> decreaseQuantity(
-//       WidgetRef ref, int? dishId, double price) async {
-//     await _mutex.run(() async {
-//       final cart = ref.read(cartProvider.notifier);
-//       final items = cart.state;
-//       final cartTPrice = ref.read(cartPriceSumProvider.notifier);
-
-//       //final index = items.indexWhere((item) => item.dish_id == dishId);
-//       final index = ref
-//           .read(cartProvider.notifier)
-//           .state
-//           .indexWhere((element) => element.dish_id == dishId);
-//       if (index != -1) {
-//         if (items[index].quantity > 1) {
-//           items[index].quantity--;
-//           items[index].tprice = 0;
-//           items[index].tprice = items[index].quantity * price;
-//           print(items[index].tprice);
-
-//           await supabaseClient.from('cart').update({
-//             'quantity': ref.read(cartProvider.notifier).state[index].quantity,
-//             'tprice': ref.read(cartProvider.notifier).state[index].tprice,
-//           }).eq('id', ref.read(cartProvider.notifier).state[index].cart_id!);
-//         } else {
-//           await supabaseClient
-//               .from('cart')
-//               .delete()
-//               .eq('id', ref.read(cartProvider.notifier).state[index].cart_id!);
-//           if (items.isNotEmpty) {
-//             items.removeAt(index);
-//           }
-//         }
-//       }
-
-//       cart.state = List.from(items); // Update state
-//       cartTPrice.state = getTotalPrice(ref);
-//       print('car total price check ${cartTPrice.state}');
-//     });
-//   }
-
-  //remove cartitem
-//   Future<void> removeItem(WidgetRef ref, String dishId) async {
-//     final cart = ref.read(cartProvider.notifier);
-//     final items = cart.state;
-//     final cartTPrice = ref.read(cartPriceSumProvider.notifier);
-
-//     await supabaseClient.from('cart').delete().eq('dish_id', dishId);
-
-//     items.removeWhere((item) => item.dish_id == dishId);
-
-//     cart.state = List.from(items); // Update state
-//     cartTPrice.state = getTotalPrice(ref);
-//     print('car total price check ${cartTPrice.state}');
-//   }
-// //increse quantity in basket
-
-//   Future<void> increaseQuantityBasket(
-//       {required int cartid, required WidgetRef ref, required price}) async {
-//     try {
-//       final cart = ref.read(cartProvider.notifier);
-//       final items = cart.state;
-//       final index = items.indexWhere((element) => element.cart_id == cartid);
-//       final cartTPrice = ref.read(cartPriceSumProvider.notifier);
-
-//       if (index != -1) {
-//         items[index].quantity++;
-//         final result = items[index].quantity * price;
-//         items[index].tprice = result.toDouble();
-//         await supabaseClient.from('cart').update({
-//           'quantity': items[index].quantity,
-//           'tprice': items[index].tprice,
-//         }).eq('id', cartid);
-
-//         cart.state = List.from(items);
-//         cartTPrice.state = getTotalPrice(ref);
-//       }
-//     } catch (e) {
-//       throw Exception(e);
-//     }
-//   }
-
-//remove item in basket
-
-  // Future<void> removeItemFromBasket({
-  //   required int cartid,
-  //   required WidgetRef ref,
-  // }) async {
-  //   try {
-  //     final cart = ref.read(cartProvider.notifier);
-  //     final items = cart.state;
-  //     final index = items.indexWhere((element) => element.cart_id == cartid);
-  //     final cartTPrice = ref.read(cartPriceSumProvider.notifier);
-
-  //     if (index != -1) {
-  //       items.removeWhere((element) => element.cart_id == cartid);
-
-  //       await supabaseClient.from('cart').delete().eq('id', cartid);
-
-  //       cart.state = List.from(items);
-  //       cartTPrice.state = getTotalPrice(ref);
-  //     }
-  //   } catch (e) {
-  //     throw Exception(e);
-  //   }
-  // }
-
-  //calculate total pirce
   double getTotalPrice(WidgetRef ref) {
     final cart = ref.watch(cartProvider);
 
     return cart.fold(0.0,
         (previousValue, element) => previousValue + (element.tprice ?? 0.0));
   }
-
-  //   cart.fold(0.0, (previousValue, element) {
-  //     if (element.variation != null) {
-  //       for (var items in element.variation!) {
-  //         variationtotal = items.variationPrice! * element.quantity;
-  //       }
-  //     }
-  //     return variationtotal;
-  //   });
-  //   sum = alltprices + variationtotal;
-  //   return sum;
-  // }
 
   int getTotalQuantityofdish(WidgetRef ref, int dishid) {
     final cart = ref.watch(cartProvider);
@@ -639,43 +324,17 @@ class CartRepository {
     }
   }
 
-  // Future<void> initializeCart(WidgetRef ref, String userId, context) async {
-  //   final cartNotifier = ref.read(cartProvider.notifier);
-
-  //   try {
-  //     // 1. Check if SQLite has data
-  //     final localItems = await _database.getCartItems(userId);
-
-  //     if (localItems.isEmpty) {
-  //       // 2. If empty, sync from Supabase
-  //       await syncCartFromSupabase(userId);
-  //     }
-
-  //     // 3. Load from SQLite to state
-  //     final finalItems = await _database.getCartItems(userId);
-  //     cartNotifier.state = finalItems;
-
-  //     // 4. Start background sync
-  //     // unawaited(repository.syncPendingChanges());
-  //   } catch (e) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(content: Text('Failed Initialize Data ${e.toString()}')));
-  //   }
-  // }
-
-  Future<void> deleteCartItem(
-      {required cartItemId, required WidgetRef ref}) async {
+  Future<void> deleteCartItem({required dishId, required WidgetRef ref}) async {
     try {
       final cartNotifier = ref.read(cartProvider.notifier);
       final priceNotifier = ref.read(cartPriceSumProvider.notifier);
       final currentCart = cartNotifier.state;
 
-      final index =
-          currentCart.indexWhere((item) => item.cart_id == cartItemId);
+      final index = currentCart.indexWhere((item) => item.dish_id == dishId);
 
       if (index == -1) return;
-      debugPrint("Reomoved $cartItemId");
-      await _database.deleteCartItem(cartItemId);
+      debugPrint("Removed $dishId");
+      await _database.deleteCartItem(dishId);
 
       final newCart = cartNotifier.state = [
         ...currentCart.sublist(0, index),

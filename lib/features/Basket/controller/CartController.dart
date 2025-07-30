@@ -1,15 +1,3 @@
-import 'package:flutter/painting.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/Practice%20for%20cart/model/Cartmodel.dart';
-import 'package:spicy_eats/features/Basket/model/basketModel.dart';
-import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
-import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
-import 'package:spicy_eats/features/Restaurant_Menu/screens/restaurant_menu.dart';
-import 'package:spicy_eats/features/dish%20menu/dishmenuVariation.dart';
-import 'package:spicy_eats/main.dart';
-import 'package:spicy_eats/tabexample.dart/RestaurantMenuScreen.dart';
-
 // var cartControllerProvider = Provider((ref) {
 //   final cartRepo = ref.read(cartReopProvider);
 //   return CartController(cartRepo: cartRepo);

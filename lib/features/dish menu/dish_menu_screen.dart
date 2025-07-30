@@ -7,13 +7,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/Cartmodel.dart';
 import 'package:spicy_eats/Practice%20for%20cart/screens/BasketScreen.dart';
-import 'package:spicy_eats/features/Basket/controller/CartController.dart';
 import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/dish%20menu/controller/dish-menu_controller.dart';
-import 'package:spicy_eats/features/dish%20menu/dishmenuVariation.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
 import 'package:spicy_eats/features/dish%20menu/repository/dishmenu_repo.dart';
+import 'package:spicy_eats/features/dish%20menu/widget/freqDishesList.dart';
 import 'package:spicy_eats/main.dart';
 import 'package:spicy_eats/tabexample.dart/RestaurantMenuScreen.dart';
 
@@ -24,12 +23,11 @@ var updatedQuantityProvider = StateProvider<int>((ref) => 1);
 class DishMenuScreen extends ConsumerStatefulWidget {
   static const String routename = '/DishMenuScreen';
   final DishData? dish;
-  List<VariattionTitleModel>? variationList = [];
   bool isCart = false;
   Cartmodel? cartDish;
   bool isbasket = false;
   List<DishData>? freqList = [];
-  int updatedquantity = 0;
+
   bool? isdishscreen = false;
 
   DishMenuScreen(
@@ -95,7 +93,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
       if (widget.isCart) {
         ref.read(updatedQuantityProvider.notifier).state =
             widget.cartDish!.quantity;
-        widget.updatedquantity = widget.cartDish!.quantity;
+
         debugPrint("cart qunatity dish menu: ${widget.cartDish!.quantity}");
       }
       ref.read(quantityPrvider.notifier).state = 1;
@@ -107,6 +105,8 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
 
   @override
   Widget build(BuildContext context) {
+    final screen = MediaQuery.of(context).size;
+    final width = screen.width;
     final quantity = ref.watch(quantityPrvider);
     final updatedQuantity = ref.watch(updatedQuantityProvider);
 
@@ -141,12 +141,19 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                       style: TextStyle(color: Colors.black),
                     ),
                   ),
-                  expandedHeight: 200,
-                  pinned: true,
+                  expandedHeight: 250,
+                  // pinned: true,
                   flexibleSpace: FlexibleSpaceBar(
-                    background: Image.network(
-                      widget.dish!.dish_imageurl!,
-                      fit: BoxFit.cover,
+                    background: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 20, horizontal: 20),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.network(
+                          widget.dish!.dish_imageurl!,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -225,52 +232,89 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                                       const SizedBox(
                                         height: 10,
                                       ),
-                                      Container(
-                                          height: 50,
-                                          width: double.maxFinite,
-                                          padding: const EdgeInsets.all(10),
-                                          decoration: BoxDecoration(
-                                            color: Colors.black12,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            border: Border.all(
-                                                width: 1,
-                                                color: Colors.black38),
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Text('${totalquantity}x'),
-                                                  const SizedBox(
-                                                    width: 20,
-                                                  ),
-                                                  Text(
-                                                      '${widget.cartDish!.name}'),
-                                                ],
-                                              ),
-                                              InkWell(
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Container(
+                                            height: width * 0.11,
+                                            width: double.maxFinite,
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 20),
+                                            decoration: BoxDecoration(
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    spreadRadius: 2,
+                                                    color: Color.fromRGBO(
+                                                        230, 81, 0, 1),
+                                                    blurRadius: 2)
+                                              ],
+                                              color: Colors.orange[100],
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      width * 0.14),
+                                              // border: Border.all(
+                                              //   style: BorderStyle.solid,
+                                              //   width: 1.5,
+                                              //   color: const Color.fromRGBO(
+                                              //       230, 81, 0, 1),
+                                              // ),
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      '${totalquantity}x',
+                                                      style: TextStyle(
+                                                          fontSize:
+                                                              width * 0.025,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 20,
+                                                    ),
+                                                    Text(
+                                                      '${widget.cartDish!.name}',
+                                                      style: TextStyle(
+                                                          fontSize:
+                                                              width * 0.025,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                  ],
+                                                ),
+                                                InkWell(
                                                   onTap: () =>
                                                       Navigator.pushNamed(
                                                           context,
                                                           BasketScreen
                                                               .routename,
                                                           arguments: {
-                                                            'dishes': ref
-                                                                .read(dishesListProvider
+                                                        'dishes': ref
+                                                            .read(
+                                                                dishesListProvider
                                                                     .notifier)
-                                                                .state,
-                                                            'restdata': ref
-                                                                .read(restaurantProvider
+                                                            .state,
+                                                        'restdata': ref
+                                                            .read(
+                                                                restaurantProvider
                                                                     .notifier)
-                                                                .state
-                                                          }),
-                                                  child: const Text(
-                                                      'Edit in cart')),
-                                            ],
-                                          )),
+                                                            .state
+                                                      }),
+                                                  child: Text(
+                                                    'Edit in cart',
+                                                    style: TextStyle(
+                                                        fontSize: width * 0.025,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ),
+                                              ],
+                                            )),
+                                      ),
                                     ],
                                   )
                                 : const SizedBox(),
@@ -279,476 +323,202 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                   ),
                 ),
                 widget.freqList != null && widget.freqList!.isNotEmpty
-                    ? SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                            childCount: widget.freqList!.length,
-                            (context, index) {
-                          final freqdish = widget.freqList![index];
-                          final freqdishes =
-                              ref.watch(freqDishesProvider) ?? [];
-                          final selected = freqdishes.any(
-                            (element) => element.dishid == freqdish.dishid,
-                          );
-                          return CheckboxListTile(
-                              checkColor: Colors.white,
-                              activeColor: Colors.black,
-                              // title: Text(
-                              //   freqdish.dish_name.toString(),
-                              // ),
-                              subtitle: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.white,
-                                  // border: Border.all(
-                                  //     width: 1, color: Colors.black38),
-                                ),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      height: 80,
-                                      width: 80,
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey[100],
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: freqdish.dish_imageurl != null
-                                          ? Image.network(
-                                              freqdish.dish_imageurl.toString(),
-                                              fit: BoxFit.cover,
-                                            )
-                                          : const CircularProgressIndicator(),
-                                    ),
-                                    const SizedBox(
-                                      width: 20,
-                                    ),
-                                    Flexible(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            freqdish.dish_name.toString(),
-                                            style: const TextStyle(
-                                              overflow: TextOverflow.ellipsis,
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                          freqdish.dish_discount == null
-                                              ? Text(
-                                                  '\$${freqdish.dish_price}',
-                                                  style: const TextStyle(
-                                                    color: Colors.black,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 16,
-                                                  ),
-                                                )
-                                              : const SizedBox(),
-                                          freqdish.dish_discount != null
-                                              ? Column(
-                                                  children: [
-                                                    Text(
-                                                      '\$${freqdish.dish_discount}',
-                                                      style: const TextStyle(
-                                                        color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 16,
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Text(
-                                                      '\$${freqdish.dish_price}',
-                                                      style: const TextStyle(
-                                                        color: Colors.red,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 16,
-                                                        decoration:
-                                                            TextDecoration
-                                                                .lineThrough,
-                                                        decorationColor:
-                                                            Colors.red,
-                                                        decorationThickness: 2,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                )
-                                              : const SizedBox()
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              value: selected,
-                              onChanged: (value) {
-                                final newUpdatedList =
-                                    List<DishData>.from(freqdishes);
-                                if (value == true) {
-                                  newUpdatedList.add(DishData(
-                                    isVariation: false,
-                                    dishid: freqdish.dishid,
-                                    dish_description: freqdish.dish_description,
-                                    dish_price: freqdish.dish_price,
-                                    dish_discount: freqdish.dish_discount,
-                                    dish_imageurl: freqdish.dish_imageurl,
-                                    dish_name: freqdish.dish_name,
-                                    dish_schedule_meal: '',
-                                  ));
-                                } else {
-                                  newUpdatedList.removeWhere((element) =>
-                                      element.dishid == freqdish.dishid);
-                                }
-                                ref.read(freqDishesProvider.notifier).state =
-                                    newUpdatedList;
-                              });
-                        }),
-                      )
+                    ? SliverToBoxAdapter(
+                        child: Freqdisheslist(
+                            screenSize: width, freqList: widget.freqList!))
                     : const SliverToBoxAdapter(
                         child: SizedBox(),
                       ),
                 const SliverToBoxAdapter(
                   child: SizedBox(
-                    height: 50,
+                    height: 100,
                   ),
-                )
+                ),
               ],
             ),
-            // Positioned(
-            //     bottom: 0,
-            //     left: 0,
-            //     right: 0,
-            //     child: ClipRRect(
-            //       child: BackdropFilter(
-            //         filter:
-            //             ImageFilter.blur(sigmaX: 10, sigmaY: 10), // blur effect
-            //         child: Container(
-            //           decoration: BoxDecoration(
-            //             color: Colors.white.withOpacity(0.1),
-            //             boxShadow: const [
-            //               BoxShadow(
-            //                   color: Colors.black12,
-            //                   spreadRadius: 2,
-            //                   blurRadius: 3)
-            //             ],
-            //           ),
-            //           height: 80,
-            //           width: double.maxFinite,
-            //           child: Padding(
-            //             padding: const EdgeInsets.symmetric(horizontal: 20),
-            //             child: Row(
-            //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //               children: [
-            //                 Row(
-            //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //                   children: [
-            //                     InkWell(
-            //                         onTap: () {
-            //                           ref
-            //                               .read(dishMenuControllerProvider)
-            //                               .increaseItemQuantity(
-            //                                   widget.isCart, _debouncer, ref);
-            //                         },
-            //                         child: Container(
-            //                           height: 40,
-            //                           width: 40,
-            //                           decoration: BoxDecoration(
-            //                               color: Colors.black,
-            //                               borderRadius:
-            //                                   BorderRadius.circular(10)),
-            //                           child: const Icon(Icons.add,
-            //                               size: 20, color: Colors.white),
-            //                         )),
-            //                     const SizedBox(width: 5),
-            //                     widget.isCart
-            //                         ? Text(
-            //                             // updatedQuantity.toString(),
-            //                             ref
-            //                                 .read(updatedQuantityProvider
-            //                                     .notifier)
-            //                                 .state
-            //                                 .toString(),
-            //                             style: const TextStyle(
-            //                                 fontSize: 20, color: Colors.black),
-            //                           )
-            //                         : Text(
-            //                             quantity.toString(),
-            //                             style: const TextStyle(
-            //                                 fontSize: 20, color: Colors.black),
-            //                           ),
-            //                     const SizedBox(width: 5),
-            //                     InkWell(
-            //                       onTap: () {
-            //                         ref
-            //                             .read(dishMenuControllerProvider)
-            //                             .decreaseItemQuantity(
-            //                               widget.isCart,
-            //                               _debouncer,
-            //                               ref,
-            //                             );
-            //                       },
-            //                       child: Container(
-            //                         height: 40,
-            //                         width: 40,
-            //                         decoration: BoxDecoration(
-            //                           color: Colors.black,
-            //                           borderRadius: BorderRadius.circular(10),
-            //                         ),
-            //                         child: const Center(
-            //                             child: Icon(
-            //                           Icons.minimize_outlined,
-            //                           size: 20,
-            //                           color: Colors.white,
-            //                         )),
-            //                       ),
-            //                     ),
-            //                   ],
-            //                 ),
-            //                 SizedBox(
-            //                   height: 50,
-            //                   width: 150,
-            //                   child: ElevatedButton(
-            //                     style: ElevatedButton.styleFrom(
-            //                         backgroundColor: Colors.black,
-            //                         shape: RoundedRectangleBorder(
-            //                           borderRadius: BorderRadius.circular(10),
-            //                         )),
-            //                     child: widget.isCart && updatedQuantity > 0
-            //                         ? const Text(
-            //                             'Update to cart',
-            //                             style: TextStyle(color: Colors.white),
-            //                           )
-            //                         : widget.isCart && updatedQuantity < 1
-            //                             ? const Text(
-            //                                 'remove to cart',
-            //                                 style:
-            //                                     TextStyle(color: Colors.white),
-            //                               )
-            //                             : const Text(
-            //                                 'Add to cart',
-            //                                 style:
-            //                                     TextStyle(color: Colors.white),
-            //                               ),
-            //                     onPressed: () {
-            //                       if (widget.isCart &&
-            //                           widget.updatedquantity > 0) {
-            //                         ref.read(cartReopProvider).updateCartItems(
-            //                             dishId: widget.dish!.dishid!,
-            //                             ref: ref,
-            //                             price: widget.dish!.dish_price!,
-            //                             newQuantity: updatedQuantity,
-            //                             newVariations: []);
-
-            //                         debugPrint(
-            //                             " Update To Cart Bod:{ } : ${updatedQuantity}");
-            //                       } else if (updatedQuantity == 0 &&
-            //                           widget.isCart) {
-            //                         ref.read(cartReopProvider).deleteCartItem(
-            //                             cartItemId: widget.cartDish!.cart_id,
-            //                             ref: ref);
-            //                       } else {
-            //                         ref.read(cartReopProvider).addCartItem(
-            //                             itemprice: widget.dish!.dish_price!,
-            //                             name: widget.dish!.dish_name,
-            //                             description:
-            //                                 widget.dish!.dish_description,
-            //                             ref: ref,
-            //                             userId:
-            //                                 supabaseClient.auth.currentUser!.id,
-            //                             dishId: widget.dish!.dishid!,
-            //                             discountprice:
-            //                                 widget.dish!.dish_discount ?? 0,
-            //                             price: widget.dish!.dish_price,
-            //                             image: widget.dish!.dish_imageurl!,
-            //                             variations: null,
-            //                             isdishScreen: false,
-            //                             quantity: quantity,
-            //                             freqboughts: null);
-            //                       }
-
-            //                       // ref
-            //                       //     .read(cartControllerProvider)
-            //                       //     .itemAddUpdateRemoveCart(
-            //                       //         ref: ref,
-            //                       //         debouncer: _debouncer,
-            //                       //         refreshUI: (fn) => setState(() => ()),
-            //                       //         isLoading: isloading,
-            //                       //         isCart: widget.isCart,
-            //                       //         updatedquantity: updatedQuantity,
-            //                       //         dish: widget.dish!,
-            //                       //         cartDish: widget.cartDish!,
-            //                       //         quantity: quantity,
-            //                       //         context: context);
-
-            //                       debugPrint("quantiry : $quantity");
-            //                     },
-            //                   ),
-            //                 ),
-            //               ],
-            //             ),
-            //           ),
-            //         ),
-            //       ),
-            //     )),
             Positioned(
-                bottom: 30,
+                bottom: 20,
                 right: 20,
                 left: 20,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(70),
                   child: Container(
-                    height: 80,
+                    height: width * 0.1,
                     width: double.maxFinite,
-                    color: Colors.black,
+                    decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                      begin: Alignment.centerRight,
+                      end: Alignment.centerLeft,
+                      colors: [
+                        Color.fromRGBO(230, 81, 0, 1),
+                        Color.fromRGBO(230, 81, 0, 1),
+                      ],
+                    )),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 5),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
-                            decoration: BoxDecoration(
-                                color: Colors.orange[900],
-                                borderRadius: BorderRadius.circular(40)),
-                            height: double.maxFinite,
-                            width: 120,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                IconButton(
-                                  onPressed: () {
-                                    ref
-                                        .read(dishMenuControllerProvider)
-                                        .increaseItemQuantity(
-                                          widget.isCart,
-                                          _debouncer,
-                                          ref,
-                                        );
-                                  },
-                                  icon: const Icon(
-                                    Icons.add,
-                                    size: 20,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                const SizedBox(width: 5),
-                                widget.isCart
-                                    ? Text(
-                                        // updatedQuantity.toString(),
-                                        ref
-                                            .read(updatedQuantityProvider
-                                                .notifier)
-                                            .state
-                                            .toString(),
-                                        style: const TextStyle(
-                                            fontSize: 20, color: Colors.white),
+                          Expanded(
+                            flex: 6,
+                            child: SizedBox(
+                              height: double.maxFinite,
+                              width: width * 0.3,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    elevation: 0,
+                                    backgroundColor: Colors.orange[900],
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          width * 0.35 / 2),
+                                    )),
+                                child: widget.isCart && updatedQuantity > 0
+                                    ? Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          'Update to cart',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: width * 0.028),
+                                        ),
                                       )
-                                    : Text(
-                                        quantity.toString(),
-                                        style: const TextStyle(
-                                            fontSize: 20, color: Colors.white),
-                                      ),
-                                const SizedBox(width: 5),
-                                IconButton(
-                                  onPressed: () {
-                                    ref
-                                        .read(dishMenuControllerProvider)
-                                        .decreaseItemQuantity(
-                                          widget.isCart,
-                                          _debouncer,
-                                          ref,
-                                        );
-                                  },
-                                  icon: const Icon(
-                                    Icons.minimize,
-                                    size: 20,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ],
+                                    : widget.isCart && updatedQuantity < 1
+                                        ? Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              'remove to cart',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: width * 0.028),
+                                            ),
+                                          )
+                                        : Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              'Add to cart',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: width * 0.028),
+                                            ),
+                                          ),
+                                onPressed: () {
+                                  if (widget.isCart && updatedQuantity > 0) {
+                                    ref.read(cartReopProvider).updateCartItems(
+                                        dishId: widget.dish!.dishid!,
+                                        ref: ref,
+                                        price: widget.dish!.dish_price!,
+                                        newQuantity: updatedQuantity,
+                                        newVariations: []);
+
+                                    debugPrint(
+                                        "inside : Widget.updatedquanity > 0 ?: ${updatedQuantity}");
+                                  } else if (updatedQuantity < 1 &&
+                                      widget.isCart) {
+                                    ref.read(cartReopProvider).deleteCartItem(
+                                        dishId: widget.dish!.dishid!, ref: ref);
+                                    debugPrint(
+                                        " inside : updatedquanity < 1 && iscart true?:: updatedquanity=> ${updatedQuantity} isCart=> ${widget.isCart} : $updatedQuantity");
+                                  } else {
+                                    ref.read(cartReopProvider).addCartItem(
+                                        itemprice: widget.dish!.dish_price!,
+                                        name: widget.dish!.dish_name,
+                                        description:
+                                            widget.dish!.dish_description,
+                                        ref: ref,
+                                        userId:
+                                            supabaseClient.auth.currentUser!.id,
+                                        dishId: widget.dish!.dishid!,
+                                        discountprice:
+                                            widget.dish!.dish_discount ?? 0,
+                                        price: widget.dish!.dish_price,
+                                        image: widget.dish!.dish_imageurl!,
+                                        variations: null,
+                                        isdishScreen: false,
+                                        quantity: quantity,
+                                        freqboughts: null);
+                                    debugPrint(
+                                        " else add to cart quantiry : $quantity");
+                                  }
+                                },
+                              ),
                             ),
                           ),
-                          SizedBox(
-                            height: 50,
-                            width: 150,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.orange[900],
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(25),
-                                  )),
-                              child: widget.isCart && updatedQuantity > 0
-                                  ? const Text(
-                                      'Update to cart',
-                                      style: TextStyle(color: Colors.white),
-                                    )
-                                  : widget.isCart && updatedQuantity < 1
-                                      ? const Text(
-                                          'remove to cart',
-                                          style: TextStyle(color: Colors.white),
+                          Expanded(
+                            flex: 4,
+                            child: Container(
+                              height: double.maxFinite,
+                              // width: width * 0.25,
+                              decoration: BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.yellow.withOpacity(0.6),
+                                        spreadRadius: 1,
+                                        blurRadius: 10)
+                                  ],
+                                  color: Colors.orange[900],
+                                  borderRadius: BorderRadius.circular(
+                                      (width * 0.30) / 2)),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      ref
+                                          .read(dishMenuControllerProvider)
+                                          .increaseItemQuantity(
+                                            widget.isCart,
+                                            _debouncer,
+                                            ref,
+                                          );
+                                    },
+                                    icon: Icon(
+                                      Icons.add,
+                                      size: width * 0.045,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 5),
+                                  widget.isCart
+                                      ? Text(
+                                          // updatedQuantity.toString(),
+                                          ref
+                                              .read(updatedQuantityProvider
+                                                  .notifier)
+                                              .state
+                                              .toString(),
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: width * 0.040,
+                                              color: Colors.white),
                                         )
-                                      : const Text(
-                                          'Add to cart',
-                                          style: TextStyle(color: Colors.white),
+                                      : Text(
+                                          quantity.toString(),
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: width * 0.040,
+                                              color: Colors.white),
                                         ),
-                              onPressed: () {
-                                if (widget.isCart &&
-                                    widget.updatedquantity > 0) {
-                                  ref.read(cartReopProvider).updateCartItems(
-                                      dishId: widget.dish!.dishid!,
-                                      ref: ref,
-                                      price: widget.dish!.dish_price!,
-                                      newQuantity: updatedQuantity,
-                                      newVariations: []);
-
-                                  debugPrint(
-                                      " Update To Cart Bod:{ } : ${updatedQuantity}");
-                                } else if (updatedQuantity == 0 &&
-                                    widget.isCart) {
-                                  ref.read(cartReopProvider).deleteCartItem(
-                                      cartItemId: widget.cartDish!.cart_id,
-                                      ref: ref);
-                                } else {
-                                  ref.read(cartReopProvider).addCartItem(
-                                      itemprice: widget.dish!.dish_price!,
-                                      name: widget.dish!.dish_name,
-                                      description:
-                                          widget.dish!.dish_description,
-                                      ref: ref,
-                                      userId:
-                                          supabaseClient.auth.currentUser!.id,
-                                      dishId: widget.dish!.dishid!,
-                                      discountprice:
-                                          widget.dish!.dish_discount ?? 0,
-                                      price: widget.dish!.dish_price,
-                                      image: widget.dish!.dish_imageurl!,
-                                      variations: null,
-                                      isdishScreen: false,
-                                      quantity: quantity,
-                                      freqboughts: null);
-                                }
-
-                                // ref
-                                //     .read(cartControllerProvider)
-                                //     .itemAddUpdateRemoveCart(
-                                //         ref: ref,
-                                //         debouncer: _debouncer,
-                                //         refreshUI: (fn) => setState(() => ()),
-                                //         isLoading: isloading,
-                                //         isCart: widget.isCart,
-                                //         updatedquantity: updatedQuantity,
-                                //         dish: widget.dish!,
-                                //         cartDish: widget.cartDish!,
-                                //         quantity: quantity,
-                                //         context: context);
-
-                                debugPrint("quantiry : $quantity");
-                              },
+                                  const SizedBox(width: 5),
+                                  IconButton(
+                                    onPressed: () {
+                                      ref
+                                          .read(dishMenuControllerProvider)
+                                          .decreaseItemQuantity(
+                                            widget.isCart,
+                                            _debouncer,
+                                            ref,
+                                          );
+                                    },
+                                    icon: Icon(
+                                      Icons.remove,
+                                      size: width * 0.045,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ],

@@ -36,7 +36,7 @@ class MyHeaderTitle extends SliverPersistentHeaderDelegate {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             index != 0
-                ? Divider(
+                ? const Divider(
                     thickness: 5,
                     color: Colors.blueGrey,
                   )

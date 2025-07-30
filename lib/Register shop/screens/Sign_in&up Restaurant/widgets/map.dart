@@ -5,7 +5,7 @@ import 'package:spicy_eats/commons/custommap.dart';
 
 class MyMap extends ConsumerStatefulWidget {
   static const String routename = '/map';
-  MyMap({super.key});
+  const MyMap({super.key});
 
   @override
   ConsumerState<MyMap> createState() => _MyMapState();

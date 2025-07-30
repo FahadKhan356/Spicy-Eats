@@ -9,7 +9,7 @@ class CusinesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    return Container(
+    return SizedBox(
       height: size.width * 0.3,
       width: double.infinity,
       // color: Colors.red,

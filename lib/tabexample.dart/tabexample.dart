@@ -45,7 +45,7 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
   double _titletabOpacity = 0;
   double _tabOpacity = 0;
   double _imageContainerRadius = 30;
-  double _imageContainerSlide = 0.0;
+  final double _imageContainerSlide = 0.0;
   String? userId = supabaseClient.auth.currentUser!.id;
   bool cartFetched = false;
   List<VariattionTitleModel>? titleVariationList = [];
@@ -280,7 +280,7 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                             child: AnimatedOpacity(
                               duration: const Duration(milliseconds: 300),
                               opacity: _tabOpacity,
-                              child: Container(
+                              child: SizedBox(
                                 height: 60,
                                 width: double.maxFinite,
                                 child: TabBar(
@@ -309,12 +309,12 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                             const SizedBox(
                               height: 30,
                             ),
-                            Container(
+                            SizedBox(
                                 height: 122,
                                 // color: Colors.amber,
                                 child: Column(
                                   children: [
-                                    Container(
+                                    SizedBox(
                                       // height: 100,
                                       width: double.maxFinite,
                                       // color: Colors.black87,
@@ -322,12 +322,12 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          Icon(
+                                          const Icon(
                                             Icons.watch_later_outlined,
                                             color: Colors.black,
                                             size: 25,
                                           ),
-                                          Text(
+                                          const Text(
                                             '20-40 mins |',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold),
@@ -398,7 +398,7 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                                         ),
                                         Expanded(
                                           child: Padding(
-                                            padding: EdgeInsets.symmetric(
+                                            padding: const EdgeInsets.symmetric(
                                                 horizontal: 10),
                                             child: Container(
                                               height: 5,
@@ -497,7 +497,7 @@ class _MyFinalScrollScreenState extends ConsumerState<MyFinalScrollScreen>
                       child: AnimatedOpacity(
                         curve: Curves.bounceIn,
                         opacity: myOffset >= 110 ? 1 : 0,
-                        duration: Duration(milliseconds: 300),
+                        duration: const Duration(milliseconds: 300),
                         child: IconButton(
                             onPressed: () => Navigator.pushNamed(
                                 context, HomeScreen.routename),

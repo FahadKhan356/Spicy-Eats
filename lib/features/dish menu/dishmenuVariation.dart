@@ -501,7 +501,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                                           .freqdihses![index].dish_imageurl!)),
                             ),
                           )
-                        : SliverToBoxAdapter(),
+                        : const SliverToBoxAdapter(),
                   ],
                 ),
                 (isloader == false &&
@@ -521,7 +521,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                             child: Container(
                               decoration: BoxDecoration(
                                 color: Colors.white.withOpacity(0.3),
-                                boxShadow: [
+                                boxShadow: const [
                                   BoxShadow(
                                       color: Colors.black12,
                                       spreadRadius: 2,
@@ -793,9 +793,8 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                                                         widget.updateQuantity ==
                                                             0) {
                                                       cartRepo.deleteCartItem(
-                                                          cartItemId: widget
-                                                              .cartDish!
-                                                              .cart_id!,
+                                                          dishId: widget
+                                                              .dish!.dishid,
                                                           ref: ref);
 
                                                       // ref

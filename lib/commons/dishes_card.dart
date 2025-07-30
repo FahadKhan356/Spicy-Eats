@@ -12,7 +12,7 @@ class DishesCard extends StatefulWidget {
   final int? id;
   final List<ItemQuantity>? dishitems;
 
-  DishesCard({
+  const DishesCard({
     super.key,
     required this.dishname,
     required this.dishdescription,
@@ -113,7 +113,7 @@ class _DishesCardState extends State<DishesCard> {
                       bgcolor: Colors.white,
                       onpress: () {}),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Text(
                       widget.quantity.toString(),
                       style: const TextStyle(

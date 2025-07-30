@@ -113,6 +113,7 @@ class RegisterShopRepository {
       debugPrint("Failed Resatuarants Fetching $e");
       // print(e.toString());
     }
+    return null;
   }
 //fetch rest uid
 

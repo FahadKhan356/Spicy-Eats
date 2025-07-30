@@ -1,11 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
 import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/businessInformation.dart';
-import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/legalstuffscreen.dart';
 import 'package:spicy_eats/Register%20shop/screens/shophome.dart';
 import 'package:spicy_eats/Register%20shop/widgets/paymenttextfields.dart';
 import 'package:spicy_eats/main.dart';

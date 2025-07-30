@@ -6,7 +6,7 @@ import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
 class InnerOverview extends ConsumerStatefulWidget {
   final String? restuid;
   static const String routename = '/inneroverview';
-  InnerOverview({super.key, required this.restuid});
+  const InnerOverview({super.key, required this.restuid});
 
   @override
   ConsumerState<InnerOverview> createState() => _InnerOverviewState();

@@ -115,7 +115,7 @@ class RappiBloc with ChangeNotifier {
   }
 
   void onCategoryTab(int index, {bool animationRequired = true}) async {
-    print('${index}');
+    print('$index');
     if (scrollController == null) {
       print('ScrollController is not initialized');
       return;
@@ -135,7 +135,7 @@ class RappiBloc with ChangeNotifier {
         duration: const Duration(milliseconds: 300),
         curve: Curves.bounceOut,
       );
-      await Future.delayed(Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 100));
       _listen = true;
     }
 

@@ -8,7 +8,7 @@ import 'package:spicy_eats/features/Home/screens/home_screen.dart';
 class ShopHome extends ConsumerWidget {
   static const String routename = 'shop-home';
 
-  ShopHome({
+  const ShopHome({
     super.key,
   });
 

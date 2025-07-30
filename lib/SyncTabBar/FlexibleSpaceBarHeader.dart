@@ -4,7 +4,7 @@ import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
 
 class FlexibleSpaceBarHeader extends StatelessWidget {
   final RestaurantModel? restaurantdata;
-  FlexibleSpaceBarHeader(
+  const FlexibleSpaceBarHeader(
       {super.key, required this.valueScroll, this.restaurantdata});
   final double valueScroll;
   @override

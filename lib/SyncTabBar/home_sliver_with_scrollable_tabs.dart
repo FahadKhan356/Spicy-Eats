@@ -165,7 +165,7 @@ class _HomeSliverWithScrollableTabsState
             // If the item is not visible and we're scrolling upwards, only reset to index 0
             // when scrolling reaches the top position (offset = 0).
             if (scrollControllerGlobally.offset <= 0) {
-              headerNotifier.value = MyHeader(visible: true, index: 0);
+              headerNotifier.value = const MyHeader(visible: true, index: 0);
             } else if (lastIndex != null) {
               // Use the last known index when scrolling away but don't reset to zero unless necessary
               headerNotifier.value = MyHeader(visible: true, index: lastIndex);
@@ -202,24 +202,25 @@ class _HomeSliverWithScrollableTabsState
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.shopping_cart,
                         size: 30,
                         color: Colors.white,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
                       Text(
                         '$cartlength',
-                        style: TextStyle(fontSize: 28, color: Colors.white),
+                        style:
+                            const TextStyle(fontSize: 28, color: Colors.white),
                       )
                     ],
                   ),
                 ),
               ),
             )
-          : SizedBox(),
+          : const SizedBox(),
       body: Scrollbar(
         notificationPredicate: (scroll) {
           valueScroll2.value = scroll.metrics.extentInside;
@@ -290,7 +291,7 @@ class _HomeSliverWithScrollableTabsState
 //BackgroundSliver
 class BackgroundSliver extends StatelessWidget {
   final RestaurantModel? restaurantdata;
-  BackgroundSliver({super.key, this.restaurantdata});
+  const BackgroundSliver({super.key, this.restaurantdata});
 
   @override
   Widget build(BuildContext context) {

@@ -4,6 +4,8 @@ String image =
     'https://b.zmtcdn.com/data/pictures/chains/7/20287/24697b617bb8aaf5b1c7df9a7074a662.jpg?fit=around|960:500&crop=960:500;*,*';
 
 class FoodMenuScreen extends StatefulWidget {
+  const FoodMenuScreen({super.key});
+
   @override
   _FoodMenuScreenState createState() => _FoodMenuScreenState();
 }
@@ -98,7 +100,7 @@ class _FoodMenuScreenState extends State<FoodMenuScreen>
                           onTap: (index) {
                             _scrollController.animateTo(
                               _getSectionOffset(index),
-                              duration: Duration(milliseconds: 500),
+                              duration: const Duration(milliseconds: 500),
                               curve: Curves.easeInOut,
                             );
                           },
@@ -130,7 +132,8 @@ class _FoodMenuScreenState extends State<FoodMenuScreen>
                 color: Colors.grey[200],
                 child: Text(
                   _headers[headerIndex],
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 24, fontWeight: FontWeight.bold),
                 ),
               );
             } else {

@@ -38,7 +38,7 @@ class RegisterShopContoller {
     registerShopRepository.uploadrestaurantData(
       restLogoFolder: restLogoFolder,
       restownerIDImageFolderName: restownerIDImageFolderName,
-      restIdImage: restIdImage ?? null,
+      restIdImage: restIdImage,
       folderName: folderName,
       imagePath: restImagePath,
       restImage: restImage!,

@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
-import 'package:spicy_eats/features/Profile/screen/ProfileScreen.dart';
 import 'package:spicy_eats/features/account/screen/accountscreen.dart';
 import 'package:spicy_eats/features/dashboard/DrawerScreens/Menu/MenuScreen.dart';
 import 'package:spicy_eats/Register%20shop/screens/shophome.dart';
 import 'package:spicy_eats/Register%20shop/widgets/drawerRow.dart';
 import 'package:spicy_eats/commons/country.dart';
 import 'package:spicy_eats/features/Home/screens/home_screen.dart';
-import 'package:spicy_eats/features/orders/screens/order_screen.dart';
 
 final List<DrawerRow> drawerList = [
   // DrawerRow(text: 'Home', icon: Icons.home),

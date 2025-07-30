@@ -300,7 +300,7 @@ class _PhonenumberScreenState extends State<PhonenumberScreen> {
                           ),
                           Text(
                             selectedCountry!.code,
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                           Expanded(
                             child: TextFormField(

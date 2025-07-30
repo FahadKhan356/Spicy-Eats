@@ -49,7 +49,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                               activeColor: Colors.black,
                               title: Row(
                                 children: [
-                                  Container(
+                                  SizedBox(
                                     height: 30,
                                     width: 30,
                                     child: Image.network(
@@ -125,14 +125,14 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
     cartTotal = subTotal + restaurant!.deliveryFee! + restaurant.platformfee!;
 
     final cart = ref.watch(cartProvider);
-    GlobalKey<ScaffoldMessengerState> _scaffoldmessengerkey =
+    GlobalKey<ScaffoldMessengerState> scaffoldmessengerkey =
         GlobalKey<ScaffoldMessengerState>();
     //final restaurant = ref.watch(restaurantProvider);
     return Skeletonizer(
       enabled: isloading,
       child: SafeArea(
           child: ScaffoldMessenger(
-        key: _scaffoldmessengerkey,
+        key: scaffoldmessengerkey,
         child: Scaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
@@ -351,7 +351,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                                   const TextStyle(fontWeight: FontWeight.bold)),
                         ],
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
 
                       /// Payment Buttons
                       SizedBox(
@@ -428,8 +428,8 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                               setState(() {
                                 isloading = true;
                               });
-                              if (_scaffoldmessengerkey.currentState != null) {
-                                _scaffoldmessengerkey.currentState!
+                              if (scaffoldmessengerkey.currentState != null) {
+                                scaffoldmessengerkey.currentState!
                                     .showSnackBar(const SnackBar(
                                   content: Text('Order Placed Successfully'),
                                   behavior: SnackBarBehavior.floating,

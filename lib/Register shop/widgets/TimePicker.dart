@@ -348,7 +348,7 @@ class _TimePickerState extends ConsumerState<TimePicker> {
 
 class MyMinutes extends StatelessWidget {
   final int mins;
-  MyMinutes({
+  const MyMinutes({
     super.key,
     required this.mins,
   });
@@ -357,9 +357,9 @@ class MyMinutes extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        padding: EdgeInsets.all(5),
+        padding: const EdgeInsets.all(5),
         child: Text(
-          mins < 10 ? '0' + mins.toString() : mins.toString(),
+          mins < 10 ? '0$mins' : mins.toString(),
           style: const TextStyle(fontSize: 20),
         ),
       ),
@@ -369,14 +369,14 @@ class MyMinutes extends StatelessWidget {
 
 class MyHours extends StatelessWidget {
   final int hours;
-  MyHours({super.key, required this.hours});
+  const MyHours({super.key, required this.hours});
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Container(
         child: Text(
-          hours < 10 ? '0' + hours.toString() : hours.toString(),
+          hours < 10 ? '0$hours' : hours.toString(),
           style: const TextStyle(fontSize: 20),
         ),
       ),

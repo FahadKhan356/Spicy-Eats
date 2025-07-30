@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
 import 'package:spicy_eats/features/dashboard/DrawerScreens/Menu/ineroverview.dart';
 import 'package:spicy_eats/commons/mysnackbar.dart';
-import 'package:spicy_eats/main.dart';
 
 class OverviewScreen extends ConsumerStatefulWidget {
   const OverviewScreen({super.key});

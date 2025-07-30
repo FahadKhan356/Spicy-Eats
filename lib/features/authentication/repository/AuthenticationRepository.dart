@@ -86,7 +86,7 @@ class AuthenticationRepository {
 
   Future<bool> userExists(String email) async {
     var value;
-    final response;
+    final PostgrestList response;
     // print('value ${value!}');
 
     try {
@@ -94,11 +94,11 @@ class AuthenticationRepository {
           .from('auth.users')
           .select('id')
           .eq('email', email);
-      if (response.error != null) {
-        print('error ${response.error}');
+      if (response != null) {
+        print('error ${response}');
       }
 
-      final data = response.data;
+      final data = response;
       value = data.isNotEmpty;
     } catch (e) {
       print('error2 ${e.toString()}');

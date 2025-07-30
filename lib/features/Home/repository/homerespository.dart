@@ -28,11 +28,12 @@ class HomeRepository {
 
       return dishList;
     } catch (e) {
-      print('${dishList} this is dishlist');
+      print('$dishList this is dishlist');
       print('${ref.read(rest_ui_Provider)} this is rest uid in the homerepo');
 
       print(e.toString());
     }
+    return null;
   }
 
   Future<List<Categories>?> fetchcategorieslist(
@@ -55,11 +56,12 @@ class HomeRepository {
       categories = response.map((e) => Categories.fromjson(e)).toList();
       return categories;
     } catch (e) {
-      print('${e} this is categories');
+      print('$e this is categories');
       //print('${ref.read(rest_ui_Provider)} this is rest uid in the homerepo');
 
       print('$e....we are in fetchcategories catch block');
     }
+    return null;
   }
 
   Future<void> addRatings(

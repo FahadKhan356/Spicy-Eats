@@ -15,7 +15,7 @@ class RestaurantMenu extends ConsumerStatefulWidget {
   //List<DishData>? dishData;
   final String? rest_uid;
 
-  RestaurantMenu(
+  const RestaurantMenu(
       {super.key,
       required this.restaurant,
       //required this.dishData,
@@ -174,7 +174,7 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "\ ${widget.restaurant!.averageRatings}",
+                        " ${widget.restaurant!.averageRatings}",
                         style: const TextStyle(
                             fontSize: 18,
                             color: Colors.black54,
@@ -596,7 +596,7 @@ class _RestaurantMenuState extends ConsumerState<RestaurantMenu>
                                   );
                                 });
                               })
-                          : Center(child: Text('No dishes available'));
+                          : const Center(child: Text('No dishes available'));
                     } else {
                       print(widget.rest_uid);
                       // Handle the case where there is no data

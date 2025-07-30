@@ -7,7 +7,7 @@ class EditScreen extends ConsumerStatefulWidget {
   static const String routname = '/Edit-Screen';
   final String editType;
 
-  EditScreen({super.key, required this.editType});
+  const EditScreen({super.key, required this.editType});
 
   @override
   ConsumerState<EditScreen> createState() => _EditScreenState();

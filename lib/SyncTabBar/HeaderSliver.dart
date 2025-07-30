@@ -39,23 +39,23 @@ class HeaderSliver extends SliverPersistentHeaderDelegate {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Row(
                     children: [
                       AnimatedOpacity(
                           opacity: percent > 0.1 ? 1 : 0,
-                          duration: Duration(milliseconds: 300),
-                          child: Icon(
+                          duration: const Duration(milliseconds: 300),
+                          child: const Icon(
                             Icons.arrow_back,
                             color: Colors.white,
                           )),
                       AnimatedSlide(
                           curve: Curves.easeIn,
-                          duration: Duration(milliseconds: 300),
+                          duration: const Duration(milliseconds: 300),
                           offset: Offset(
                               percent < 0.1
                                   ? centeredOffset / size.width + 3.4
@@ -98,7 +98,7 @@ class HeaderSliver extends SliverPersistentHeaderDelegate {
               right: 0,
               child: AnimatedSwitcher(
                 switchInCurve: Curves.easeOutQuint,
-                duration: Duration(milliseconds: 600),
+                duration: const Duration(milliseconds: 600),
                 child: percent > 0.1
                     ? Container(
                         height: 2,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/screens/BasketScreen.dart';
-import 'package:spicy_eats/Practice%20for%20cart/screens/DummyCart.dart';
 import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
 import 'package:spicy_eats/commons/routeAnimation.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';

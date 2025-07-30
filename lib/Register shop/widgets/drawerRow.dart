@@ -14,7 +14,7 @@ var pagetitle = StateProvider<String?>((ref) => 'menu');
 class DrawerRow extends StatelessWidget {
   final IconData icon;
   final String text;
-  DrawerRow({super.key, required this.text, required this.icon});
+  const DrawerRow({super.key, required this.text, required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +56,7 @@ class DrawerRow extends StatelessWidget {
 }
 
 class MyDrawer extends ConsumerWidget {
-  MyDrawer({super.key});
+  const MyDrawer({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -64,8 +64,7 @@ class MyDrawer extends ConsumerWidget {
     return Column(
       children: [
         DrawerButton(
-          style:
-              ButtonStyle(iconColor: MaterialStateProperty.all(Colors.white)),
+          style: ButtonStyle(iconColor: WidgetStateProperty.all(Colors.white)),
         ),
         Container(
           color: Colors.white10,
@@ -123,10 +122,10 @@ class MyDrawer extends ConsumerWidget {
             },
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
-        Divider(
+        const Divider(
           height: 5,
           color: Colors.black,
         ),
@@ -134,7 +133,7 @@ class MyDrawer extends ConsumerWidget {
           child: Container(
             width: double.infinity,
             color: Colors.black,
-            child: Text(
+            child: const Text(
               'Main Screen',
               style: TextStyle(color: Colors.white),
             ),
@@ -148,6 +147,7 @@ class MyDrawer extends ConsumerWidget {
 class DashboardDrawer extends ConsumerWidget {
   const DashboardDrawer({super.key});
 
+  @override
   Widget build(BuildContext context, WidgetRef ref) {
     //  var rest_uid = ref.watch(rest_ui_Provider);
     var size = MediaQuery.of(context).size;
@@ -179,7 +179,7 @@ class DashboardDrawer extends ConsumerWidget {
             children: [
               DrawerButton(
                 style: ButtonStyle(
-                    iconColor: MaterialStateProperty.all(Colors.white)),
+                    iconColor: WidgetStateProperty.all(Colors.white)),
               ),
               Container(
                 color: Colors.white10,
@@ -240,10 +240,10 @@ class DashboardDrawer extends ConsumerWidget {
                   },
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
-              Divider(
+              const Divider(
                 height: 5,
                 color: Colors.black,
               ),
@@ -251,7 +251,7 @@ class DashboardDrawer extends ConsumerWidget {
                 child: Container(
                   width: double.infinity,
                   color: Colors.black,
-                  child: Text(
+                  child: const Text(
                     'Main Screen',
                     style: TextStyle(color: Colors.white),
                   ),

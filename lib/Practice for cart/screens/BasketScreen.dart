@@ -115,7 +115,7 @@ class _DummyBasketState extends ConsumerState<BasketScreen> {
                                 }
                               },
                               child: BasketCard(
-                                  titleVariationList: [],
+                                  titleVariationList: const [],
                                   cardHeight: 150,
                                   elevation: 0,
                                   cardColor: Colors.white,
@@ -189,7 +189,7 @@ class _DummyBasketState extends ConsumerState<BasketScreen> {
                                   const EdgeInsets.symmetric(horizontal: 5),
                               color: Colors.black,
                               child: Text(
-                                '\$${carttotalamount}',
+                                '\$$carttotalamount',
                                 style: const TextStyle(color: Colors.white),
                               ),
                             ),

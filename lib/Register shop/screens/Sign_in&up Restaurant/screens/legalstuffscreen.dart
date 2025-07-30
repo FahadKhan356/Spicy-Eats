@@ -28,7 +28,7 @@ class LegalInformationScreen extends ConsumerStatefulWidget {
 
 class _LegalInformationScreenState
     extends ConsumerState<LegalInformationScreen> {
-  GlobalKey<FormState> _form = GlobalKey<FormState>();
+  final GlobalKey<FormState> _form = GlobalKey<FormState>();
   File? idImage;
   void pickimagefromgallery() async {
     idImage = await imagePicker(context);
@@ -163,7 +163,7 @@ class _LegalInformationScreenState
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(10),
                                       child: Container(
-                                        padding: EdgeInsets.all(10),
+                                        padding: const EdgeInsets.all(10),
                                         height: 100,
                                         color: Colors.blueGrey,
                                         child: Column(

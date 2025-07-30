@@ -1,5 +1,3 @@
-import 'package:spicy_eats/commons/categoriesmodel.dart';
-
 class Categories {
   String category_id;
   String category_name;

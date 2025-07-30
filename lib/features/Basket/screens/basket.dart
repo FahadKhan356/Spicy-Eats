@@ -16,7 +16,7 @@ class BasketScreen extends ConsumerWidget {
   final int? quantity;
   final List<DishData> dishes;
 
-  BasketScreen({
+  const BasketScreen({
     super.key,
     required this.dish,
     required this.totalprice,
@@ -68,7 +68,7 @@ class BasketScreen extends ConsumerWidget {
                         children: [
                           Row(
                             children: [
-                              Container(
+                              SizedBox(
                                 height: 100,
                                 width: 100,
                                 child: Image.network(
@@ -310,7 +310,7 @@ class BasketScreen extends ConsumerWidget {
                       );
                     });
                   })
-              : SizedBox()
+              : const SizedBox()
         ],
       ),
     );

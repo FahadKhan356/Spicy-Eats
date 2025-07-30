@@ -10,8 +10,6 @@ import 'package:spicy_eats/Register%20shop/widgets/Mybottomsheet.dart';
 import 'package:spicy_eats/Register%20shop/widgets/restauarantTextfield.dart';
 import 'package:spicy_eats/commons/imagepick.dart';
 
-import 'package:spicy_eats/main.dart';
-
 var restaurantDescriptionProvider = StateProvider<String?>((ref) => null);
 var restaurantDeliveryFeeProvider = StateProvider<double?>((ref) => null);
 var restaurantDeliveryMinTimeProvider = StateProvider<int?>((ref) => null);

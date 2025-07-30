@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
 class QuantityButton1 extends StatefulWidget {
+  const QuantityButton1({super.key});
+
   @override
   _QuantityButton1State createState() => _QuantityButton1State();
 }
@@ -66,12 +68,12 @@ class _QuantityButton1State extends State<QuantityButton1> {
   Widget build(BuildContext context) {
     return Center(
       child: AnimatedSwitcher(
-        duration: Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 500),
         child: _isAdding
             ? ElevatedButton(
                 key: ValueKey<int>(_quantity),
                 onPressed: _increment,
-                child: Text('+', style: TextStyle(fontSize: 30)),
+                child: const Text('+', style: TextStyle(fontSize: 30)),
               )
             : Row(
                 key: ValueKey<int>(_quantity),
@@ -79,14 +81,14 @@ class _QuantityButton1State extends State<QuantityButton1> {
                 children: [
                   ElevatedButton(
                     onPressed: _increment,
-                    child: Text('+', style: TextStyle(fontSize: 30)),
+                    child: const Text('+', style: TextStyle(fontSize: 30)),
                   ),
-                  SizedBox(width: 20),
-                  Text('$_quantity', style: TextStyle(fontSize: 30)),
-                  SizedBox(width: 20),
+                  const SizedBox(width: 20),
+                  Text('$_quantity', style: const TextStyle(fontSize: 30)),
+                  const SizedBox(width: 20),
                   ElevatedButton(
                     onPressed: _decrement,
-                    child: Text('-', style: TextStyle(fontSize: 30)),
+                    child: const Text('-', style: TextStyle(fontSize: 30)),
                   ),
                 ],
               ),

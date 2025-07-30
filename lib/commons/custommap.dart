@@ -109,6 +109,7 @@ class CustomMap extends StatefulWidget {
       this.locationNameTextStyle,
       this.locale});
 
+  @override
   State<StatefulWidget> createState() => _MapLocationPickerState();
 }
 
@@ -466,7 +467,8 @@ class _MapLocationPickerState extends State<CustomMap> {
                       permission == LocationPermission.deniedForever) {
                     // Handle permission denied case
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Location permission denied")),
+                      const SnackBar(
+                          content: Text("Location permission denied")),
                     );
                     return;
                   }

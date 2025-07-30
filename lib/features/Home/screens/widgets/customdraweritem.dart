@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 class CustomDrawerItem extends StatefulWidget {
   final String leadingname;
   final IconData icon;
-  CustomDrawerItem({super.key, required this.leadingname, required this.icon});
+  const CustomDrawerItem(
+      {super.key, required this.leadingname, required this.icon});
 
   @override
   State<CustomDrawerItem> createState() => _CustomDrawerItemState();

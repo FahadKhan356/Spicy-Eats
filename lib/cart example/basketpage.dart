@@ -4,6 +4,8 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AnimatedAddButton extends StatefulWidget {
+  const AnimatedAddButton({super.key});
+
   @override
   _AnimatedAddButtonState createState() => _AnimatedAddButtonState();
 }
@@ -15,7 +17,7 @@ class _AnimatedAddButtonState extends State<AnimatedAddButton> {
 
   void _startCollapseTimer() {
     _collapseTimer?.cancel();
-    _collapseTimer = Timer(Duration(seconds: 2), () {
+    _collapseTimer = Timer(const Duration(seconds: 2), () {
       setState(() {
         isExpanded = false;
       });
@@ -59,7 +61,7 @@ class _AnimatedAddButtonState extends State<AnimatedAddButton> {
   Widget build(BuildContext context) {
     return Center(
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
         width: isExpanded ? 160 : 80, // Flexible width
         height: 50,
@@ -101,7 +103,7 @@ class _AnimatedAddButtonState extends State<AnimatedAddButton> {
                 onPressed: _expandButton,
                 child: Text(
                   quantity == 0 ? "Add" : "$quantity",
-                  style: TextStyle(color: Colors.white, fontSize: 18),
+                  style: const TextStyle(color: Colors.white, fontSize: 18),
                 ),
               ),
       ),
@@ -110,8 +112,8 @@ class _AnimatedAddButtonState extends State<AnimatedAddButton> {
 
   Widget _buildIconButton(IconData icon, VoidCallback onPressed) {
     return Padding(
-      padding:
-          EdgeInsets.symmetric(horizontal: 4), // Adds spacing between buttons
+      padding: const EdgeInsets.symmetric(
+          horizontal: 4), // Adds spacing between buttons
       child: Container(
         width: 20,
         height: 20,
@@ -121,7 +123,7 @@ class _AnimatedAddButtonState extends State<AnimatedAddButton> {
         ),
         child: IconButton(
           padding: EdgeInsets.zero, // Removes default padding
-          constraints: BoxConstraints.tightFor(width: 32, height: 32),
+          constraints: const BoxConstraints.tightFor(width: 32, height: 32),
           icon: Icon(icon, color: Colors.white, size: 10),
           onPressed: onPressed,
         ),

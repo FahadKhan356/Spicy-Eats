@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -9,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:spicy_eats/Practice%20for%20cart/model/Cartmodel.dart';
 import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
-import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/Payment/utils/optionsModel.dart';
 import 'package:spicy_eats/main.dart';
 

@@ -23,8 +23,8 @@ class OrdersScreen extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
             onPressed: () => Navigator.pop(context),
-            icon: Icon(Icons.arrow_back_outlined)),
-        title: Text(
+            icon: const Icon(Icons.arrow_back_outlined)),
+        title: const Text(
           'Your orders',
           style: TextStyle(
             fontSize: 20,
@@ -63,14 +63,14 @@ class OrdersScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           Padding(
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 horizontal: 5, vertical: 5),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Padding(
-                                  padding: EdgeInsets.all(8.0),
+                                  padding: const EdgeInsets.all(8.0),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(10),
                                     child: Image.network(
@@ -82,7 +82,7 @@ class OrdersScreen extends StatelessWidget {
                                         'https://assets.epicurious.com/photos/60d1e9fbd62cfdf9e277542e/1:1/pass/ChickenMushroomBurger_RECIPE_061721_18256.jpg'),
                                   ),
                                 ),
-                                Expanded(
+                                const Expanded(
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment:
@@ -120,10 +120,10 @@ class OrdersScreen extends StatelessWidget {
                                     ],
                                   ),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 10,
                                 ),
-                                Text(
+                                const Text(
                                   'Rs. 206.66',
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(

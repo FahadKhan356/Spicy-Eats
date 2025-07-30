@@ -214,7 +214,7 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
               ),
               actions: [
                 Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: InkWell(
@@ -483,15 +483,15 @@ class _SliverTabBar extends SliverPersistentHeaderDelegate {
               boxShadow: [
                 isshowtabbar
                     ? BoxShadow(
-                        offset: Offset(0.0, 2.0),
+                        offset: const Offset(0.0, 2.0),
                         color: Colors.black.withOpacity(0.3),
                         blurRadius: 5)
-                    : BoxShadow(color: Colors.transparent)
+                    : const BoxShadow(color: Colors.transparent)
               ],
               // border: Border.symmetric(
               //     horizontal: BorderSide(width: 5, color: Colors.black87)),
               color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(10),
                 topRight: Radius.circular(10),
                 // bottomLeft: Radius.circular(10),
