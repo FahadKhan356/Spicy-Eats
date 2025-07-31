@@ -5,8 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/widgets/map.dart';
 import 'package:spicy_eats/Supabse%20Backend/supabase_config.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:spicy_eats/features/Favorites/Screens/FavoriteScrren.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
-import 'package:spicy_eats/features/Sqlight%20Database/CartLocalDatabase.dart';
+import 'package:spicy_eats/features/Sqlight%20Database/Cart/services/CartLocalDatabase.dart';
+import 'package:spicy_eats/features/Sqlight%20Database/Restaurants/services/RestaurantLocalDataBase.dart';
 import 'package:spicy_eats/features/orders/screens/order_screen.dart';
 import 'package:spicy_eats/features/splashscreen/SplashScreen.dart';
 import 'package:spicy_eats/routes.dart';
@@ -17,6 +19,7 @@ import 'package:app_links/app_links.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CartLocalDatabase.instance.database;
+  await RestaurantLocalDatabase.instance.database;
   Supabase.initialize(url: supabaseUrl, anonKey: supabasekey);
   await dotenv.load(fileName: 'lib/.env');
   // Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
@@ -37,45 +40,45 @@ int currentindex = 0;
 
 class _MyAppState extends ConsumerState<MyApp> {
   GlobalKey<NavigatorState> navigatorkey = GlobalKey<NavigatorState>();
-  late final StreamSubscription<AuthState> _authstateSubscription;
-  late final StreamSubscription<Uri?> _linksubscription;
-  final AppLinks _appLinks = AppLinks();
+  // late final StreamSubscription<AuthState> _authstateSubscription;
+  // late final StreamSubscription<Uri?> _linksubscription;
+  // final AppLinks _appLinks = AppLinks();
 
-  _initialAuth() {
-    _authstateSubscription =
-        supabaseClient.auth.onAuthStateChange.listen((event) {
-      final session = event.session;
-      if (session != null && navigatorkey.currentState != null) {
-        navigatorkey.currentState!.pushNamedAndRemoveUntil(
-          Home.routename,
-          (route) => false,
-          arguments: ref,
-        );
-      }
-    });
-  }
+  // _initialAuth() {
+  //   _authstateSubscription =
+  //       supabaseClient.auth.onAuthStateChange.listen((event) {
+  //     final session = event.session;
+  //     if (session != null && navigatorkey.currentState != null) {
+  //       navigatorkey.currentState!.pushNamedAndRemoveUntil(
+  //         Home.routename,
+  //         (route) => false,
+  //         arguments: ref,
+  //       );
+  //     }
+  //   });
+  // }
 
-  Future<void> _initializeDeeplink() async {
-    try {
-      final initialUri = await _appLinks.getInitialAppLink();
-      if (initialUri != null) {
-        handleDeeplink(initialUri);
-      }
-      _linksubscription = _appLinks.uriLinkStream.listen(handleDeeplink);
-    } catch (e) {
-      debugPrint('Error initializing deeplink $e');
-    }
-  }
+  // Future<void> _initializeDeeplink() async {
+  //   try {
+  //     final initialUri = await _appLinks.getInitialAppLink();
+  //     if (initialUri != null) {
+  //       handleDeeplink(initialUri);
+  //     }
+  //     _linksubscription = _appLinks.uriLinkStream.listen(handleDeeplink);
+  //   } catch (e) {
+  //     debugPrint('Error initializing deeplink $e');
+  //   }
+  // }
 
-  Future<void> handleDeeplink(Uri uri) async {
-    if (uri.host == 'login-callback') {
-      try {
-        supabaseClient.auth.getSessionFromUrl(uri);
-      } catch (e) {
-        debugPrint('Error handling deep link: $e');
-      }
-    }
-  }
+  // Future<void> handleDeeplink(Uri uri) async {
+  //   if (uri.host == 'login-callback') {
+  //     try {
+  //       supabaseClient.auth.getSessionFromUrl(uri);
+  //     } catch (e) {
+  //       debugPrint('Error handling deep link: $e');
+  //     }
+  //   }
+  // }
 
   @override
   void initState() {

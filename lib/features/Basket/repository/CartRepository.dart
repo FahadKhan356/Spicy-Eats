@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/Cartmodel.dart';
 
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
-import 'package:spicy_eats/features/Sqlight%20Database/CartLocalDatabase.dart';
+import 'package:spicy_eats/features/Sqlight%20Database/Cart/services/CartLocalDatabase.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
 import 'package:spicy_eats/main.dart';
 
@@ -334,7 +334,7 @@ class CartRepository {
 
       if (index == -1) return;
       debugPrint("Removed $dishId");
-      await _database.deleteCartItem(dishId);
+      await _database.deleteCartItem(currentCart[index].cart_id);
 
       final newCart = cartNotifier.state = [
         ...currentCart.sublist(0, index),

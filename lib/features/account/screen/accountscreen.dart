@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spicy_eats/features/Favorites/Screens/FavoriteScrren.dart';
 import 'package:spicy_eats/features/Profile/repo/ProfileRepo.dart';
 import 'package:spicy_eats/features/Profile/screen/ProfileScreen.dart';
 import 'package:spicy_eats/features/account/commons/RowContainer.dart';
@@ -68,7 +69,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                       title: 'Orders'),
                   rowContainer(
                       icon: Icons.favorite_border,
-                      onpressed: () {},
+                      onpressed: () => Navigator.pushNamed(
+                          context, Favoritescrren.routename),
                       title: 'Favourites'),
                   rowContainer(
                       icon: Icons.location_on_outlined,

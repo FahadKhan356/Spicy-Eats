@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/screens/BasketScreen.dart';
 import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
 import 'package:spicy_eats/commons/routeAnimation.dart';
+import 'package:spicy_eats/features/Favorites/Screens/FavoriteScrren.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/Payment/PaymentScreen.dart';
 import 'package:spicy_eats/features/Profile/commons/EditScreen.dart';
@@ -170,6 +171,9 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
 
     case OrdersScreen.routename:
       return MaterialPageRoute(builder: (context) => const OrdersScreen());
+
+    case Favoritescrren.routename:
+      return MaterialPageRoute(builder: (context) => const Favoritescrren());
 
     case AccountScreen.routename:
       return MaterialPageRoute(builder: (_) => const AccountScreen());

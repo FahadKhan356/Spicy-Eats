@@ -5,13 +5,18 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/Register%20shop/utils/commonImageUpload.dart';
+import 'package:spicy_eats/features/Sqlight%20Database/Restaurants/services/RestaurantLocalDataBase.dart';
 import 'package:spicy_eats/main.dart';
 
 var rest_ui_Provider = StateProvider<String?>((ref) => null);
-var registershoprepoProvider = Provider((ref) => RegisterShopRepository());
+var registershoprepoProvider =
+    Provider((ref) => RegisterShopRepository(RestaurantLocalDatabase.instance));
 var favoriteProvider = StateProvider<Map<String, bool>>((ref) => {});
 
 class RegisterShopRepository {
+  RegisterShopRepository(this._database);
+  final RestaurantLocalDatabase _database;
+
   Future<void> uploadrestaurantData({
     required restownerIDImageFolderName,
     required restLogo,
@@ -206,5 +211,12 @@ class RegisterShopRepository {
     } catch (e) {
       debugPrint("Failed Fetching Favorires $e");
     }
+  }
+
+// new sqlight function
+
+  Future<List<RestaurantModel>> getRestaurantsData() async {
+    // 1. Try to get cached data
+    return await _database.getRestaurants();
   }
 }

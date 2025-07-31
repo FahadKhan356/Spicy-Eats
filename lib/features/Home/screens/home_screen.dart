@@ -66,28 +66,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final registershopcontroller = ref.read(registershopcontrollerProvider);
 
     // Fetch restaurants
-    await registershopcontroller.fetchrestaurants().then((restaurant) {
-      if (restaurant != null && mounted) {
-        setState(() {
-          restaurantData = restaurant;
-        });
-        print('rest_email is: ${restaurantData[0].address}');
-        print('rest_hours are: ${restaurantData[0].deliveryArea}');
-      }
-    });
+    // await registershopcontroller.fetchrestaurants().then((restaurant) {
+    //   if (restaurant != null && mounted) {
+    //     setState(() {
+    //       restaurantData = restaurant;
+    //     });
+    //     print('rest_email is: ${restaurantData[0].address}');
+    //     print('rest_hours are: ${restaurantData[0].deliveryArea}');
+    //   }
+    // });
+    restaurantData =
+        await ref.read(registershoprepoProvider).getRestaurantsData();
 
     // Fetch rest_uid
-    await registershopcontroller
-        .fetchRestUid(supabaseClient.auth.currentUser!.id)
-        .then((value) {
-      if (value != null && mounted) {
-        // ref.watch(rest_ui_Provider.notifier).state = value;
-        //print('initialize restuid provider ${ref.read(rest_ui_Provider)}');
-        setState(() {
-          restuid = value;
-        });
-      }
-    });
+    // await registershopcontroller
+    //     .fetchRestUid(supabaseClient.auth.currentUser!.id)
+    //     .then((value) {
+    //   if (value != null && mounted) {
+    //     // ref.watch(rest_ui_Provider.notifier).state = value;
+    //     //print('initialize restuid provider ${ref.read(rest_ui_Provider)}');
+    //     setState(() {
+    //       restuid = value;
+    //     });
+    //   }
+    // });
 
     // Fetch favorites
     if (!mounted) return;
