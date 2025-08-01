@@ -111,10 +111,12 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
       }
     }
 
-    widget.updateQuantity = widget.cartDish!.quantity;
-    setState(() {
-      isloader = false;
-    });
+    // widget.updateQuantity = widget.cartDish!.quantity;
+    // setState(() {
+    //   isloader = false;
+    // });
+    ref.read(updatedQuantityProvider.notifier).state =
+        widget.cartDish!.quantity;
   }
 
   @override
@@ -170,6 +172,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
         .read(cartReopProvider)
         .getTotalQuantityofdish(ref, widget.dish!.dishid!);
     var quantity = ref.watch(quantityPrvider);
+    var updatedQuantity = ref.watch(updatedQuantityProvider);
 
     var freqDish = ref.watch(freqDishesProvider);
     final cartRepo = ref.watch(cartReopProvider);
@@ -546,8 +549,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                                               _debouncer.run(() {
                                                 print(
                                                     'in the quantity provider');
-                                                if (quantity > 0 &&
-                                                    widget.isCart == false) {
+                                                if (widget.isCart == false) {
                                                   ref
                                                       .read(quantityPrvider
                                                           .notifier)
@@ -620,7 +622,8 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                                         InkWell(
                                           onTap: () {
                                             _debouncer.run(() {
-                                              print('in the quantity provider');
+                                              debugPrint(
+                                                  'in the quantity provider');
                                               if (quantity > 0 &&
                                                   widget.isCart == false) {
                                                 ref
@@ -630,12 +633,12 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                                               } else if (widget.updateQuantity >
                                                       0 &&
                                                   widget.isCart == true) {
-                                                print(
+                                                debugPrint(
                                                     'before in the just quantity $quantity');
                                                 setState(() {
                                                   widget.updateQuantity--;
                                                 });
-                                                print(
+                                                debugPrint(
                                                     'after in the just quantity $quantity');
                                               }
                                             });
@@ -687,19 +690,36 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                                                         widget.isCart == true &&
                                                         widget.updateQuantity >
                                                             0) {
-                                                      cartRepo.updateCartItems(
-                                                          dishId: widget
-                                                              .dish!.dishid!,
-                                                          ref: ref,
-                                                          price: widget.dish!
-                                                              .dish_price!,
-                                                          newQuantity: widget
-                                                              .updateQuantity,
-                                                          newVariations: ref
-                                                              .read(
-                                                                  variationListProvider
-                                                                      .notifier)
-                                                              .state!);
+                                                      ref
+                                                          .read(
+                                                              cartReopProvider)
+                                                          .updateCartItems(
+                                                              dishId:
+                                                                  widget.dish!
+                                                                      .dishid!,
+                                                              ref: ref,
+                                                              price: widget
+                                                                  .dish!
+                                                                  .dish_price!,
+                                                              newQuantity:
+                                                                  updatedQuantity,
+                                                              newVariations: []);
+
+                                                      debugPrint(
+                                                          "inside : Widget.updatedquanity > 0 ?: ${updatedQuantity}");
+                                                      // cartRepo.updateCartItems(
+                                                      //     dishId: widget
+                                                      //         .dish!.dishid!,
+                                                      //     ref: ref,
+                                                      //     price: widget.dish!
+                                                      //         .dish_price!,
+                                                      //     newQuantity: widget
+                                                      //         .updateQuantity,
+                                                      //     newVariations: ref
+                                                      //         .read(
+                                                      //             variationListProvider
+                                                      //                 .notifier)
+                                                      //         .state!);
 
                                                       // await ref
                                                       //     .read(
@@ -722,115 +742,84 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                                                         widget.isCart ==
                                                             false &&
                                                         quantity > 0) {
-                                                      cartRepo.addCartItem(
-                                                        itemprice: dish!
-                                                            .dish_price!
-                                                            .toDouble(),
-                                                        name: dish.dish_name,
-                                                        description: dish
-                                                            .dish_description,
-                                                        ref: ref,
-                                                        userId: userId,
-                                                        dishId: dish.dishid!,
-                                                        discountprice:
-                                                            dish.dish_discount,
-                                                        price: dish.dish_price,
-                                                        image:
-                                                            dish.dish_imageurl!,
-                                                        variations: ref
-                                                            .read(
-                                                                variationListProvider
-                                                                    .notifier)
-                                                            .state,
-                                                        isdishScreen: true,
-                                                        quantity: quantity,
-                                                        freqboughts: ref
-                                                            .read(
-                                                                freqDishesProvider
-                                                                    .notifier)
-                                                            .state,
-                                                      );
-
-                                                      // await ref.read(cartReopProvider).addToCart(
-                                                      //     widget
-                                                      //         .dish!.dish_price!
-                                                      //         .toDouble(),
-                                                      //     widget
-                                                      //         .dish!.dish_name,
-                                                      //     widget.dish!
-                                                      //         .dish_description,
-                                                      //     ref,
-                                                      //     supabaseClient.auth
-                                                      //         .currentUser!.id,
-                                                      //     widget.dish!.dishid!,
-                                                      //     widget
-                                                      //         .dish!.dish_price!
-                                                      //         .toDouble(),
-                                                      //     widget.dish!
-                                                      //         .dish_discount,
-                                                      //     widget.dish!
-                                                      //         .dish_imageurl!,
-                                                      //     ref
-                                                      //         .read(
-                                                      //             variationListProvider
-                                                      //                 .notifier)
-                                                      //         .state,
-                                                      //     true,
-                                                      //     quantity,
-                                                      //     ref
-                                                      //         .read(
-                                                      //             freqDishesProvider
-                                                      //                 .notifier)
-                                                      //         .state);
-
-                                                      // ref
-                                                      //     .read(quantityPrvider
-                                                      //         .notifier)
-                                                      //     .state = 1;
+                                                      ref.read(cartReopProvider).addCartItem(
+                                                          itemprice: widget
+                                                              .dish!
+                                                              .dish_price!,
+                                                          name: widget
+                                                              .dish!.dish_name,
+                                                          description: widget
+                                                              .dish!
+                                                              .dish_description,
+                                                          ref: ref,
+                                                          userId: supabaseClient
+                                                              .auth
+                                                              .currentUser!
+                                                              .id,
+                                                          dishId: widget
+                                                              .dish!.dishid!,
+                                                          discountprice: widget
+                                                                  .dish!
+                                                                  .dish_discount ??
+                                                              0,
+                                                          price: widget
+                                                              .dish!.dish_price,
+                                                          image: widget.dish!
+                                                              .dish_imageurl!,
+                                                          variations: null,
+                                                          isdishScreen: false,
+                                                          quantity: quantity,
+                                                          freqboughts: null);
+                                                      debugPrint(
+                                                          " else add to cart quantiry : $quantity");
+                                                      // cartRepo.addCartItem(
+                                                      //   itemprice: dish!
+                                                      //       .dish_price!
+                                                      //       .toDouble(),
+                                                      //   name: dish.dish_name,
+                                                      //   description: dish
+                                                      //       .dish_description,
+                                                      //   ref: ref,
+                                                      //   userId: userId,
+                                                      //   dishId: dish.dishid!,
+                                                      //   discountprice:
+                                                      //       dish.dish_discount,
+                                                      //   price: dish.dish_price,
+                                                      //   image:
+                                                      //       dish.dish_imageurl!,
+                                                      //   variations: ref
+                                                      //       .read(
+                                                      //           variationListProvider
+                                                      //               .notifier)
+                                                      //       .state,
+                                                      //   isdishScreen: true,
+                                                      //   quantity: quantity,
+                                                      //   freqboughts: ref
+                                                      //       .read(
+                                                      //           freqDishesProvider
+                                                      //               .notifier)
+                                                      //       .state,
+                                                      // );
                                                     } else if (widget.isCart ==
                                                             true &&
                                                         withvariation == true &&
                                                         widget.updateQuantity ==
                                                             0) {
-                                                      cartRepo.deleteCartItem(
-                                                          dishId: widget
-                                                              .dish!.dishid,
-                                                          ref: ref);
-
-                                                      // ref
-                                                      //     .read(
-                                                      //         cartReopProvider)
-                                                      //     .removeItemFromBasket(
-                                                      //         cartid: widget
-                                                      //             .cartDish!
-                                                      //             .cart_id!,
-                                                      //         ref: ref);
+                                                      ref
+                                                          .read(
+                                                              cartReopProvider)
+                                                          .deleteCartItem(
+                                                              dishId: widget
+                                                                  .dish!
+                                                                  .dishid!,
+                                                              ref:
+                                                                  ref); // cartRepo.deleteCartItem(
+                                                      //     dishId: widget
+                                                      //         .dish!.dishid,
+                                                      //     ref: ref);
                                                     } else {
                                                       print("nothing");
                                                     }
-                                                    // await ref
-                                                    //     .read(DummyLogicProvider)
-                                                    //     .addToCart(
-                                                    //         widget.dish!.dish_price!
-                                                    //             .toDouble(),
-                                                    //         widget.dish!.dish_name,
-                                                    //         widget.dish!
-                                                    //             .dish_description,
-                                                    //         ref,
-                                                    //         supabaseClient
-                                                    //             .auth.currentUser!.id,
-                                                    //         widget.dish!.dishid!,
-                                                    //         widget.dish!.dish_price!
-                                                    //             .toDouble(),
-                                                    //         widget
-                                                    //             .dish!.dish_imageurl!,
-                                                    //         ref
-                                                    //             .read(
-                                                    //                 variationListProvider
-                                                    //                     .notifier)
-                                                    //             .state,
-                                                    //         true,
-                                                    //         quantity);
 
                                                     // we using Add to cart again because if user selects frequently food items
                                                     // then we also have to add them into cart and and frequently items are also type of DishData objects

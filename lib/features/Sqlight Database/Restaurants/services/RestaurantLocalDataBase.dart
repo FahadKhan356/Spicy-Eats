@@ -46,7 +46,7 @@ class RestaurantLocalDatabase {
   }
 
 // TTL duration - 2 hours
-  static const Duration cacheTTL = Duration(minutes: 10);
+  static const Duration cacheTTL = Duration(hours: 1);
 
 // Fetch Fresh Data From Supabase
   Future<List<RestaurantModel>> _fetchFromSupabase() async {

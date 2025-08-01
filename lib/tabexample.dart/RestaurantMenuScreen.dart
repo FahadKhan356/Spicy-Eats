@@ -15,6 +15,7 @@ import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
+import 'package:spicy_eats/features/Sqlight%20Database/Dishes/services/DishesLocalDataBase.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
 import 'package:spicy_eats/features/dish%20menu/repository/dishmenu_repo.dart';
 import 'package:spicy_eats/main.dart';
@@ -23,7 +24,6 @@ var restaurantProvider = StateProvider<RestaurantModel?>((ref) => null);
 
 class RestaurantMenuScreen extends ConsumerStatefulWidget {
   static const String routename = 'RestaurantMenuScreen/';
-  final String restuid = 'd20a2270-b19b-462c-8a65-ba13ff8c0197';
   RestaurantModel restaurantData;
   RestaurantMenuScreen({
     super.key,
@@ -50,18 +50,29 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
     setState(() {
       isloader = true;
     });
+    // await ref
+    // .read(homeControllerProvider)
+    //     .fetchDishes(restuid: widget.restaurantData.restuid)
+    //     .then((value) {
+    //   if (value != null) {
+    //     setState(() {
+    //       dishes = value;
+    //     });
+
+    //     ref.read(dishesListProvider.notifier).state = value;
+    //     ref.read(restaurantProvider.notifier).state = widget.restaurantData;
+    //   }
+    // });
+
     await ref
         .read(homeControllerProvider)
-        .fetchDishes(restuid: widget.restaurantData.restuid)
+        .getDishesData(widget.restaurantData.restuid!)
         .then((value) {
-      if (value != null) {
-        setState(() {
-          dishes = value;
-        });
-
-        ref.read(dishesListProvider.notifier).state = value;
-        ref.read(restaurantProvider.notifier).state = widget.restaurantData;
-      }
+      setState(() {
+        dishes = value;
+      });
+      ref.read(restaurantProvider.notifier).state = widget.restaurantData;
+      ref.read(dishesListProvider.notifier).state = value;
     });
     await ref
         .read(homeControllerProvider)
