@@ -27,6 +27,7 @@ class CartLocalDatabase {
       onCreate: _createDB,
     );
   }
+  //  id INTEGER PRIMARY KEY AUTOINCREMENT,
 
   Future _createDB(db, version) async {
     await db.execute('''
@@ -53,7 +54,9 @@ class CartLocalDatabase {
   Future<int> updateCartItem(Cartmodel item) async {
     final db = _database!.database;
     return await db.update('cart_items', item.tojson(),
-        where: 'dish_id=?', whereArgs: [item.dish_id]);
+        // where: 'dish_id=?', whereArgs: [item.dish_id]);
+        where: 'id=?',
+        whereArgs: [item.cart_id]);
   }
 
   //Add New Cart Item Database Sqlight

@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:flutter/material.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
 
@@ -46,9 +50,10 @@ class Cartmodel {
       'itemprice': itemprice,
       'name': name,
       'description': description,
-      'variation': variation,
+      'variation': jsonEncode(variation?.map((e) => e.tojson()).toList()),
       // 'variationId': variationId,
-      'frequently_boughtList': freqboughts,
+      'frequently_boughtList':
+          jsonEncode(freqboughts?.map((v) => v.tojson()).toList()),
     };
   }
 //copywith
@@ -83,12 +88,73 @@ class Cartmodel {
 
 //from json
   factory Cartmodel.fromjson(Map<String, dynamic> json) {
-    final freqboughts = json['frequently_boughtList'] as List? ?? [];
-    List<DishData> freqboughtslist =
-        freqboughts.map((e) => DishData.fromJson(e)).toList();
-    final variation = json['variations'] as List? ?? [];
-    List<Variation> variationList =
-        variation.map((e) => Variation.fromjson(e)).toList();
+    List<Variation> variationList = [];
+    if (json['variation'] != null) {
+      try {
+        final variationData = json['variation'] is Uint8List
+            ? utf8.decode(json['variation']) // Convert binary to String
+            : json['variation'].toString();
+
+        if (variationData.isNotEmpty) {
+          final decoded = jsonDecode(variationData);
+          if (decoded is List) {
+            variationList = decoded.map((e) => Variation.fromjson(e)).toList();
+          }
+        }
+      } catch (e, stack) {
+        debugPrint('Error decoding variation: $e');
+        debugPrint(stack.toString());
+      }
+    }
+
+    List<DishData> freqboughtsList = [];
+    if (json['frequently_boughtList'] != null) {
+      try {
+        final freqData = json['frequently_boughtList'] is Uint8List
+            ? utf8.decode(json['frequently_boughtList'])
+            : json['frequently_boughtList'].toString();
+
+        if (freqData.isNotEmpty) {
+          final decoded = jsonDecode(freqData);
+          if (decoded is List) {
+            freqboughtsList = decoded.map((e) => DishData.fromJson(e)).toList();
+          }
+        }
+      } catch (e, stack) {
+        debugPrint('Error decoding frequently_boughtList: $e');
+        debugPrint(stack.toString());
+      }
+    }
+    // List<Variation> variationList = [];
+    // if (json['variation'] != null && json['variation'].toString().isNotEmpty) {
+    //   try {
+    //     final decoded = jsonDecode(json['variation']);
+    //     if (decoded is List) {
+    //       variationList = decoded.map((e) => Variation.fromjson(e)).toList();
+    //     }
+    //   } catch (e) {
+    //     debugPrint('Error decoding variation: $e');
+    //   }
+    // }
+
+    // List<DishData> freqboughtsList = [];
+    // if (json['frequently_boughtList'] != null &&
+    //     json['frequently_boughtList'].toString().isNotEmpty) {
+    //   try {
+    //     final decoded = jsonDecode(json['frequently_boughtList']);
+    //     if (decoded is List) {
+    //       freqboughtsList = decoded.map((e) => DishData.fromJson(e)).toList();
+    //     }
+    //   } catch (e) {
+    //     debugPrint('Error decoding frequently_boughtList: $e');
+    //   }
+    // }
+    // final freqboughts = json['frequently_boughtList'] as List? ?? [];
+    // List<DishData> freqboughtslist =
+    //     freqboughts.map((e) => DishData.fromJson(e)).toList();
+    // final variation = json['variations'] as List? ?? [];
+    // List<Variation> variationList =
+    //     variation.map((e) => Variation.fromjson(e)).toList();
     return Cartmodel(
         cart_id: json['id'] ?? 0,
         quantity: json['quantity'] ?? 0,
@@ -102,11 +168,11 @@ class Cartmodel {
         itemprice: json['itemprice'] ?? 0.0,
         name: json['name'] ?? '',
         description: json['description'] ?? '',
-        variation: variationList ?? [],
+        variation: variationList,
         //  (json['variation'] as List<dynamic>)
         //     .map((e) => Variation.fromjson(e))
         //     .toList(),
         // variationId: json['variationId'] ?? 0,
-        freqboughts: freqboughtslist ?? []);
+        freqboughts: freqboughtsList);
   }
 }

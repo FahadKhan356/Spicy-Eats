@@ -23,6 +23,7 @@ class VariattionTitleModel {
       'title': variationTitle,
       'isRequired': isRequired,
       'subtitle': subtitle,
+      'variation': variations,
       'maxSeleted': maxSeleted,
       'dishid': dishid,
     };

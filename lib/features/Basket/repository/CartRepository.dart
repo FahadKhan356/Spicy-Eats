@@ -89,7 +89,7 @@ class CartRepository {
       if (index == -1) return;
 
       final updatedItem = currentCart[index].copyWith(
-        variation: newVariations,
+        // variation: newVariations,
         quantity: newQuantity,
         tprice: price * newQuantity,
         created_at: DateTime.now().toIso8601String(),
@@ -126,6 +126,7 @@ class CartRepository {
     required bool isdishScreen,
     required int quantity,
     required List<DishData>? freqboughts,
+    bool? withVariation,
   }) async {
     try {
       final cartNotifier = ref.read(cartProvider.notifier);
@@ -134,7 +135,7 @@ class CartRepository {
       final currentCart = cartNotifier.state;
       final index = currentCart.indexWhere((item) => item.dish_id == dishId);
 
-      if (index != -1) {
+      if (index != -1 && withVariation == false) {
         final newQuantity = quantity += currentCart[index].quantity;
         final updatedCart = currentCart[index].copyWith(
             quantity: newQuantity,
@@ -191,19 +192,20 @@ class CartRepository {
 //Increase quantity Locally Sqlight
   Future<void> incQuantity(
       {required WidgetRef ref,
-      required int dishId,
+      required int cartId,
       required double price}) async {
     final cartNotifier = ref.read(cartProvider.notifier);
     final priceNotifier = ref.read(cartPriceSumProvider.notifier);
 
     final curentCart = cartNotifier.state;
-    final index = curentCart.indexWhere((item) => item.dish_id == dishId);
+    final index = curentCart.indexWhere((item) => item.cart_id == cartId);
 
     if (index == -1) return;
 
     final updatedItem = curentCart[index].copyWith(
         quantity: curentCart[index].quantity + 1,
         tprice: (curentCart[index].quantity + 1) * price);
+    debugPrint("cart_id inc ${updatedItem.cart_id}"); //
 
     await _database.updateCartItem(updatedItem);
 
@@ -221,13 +223,13 @@ class CartRepository {
 //Increase quantity Locally Sqlight
   Future<void> decQuantity(
       {required WidgetRef ref,
-      required int dishId,
+      required int cartId,
       required double price}) async {
     final cartNotifier = ref.read(cartProvider.notifier);
     final priceNotifier = ref.read(cartPriceSumProvider.notifier);
 
     final curentCart = cartNotifier.state;
-    final index = curentCart.indexWhere((item) => item.dish_id == dishId);
+    final index = curentCart.indexWhere((item) => item.cart_id == cartId);
 
     if (index == -1) return;
 
@@ -250,6 +252,7 @@ class CartRepository {
         ...curentCart.sublist(index + 1),
       ];
 
+      debugPrint("cart_id ${updatedItem.cart_id}"); //
       cartNotifier.state = newCart;
       priceNotifier.state =
           newCart.fold(0, (sum, item) => sum + (item.tprice ?? 0));

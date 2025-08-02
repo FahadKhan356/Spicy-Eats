@@ -217,7 +217,7 @@ class _CartCardState extends ConsumerState<BasketCard> {
                                         _debouncer.run(() {
                                           cartRepo.incQuantity(
                                               ref: ref,
-                                              dishId: widget.dish!.dishid!,
+                                              cartId: widget.cartItem!.cart_id!,
                                               price: widget.dish!.dish_price!);
 
                                           // ref
@@ -227,7 +227,7 @@ class _CartCardState extends ConsumerState<BasketCard> {
                                           //             widget.cartItem!.cart_id!,
                                           //         ref: ref,
                                           //         price:
-                                          //             widget.dish!.dish_price);
+                                          // debugPrint("cart_id ${}"); //             widget.dish!.dish_price);
                                         });
                                       },
                                       child: Container(
@@ -270,7 +270,7 @@ class _CartCardState extends ConsumerState<BasketCard> {
                                         _debouncer.run(() async {
                                           cartRepo.decQuantity(
                                               ref: ref,
-                                              dishId: widget.dish!.dishid!,
+                                              cartId: widget.cartItem!.cart_id!,
                                               price: widget.dish!.dish_price!);
 
                                           // await ref

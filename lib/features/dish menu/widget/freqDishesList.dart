@@ -154,7 +154,7 @@ class Freqdisheslist extends ConsumerWidget {
                       onTap: () {
                         final updatedList = [...provierItem];
 
-                        if (!selected) {
+                        if (selected) {
                           updatedList.add(DishData(
                             isVariation: false,
                             dishid: fetchedItem.dishid,

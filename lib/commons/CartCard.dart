@@ -309,7 +309,7 @@ class _CartCardState extends ConsumerState<CartCard> {
                                                     .read(cartReopProvider)
                                                     .incQuantity(
                                                         ref: ref,
-                                                        dishId: dish.dishid!,
+                                                        cartId: cart!.cart_id!,
                                                         price:
                                                             dish.dish_price!);
                                               }),
@@ -348,7 +348,7 @@ class _CartCardState extends ConsumerState<CartCard> {
                                                     .read(cartReopProvider)
                                                     .decQuantity(
                                                         ref: ref,
-                                                        dishId: dish.dishid!,
+                                                        cartId: cart!.cart_id!,
                                                         price:
                                                             dish.dish_price!);
                                               })
