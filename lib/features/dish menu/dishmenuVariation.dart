@@ -90,9 +90,9 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
           ref: ref,
           // dishes: widget.dishes!,
         );
-    if (widget.freqList != null) {
-      ref.read(freqDishesProvider.notifier).state = null;
-    }
+    // if (widget.freqList != null) {
+    //   ref.read(freqDishesProvider.notifier).state = null;
+    // }
 
 /* here we are matching if we are coming from cart to again dish menu variation screen then
  we are giving cart model's Variation list to the variationListProvider so can we show the same choosen variation
@@ -299,7 +299,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                                                 padding:
                                                     const EdgeInsets.all(10),
                                                 decoration: BoxDecoration(
-                                                  boxShadow: [
+                                                  boxShadow: const [
                                                     BoxShadow(
                                                         spreadRadius: 2,
                                                         color: Color.fromRGBO(
@@ -611,41 +611,6 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                                                   BorderRadius.circular(
                                                       width * 0.35 / 2),
                                             )),
-                                        child: widget.isCart! &&
-                                                updatedQuantity > 0
-                                            ? Align(
-                                                alignment: Alignment.centerLeft,
-                                                child: Text(
-                                                  'Update to cart',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: width * 0.028),
-                                                ),
-                                              )
-                                            : widget.isCart! &&
-                                                    updatedQuantity == 0
-                                                ? Align(
-                                                    alignment:
-                                                        Alignment.centerLeft,
-                                                    child: Text(
-                                                      'remove to cart',
-                                                      style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize:
-                                                              width * 0.028),
-                                                    ),
-                                                  )
-                                                : Align(
-                                                    alignment:
-                                                        Alignment.centerLeft,
-                                                    child: Text(
-                                                      'Add to cart',
-                                                      style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize:
-                                                              width * 0.028),
-                                                    ),
-                                                  ),
                                         onPressed: quantity > 0 &&
                                                 withvariation!
                                             ? () async {
@@ -674,37 +639,6 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
 
                                                     debugPrint(
                                                         "inside : Widget.updatedquanity > 0 ?: ${updatedQuantity}");
-                                                    // cartRepo.updateCartItems(
-                                                    //     dishId: widget
-                                                    //         .dish!.dishid!,
-                                                    //     ref: ref,
-                                                    //     price: widget.dish!
-                                                    //         .dish_price!,
-                                                    //     newQuantity: widget
-                                                    //         .updateQuantity,
-                                                    //     newVariations: ref
-                                                    //         .read(
-                                                    //             variationListProvider
-                                                    //                 .notifier)
-                                                    //         .state!);
-
-                                                    // await ref
-                                                    //     .read(
-                                                    //         cartReopProvider)
-                                                    //     .updateCart(
-                                                    //         ref,
-                                                    //         widget.dish!
-                                                    //             .dishid!,
-                                                    //         widget.dish!
-                                                    //             .dish_price!,
-                                                    //         ref
-                                                    //             .read(
-                                                    //               variationListProvider
-                                                    //                   .notifier,
-                                                    //             )
-                                                    //             .state,
-                                                    //         widget
-                                                    //             .updateQuantity);
                                                   } else if (withvariation! &&
                                                       widget.isCart == false &&
                                                       quantity > 0) {
@@ -750,34 +684,6 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                                                                 .state);
                                                     debugPrint(
                                                         " else add to cart quantiry : $quantity");
-                                                    // cartRepo.addCartItem(
-                                                    //   itemprice: dish!
-                                                    //       .dish_price!
-                                                    //       .toDouble(),
-                                                    //   name: dish.dish_name,
-                                                    //   description: dish
-                                                    //       .dish_description,
-                                                    //   ref: ref,
-                                                    //   userId: userId,
-                                                    //   dishId: dish.dishid!,
-                                                    //   discountprice:
-                                                    //       dish.dish_discount,
-                                                    //   price: dish.dish_price,
-                                                    //   image:
-                                                    //       dish.dish_imageurl!,
-                                                    //   variations: ref
-                                                    //       .read(
-                                                    //           variationListProvider
-                                                    //               .notifier)
-                                                    //       .state,
-                                                    //   isdishScreen: true,
-                                                    //   quantity: quantity,
-                                                    //   freqboughts: ref
-                                                    //       .read(
-                                                    //           freqDishesProvider
-                                                    //               .notifier)
-                                                    //       .state,
-                                                    // );
                                                   } else if (widget.isCart ==
                                                           true &&
                                                       withvariation == true &&
@@ -789,9 +695,6 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                                                                 .dish!.dishid!,
                                                             ref:
                                                                 ref); // cartRepo.deleteCartItem(
-                                                    //     dishId: widget
-                                                    //         .dish!.dishid,
-                                                    //     ref: ref);
                                                   } else {
                                                     print("nothing");
                                                   }
@@ -873,6 +776,41 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                                                   );
                                                 }
                                               },
+                                        child: widget.isCart! &&
+                                                updatedQuantity > 0
+                                            ? Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Text(
+                                                  'Update to cart',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: width * 0.028),
+                                                ),
+                                              )
+                                            : widget.isCart! &&
+                                                    updatedQuantity == 0
+                                                ? Align(
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    child: Text(
+                                                      'remove to cart',
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize:
+                                                              width * 0.028),
+                                                    ),
+                                                  )
+                                                : Align(
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    child: Text(
+                                                      'Add to cart',
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize:
+                                                              width * 0.028),
+                                                    ),
+                                                  ),
                                       ),
                                     ),
                                   ),
@@ -1005,449 +943,6 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                                 ],
                               ),
                             ),
-
-                            // child: Padding(
-                            //   padding:
-                            //       const EdgeInsets.symmetric(horizontal: 20),
-                            //   child: Row(
-                            //     mainAxisAlignment:
-                            //         MainAxisAlignment.spaceBetween,
-                            //     children: [
-                            //       Row(
-                            //         mainAxisAlignment:
-                            //             MainAxisAlignment.spaceBetween,
-                            //         children: [
-                            //           InkWell(
-                            //               onTap: () {
-                            //                 _debouncer.run(() {
-                            //                   print('in the quantity provider');
-                            //                   if (widget.isCart == false) {
-                            //                     ref
-                            //                         .read(quantityPrvider
-                            //                             .notifier)
-                            //                         .state++;
-                            //                   } else if (widget.isCart ==
-                            //                       true) {
-                            //                     print(
-                            //                         'before in the just quantity $quantity');
-                            //                     setState(() {
-                            //                       ref
-                            //                           .read(
-                            //                               updatedQuantityProvider
-                            //                                   .notifier)
-                            //                           .state++;
-                            //                     });
-                            //                     print(
-                            //                         'after in the just quantity $quantity');
-                            //                   }
-                            //                 });
-                            //               },
-                            //               child: Container(
-                            //                 height: 40,
-                            //                 width: 40,
-                            //                 decoration: BoxDecoration(
-                            //                     color: withvariation!
-                            //                         ? Colors.black
-                            //                         : Colors.white,
-                            //                     borderRadius:
-                            //                         BorderRadius.circular(10)),
-                            //                 child: Icon(
-                            //                   Icons.add,
-                            //                   size: 20,
-                            //                   color: withvariation!
-                            //                       ? Colors.white
-                            //                       : Colors.black12,
-                            //                 ),
-                            //               )),
-                            //           const SizedBox(width: 5),
-                            //           AnimatedSwitcher(
-                            //             duration:
-                            //                 const Duration(milliseconds: 200),
-                            //             transitionBuilder:
-                            //                 ((child, animation) =>
-                            //                     ScaleTransition(
-                            //                       scale: animation,
-                            //                       child: child,
-                            //                     )),
-                            //             child: widget.isCart!
-                            //                 ? Text(
-                            //                     key: ValueKey<int>(
-                            //                         updatedQuantity),
-                            //                     updatedQuantity.toString(),
-                            //                     style: TextStyle(
-                            //                       fontSize: 20,
-                            //                       color: withvariation!
-                            //                           ? Colors.black
-                            //                           : Colors.black12,
-                            //                     ),
-                            //                   )
-                            //                 : Text(
-                            //                     key: ValueKey<int>(quantity),
-                            //                     quantity.toString(),
-                            //                     style: TextStyle(
-                            //                       fontSize: 20,
-                            //                       color: withvariation!
-                            //                           ? Colors.black
-                            //                           : Colors.black12,
-                            //                     ),
-                            //                   ),
-                            //           ),
-                            //           const SizedBox(width: 5),
-                            //           InkWell(
-                            //             onTap: () {
-                            //               _debouncer.run(() {
-                            //                 debugPrint(
-                            //                     'in the quantity provider');
-                            //                 if (quantity > 0 &&
-                            //                     widget.isCart == false) {
-                            //                   ref
-                            //                       .read(
-                            //                           quantityPrvider.notifier)
-                            //                       .state--;
-                            //                 } else if (updatedQuantity > 0 &&
-                            //                     widget.isCart == true) {
-                            //                   debugPrint(
-                            //                       'before in the just quantity $quantity');
-                            //                   // setState(() {
-                            //                   // widget.updateQuantity--;
-                            //                   // });
-                            //                   ref
-                            //                       .read(updatedQuantityProvider
-                            //                           .notifier)
-                            //                       .state--;
-                            //                   debugPrint(
-                            //                       'after in the just quantity $quantity');
-                            //                 }
-                            //               });
-                            //             },
-                            //             child: Container(
-                            //               height: 40,
-                            //               width: 40,
-                            //               decoration: BoxDecoration(
-                            //                 color: withvariation!
-                            //                     ? Colors.black
-                            //                     : Colors.white,
-                            //                 borderRadius:
-                            //                     BorderRadius.circular(10),
-                            //               ),
-                            //               child: Center(
-                            //                   child: Icon(
-                            //                 Icons.minimize_outlined,
-                            //                 size: 20,
-                            //                 color: withvariation!
-                            //                     ? Colors.white
-                            //                     : Colors.black12,
-                            //               )),
-                            //             ),
-                            //           ),
-                            //         ],
-                            //       ),
-                            //       Builder(builder: (context) {
-                            //         return SizedBox(
-                            //           height: 50,
-                            //           width: 150,
-                            //           child: ElevatedButton(
-                            //             style: ElevatedButton.styleFrom(
-                            //                 backgroundColor: withvariation!
-                            //                     ? Colors.black
-                            //                     : Colors.white,
-                            //                 shape: RoundedRectangleBorder(
-                            //                   borderRadius:
-                            //                       BorderRadius.circular(10),
-                            //                 )),
-                            //             onPressed: quantity > 0 &&
-                            //                     withvariation!
-                            //                 ? () async {
-                            //                     _debouncer.run(() async {
-                            //                       setState(() {
-                            //                         isloader = true;
-                            //                       });
-
-                            //                       if (withvariation! &&
-                            //                           widget.isCart == true &&
-                            //                           updatedQuantity > 0) {
-                            //                         ref
-                            //                             .read(cartReopProvider)
-                            //                             .updateCartItems(
-                            //                                 dishId: widget
-                            //                                     .dish!.dishid!,
-                            //                                 ref: ref,
-                            //                                 price: widget.dish!
-                            //                                     .dish_price!,
-                            //                                 newQuantity:
-                            //                                     updatedQuantity,
-                            //                                 newVariations: ref
-                            //                                     .read(variationListProvider
-                            //                                         .notifier)
-                            //                                     .state!);
-
-                            //                         debugPrint(
-                            //                             "inside : Widget.updatedquanity > 0 ?: ${updatedQuantity}");
-                            //                         // cartRepo.updateCartItems(
-                            //                         //     dishId: widget
-                            //                         //         .dish!.dishid!,
-                            //                         //     ref: ref,
-                            //                         //     price: widget.dish!
-                            //                         //         .dish_price!,
-                            //                         //     newQuantity: widget
-                            //                         //         .updateQuantity,
-                            //                         //     newVariations: ref
-                            //                         //         .read(
-                            //                         //             variationListProvider
-                            //                         //                 .notifier)
-                            //                         //         .state!);
-
-                            //                         // await ref
-                            //                         //     .read(
-                            //                         //         cartReopProvider)
-                            //                         //     .updateCart(
-                            //                         //         ref,
-                            //                         //         widget.dish!
-                            //                         //             .dishid!,
-                            //                         //         widget.dish!
-                            //                         //             .dish_price!,
-                            //                         //         ref
-                            //                         //             .read(
-                            //                         //               variationListProvider
-                            //                         //                   .notifier,
-                            //                         //             )
-                            //                         //             .state,
-                            //                         //         widget
-                            //                         //             .updateQuantity);
-                            //                       } else if (withvariation! &&
-                            //                           widget.isCart == false &&
-                            //                           quantity > 0) {
-                            //                         ref
-                            //                             .read(cartReopProvider)
-                            //                             .addCartItem(
-                            //                                 withVariation: true,
-                            //                                 itemprice: widget
-                            //                                     .dish!
-                            //                                     .dish_price!,
-                            //                                 name: widget.dish!
-                            //                                     .dish_name,
-                            //                                 description: widget
-                            //                                     .dish!
-                            //                                     .dish_description,
-                            //                                 ref: ref,
-                            //                                 userId:
-                            //                                     supabaseClient
-                            //                                         .auth
-                            //                                         .currentUser!
-                            //                                         .id,
-                            //                                 dishId: widget
-                            //                                     .dish!.dishid!,
-                            //                                 discountprice: widget
-                            //                                         .dish!
-                            //                                         .dish_discount ??
-                            //                                     0,
-                            //                                 price: widget.dish!
-                            //                                     .dish_price,
-                            //                                 image: widget.dish!
-                            //                                     .dish_imageurl!,
-                            //                                 variations:
-                            //                                     // [],
-                            //                                     ref
-                            //                                         .read(variationListProvider
-                            //                                             .notifier)
-                            //                                         .state,
-                            //                                 isdishScreen: false,
-                            //                                 quantity: quantity,
-                            //                                 freqboughts: []);
-                            //                         debugPrint(
-                            //                             " else add to cart quantiry : $quantity");
-                            //                         // cartRepo.addCartItem(
-                            //                         //   itemprice: dish!
-                            //                         //       .dish_price!
-                            //                         //       .toDouble(),
-                            //                         //   name: dish.dish_name,
-                            //                         //   description: dish
-                            //                         //       .dish_description,
-                            //                         //   ref: ref,
-                            //                         //   userId: userId,
-                            //                         //   dishId: dish.dishid!,
-                            //                         //   discountprice:
-                            //                         //       dish.dish_discount,
-                            //                         //   price: dish.dish_price,
-                            //                         //   image:
-                            //                         //       dish.dish_imageurl!,
-                            //                         //   variations: ref
-                            //                         //       .read(
-                            //                         //           variationListProvider
-                            //                         //               .notifier)
-                            //                         //       .state,
-                            //                         //   isdishScreen: true,
-                            //                         //   quantity: quantity,
-                            //                         //   freqboughts: ref
-                            //                         //       .read(
-                            //                         //           freqDishesProvider
-                            //                         //               .notifier)
-                            //                         //       .state,
-                            //                         // );
-                            //                       } else if (widget.isCart ==
-                            //                               true &&
-                            //                           withvariation == true &&
-                            //                           updatedQuantity == 0) {
-                            //                         ref
-                            //                             .read(cartReopProvider)
-                            //                             .deleteCartItem(
-                            //                                 dishId: widget
-                            //                                     .dish!.dishid!,
-                            //                                 ref:
-                            //                                     ref); // cartRepo.deleteCartItem(
-                            //                         //     dishId: widget
-                            //                         //         .dish!.dishid,
-                            //                         //     ref: ref);
-                            //                       } else {
-                            //                         print("nothing");
-                            //                       }
-
-                            //                       // we using Add to cart again because if user selects frequently food items
-                            //                       // then we also have to add them into cart and and frequently items are also type of DishData objects
-                            //                       print(
-                            //                           ' before Frequently bought together dishes: $freqDish');
-                            //                       if (freqDish != null &&
-                            //                           freqDish.isNotEmpty) {
-                            //                         print(
-                            //                             ' after Frequently bought together dishes:${freqDish[0].dish_name}');
-                            //                         for (int i = 0;
-                            //                             i < freqDish.length;
-                            //                             i++) {
-                            //                           cartRepo.addCartItem(
-                            //                             itemprice: freqDish[i]
-                            //                                 .dish_price!
-                            //                                 .toDouble(),
-                            //                             name: freqDish[i]
-                            //                                 .dish_name,
-                            //                             description: freqDish[i]
-                            //                                 .dish_description,
-                            //                             ref: ref,
-                            //                             userId: userId,
-                            //                             dishId:
-                            //                                 freqDish[i].dishid!,
-                            //                             discountprice:
-                            //                                 freqDish[i]
-                            //                                     .dish_discount,
-                            //                             price: freqDish[i]
-                            //                                 .dish_price,
-                            //                             image: freqDish[i]
-                            //                                 .dish_imageurl!,
-                            //                             variations: ref
-                            //                                 .read(
-                            //                                     variationListProvider
-                            //                                         .notifier)
-                            //                                 .state,
-                            //                             isdishScreen: true,
-                            //                             quantity: quantity,
-                            //                             freqboughts: ref
-                            //                                 .read(
-                            //                                     freqDishesProvider
-                            //                                         .notifier)
-                            //                                 .state,
-                            //                           );
-
-                            //                           // await ref
-                            //                           //     .read(
-                            //                           //         cartReopProvider)
-                            //                           //     .addToCart(
-                            //                           //         freqDish[i]
-                            //                           //             .dish_price!
-                            //                           //             .toDouble(),
-                            //                           //         freqDish[i]
-                            //                           //             .dish_name,
-                            //                           //         freqDish[i]
-                            //                           //             .dish_description,
-                            //                           //         ref,
-                            //                           //         supabaseClient
-                            //                           //             .auth
-                            //                           //             .currentUser!
-                            //                           //             .id,
-                            //                           //         freqDish[i]
-                            //                           //             .dishid!,
-                            //                           //         freqDish[i]
-                            //                           //             .dish_price!
-                            //                           //             .toDouble(),
-                            //                           //         freqDish[i]
-                            //                           //             .dish_discount,
-                            //                           //         freqDish[i]
-                            //                           //             .dish_imageurl!,
-                            //                           //         null,
-                            //                           //         true,
-                            //                           //         1,
-                            //                           //         null);
-                            //                         }
-                            //                       } else {
-                            //                         print(
-                            //                             'No frequently bought together dishes found.'); // Debug log
-                            //                       }
-                            //                       // if (mounted) {
-                            //                       //   Navigator.pushNamed(
-                            //                       //       context,
-                            //                       //       RestaurantMenuScreen
-                            //                       //           .routename,
-                            //                       //       arguments: ref
-                            //                       //           .read(restaurantProvider
-                            //                       //               .notifier)
-                            //                       //           .state);
-                            //                       // }
-                            //                       await naviagating();
-                            //                     });
-
-                            //                     setState(() {
-                            //                       isloader = false;
-                            //                     });
-                            //                   }
-                            //                 : () {
-                            //                     if (mounted &&
-                            //                         scaffoldMessengerKey
-                            //                                 .currentState !=
-                            //                             null) {
-                            //                       scaffoldMessengerKey
-                            //                           .currentState!
-                            //                           .showSnackBar(
-                            //                         const SnackBar(
-                            //                           content: Text(
-                            //                               'Please add at least 1 item'),
-                            //                           behavior: SnackBarBehavior
-                            //                               .floating,
-                            //                           margin: EdgeInsets.only(
-                            //                               bottom: 100,
-                            //                               left: 20,
-                            //                               right: 20),
-                            //                         ),
-                            //                       );
-                            //                     }
-                            //                   },
-                            //             child: widget.isCart! &&
-                            //                     updatedQuantity == 0
-                            //                 ? Text(
-                            //                     'Remove to Cart',
-                            //                     style: TextStyle(
-                            //                         color: withvariation!
-                            //                             ? Colors.white
-                            //                             : Colors.black12),
-                            //                   )
-                            //                 : widget.isCart!
-                            //                     ? Text(
-                            //                         'Update Cart',
-                            //                         style: TextStyle(
-                            //                             color: withvariation!
-                            //                                 ? Colors.white
-                            //                                 : Colors.black12),
-                            //                       )
-                            //                     : Text(
-                            //                         'Add to Cart',
-                            //                         style: TextStyle(
-                            //                             color: withvariation!
-                            //                                 ? Colors.white
-                            //                                 : Colors.black12),
-                            //                       ),
-                            //           ),
-                            //         );
-                            //       }),
-                            //     ],
-                            //   ),
-                            // ),
                           ),
                         ))
                     : const SizedBox(),

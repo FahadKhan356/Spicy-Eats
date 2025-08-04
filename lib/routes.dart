@@ -30,16 +30,16 @@ import 'package:spicy_eats/tabexample.dart/tabexample.dart';
 
 Route<dynamic> generateRoutes(RouteSettings settings) {
   switch (settings.name) {
-    case RestaurantMenu.routename:
-      Map argument = settings.arguments as Map;
-      // final restaurant = settings.arguments as Restaurant;
-      // final List<DishData> dishdata = settings.arguments as List<DishData>;
-      return MaterialPageRoute(
-          builder: (_) => RestaurantMenu(
-                restaurant: argument['restaurant'],
-                //dishData: argument['dishes'],
-                rest_uid: argument['rest_uid'],
-              ));
+    // case RestaurantMenu.routename:
+    //   Map argument = settings.arguments as Map;
+    //   // final restaurant = settings.arguments as Restaurant;
+    //   // final List<DishData> dishdata = settings.arguments as List<DishData>;
+    //   return MaterialPageRoute(
+    //       builder: (_) => RestaurantMenu(
+    //             restaurant: argument['restaurant'],
+    //             //dishData: argument['dishes'],
+    //             rest_uid: argument['rest_uid'],
+    //           ));
     case InnerOverview.routename:
       return MaterialPageRoute(builder: (_) {
         final restuid = settings.arguments as String;
@@ -130,6 +130,7 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
           isCart: argument['iscart'],
           cartDish: argument['cartdish'],
           isdishscreen: argument['isdishscreen'],
+          restaurantData: argument['restaurantdata'],
         ),
       );
     // });
@@ -150,9 +151,9 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
       return customRouteAnimation(const PaymentScreen());
 
     case RestaurantMenuScreen.routename:
-      final argument = settings.arguments as dynamic;
+      final restaurantData = settings.arguments as RestaurantModel;
       return customRouteAnimation(
-          RestaurantMenuScreen(restaurantData: argument));
+          RestaurantMenuScreen(restaurantData: restaurantData));
 
     case ProfileScreen.routename:
       return MaterialPageRoute(builder: (_) => ProfileScreen());

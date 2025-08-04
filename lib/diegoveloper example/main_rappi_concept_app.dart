@@ -414,6 +414,7 @@ class _RappiProductState extends ConsumerState<RappiProduct> {
                   })
             : Navigator.pushNamed(context, DishMenuScreen.routename,
                 arguments: {
+                    'restaurantdata': widget.restaurantData,
                     'dish': widget.dish,
                     'iscart': false,
                     'cartdish': widget.cartItem,

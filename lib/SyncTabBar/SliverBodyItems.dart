@@ -9,6 +9,7 @@ import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/screens/restaurant_menu.dart';
 
 final totalQuantityprovider = StateProvider<int?>((ref) => null);
+final quantityProvider = StateProvider<List<ItemQuantity>>((ref) => []);
 
 class SliverBodyItems extends ConsumerStatefulWidget {
   const SliverBodyItems({super.key, required this.listItems});

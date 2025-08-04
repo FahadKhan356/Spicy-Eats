@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
+import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 import 'package:spicy_eats/features/dish%20menu/dishmenuVariation.dart';
 
 class Freqdisheslist extends ConsumerWidget {
@@ -154,7 +155,7 @@ class Freqdisheslist extends ConsumerWidget {
                       onTap: () {
                         final updatedList = [...provierItem];
 
-                        if (selected) {
+                        if (!selected) {
                           updatedList.add(DishData(
                             isVariation: false,
                             dishid: fetchedItem.dishid,
@@ -165,12 +166,21 @@ class Freqdisheslist extends ConsumerWidget {
                             dish_name: fetchedItem.dish_name,
                             dish_schedule_meal: '',
                           ));
+
+                          debugPrint(
+                              "updated list of freq list items ${updatedList.length}");
+                          debugPrint(
+                              "updated list of freq list items ${updatedList[0].dish_name}");
                         } else {
                           updatedList.removeWhere(
                               (item) => item.dishid == fetchedItem.dishid);
                         }
                         ref.read(freqDishesProvider.notifier).state =
                             updatedList;
+                        ref.read(freqnewListProvider.notifier).state =
+                            updatedList;
+                        // debugPrint(
+                        //     "updated list after stored of freq list items ${ref.read(freqDishesProvider.notifier)[0].dish_name}");
                       },
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(15),

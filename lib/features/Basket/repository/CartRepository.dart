@@ -113,6 +113,7 @@ class CartRepository {
 
 //Add CartItem Locally For Sqlight
   Future<void> addCartItem({
+    bool? isdishMenu,
     required double itemprice,
     required name,
     required description,

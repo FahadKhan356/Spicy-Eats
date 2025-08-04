@@ -24,7 +24,7 @@ var restaurantProvider = StateProvider<RestaurantModel?>((ref) => null);
 
 class RestaurantMenuScreen extends ConsumerStatefulWidget {
   static const String routename = 'RestaurantMenuScreen/';
-  RestaurantModel restaurantData;
+  final RestaurantModel restaurantData;
   RestaurantMenuScreen({
     super.key,
     required this.restaurantData,
@@ -179,17 +179,17 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
                     ],
                   ),
                   onPressed: () {
-                    if (cartFetched) {
-                      Navigator.pushNamed(context, BasketScreen.routename,
-                          arguments: {
-                            // 'cart': cart,
-                            'dishes': dishes,
-                            'restuid': widget.restaurantData.restuid,
-                            'restdata': widget.restaurantData,
-                          });
-                      cartFetched = false;
-                      ref.read(cartReopProvider).getTotalPrice(ref);
-                    }
+                    // if (cartFetched) {
+                    Navigator.pushNamed(context, BasketScreen.routename,
+                        arguments: {
+                          // 'cart': cart,
+                          'dishes': dishes,
+                          'restuid': widget.restaurantData.restuid,
+                          'restdata': widget.restaurantData,
+                        });
+                    cartFetched = false;
+                    ref.read(cartReopProvider).getTotalPrice(ref);
+                    // }
                   }),
             ),
       backgroundColor: Colors.white,

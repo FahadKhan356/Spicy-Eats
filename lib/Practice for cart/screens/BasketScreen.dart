@@ -89,6 +89,8 @@ class _DummyBasketState extends ConsumerState<BasketScreen> {
                             return InkWell(
                               onTap: () {
                                 if (dishindex.isVariation) {
+                                  ref.read(isloaderProvider.notifier).state =
+                                      true;
                                   Navigator.pushNamed(
                                       context, DishMenuVariation.routename,
                                       arguments: {
@@ -103,9 +105,12 @@ class _DummyBasketState extends ConsumerState<BasketScreen> {
                                         'carts': cart,
                                       });
                                 } else {
+                                  ref.read(isloaderProvider.notifier).state =
+                                      true;
                                   Navigator.pushNamed(
                                       context, DishMenuScreen.routename,
                                       arguments: {
+                                        'restaurantdata': widget.restaurantData,
                                         'dishes': dishesList,
                                         'dish': dishindex,
                                         'iscart': true,
