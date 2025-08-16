@@ -4,8 +4,9 @@ import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/scree
 import 'package:spicy_eats/commons/custommap.dart';
 
 class MyMap extends ConsumerStatefulWidget {
+  bool isAddScreen;
   static const String routename = '/map';
-  const MyMap({super.key});
+  MyMap({super.key, required this.isAddScreen});
 
   @override
   ConsumerState<MyMap> createState() => _MyMapState();
@@ -17,6 +18,7 @@ class _MyMapState extends ConsumerState<MyMap> {
     return SafeArea(
       child: Scaffold(
         body: CustomMap(
+            isAddScreen: widget.isAddScreen,
             initialLatitude: 25.3936435,
             initialLongitude: 68.3838603,
             onPicked: (result) {

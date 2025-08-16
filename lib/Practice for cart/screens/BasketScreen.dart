@@ -91,6 +91,8 @@ class _DummyBasketState extends ConsumerState<BasketScreen> {
                                 if (dishindex.isVariation) {
                                   ref.read(isloaderProvider.notifier).state =
                                       true;
+                                  ref.read(isloaderProvider.notifier).state =
+                                      true;
                                   Navigator.pushNamed(
                                       context, DishMenuVariation.routename,
                                       arguments: {
@@ -99,9 +101,7 @@ class _DummyBasketState extends ConsumerState<BasketScreen> {
                                         'dish': dishindex,
                                         'iscart': true,
                                         'cartdish': cartitem,
-                                        'restaurantData': ref
-                                            .read(restaurantProvider.notifier)
-                                            .state,
+                                        'restaurantdata': widget.restaurantData,
                                         'carts': cart,
                                       });
                                 } else {

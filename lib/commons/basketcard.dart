@@ -176,7 +176,7 @@ class _CartCardState extends ConsumerState<BasketCard> {
                                                                 color: Colors
                                                                     .black,
                                                                 child: Text(
-                                                                  '\$${e.variationPrice}',
+                                                                  '\$${e.variationPrice} x ${widget.cartItem!.quantity}',
                                                                   style: const TextStyle(
                                                                       color: Colors
                                                                           .white,

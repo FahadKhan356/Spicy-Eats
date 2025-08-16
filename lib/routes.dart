@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map_location_picker/flutter_map_location_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/screens/BasketScreen.dart';
+import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/widgets/map.dart';
 import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
+import 'package:spicy_eats/commons/ConfirmLocation.dart';
 import 'package:spicy_eats/commons/routeAnimation.dart';
 import 'package:spicy_eats/features/Favorites/Screens/FavoriteScrren.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
@@ -25,11 +28,19 @@ import 'package:spicy_eats/features/authentication/otp.dart';
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 import 'package:spicy_eats/features/dish%20menu/dishmenuVAriation.dart';
 import 'package:spicy_eats/features/orders/screens/order_screen.dart';
+import 'package:spicy_eats/main.dart';
 import 'package:spicy_eats/tabexample.dart/RestaurantMenuScreen.dart';
 import 'package:spicy_eats/tabexample.dart/tabexample.dart';
 
 Route<dynamic> generateRoutes(RouteSettings settings) {
   switch (settings.name) {
+    case MyMap.routename:
+      return MaterialPageRoute(builder: (_) {
+        bool argument = settings.arguments as bool;
+        return MyMap(
+          isAddScreen: argument,
+        );
+      });
     // case RestaurantMenu.routename:
     //   Map argument = settings.arguments as Map;
     //   // final restaurant = settings.arguments as Restaurant;
@@ -46,13 +57,18 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
         return InnerOverview(restuid: restuid);
       });
 
-    case MenuItemDetailScreen.routename:
-      return MaterialPageRoute(builder: (context) {
-        final argument = settings.arguments as Dish;
-        return MenuItemDetailScreen(
-          dish: argument,
-        );
+    case Confirmlocation.routename:
+      return MaterialPageRoute(builder: (_) {
+        final locationResult = settings.arguments as dynamic;
+        return Confirmlocation(locationResult: locationResult);
       });
+    // case MenuItemDetailScreen.routename:
+    //   return MaterialPageRoute(builder: (context) {
+    //     final argument = settings.arguments as Dish;
+    //     return MenuItemDetailScreen(
+    //       dish: argument,
+    //     );
+    //   });
     case HomeSliverWithScrollableTabs.routename:
       return MaterialPageRoute(builder: (_) {
         final argument = settings.arguments as Map;

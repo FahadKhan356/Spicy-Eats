@@ -156,7 +156,9 @@ class _RegisterRestaurantState extends ConsumerState<RegisterRestaurant> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => MyMap()),
+                                      builder: (context) => MyMap(
+                                            isAddScreen: false,
+                                          )),
                                 );
                               },
                               child: const Text(

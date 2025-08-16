@@ -15,7 +15,7 @@ import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
-import 'package:spicy_eats/features/Sqlight%20Database/Dishes/services/DishesLocalDataBase.dart';
+import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
 import 'package:spicy_eats/features/dish%20menu/repository/dishmenu_repo.dart';
 import 'package:spicy_eats/main.dart';
@@ -25,7 +25,7 @@ var restaurantProvider = StateProvider<RestaurantModel?>((ref) => null);
 class RestaurantMenuScreen extends ConsumerStatefulWidget {
   static const String routename = 'RestaurantMenuScreen/';
   final RestaurantModel restaurantData;
-  RestaurantMenuScreen({
+  const RestaurantMenuScreen({
     super.key,
     required this.restaurantData,
   });
@@ -179,7 +179,7 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
                     ],
                   ),
                   onPressed: () {
-                    // if (cartFetched) {
+                    ref.read(isloaderProvider.notifier).state = true;
                     Navigator.pushNamed(context, BasketScreen.routename,
                         arguments: {
                           // 'cart': cart,

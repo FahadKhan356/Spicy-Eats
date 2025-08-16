@@ -4,6 +4,7 @@ import 'package:spicy_eats/Practice%20for%20cart/model/Cartmodel.dart';
 import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
+import 'package:spicy_eats/features/dish%20menu/dishmenuVariation.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
 import 'package:spicy_eats/main.dart';
 
@@ -127,32 +128,31 @@ class DishMenuRepository {
     }
   }
 
-  void dishesCrud(
+  Future<void> dishesCrud(
       {required WidgetRef ref,
       bool? isdishmenuScreen,
       required bool isCart,
       required int updatedQuantity,
       required DishData dish,
+      required Cartmodel cart,
       required int quantity,
-      required context}) {
+      required context}) async {
     final cartItem = ref.watch(cartProvider);
-    final index = cartItem.indexWhere((item) => item.dish_id == dish.dishid);
+    final index = cartItem.indexWhere((item) => item.cart_id == cart.cart_id);
 
     if (isCart && updatedQuantity > 0) {
-      ref.read(cartReopProvider).updateCartItems(
-          dishId: dish.dishid!,
+      await ref.read(cartReopProvider).updateCartItems(
+          cartId: cart.cart_id!,
           ref: ref,
           price: dish.dish_price!,
           newQuantity: updatedQuantity,
           newVariations: []);
-
-      debugPrint("inside : Widget.updatedquanity > 0 ?: ${updatedQuantity}");
     } else if (updatedQuantity < 1 && isCart) {
-      ref.read(cartReopProvider).deleteCartItem(dishId: dish.dishid!, ref: ref);
-      debugPrint(
-          " inside : updatedquanity < 1 && iscart true?:: updatedquanity=> ${updatedQuantity} isCart=> ${isCart} : $updatedQuantity");
+      await ref
+          .read(cartReopProvider)
+          .deleteCartItem(dishId: dish.dishid!, ref: ref);
     } else if (index == -1) {
-      ref.read(cartReopProvider).addCartItem(
+      await ref.read(cartReopProvider).addCartItem(
           itemprice: dish.dish_price!,
           name: dish.dish_name,
           description: dish.dish_description,
@@ -167,12 +167,64 @@ class DishMenuRepository {
           quantity: quantity,
           freqboughts: null);
     } else {
-      ref.read(cartReopProvider).updateCartItems(
-          dishId: dish.dishid!,
+      await ref.read(cartReopProvider).updateCartItems(
+          cartId: cart.cart_id!,
           ref: ref,
           price: dish.dish_price!,
           newQuantity: cartItem[index].quantity += quantity,
           newVariations: []);
     }
+  }
+
+  Future<void> dishMenuCrud(
+      {
+      // required double totalVaritionPrice,
+      required List<Variation>? variations,
+      required List<DishData>? newFreqList,
+      required WidgetRef ref,
+      required bool withvariation,
+      required Debouncer debouncer,
+      bool? isdishmenuScreen,
+      required bool isCart,
+      required int updatedQuantity,
+      required DishData dish,
+      required Cartmodel cart,
+      required int quantity,
+      required context}) async {
+    debouncer.run(() async {
+      if (withvariation && isCart == true && updatedQuantity > 0) {
+        debugPrint("variation length ${variations?.length}");
+        await ref.read(cartReopProvider).updateCartItems(
+            cartId: cart.cart_id!,
+            ref: ref,
+            price: dish.dish_price!,
+            newQuantity: updatedQuantity,
+            newVariations: variations!);
+      } else if (withvariation && isCart == false && quantity > 0) {
+        await ref.read(cartReopProvider).addCartItem(
+            withVariation: true,
+            itemprice: dish.dish_price!,
+            name: dish.dish_name,
+            description: dish.dish_description,
+            ref: ref,
+            userId: supabaseClient.auth.currentUser!.id,
+            dishId: dish.dishid!,
+            discountprice: dish.dish_discount ?? 0,
+            price: dish.dish_price,
+            image: dish.dish_imageurl!,
+            variations: variations,
+            isdishScreen: false,
+            quantity: quantity,
+            freqboughts: newFreqList);
+      } else if (isCart == true &&
+          withvariation == true &&
+          updatedQuantity == 0) {
+        await ref
+            .read(cartReopProvider)
+            .deleteCartItem(dishId: dish.dishid!, ref: ref);
+      }
+
+      ref.read(dishMenuRepoProvider).addAllFreqBoughtItems(ref: ref);
+    });
   }
 }

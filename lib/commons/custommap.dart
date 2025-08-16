@@ -2,9 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/widgets/map.dart';
+import 'package:spicy_eats/commons/ConfirmLocation.dart';
 
 /// Change the Map Tiles for OSM
 enum MapType { normal, satelite }
@@ -39,6 +42,8 @@ class LocationResult {
 }
 
 class CustomMap extends StatefulWidget {
+  final bool isAddScreen;
+
   /// The initial longitude
   final double? initialLongitude;
 
@@ -85,6 +90,7 @@ class CustomMap extends StatefulWidget {
       required this.initialLatitude,
       required this.initialLongitude,
       required this.onPicked,
+      required this.isAddScreen,
       this.backgroundColor,
       this.indicatorColor,
       this.addressTextStyle,
@@ -351,28 +357,62 @@ class _MapLocationPickerState extends State<CustomMap> {
                               completeAddress: null,
                               placemark: null,
                               locationName: null))
-                      : SizedBox(
-                          width: double.maxFinite,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              widget.onPicked(_locationResult ??
-                                  LocationResult(
-                                      latitude: _latitude,
-                                      longitude: _longitude,
-                                      completeAddress: null,
-                                      placemark: null,
-                                      locationName: null));
-                            },
-                            style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)),
-                                backgroundColor: Colors.black87),
-                            child: Text(
-                              widget.buttonText != null
-                                  ? widget.buttonText!
-                                  : "Select Location",
-                              style: const TextStyle(
-                                  color: Colors.white, fontSize: 20),
+                      : Consumer(
+                          builder: (context, ref, child) => SizedBox(
+                            width: double.maxFinite,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                widget.onPicked(_locationResult ??
+                                    LocationResult(
+                                        latitude: _latitude,
+                                        longitude: _longitude,
+                                        completeAddress: null,
+                                        placemark: null,
+                                        locationName: null));
+
+                                // if (widget.isAddScreen) {
+                                Navigator.pushNamed(
+                                    context, Confirmlocation.routename,
+                                    arguments: _locationResult ??
+                                        LocationResult(
+                                            latitude: _latitude,
+                                            longitude: _longitude,
+                                            completeAddress: null,
+                                            placemark: null,
+                                            locationName: null));
+
+                                // Confirmlocation(
+                                //     locationResult: _locationResult ??
+                                //         LocationResult(
+                                //             latitude: _latitude,
+                                //             longitude: _longitude,
+                                //             completeAddress: null,
+                                //             placemark: null,
+                                //             locationName: null));
+
+                                // _showBottomSheet(
+                                //     context,
+                                //     ref,
+                                //     _locationResult ??
+                                //         LocationResult(
+                                //             latitude: _latitude,
+                                //             longitude: _longitude,
+                                //             completeAddress: null,
+                                //             placemark: null,
+                                //             locationName: null));
+                                // }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10)),
+                                  backgroundColor: Colors.black87),
+                              child: Text(
+                                widget.buttonText != null
+                                    ? widget.buttonText!
+                                    : "Select Location",
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 20),
+                              ),
                             ),
                           ),
                         )
@@ -788,4 +828,138 @@ bool isStreetCode(String text) {
   final streetCodeRegex = RegExp(
       r"^[A-Z0-9\-+]+$"); // Matches all uppercase letters, digits, hyphens, and plus signs
   return streetCodeRegex.hasMatch(text);
+}
+
+final List<String> addresses = [
+  "123 Main Street, Hometown albert einstient venue, near cashier siliser",
+  "456 Park Avenue, Uptown",
+  "789 Sunset Blvd, Midtown",
+];
+
+void _showBottomSheet(context, WidgetRef ref, LocationResult locationResult) {
+  final width = MediaQuery.of(context).size.width;
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true, // Full height if needed
+    builder: (context) {
+      return StatefulBuilder(
+        builder: (context, setStateModal) => Container(
+          height: 400,
+          width: double.maxFinite,
+          padding: const EdgeInsets.all(20),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min, // Fit content
+              children: [
+                locationResult.locationName != null
+                    ? Flexible(
+                        child: Text(
+                          '${locationResult.locationName}',
+                          style: TextStyle(overflow: TextOverflow.visible),
+                        ),
+                      )
+                    : SizedBox(),
+                const Text(
+                  "Where’s your food going? 🍕",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 20),
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(Icons.location_on),
+                    Text(
+                      "Choose current location",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: addresses.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 10),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(
+                            'Home',
+                            style: TextStyle(
+                              overflow: TextOverflow.visible,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+                const SizedBox(height: 20),
+                InkWell(
+                  onTap: () => Navigator.pushNamed(
+                      arguments: true, context, MyMap.routename),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.add,
+                        color: Colors.black,
+                        size: 24,
+                      ),
+                      Text("Add new address",
+                          style: TextStyle(
+                              overflow: TextOverflow.visible,
+                              fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const Divider(
+                  color: Colors.black,
+                  height: 1,
+                ),
+                const SizedBox(height: 20),
+                InkWell(
+                  borderRadius: BorderRadius.circular(width * 0.14),
+                  onTap: () {},
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                        height: 50,
+                        width: double.maxFinite,
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          boxShadow: const [
+                            BoxShadow(
+                                spreadRadius: 2,
+                                color: Color.fromRGBO(230, 81, 0, 1),
+                                blurRadius: 2)
+                          ],
+                          color: Colors.orange[100],
+                          borderRadius: BorderRadius.circular(width * 0.14),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Center(
+                            child: Text("Confirm location",
+                                style: TextStyle(
+                                    color: Colors.orange[900],
+                                    overflow: TextOverflow.visible,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                        )),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
 }

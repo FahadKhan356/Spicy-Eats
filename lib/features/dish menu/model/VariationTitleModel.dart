@@ -50,6 +50,7 @@ class Variation {
   double? variationPrice;
   int? variation_id;
   bool? selected;
+  double totalvariation;
 
   Variation({
     required this.id,
@@ -57,6 +58,7 @@ class Variation {
     required this.variationPrice,
     required this.variation_id,
     required this.selected,
+    required this.totalvariation,
   });
 
 // tojson
@@ -67,12 +69,14 @@ class Variation {
       'variation_price': variationPrice,
       'variation_id': variation_id,
       'selected': selected,
+      'totalvariation': totalvariation,
     };
   }
 
 //fromjson
   factory Variation.fromjson(Map<String, dynamic> json) {
     return Variation(
+      totalvariation: json['totalvariation'] ?? 0.0,
       id: json['id'] ?? 0,
       variationName: json['variation_name'] ?? '',
       variationPrice: json['variation_price'] ?? '',

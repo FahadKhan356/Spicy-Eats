@@ -73,7 +73,7 @@ class CartRepository {
 
 //Update CartItem Locally For Sqlight
   Future<void> updateCartItems({
-    required int dishId,
+    required int cartId,
     required WidgetRef ref,
     required double price,
     required int newQuantity,
@@ -84,7 +84,7 @@ class CartRepository {
       final priceNotifier = ref.read(cartPriceSumProvider.notifier);
 
       final currentCart = cartNotifier.state;
-      final index = currentCart.indexWhere((item) => item.dish_id == dishId);
+      final index = currentCart.indexWhere((item) => item.cart_id == cartId);
 
       if (index == -1) return;
 
@@ -93,6 +93,7 @@ class CartRepository {
         quantity: newQuantity,
         tprice: price * newQuantity,
         created_at: DateTime.now().toIso8601String(),
+        variation: newVariations,
       );
       // 4. Update in SQLite FIRST
       await _database.updateCartItem(updatedItem);
@@ -104,8 +105,17 @@ class CartRepository {
       ];
 
       cartNotifier.state = newCart;
-      priceNotifier.state =
-          newCart.fold(0, (sum, item) => sum + item.tprice!.toDouble());
+      priceNotifier.state = newCart.fold(0, (sum, item) {
+        var totalCart = sum + item.tprice!.toDouble();
+
+        if (newVariations.isNotEmpty) {
+          final totalVariation = newVariations.fold(
+              0.0, (sum, item) => sum + item.variationPrice!);
+
+          totalCart += totalVariation;
+        }
+        return totalCart;
+      });
     } catch (e) {
       debugPrint("Failed to Update $e");
     }
@@ -255,16 +265,34 @@ class CartRepository {
 
       debugPrint("cart_id ${updatedItem.cart_id}"); //
       cartNotifier.state = newCart;
-      priceNotifier.state =
+      priceNotifier.state +=
           newCart.fold(0, (sum, item) => sum + (item.tprice ?? 0));
     }
   }
 
   double getTotalPrice(WidgetRef ref) {
     final cart = ref.watch(cartProvider);
+    double total = 0.0;
+    double subTotal = 0.0;
+    double tvariation = 0.0;
 
-    return cart.fold(0.0,
-        (previousValue, element) => previousValue + (element.tprice ?? 0.0));
+    for (int i = 0; i < cart.length; i++) {
+      if (cart[i].variation != null) {
+        for (int j = 0; j < cart[i].variation!.length; j++) {
+          if (cart[i].variation![j].variationPrice != 0) {
+            tvariation +=
+                cart[i].variation![j].variationPrice! * cart[i].quantity;
+          }
+
+          debugPrint(
+              "${cart[i].variation![j].variationName}  : total : $tvariation");
+        }
+      }
+      subTotal += cart[i].tprice!;
+    }
+
+    total = subTotal + tvariation;
+    return total;
   }
 
   int getTotalQuantityofdish(WidgetRef ref, int dishid) {

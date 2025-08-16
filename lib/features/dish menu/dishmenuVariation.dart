@@ -9,12 +9,11 @@ import 'package:spicy_eats/Practice%20for%20cart/screens/BasketScreen.dart';
 import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
-import 'package:spicy_eats/features/dish%20menu/controller/dish-menu_controller.dart';
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
 import 'package:spicy_eats/features/dish%20menu/repository/dishmenu_repo.dart';
+import 'package:spicy_eats/features/dish%20menu/widget/customBottomBar.dart';
 import 'package:spicy_eats/features/dish%20menu/widget/freqDishesList.dart';
-import 'package:spicy_eats/main.dart';
 import 'package:spicy_eats/tabexample.dart/RestaurantMenuScreen.dart';
 
 final variationListProvider = StateProvider<List<Variation>?>((ref) => null);
@@ -64,10 +63,32 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
   final Debouncer _debouncer = Debouncer(milliseconds: 500);
-  Future<void> fetchVariations(int dishId) async {
+
+  Future<void> initialDataLoad(int dishId) async {
+    if (mounted) {
+      await fetchVariations(dishId);
+      await fetchfrequentlybought();
+    }
+    if (widget.isCart!) {
+      for (int i = 0; i < ref.watch(cartProvider).length; i++) {
+        widget.freqList!.removeWhere(
+            (element) => element.dishid == ref.read(cartProvider)[i].dish_id);
+      }
+    }
+  }
+
+  Future<void> fetchfrequentlybought() async {
+    final list = await ref.read(dishMenuRepoProvider).fetchfrequentlybuy(
+          freqid: widget.dish?.frequentlyid,
+          ref: ref,
+        );
+
     setState(() {
-      isloader = true;
+      widget.freqList = list;
     });
+  }
+
+  Future<void> fetchVariations(int dishId) async {
     await ref
         .read(dishMenuRepoProvider)
         .fetchVariations(dishid: dishId, context: context)
@@ -88,20 +109,15 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
     widget.freqList = await ref.read(dishMenuRepoProvider).fetchfrequentlybuy(
           freqid: widget.dish?.frequentlyid,
           ref: ref,
-          // dishes: widget.dishes!,
         );
-    // if (widget.freqList != null) {
-    //   ref.read(freqDishesProvider.notifier).state = null;
-    // }
-
-/* here we are matching if we are coming from cart to again dish menu variation screen then
- we are giving cart model's Variation list to the variationListProvider so can we show the same choosen variation
-  that we chose earlier for the same order  */
-
+    debugPrint(
+        ' outside cartdish variation length${widget.cartDish?.variation?.length} and is cart ${widget.isCart}');
     if (widget.isCart == true) {
+      debugPrint(
+          'inside if cartdish variation length${widget.cartDish?.variation?.length}');
       ref.read(variationListProvider.notifier).state =
           widget.cartDish!.variation;
-      print(widget.cartDish!.variation?.length);
+
       // ref.read(freqDishesProvider.notifier).state =
       //     widget.cartDish?.freqboughts;
       // print(' freqboughts length${widget.cartDish!.freqboughts!.length}');
@@ -111,17 +127,15 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
         widget.freqList!.removeWhere(
             (element) => element.dishid == widget.carts![i].dish_id);
       }
-    }
 
-    // widget.updateQuantity = widget.cartDish!.quantity;
-    setState(() {
-      isloader = false;
-    });
-    debugPrint("  the incoming car dish quantity ${widget.cartDish!.quantity}");
-    ref.read(updatedQuantityProvider.notifier).state =
-        widget.cartDish!.quantity;
-    debugPrint(
-        "  updatedQuntity that stores card dish quaity ${ref.read(updatedQuantityProvider)}");
+      ref.read(updatedQuantityProvider.notifier).state =
+          widget.cartDish!.quantity;
+    }
+    //   ref.read(variationListProvider.notifier).state =
+    //       widget.cartDish!.variation;
+    //   print(widget.cartDish!.variation?.length);
+
+    // }
   }
 
   @override
@@ -129,25 +143,14 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
     // TODO: implement dispose
     super.dispose();
     scrollController!.dispose();
-    animationController!.dispose();
-  }
-
-  Future<void> naviagating() async {
-    await Navigator.pushNamed(context, RestaurantMenuScreen.routename,
-        arguments: ref.read(restaurantProvider.notifier).state);
-  }
-
-  Future<void> fetchfrequentlybought() async {
-    final list = await ref
-        .read(dishMenuControllerProvider)
-        .fetchfrequentlybought(freqId: widget.dish!.frequentlyid!, ref: ref);
-    setState(() {
-      widget.freqList = list;
-    });
+    animationController?.dispose();
   }
 
   @override
   void initState() {
+    // TODO: implement initState
+    super.initState();
+    scrollController = ScrollController();
     animationController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 200));
     _offsetanimation =
@@ -157,23 +160,26 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
     _opacityanimation = Tween<double>(begin: 0, end: 1).animate(
         CurvedAnimation(parent: animationController!, curve: Curves.easeOut));
 
-    // TODO: implement initState
-    super.initState();
-    scrollController = ScrollController();
     scrollController!.addListener(() {
-      if (scrollController!.hasClients && scrollController!.offset > 50) {
+      // if (_scrollController!.hasClients && _scrollController!.offset > 50) {
+      if (!mounted) return;
+      final offset =
+          scrollController!.hasClients ? scrollController!.offset : 0.0;
+
+      if (offset > 50) {
         animationController!.forward();
       } else {
         animationController!.reverse();
       }
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      fetchfrequentlybought;
 
-      ref.read(quantityPrvider.notifier).state = 1;
-      // ref.read(freqDishesProvider.notifier).state = null;
-      fetchVariations(widget.dish!.dishid!);
-      ref.read(variationListProvider.notifier).state = null;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await initialDataLoad(widget.dish!.dishid!);
+      ref.read(isloaderProvider.notifier).state = false;
+      // fetchfrequentlybought;
+
+      // fetchVariations(widget.dish!.dishid!);
+      // ref.read(variationListProvider.notifier).state = null;
 
       // setState(() {
       //   isloader = false;
@@ -183,17 +189,14 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
 
   @override
   Widget build(BuildContext context) {
+    final isloader = ref.watch(isloaderProvider);
     final width = MediaQuery.of(context).size.width;
-    final dish = widget.dish;
-    final userId = supabaseClient.auth.currentUser!.id;
+    final height = MediaQuery.of(context).size.height;
     final totalquantity = ref
         .read(cartReopProvider)
         .getTotalQuantityofdish(ref, widget.dish!.dishid!);
     var quantity = ref.watch(quantityPrvider);
     final updatedQuantity = ref.watch(updatedQuantityProvider);
-
-    var freqDish = ref.watch(freqDishesProvider);
-    final cartRepo = ref.watch(cartReopProvider);
 
     return SafeArea(
       child: ScaffoldMessenger(
@@ -201,15 +204,14 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
         child: Scaffold(
           backgroundColor: Colors.white,
           body: Skeletonizer(
+            ignorePointers: true,
+            ignoreContainers: true,
             enabled: isloader,
             enableSwitchAnimation: true,
             child: Stack(
               children: [
-                // if (isloader)
-                //   const Center(child: CircularProgressIndicator())
-                // else
                 CustomScrollView(
-                  controller: scrollController,
+                  controller: !isloader ? scrollController : null,
                   slivers: [
                     SliverAppBar(
                       title: AnimatedBuilder(
@@ -221,10 +223,12 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                                     opacity: _opacityanimation!.value,
                                     child: const Text(
                                       'Variation',
-                                      style: TextStyle(color: Colors.black),
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold),
                                     )));
                           }),
-                      expandedHeight: 300,
+                      expandedHeight: height * 0.4,
                       pinned: true,
                       flexibleSpace: FlexibleSpaceBar(
                         background: Padding(
@@ -253,29 +257,79 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                               children: [
                                 Text(
                                   widget.dish!.dish_name!,
-                                  style: const TextStyle(
-                                      fontSize: 30,
+                                  style: TextStyle(
+                                      fontSize: width * 0.05,
                                       fontWeight: FontWeight.bold),
                                 ),
                                 const SizedBox(
                                   height: 5,
                                 ),
-                                Text(
-                                  ' from Rs ${widget.dish!.dish_price}',
-                                  style: const TextStyle(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.bold),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    widget.dish!.dish_discount == null
+                                        ? Text(
+                                            'from Rs \$${widget.dish!.dish_price}',
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: width * 0.04,
+                                                fontWeight: FontWeight.bold),
+                                          )
+                                        : const SizedBox(),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    widget.dish!.dish_discount != null
+                                        ? Row(
+                                            children: [
+                                              Text(
+                                                'from Rs  \$${widget.dish!.dish_discount}/-',
+                                                style: TextStyle(
+                                                    fontSize: width * 0.04,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              Text(
+                                                '  \$${widget.dish!.dish_price}',
+                                                style: TextStyle(
+                                                    color: Colors.redAccent,
+                                                    decoration: TextDecoration
+                                                        .lineThrough,
+                                                    decorationThickness: 2,
+                                                    decorationStyle:
+                                                        TextDecorationStyle
+                                                            .solid,
+                                                    decorationColor:
+                                                        Colors.redAccent,
+                                                    fontSize: width * 0.04,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ],
+                                          )
+                                        : const SizedBox(),
+                                    !widget.isCart!
+                                        ? Text(
+                                            ' - Already in your cart',
+                                            style: TextStyle(
+                                                color: Colors.orange[900],
+                                                fontSize: width * 0.04,
+                                                fontWeight: FontWeight.bold),
+                                          )
+                                        : const SizedBox(),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                  ],
                                 ),
-                                widget.isCart!
-                                    ? const Text('dsadaddaaaaaaaaaaaaaa',
-                                        style: TextStyle(
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.bold))
-                                    : const SizedBox(),
                                 Text(
                                   widget.dish!.dish_description!,
-                                  style: const TextStyle(
-                                      fontSize: 13,
+                                  style: TextStyle(
+                                      fontSize: width * 0.035,
                                       fontWeight: FontWeight.w300),
                                 ),
                                 const SizedBox(
@@ -395,10 +449,20 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                         child: Container(
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: Colors.black12,
+                              color: Colors.orange[100],
+                              // gradient: Gradient.linear(0, 9,  colors: [
+                              //       Color.fromRGBO(255, 224, 178, 1),
+                              //       Colors.black26
+                              //     ]) ,
                               borderRadius: BorderRadius.circular(10),
-                              border:
-                                  Border.all(width: 1, color: Colors.black38),
+                              boxShadow: const [
+                                BoxShadow(
+                                    spreadRadius: 2,
+                                    color: Color.fromRGBO(230, 81, 0, 1),
+                                    blurRadius: 2)
+                              ],
+                              // border:
+                              // Border.all(width: 1, color: Colors.black38),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -478,6 +542,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                                                 titleVariation.maxSeleted!) {
                                           updatedList.add(
                                             Variation(
+                                              totalvariation: 5,
                                               id: variation.id,
                                               variationName:
                                                   variation.variationName,
@@ -530,6 +595,9 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                                       ref
                                           .read(variationListProvider.notifier)
                                           .state = updatedList;
+
+                                      debugPrint(
+                                          "new Variation list :      ${ref.read(variationListProvider.notifier).state}  ");
                                     },
                                   );
                                 }),
@@ -547,9 +615,9 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                             fontSize: 25, fontWeight: FontWeight.bold),
                       ),
                     )),
-                    const SliverToBoxAdapter(
+                    SliverToBoxAdapter(
                       child: SizedBox(
-                        height: 100,
+                        height: height * 0.03,
                       ),
                     ),
                     widget.freqList != null
@@ -576,375 +644,68 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                         bottom: 20,
                         left: 20,
                         right: 20,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(70),
-                          child: Container(
-                            height: width * 0.13,
-                            width: double.maxFinite,
-                            decoration: const BoxDecoration(
-                                gradient: LinearGradient(
-                              begin: Alignment.centerRight,
-                              end: Alignment.centerLeft,
-                              colors: [
-                                Color.fromRGBO(230, 81, 0, 1),
-                                Color.fromRGBO(230, 81, 0, 1),
-                              ],
-                            )),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 5, vertical: 5),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    flex: 6,
-                                    child: SizedBox(
-                                      height: double.maxFinite,
-                                      width: width * 0.3,
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                            elevation: 0,
-                                            backgroundColor: Colors.orange[900],
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      width * 0.35 / 2),
-                                            )),
-                                        onPressed: quantity > 0 &&
-                                                withvariation!
-                                            ? () async {
-                                                _debouncer.run(() async {
-                                                  setState(() {
-                                                    isloader = true;
-                                                  });
+                        child: customBottomBar(
+                            mounted,
+                            scaffoldMessengerKey,
+                            true,
+                            withvariation!,
+                            ref,
+                            width,
+                            widget.isCart!,
+                            updatedQuantity,
+                            context,
+                            widget.dish!,
+                            quantity,
+                            widget.restaurantData!,
+                            height,
+                            _debouncer, onAction: () {
+                          // double totalvariation = 0.0;
+                          // for (int i = 0;
+                          //     i <
+                          //         ref
+                          //             .read(variationListProvider.notifier)
+                          //             .state!
+                          //             .length;
+                          //     i++) {
+                          //   final item = ref
+                          //       .read(variationListProvider.notifier)
+                          //       .state![i];
+                          //   totalvariation =
+                          //       item.variationPrice! * updatedQuantity;
+                          // }
 
-                                                  if (withvariation! &&
-                                                      widget.isCart == true &&
-                                                      updatedQuantity > 0) {
-                                                    ref
-                                                        .read(cartReopProvider)
-                                                        .updateCartItems(
-                                                            dishId: widget
-                                                                .dish!.dishid!,
-                                                            ref: ref,
-                                                            price: widget.dish!
-                                                                .dish_price!,
-                                                            newQuantity:
-                                                                updatedQuantity,
-                                                            newVariations: ref
-                                                                .read(variationListProvider
-                                                                    .notifier)
-                                                                .state!);
+                          debugPrint(
+                              ' variation check  ${ref.read(variationListProvider.notifier).state}');
 
-                                                    debugPrint(
-                                                        "inside : Widget.updatedquanity > 0 ?: ${updatedQuantity}");
-                                                  } else if (withvariation! &&
-                                                      widget.isCart == false &&
-                                                      quantity > 0) {
-                                                    ref
-                                                        .read(cartReopProvider)
-                                                        .addCartItem(
-                                                            withVariation: true,
-                                                            itemprice: widget
-                                                                .dish!
-                                                                .dish_price!,
-                                                            name: widget.dish!
-                                                                .dish_name,
-                                                            description: widget
-                                                                .dish!
-                                                                .dish_description,
-                                                            ref: ref,
-                                                            userId:
-                                                                supabaseClient
-                                                                    .auth
-                                                                    .currentUser!
-                                                                    .id,
-                                                            dishId: widget
-                                                                .dish!.dishid!,
-                                                            discountprice: widget
-                                                                    .dish!
-                                                                    .dish_discount ??
-                                                                0,
-                                                            price: widget.dish!
-                                                                .dish_price,
-                                                            image: widget.dish!
-                                                                .dish_imageurl!,
-                                                            variations:
-                                                                // [],
-                                                                ref
-                                                                    .read(variationListProvider
-                                                                        .notifier)
-                                                                    .state,
-                                                            isdishScreen: false,
-                                                            quantity: quantity,
-                                                            freqboughts: ref
-                                                                .read(freqDishesProvider
-                                                                    .notifier)
-                                                                .state);
-                                                    debugPrint(
-                                                        " else add to cart quantiry : $quantity");
-                                                  } else if (widget.isCart ==
-                                                          true &&
-                                                      withvariation == true &&
-                                                      updatedQuantity == 0) {
-                                                    ref
-                                                        .read(cartReopProvider)
-                                                        .deleteCartItem(
-                                                            dishId: widget
-                                                                .dish!.dishid!,
-                                                            ref:
-                                                                ref); // cartRepo.deleteCartItem(
-                                                  } else {
-                                                    print("nothing");
-                                                  }
+                          ref.read(dishMenuRepoProvider).dishMenuCrud(
+                              cart: widget.cartDish!,
+                              // totalVaritionPrice: totalvariation,
+                              variations: ref
+                                  .read(variationListProvider.notifier)
+                                  .state,
+                              newFreqList:
+                                  ref.read(freqnewListProvider.notifier).state,
+                              ref: ref,
+                              withvariation: withvariation!,
+                              debouncer: _debouncer,
+                              isCart: widget.isCart!,
+                              updatedQuantity: updatedQuantity,
+                              dish: widget.dish!,
+                              quantity: quantity,
+                              context: context);
 
-                                                  // we using Add to cart again because if user selects frequently food items
-                                                  // then we also have to add them into cart and and frequently items are also type of DishData objects
-                                                  print(
-                                                      ' before Frequently bought together dishes: $freqDish');
-                                                  if (freqDish != null &&
-                                                      freqDish.isNotEmpty) {
-                                                    print(
-                                                        ' after Frequently bought together dishes:${freqDish[0].dish_name}');
-                                                    for (int i = 0;
-                                                        i < freqDish.length;
-                                                        i++) {
-                                                      cartRepo.addCartItem(
-                                                        itemprice: freqDish[i]
-                                                            .dish_price!
-                                                            .toDouble(),
-                                                        name: freqDish[i]
-                                                            .dish_name,
-                                                        description: freqDish[i]
-                                                            .dish_description,
-                                                        ref: ref,
-                                                        userId: userId,
-                                                        dishId:
-                                                            freqDish[i].dishid!,
-                                                        discountprice:
-                                                            freqDish[i]
-                                                                .dish_discount,
-                                                        price: freqDish[i]
-                                                            .dish_price,
-                                                        image: freqDish[i]
-                                                            .dish_imageurl!,
-                                                        variations: ref
-                                                            .read(
-                                                                variationListProvider
-                                                                    .notifier)
-                                                            .state,
-                                                        isdishScreen: true,
-                                                        quantity: quantity,
-                                                        freqboughts: ref
-                                                            .read(
-                                                                freqDishesProvider
-                                                                    .notifier)
-                                                            .state,
-                                                      );
-                                                    }
-                                                  } else {
-                                                    print(
-                                                        'No frequently bought together dishes found.'); // Debug log
-                                                  }
+                          ref
+                              .read(dishMenuRepoProvider)
+                              .addAllFreqBoughtItems(ref: ref);
+                          debugPrint(
+                              ' freq list check  ${ref.read(freqnewListProvider.notifier).state}');
 
-                                                  await naviagating();
-                                                });
-
-                                                setState(() {
-                                                  isloader = false;
-                                                });
-                                              }
-                                            : () {
-                                                if (mounted &&
-                                                    scaffoldMessengerKey
-                                                            .currentState !=
-                                                        null) {
-                                                  scaffoldMessengerKey
-                                                      .currentState!
-                                                      .showSnackBar(
-                                                    const SnackBar(
-                                                      content: Text(
-                                                          'Please add at least 1 item'),
-                                                      behavior: SnackBarBehavior
-                                                          .floating,
-                                                      margin: EdgeInsets.only(
-                                                          bottom: 100,
-                                                          left: 20,
-                                                          right: 20),
-                                                    ),
-                                                  );
-                                                }
-                                              },
-                                        child: widget.isCart! &&
-                                                updatedQuantity > 0
-                                            ? Align(
-                                                alignment: Alignment.centerLeft,
-                                                child: Text(
-                                                  'Update to cart',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: width * 0.028),
-                                                ),
-                                              )
-                                            : widget.isCart! &&
-                                                    updatedQuantity == 0
-                                                ? Align(
-                                                    alignment:
-                                                        Alignment.centerLeft,
-                                                    child: Text(
-                                                      'remove to cart',
-                                                      style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize:
-                                                              width * 0.028),
-                                                    ),
-                                                  )
-                                                : Align(
-                                                    alignment:
-                                                        Alignment.centerLeft,
-                                                    child: Text(
-                                                      'Add to cart',
-                                                      style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize:
-                                                              width * 0.028),
-                                                    ),
-                                                  ),
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 4,
-                                    child: Container(
-                                      height: double.maxFinite,
-                                      // width: width * 0.25,
-                                      decoration: BoxDecoration(
-                                          boxShadow: [
-                                            BoxShadow(
-                                                color: Colors.yellow
-                                                    .withOpacity(0.6),
-                                                spreadRadius: 1,
-                                                blurRadius: 10)
-                                          ],
-                                          color: Colors.orange[900],
-                                          borderRadius: BorderRadius.circular(
-                                              (width * 0.30) / 2)),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          IconButton(
-                                            onPressed: () {
-                                              _debouncer.run(() {
-                                                print(
-                                                    'in the quantity provider');
-                                                if (widget.isCart == false) {
-                                                  ref
-                                                      .read(quantityPrvider
-                                                          .notifier)
-                                                      .state++;
-                                                } else if (widget.isCart ==
-                                                    true) {
-                                                  print(
-                                                      'before in the just quantity $quantity');
-                                                  setState(() {
-                                                    ref
-                                                        .read(
-                                                            updatedQuantityProvider
-                                                                .notifier)
-                                                        .state++;
-                                                  });
-                                                  print(
-                                                      'after in the just quantity $quantity');
-                                                }
-                                              });
-                                            },
-                                            icon: Icon(
-                                              Icons.add,
-                                              size: width * 0.045,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 5),
-                                          AnimatedSwitcher(
-                                            duration: const Duration(
-                                                milliseconds: 200),
-                                            transitionBuilder:
-                                                ((child, animation) =>
-                                                    ScaleTransition(
-                                                      scale: animation,
-                                                      child: child,
-                                                    )),
-                                            child: widget.isCart!
-                                                ? Text(
-                                                    key: ValueKey<int>(
-                                                        updatedQuantity),
-                                                    updatedQuantity.toString(),
-                                                    style: TextStyle(
-                                                      fontSize: 20,
-                                                      color: withvariation!
-                                                          ? Colors.black
-                                                          : Colors.black12,
-                                                    ),
-                                                  )
-                                                : Text(
-                                                    key:
-                                                        ValueKey<int>(quantity),
-                                                    quantity.toString(),
-                                                    style: TextStyle(
-                                                      fontSize: 20,
-                                                      color: withvariation!
-                                                          ? Colors.black
-                                                          : Colors.black12,
-                                                    ),
-                                                  ),
-                                          ),
-                                          const SizedBox(width: 5),
-                                          IconButton(
-                                            onPressed: () {
-                                              _debouncer.run(() {
-                                                debugPrint(
-                                                    'in the quantity provider');
-                                                if (quantity > 0 &&
-                                                    widget.isCart == false) {
-                                                  ref
-                                                      .read(quantityPrvider
-                                                          .notifier)
-                                                      .state--;
-                                                } else if (updatedQuantity >
-                                                        0 &&
-                                                    widget.isCart == true) {
-                                                  debugPrint(
-                                                      'before in the just quantity $quantity');
-                                                  // setState(() {
-                                                  // widget.updateQuantity--;
-                                                  // });
-                                                  ref
-                                                      .read(
-                                                          updatedQuantityProvider
-                                                              .notifier)
-                                                      .state--;
-                                                  debugPrint(
-                                                      'after in the just quantity $quantity');
-                                                }
-                                              });
-                                            },
-                                            icon: Icon(
-                                              Icons.remove,
-                                              size: width * 0.045,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ))
+                          Navigator.pushNamed(
+                            context,
+                            RestaurantMenuScreen.routename,
+                            arguments: widget.restaurantData,
+                          );
+                        }))
                     : const SizedBox(),
               ],
             ),

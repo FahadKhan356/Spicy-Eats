@@ -401,6 +401,7 @@ class _RappiProductState extends ConsumerState<RappiProduct> {
   ) {
     return InkWell(
       onTap: () {
+        ref.read(isloaderProvider.notifier).state = true;
         widget.dish.isVariation
             ? Navigator.pushNamed(context, DishMenuVariation.routename,
                 arguments: {

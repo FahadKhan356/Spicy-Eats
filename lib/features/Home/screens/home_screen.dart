@@ -5,6 +5,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
 import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
+import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/widgets/map.dart';
 import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
 import 'package:spicy_eats/features/Home/screens/widgets/restaurant_container.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
@@ -38,6 +39,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   // List<DishData> dishList = [];
   final userid = supabaseClient.auth.currentUser!.id;
   bool isloader = true;
+  bool showSheet = true;
 
   @override
   void initState() {
@@ -105,6 +107,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         .fetchCurrentUserData(userid: userid, ref: ref);
 
     await ref.read(profileRepoProvider).fetchuser(userid, ref);
+
+    if (showSheet) {
+      _showBottomSheet();
+    }
   }
 
   void onclick() {
@@ -124,9 +130,172 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   // String? rest_name;
   // RestaurantModel? restaurant;
+  void _showBottomSheet() {
+    final width = MediaQuery.of(context).size.width;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true, // Full height if needed
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setStateModal) => Container(
+            height: 400,
+            width: double.maxFinite,
+            padding: const EdgeInsets.all(20),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min, // Fit content
+                children: [
+                  const Text(
+                    "Where’s your food going? 🍕",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 20),
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(Icons.location_on),
+                      Text(
+                        "Choose current location",
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: addresses.length,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 10),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Text(
+                              'Home',
+                              style: TextStyle(
+                                overflow: TextOverflow.visible,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Radio<int>(
+                                  fillColor: WidgetStateProperty.all(
+                                      Colors.orange[900]),
+                                  value:
+                                      index, // each radio gets its index as value
+                                  groupValue:
+                                      selectedAddressIndex, // selected one
+                                  onChanged: (value) {
+                                    setStateModal(() {
+                                      selectedAddressIndex = value;
+                                    });
+                                  },
+                                ),
+                                Flexible(
+                                  child: InkWell(
+                                      onTap: () {
+                                        setStateModal(() {
+                                          selectedAddressIndex =
+                                              index; // also allow tap on row
+                                        });
+                                      },
+                                      child: Text(
+                                        addresses[index],
+                                        style: TextStyle(
+                                            overflow: TextOverflow.visible,
+                                            fontWeight:
+                                                selectedAddressIndex == index
+                                                    ? FontWeight.bold
+                                                    : FontWeight.normal),
+                                      )),
+                                ),
+                              ]),
+                        ],
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  InkWell(
+                    onTap: () => Navigator.pushNamed(
+                        arguments: true, context, MyMap.routename),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.add,
+                          color: Colors.black,
+                          size: 24,
+                        ),
+                        Text("Add new address",
+                            style: TextStyle(
+                                overflow: TextOverflow.visible,
+                                fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Divider(
+                    color: Colors.black,
+                    height: 1,
+                  ),
+                  const SizedBox(height: 20),
+                  InkWell(
+                    borderRadius: BorderRadius.circular(width * 0.14),
+                    onTap: () {},
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                          height: 50,
+                          width: double.maxFinite,
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            boxShadow: const [
+                              BoxShadow(
+                                  spreadRadius: 2,
+                                  color: Color.fromRGBO(230, 81, 0, 1),
+                                  blurRadius: 2)
+                            ],
+                            color: Colors.orange[100],
+                            borderRadius: BorderRadius.circular(width * 0.14),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Center(
+                              child: Text("Confirm location",
+                                  style: TextStyle(
+                                      color: Colors.orange[900],
+                                      overflow: TextOverflow.visible,
+                                      fontWeight: FontWeight.bold)),
+                            ),
+                          )),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  int? selectedAddressIndex; // Holds the selected index
+
+  final List<String> addresses = [
+    "123 Main Street, Hometown albert einstient venue, near cashier siliser",
+    "456 Park Avenue, Uptown",
+    "789 Sunset Blvd, Midtown",
+  ];
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     final isSearch = ref.watch(searchProvider);
     final showCart = ref.watch(showCartButton);
     final cartsize = ref.watch(cartLength);

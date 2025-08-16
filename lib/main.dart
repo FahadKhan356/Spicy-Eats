@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/widgets/map.dart';
 import 'package:spicy_eats/Supabse%20Backend/supabase_config.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:spicy_eats/commons/ConfirmLocation.dart';
 import 'package:spicy_eats/features/Favorites/Screens/FavoriteScrren.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/Sqlight%20Database/Cart/services/CartLocalDatabase.dart';
@@ -16,6 +17,8 @@ import 'package:spicy_eats/routes.dart';
 // import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:app_links/app_links.dart';
+
+var showBottomMap = StateProvider<bool>((ref) => true);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -107,80 +110,87 @@ class _MyAppState extends ConsumerState<MyApp> {
   //   //   // _refreshSession();
   // });
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    // _authstateSubscription.cancel();
-  }
+  // @override
+  // void dispose() {
+  //   // TODO: implement dispose
+  //   super.dispose();
+  //   // _authstateSubscription.cancel();
+  // }
 
-  Future<void> _refreshSession() async {
-    try {
-      await supabaseClient.auth.refreshSession();
-    } catch (e) {
-      print('Error refreshing session: $e');
-    }
-  }
+  // Future<void> _refreshSession() async {
+  //   try {
+  //     await supabaseClient.auth.refreshSession();
+  //   } catch (e) {
+  //     print('Error refreshing session: $e');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        onGenerateRoute: generateRoutes,
-        debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
-        theme: ThemeData(
-            useMaterial3: true,
-            //drawerTheme: DrawerThemeData(backgroundColor: Colors.),
-            tabBarTheme: const TabBarTheme(),
-            appBarTheme: const AppBarTheme(backgroundColor: Colors.white)),
-        home: const SplashScreen()
+      onGenerateRoute: generateRoutes,
+      debugShowCheckedModeBanner: false,
+      title: 'Flutter Demo',
+      theme: ThemeData(
+          useMaterial3: true,
+          //drawerTheme: DrawerThemeData(backgroundColor: Colors.),
+          tabBarTheme: const TabBarTheme(),
+          appBarTheme: const AppBarTheme(backgroundColor: Colors.white)),
+      home:
+          // const SplashScreen()
 
-        // MyMap()
+          Confirmlocation(
+        locationResult: null,
+      ),
 
-        // const SplashScreen()
+      // const SplashScreen()
 
-        //SplashScreen()
-        //ProfileScreen(),
-        // PaymentScreen()
-        //  AnimatedAddButton()
-        // DishMenuScreen(),
-        //MyFinalScrollScreen(),
-        //MyCustomSliverScreen(),
-        //CustomScrollTransition(),
-        //Mian_rappi_concept_app(),
-        // SliverAppBarWithDynamicTabs()
-        // QuantityButton1(),
+      // MyMap()
 
-        //BasketScreen(dish: null, totalprice: 122, quantity: 2),
-        // supabaseClient.auth.currentSession != null
-        //     ? Home()
-        //     : PasswordlessScreen(ref: ref),
-        // supabaseClient.auth.currentSession != null
-        //     ? screen[currentindex]
-        //     : PasswordlessScreen(
-        //         ref: ref,
-        //       ),
-        //AddItemScreen(),
-        //supabaseClient.auth.currentSession != null
-        //     ? screen[currentindex]
-        //     : PasswordlessScreen(
-        //         ref: ref,
-        //       ),
-        //AddItemScreen(),
-        //supabaseClient.auth.currentSession != null
-        //     ? screen[currentindex]
-        //     : PasswordlessScreen(
-        //         ref: ref,
-        //       ),
-        //TimePicker(),
+      // const SplashScreen()
 
-        //Shapes(),
-        //TimePicker(),
-        // supabaseClient.auth.currentSession != null
-        //     ? screen[currentindex]
-        //     : PasswordlessScreen(
-        //         ref: ref,
-        //       ),
-        );
+      //SplashScreen()
+      //ProfileScreen(),
+      // PaymentScreen()
+      //  AnimatedAddButton()
+      // DishMenuScreen(),
+      //MyFinalScrollScreen(),
+      //MyCustomSliverScreen(),
+      //CustomScrollTransition(),
+      //Mian_rappi_concept_app(),
+      // SliverAppBarWithDynamicTabs()
+      // QuantityButton1(),
+
+      //BasketScreen(dish: null, totalprice: 122, quantity: 2),
+      // supabaseClient.auth.currentSession != null
+      //     ? Home()
+      //     : PasswordlessScreen(ref: ref),
+      // supabaseClient.auth.currentSession != null
+      //     ? screen[currentindex]
+      //     : PasswordlessScreen(
+      //         ref: ref,
+      //       ),
+      //AddItemScreen(),
+      //supabaseClient.auth.currentSession != null
+      //     ? screen[currentindex]
+      //     : PasswordlessScreen(
+      //         ref: ref,
+      //       ),
+      //AddItemScreen(),
+      //supabaseClient.auth.currentSession != null
+      //     ? screen[currentindex]
+      //     : PasswordlessScreen(
+      //         ref: ref,
+      //       ),
+      //TimePicker(),
+
+      //Shapes(),
+      //TimePicker(),
+      // supabaseClient.auth.currentSession != null
+      //     ? screen[currentindex]
+      //     : PasswordlessScreen(
+      //         ref: ref,
+      //       ),
+    );
   }
 }

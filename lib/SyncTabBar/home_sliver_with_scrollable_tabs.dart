@@ -180,47 +180,47 @@ class _HomeSliverWithScrollableTabsState
     }
 
     return Scaffold(
-      floatingActionButton: ref.watch(showCartButton)
-          ? Align(
-              alignment: Alignment.bottomCenter,
-              child: SizedBox(
-                height: 50,
-                width: 150,
-                child: FloatingActionButton(
-                  backgroundColor: Colors.black,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  onPressed: () => Navigator.pushNamed(
-                      context, BasketScreen.routename,
-                      arguments: {
-                        'dish': null,
-                        'totalprice': 300.0,
-                        'quantity': 12,
-                        'cartlist': ref.read(cartList.notifier).state,
-                        'dishes': dishes,
-                      }),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.shopping_cart,
-                        size: 30,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        '$cartlength',
-                        style:
-                            const TextStyle(fontSize: 28, color: Colors.white),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            )
-          : const SizedBox(),
+      // floatingActionButton: ref.watch(showCartButton)
+      //     ? Align(
+      //         alignment: Alignment.bottomCenter,
+      //         child: SizedBox(
+      //           height: 50,
+      //           width: 150,
+      //           child: FloatingActionButton(
+      //             backgroundColor: Colors.black,
+      //             shape: RoundedRectangleBorder(
+      //                 borderRadius: BorderRadius.circular(10)),
+      //             onPressed: () => Navigator.pushNamed(
+      //                 context, BasketScreen.routename,
+      //                 arguments: {
+      //                   'dish': null,
+      //                   'totalprice': 300.0,
+      //                   'quantity': 12,
+      //                   'cartlist': ref.read(cartList.notifier).state,
+      //                   'dishes': dishes,
+      //                 }),
+      //             child: Row(
+      //               mainAxisAlignment: MainAxisAlignment.center,
+      //               children: [
+      //                 const Icon(
+      //                   Icons.shopping_cart,
+      //                   size: 30,
+      //                   color: Colors.white,
+      //                 ),
+      //                 const SizedBox(
+      //                   width: 10,
+      //                 ),
+      //                 Text(
+      //                   '$cartlength',
+      //                   style:
+      //                       const TextStyle(fontSize: 28, color: Colors.white),
+      //                 )
+      //               ],
+      //             ),
+      //           ),
+      //         ),
+      //       )
+      //     : const SizedBox(),
       body: Scrollbar(
         notificationPredicate: (scroll) {
           valueScroll2.value = scroll.metrics.extentInside;
