@@ -2,25 +2,30 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/commons/custommap.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geocoding/geocoding.dart';
 
-class Confirmlocation extends StatefulWidget {
+final lableIndex = StateProvider<int?>((ref) => null);
+final isOther = StateProvider<bool>((ref) => false);
+
+class Confirmlocation extends ConsumerStatefulWidget {
   static const String routename = "/conformLocation";
 
   final LocationResult? locationResult;
   Confirmlocation({super.key, required this.locationResult});
 
   @override
-  State<Confirmlocation> createState() => _ConfirmlocationState();
+  ConsumerState<Confirmlocation> createState() => _ConfirmlocationState();
 }
 
-class _ConfirmlocationState extends State<Confirmlocation> {
+class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
   double? _latitude;
   double? _longitude;
   TextEditingController streetController = TextEditingController();
   TextEditingController floorController = TextEditingController();
+  TextEditingController othersController = TextEditingController();
 
   Future<LocationResult> getLocationResult(
       {required double latitude, required double longitude}) async {
@@ -123,6 +128,8 @@ class _ConfirmlocationState extends State<Confirmlocation> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final selected = ref.watch(lableIndex);
+    final others = ref.watch(isOther);
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
@@ -220,7 +227,7 @@ class _ConfirmlocationState extends State<Confirmlocation> {
                                     fontWeight: FontWeight.bold),
                               ),
                               Text(
-                                "${_locationResult?.placemark!.locality}",
+                                "${_locationResult?.placemark?.locality}",
                                 style: TextStyle(
                                     fontSize: size.height * 0.02,
                                     fontWeight: FontWeight.normal),
@@ -279,15 +286,85 @@ class _ConfirmlocationState extends State<Confirmlocation> {
                             fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 10),
-                      SizedBox(
-                        height: size.height * 0.2,
-                        width: double.maxFinite,
-                        child: ListView.builder(
-                            physics: const BouncingScrollPhysics(),
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: labels.length,
-                            itemBuilder: (context, index) => labels[index]),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: size.height * 0.2,
+                            child: ListView.builder(
+                                physics: const BouncingScrollPhysics(),
+                                shrinkWrap: true,
+                                scrollDirection: Axis.horizontal,
+                                itemCount: labels.length,
+                                itemBuilder: (context, index) {
+                                  final selectedIndex = ref.watch(lableIndex);
+                                  final isSelected = selectedIndex == index;
+
+                                  return InkWell(
+                                    onTap: () {
+                                      if (index == selectedIndex) {
+                                        // tapped same item again
+                                        ref.read(lableIndex.notifier).state =
+                                            null;
+                                        if (labels[index].title == "Others") {
+                                          ref.read(isOther.notifier).state =
+                                              false;
+                                        }
+                                      } else {
+                                        // tapped a new item
+                                        ref.read(lableIndex.notifier).state =
+                                            index;
+                                        if (labels[index].title == "Others") {
+                                          ref.read(isOther.notifier).state =
+                                              true;
+                                        } else {
+                                          ref.read(isOther.notifier).state =
+                                              false;
+                                        }
+                                      }
+                                    },
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Container(
+                                            height: size.width * 0.13,
+                                            width: size.width * 0.13,
+                                            decoration: BoxDecoration(
+                                                color: isSelected
+                                                    ? Colors.grey
+                                                    : Colors.white,
+                                                border: Border.all(
+                                                    color: Colors.black26,
+                                                    width: 1),
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        size.width * 0.13 / 2)),
+                                            child: Icon(
+                                              labels[index].icon,
+                                              size: size.width * 0.06,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                          labels[index].title,
+                                          style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                }),
+                          ),
+                          others
+                              ? othersWidget(controller: othersController)
+                              : const SizedBox(),
+                        ],
                       ),
                       const SizedBox(height: 20),
                       const Divider(
@@ -341,47 +418,52 @@ class _ConfirmlocationState extends State<Confirmlocation> {
 }
 
 List<label> labels = [
-  const label(icon: Icons.home_outlined, title: "Home"),
-  const label(icon: Icons.work_history_outlined, title: "Work"),
-  const label(icon: Icons.favorite_border_outlined, title: "Partner"),
-  const label(icon: Icons.more_horiz, title: "Others"),
+  label(
+    icon: Icons.home_outlined,
+    title: "Home",
+  ),
+  label(
+    icon: Icons.work_outline,
+    title: "Work",
+  ),
+  label(
+    icon: Icons.favorite_border_outlined,
+    title: "Partner",
+  ),
+  label(
+    icon: Icons.more_horiz,
+    title: "Others",
+  ),
 ];
 
-class label extends StatelessWidget {
+class label {
   final IconData icon;
   final String title;
-  const label({super.key, required this.icon, required this.title});
 
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+  label({
+    required this.icon,
+    required this.title,
+  });
+}
 
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            height: size.width * 0.13,
-            width: size.width * 0.13,
-            decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.black26, width: 1),
-                borderRadius: BorderRadius.circular(size.width * 0.13 / 2)),
-            child: Icon(
-              icon,
-              size: size.width * 0.06,
-              color: Colors.black,
-            ),
-          ),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        Text(
-          title,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        )
-      ],
-    );
-  }
+Widget othersWidget({required controller}) {
+  return TextFormField(
+    controller: controller,
+    decoration: InputDecoration(
+      suffixIcon: TextButton(
+        child: const Text('x'),
+        onPressed: () {
+          controller.text = '';
+        },
+      ),
+      focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.black),
+          borderRadius: BorderRadius.circular(10)),
+      enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.black),
+          borderRadius: BorderRadius.circular(10)),
+      contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+      label: const Text('eg. 🏠 Alex\'s house'),
+    ),
+  );
 }

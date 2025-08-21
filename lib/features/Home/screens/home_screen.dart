@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
@@ -7,6 +8,7 @@ import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/widgets/map.dart';
 import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
+import 'package:spicy_eats/commons/custommap.dart';
 import 'package:spicy_eats/features/Home/screens/widgets/restaurant_container.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/Home/screens/homedrawer.dart';
@@ -18,6 +20,7 @@ import 'package:spicy_eats/main.dart';
 import 'package:spicy_eats/tabexample.dart/RestaurantMenuScreen.dart';
 
 var searchProvider = StateProvider<bool>((ref) => false);
+final pickedAddressProvider = StateProvider<String?>((ref) => '');
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -33,6 +36,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   late Animation<double> _animationbody;
   bool clicked = false;
   final home = Home();
+  double? _latitude;
+  double? _longitude;
+  LocationResult? locationResult;
+
+  onCurrentLocation() async {
+    locationResult =
+        await getLocationResult(latitude: _latitude!, longitude: _longitude!);
+    if (mounted) {
+      // setState(() {});
+      ref.read(pickedAddressProvider.notifier).state =
+          locationResult!.completeAddress;
+    }
+  }
 
   List<RestaurantModel> restaurantData = [];
   List<String>? restuid;
@@ -151,16 +167,55 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 20),
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.location_on),
-                      Text(
-                        "Choose current location",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                    ],
+                  InkWell(
+                    onTap: () async {
+                      // Check for location permission
+                      LocationPermission permission =
+                          await Geolocator.checkPermission();
+                      if (permission == LocationPermission.denied) {
+                        permission = await Geolocator.requestPermission();
+                      }
+
+                      if (permission == LocationPermission.denied ||
+                          permission == LocationPermission.deniedForever) {
+                        // Handle permission denied case
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text("Location permission denied")),
+                        );
+                        return;
+                      }
+
+                      // Get the current location
+                      try {
+                        Position position = await Geolocator.getCurrentPosition(
+                          desiredAccuracy: LocationAccuracy.high,
+                        );
+
+                        _latitude = position.latitude;
+                        _longitude = position.longitude;
+
+                        // Optionally, you can fetch the location details here
+                        await onCurrentLocation();
+                        setStateModal(() {});
+                      } catch (e) {
+                        // Handle error (e.g., GPS not available)
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Error getting location: $e")),
+                        );
+                      }
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.location_on),
+                        Text(
+                          "Choose current location",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 10),
                   ListView.builder(
@@ -171,6 +226,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Text(ref.watch(pickedAddressProvider) ?? 'nothing'),
                           const SizedBox(height: 10),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -295,6 +351,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    final address = ref.watch(pickedAddressProvider);
     final width = MediaQuery.of(context).size.width;
     final isSearch = ref.watch(searchProvider);
     final showCart = ref.watch(showCartButton);
@@ -342,23 +399,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                             color: Colors.white,
                           ),
                         ),
-                        Center(
-                          child: Column(children: [
-                            Text(
-                              'Delivering to',
-                              style: GoogleFonts.aBeeZee(
-                                  fontSize: size.width * 0.04,
-                                  color: Colors.white),
-                            ),
-                            Text(
-                              'Riyadh-Saudi Arabia',
-                              style: TextStyle(
-                                  // GoogleFonts.aBeeZee(
-                                  fontSize: size.width * 0.04,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
-                            ),
-                          ]),
+                        Flexible(
+                          child: Center(
+                            child: Column(children: [
+                              Text(
+                                'Delivering to',
+                                style: GoogleFonts.aBeeZee(
+                                    fontSize: size.width * 0.04,
+                                    color: Colors.white),
+                              ),
+                              Text(
+                                address ?? '',
+                                style: TextStyle(
+                                    overflow: TextOverflow.ellipsis,
+                                    // GoogleFonts.aBeeZee(
+                                    fontSize: size.width * 0.04,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                              ),
+                            ]),
+                          ),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),

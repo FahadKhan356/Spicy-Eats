@@ -128,69 +128,68 @@ class _MyAppState extends ConsumerState<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      onGenerateRoute: generateRoutes,
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-          useMaterial3: true,
-          //drawerTheme: DrawerThemeData(backgroundColor: Colors.),
-          tabBarTheme: const TabBarTheme(),
-          appBarTheme: const AppBarTheme(backgroundColor: Colors.white)),
-      home:
-          // const SplashScreen()
+        onGenerateRoute: generateRoutes,
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        theme: ThemeData(
+            useMaterial3: true,
+            //drawerTheme: DrawerThemeData(backgroundColor: Colors.),
+            tabBarTheme: const TabBarTheme(),
+            appBarTheme: const AppBarTheme(backgroundColor: Colors.white)),
+        home: const SplashScreen()
 
-          Confirmlocation(
-        locationResult: null,
-      ),
+        //     Confirmlocation(
+        //   locationResult: null,
+        // ),
 
-      // const SplashScreen()
+        // const SplashScreen()
 
-      // MyMap()
+        // MyMap()
 
-      // const SplashScreen()
+        // const SplashScreen()
 
-      //SplashScreen()
-      //ProfileScreen(),
-      // PaymentScreen()
-      //  AnimatedAddButton()
-      // DishMenuScreen(),
-      //MyFinalScrollScreen(),
-      //MyCustomSliverScreen(),
-      //CustomScrollTransition(),
-      //Mian_rappi_concept_app(),
-      // SliverAppBarWithDynamicTabs()
-      // QuantityButton1(),
+        //SplashScreen()
+        //ProfileScreen(),
+        // PaymentScreen()
+        //  AnimatedAddButton()
+        // DishMenuScreen(),
+        //MyFinalScrollScreen(),
+        //MyCustomSliverScreen(),
+        //CustomScrollTransition(),
+        //Mian_rappi_concept_app(),
+        // SliverAppBarWithDynamicTabs()
+        // QuantityButton1(),
 
-      //BasketScreen(dish: null, totalprice: 122, quantity: 2),
-      // supabaseClient.auth.currentSession != null
-      //     ? Home()
-      //     : PasswordlessScreen(ref: ref),
-      // supabaseClient.auth.currentSession != null
-      //     ? screen[currentindex]
-      //     : PasswordlessScreen(
-      //         ref: ref,
-      //       ),
-      //AddItemScreen(),
-      //supabaseClient.auth.currentSession != null
-      //     ? screen[currentindex]
-      //     : PasswordlessScreen(
-      //         ref: ref,
-      //       ),
-      //AddItemScreen(),
-      //supabaseClient.auth.currentSession != null
-      //     ? screen[currentindex]
-      //     : PasswordlessScreen(
-      //         ref: ref,
-      //       ),
-      //TimePicker(),
+        //BasketScreen(dish: null, totalprice: 122, quantity: 2),
+        // supabaseClient.auth.currentSession != null
+        //     ? Home()
+        //     : PasswordlessScreen(ref: ref),
+        // supabaseClient.auth.currentSession != null
+        //     ? screen[currentindex]
+        //     : PasswordlessScreen(
+        //         ref: ref,
+        //       ),
+        //AddItemScreen(),
+        //supabaseClient.auth.currentSession != null
+        //     ? screen[currentindex]
+        //     : PasswordlessScreen(
+        //         ref: ref,
+        //       ),
+        //AddItemScreen(),
+        //supabaseClient.auth.currentSession != null
+        //     ? screen[currentindex]
+        //     : PasswordlessScreen(
+        //         ref: ref,
+        //       ),
+        //TimePicker(),
 
-      //Shapes(),
-      //TimePicker(),
-      // supabaseClient.auth.currentSession != null
-      //     ? screen[currentindex]
-      //     : PasswordlessScreen(
-      //         ref: ref,
-      //       ),
-    );
+        //Shapes(),
+        //TimePicker(),
+        // supabaseClient.auth.currentSession != null
+        //     ? screen[currentindex]
+        //     : PasswordlessScreen(
+        //         ref: ref,
+        //       ),
+        );
   }
 }
