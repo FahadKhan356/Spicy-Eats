@@ -803,7 +803,7 @@ String getCompleteAdress({required Placemark placemark}) {
   /// Returns throughfare or subLocality if name is an unreadable street code
   if (isStreetCode(placemark.name ?? "")) {
     if ((placemark.thoroughfare ?? "").isEmpty) {
-      return "${placemark.subLocality},${placemark.locality}, ${placemark.subAdministrativeArea}, ${placemark.administrativeArea}, ${placemark.country}";
+      return " ${placemark.locality}, ${placemark.administrativeArea}, ${placemark.country}";
     } else {
       return "${placemark.thoroughfare}, ${placemark.subLocality},${placemark.locality}, ${placemark.subAdministrativeArea}, ${placemark.administrativeArea}, ${placemark.country}";
     }
@@ -811,7 +811,7 @@ String getCompleteAdress({required Placemark placemark}) {
 
   /// Returns name if it is same with street
   else if (placemark.name == placemark.street) {
-    return "${placemark.street}, ${placemark.subLocality},${placemark.locality}, ${placemark.subAdministrativeArea}, ${placemark.administrativeArea}, ${placemark.country}";
+    return "${placemark.street},${placemark.locality}, ${placemark.administrativeArea}, ${placemark.country}";
   }
 
   /// Returns street if name is part of name (like house number)
@@ -819,9 +819,9 @@ String getCompleteAdress({required Placemark placemark}) {
           ?.toLowerCase()
           .contains(placemark.name?.toLowerCase() ?? "") ==
       true) {
-    return "${placemark.street}, ${placemark.subLocality},${placemark.locality}, ${placemark.subAdministrativeArea}, ${placemark.administrativeArea}, ${placemark.country}";
+    return "${placemark.street}, ${placemark.locality}, ${placemark.administrativeArea}, ${placemark.country}";
   }
-  return "${placemark.name}, ${placemark.street}, ${placemark.subLocality},${placemark.locality}, ${placemark.subAdministrativeArea}, ${placemark.administrativeArea}, ${placemark.country}";
+  return "${placemark.name}, ${placemark.street},${placemark.locality}, ${placemark.administrativeArea}, ${placemark.country}";
 }
 
 bool isStreetCode(String text) {

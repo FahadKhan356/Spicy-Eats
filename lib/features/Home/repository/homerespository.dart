@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
 import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
+import 'package:spicy_eats/commons/mysnackbar.dart';
+import 'package:spicy_eats/features/Home/model/AddressModel.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/main.dart';
 
@@ -128,5 +130,57 @@ class HomeRepository {
       //     );
       throw Exception(e);
     }
+  }
+
+//add address in supabase
+  Future<void> addAddress(
+      {required userId,
+      required address,
+      String? streetNumber,
+      String? floor,
+      String? label,
+      String? othersDetails,
+      required context}) async {
+    try {
+      if (userId != null) {
+        final response = await supabaseClient.from('user_address').insert({
+          'userId': userId,
+          'address': address,
+          'streetNumber': streetNumber ?? '',
+          'floor': floor ?? '',
+          'label': label ?? '',
+          'othersDetails': othersDetails ?? '',
+        }).select();
+
+        if (response.isNotEmpty) {
+          mysnackbar(context: context, text: 'Address Added Successfully');
+        }
+      } else {
+        mysnackbar(context: context, text: 'Please Login Your Account');
+      }
+    } catch (e) {
+      debugPrint("Error in add address : $e");
+    }
+  }
+
+//fetch user address
+
+  Future<List<AddressModel>?> fetchAllAddress({required String userId}) async {
+    try {
+      List<AddressModel> allAddress;
+      final response = await supabaseClient
+          .from('user_address')
+          .select('*')
+          .eq('userId', userId);
+
+      if (response.isNotEmpty) {
+        allAddress = response.map((e) => AddressModel.fromJson(e)).toList();
+
+        return allAddress;
+      }
+    } catch (e) {
+      debugPrint("Error in Fetching All addresses : $e");
+    }
+    return null;
   }
 }

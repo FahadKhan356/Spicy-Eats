@@ -9,6 +9,8 @@ import 'package:spicy_eats/Register%20shop/repository/registershop_repository.da
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/widgets/map.dart';
 import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
 import 'package:spicy_eats/commons/custommap.dart';
+import 'package:spicy_eats/features/Home/model/AddressModel.dart';
+import 'package:spicy_eats/features/Home/repository/homerespository.dart';
 import 'package:spicy_eats/features/Home/screens/widgets/restaurant_container.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/Home/screens/homedrawer.dart';
@@ -20,7 +22,8 @@ import 'package:spicy_eats/main.dart';
 import 'package:spicy_eats/tabexample.dart/RestaurantMenuScreen.dart';
 
 var searchProvider = StateProvider<bool>((ref) => false);
-final pickedAddressProvider = StateProvider<String?>((ref) => '');
+final pickedAddressProvider = StateProvider<String?>((ref) => null);
+final selectedIndexProvider = StateProvider<int?>((ref) => null);
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -51,6 +54,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   List<RestaurantModel> restaurantData = [];
+  List<AddressModel?> allAdress = [];
   List<String>? restuid;
   // List<DishData> dishList = [];
   final userid = supabaseClient.auth.currentUser!.id;
@@ -81,35 +85,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     setState(() {
       isloader = true;
     });
-    final registershopcontroller = ref.read(registershopcontrollerProvider);
+    // final registershopcontroller = ref.read(registershopcontrollerProvider);
 
-    // Fetch restaurants
-    // await registershopcontroller.fetchrestaurants().then((restaurant) {
-    //   if (restaurant != null && mounted) {
-    //     setState(() {
-    //       restaurantData = restaurant;
-    //     });
-    //     print('rest_email is: ${restaurantData[0].address}');
-    //     print('rest_hours are: ${restaurantData[0].deliveryArea}');
-    //   }
-    // });
     restaurantData =
         await ref.read(registershoprepoProvider).getRestaurantsData();
 
-    // Fetch rest_uid
-    // await registershopcontroller
-    //     .fetchRestUid(supabaseClient.auth.currentUser!.id)
-    //     .then((value) {
-    //   if (value != null && mounted) {
-    //     // ref.watch(rest_ui_Provider.notifier).state = value;
-    //     //print('initialize restuid provider ${ref.read(rest_ui_Provider)}');
-    //     setState(() {
-    //       restuid = value;
-    //     });
-    //   }
-    // });
-
-    // Fetch favorites
     if (!mounted) return;
     await ref
         .read(registershoprepoProvider)
@@ -124,8 +104,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
     await ref.read(profileRepoProvider).fetchuser(userid, ref);
 
+    allAdress = (await ref
+        .read(homeRepositoryController)
+        .fetchAllAddress(userId: supabaseClient.auth.currentUser!.id))!;
+
     if (showSheet) {
-      _showBottomSheet();
+      _showBottomSheet(addresses: allAdress);
     }
   }
 
@@ -146,208 +130,233 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   // String? rest_name;
   // RestaurantModel? restaurant;
-  void _showBottomSheet() {
+  void _showBottomSheet({required List<AddressModel?> addresses}) {
     final width = MediaQuery.of(context).size.width;
+
+    final height = MediaQuery.of(context).size.height;
     showModalBottomSheet(
-      context: context,
-      isScrollControlled: true, // Full height if needed
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setStateModal) => Container(
-            height: 400,
-            width: double.maxFinite,
-            padding: const EdgeInsets.all(20),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min, // Fit content
-                children: [
-                  const Text(
-                    "Where’s your food going? 🍕",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 20),
-                  InkWell(
-                    onTap: () async {
-                      // Check for location permission
-                      LocationPermission permission =
-                          await Geolocator.checkPermission();
-                      if (permission == LocationPermission.denied) {
-                        permission = await Geolocator.requestPermission();
-                      }
+        context: context,
+        enableDrag: true,
+        isScrollControlled: true, // Full height if needed
+        builder: (context) {
+          return Consumer(builder: (context, ref, _) {
+            final selectedIndex = ref.watch(selectedIndexProvider);
 
-                      if (permission == LocationPermission.denied ||
-                          permission == LocationPermission.deniedForever) {
-                        // Handle permission denied case
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text("Location permission denied")),
-                        );
-                        return;
-                      }
-
-                      // Get the current location
-                      try {
-                        Position position = await Geolocator.getCurrentPosition(
-                          desiredAccuracy: LocationAccuracy.high,
-                        );
-
-                        _latitude = position.latitude;
-                        _longitude = position.longitude;
-
-                        // Optionally, you can fetch the location details here
-                        await onCurrentLocation();
-                        setStateModal(() {});
-                      } catch (e) {
-                        // Handle error (e.g., GPS not available)
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Error getting location: $e")),
-                        );
-                      }
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(Icons.location_on),
-                        Text(
-                          "Choose current location",
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                      ],
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              height: height * 0.5,
+              width: double.infinity,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min, // Fit content
+                  children: [
+                    Text(
+                      "Where’s your food going? 🍕",
+                      style: TextStyle(
+                          fontSize: width * 0.05, fontWeight: FontWeight.bold),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: addresses.length,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    const SizedBox(height: 20),
+                    InkWell(
+                      onTap: () async {
+                        // Check for location permission
+                        LocationPermission permission =
+                            await Geolocator.checkPermission();
+                        if (permission == LocationPermission.denied) {
+                          permission = await Geolocator.requestPermission();
+                        }
+
+                        if (permission == LocationPermission.denied ||
+                            permission == LocationPermission.deniedForever) {
+                          // Handle permission denied case
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text("Location permission denied")),
+                          );
+                          return;
+                        }
+
+                        // Get the current location
+                        try {
+                          Position position =
+                              await Geolocator.getCurrentPosition(
+                            desiredAccuracy: LocationAccuracy.high,
+                          );
+
+                          _latitude = position.latitude;
+                          _longitude = position.longitude;
+
+                          // Optionally, you can fetch the location details here
+                          await onCurrentLocation();
+                        } catch (e) {
+                          // Handle error (e.g., GPS not available)
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text("Error getting location: $e")),
+                          );
+                        }
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text(ref.watch(pickedAddressProvider) ?? 'nothing'),
-                          const SizedBox(height: 10),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Text(
-                              'Home',
-                              style: TextStyle(
-                                overflow: TextOverflow.visible,
-                                fontWeight: FontWeight.bold,
+                          Icon(
+                            Icons.location_on,
+                            size: width * 0.04,
+                          ),
+                          Text(
+                            "Choose current location",
+                            style: TextStyle(
+                                fontSize: width * 0.04,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: addresses.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 10),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              child: Text(
+                                addresses[index]?.label ?? '',
+                                style: TextStyle(
+                                    overflow: TextOverflow.visible,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: width * 0.03),
                               ),
                             ),
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Radio<int>(
+                                    fillColor: WidgetStateProperty.all(
+                                        Colors.orange[900]),
+                                    value:
+                                        index, // each radio gets its index as value
+                                    groupValue: selectedIndex, // selected one
+                                    onChanged: (value) {
+                                      // setStateModal(() {
+                                      //   selectedAddressIndex = value!;
+                                      // });
+                                      ref
+                                          .read(selectedIndexProvider.notifier)
+                                          .state = value;
+
+                                      ref
+                                          .read(pickedAddressProvider.notifier)
+                                          .state = addresses[value!]
+                                              ?.address ??
+                                          '';
+                                    },
+                                  ),
+                                  Flexible(
+                                    child: InkWell(
+                                        onTap: () {
+                                          // setStateModal(() {
+                                          //   selectedIndex =
+                                          //       index; // also allow tap on row
+                                          // });
+                                          ref
+                                              .read(selectedIndexProvider
+                                                  .notifier)
+                                              .state = index;
+                                        },
+                                        child: Text(
+                                          addresses[index]?.address ?? '',
+                                          style: TextStyle(
+                                              fontSize: width * 0.02,
+                                              overflow: TextOverflow.visible,
+                                              fontWeight: selectedIndex == index
+                                                  ? FontWeight.bold
+                                                  : FontWeight.normal),
+                                        )),
+                                  ),
+                                ]),
+                          ],
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    InkWell(
+                      onTap: () => Navigator.pushNamed(
+                          arguments: true, context, MyMap.routename),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.add,
+                            color: Colors.black,
+                            size: width * 0.03,
                           ),
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Radio<int>(
-                                  fillColor: WidgetStateProperty.all(
-                                      Colors.orange[900]),
-                                  value:
-                                      index, // each radio gets its index as value
-                                  groupValue:
-                                      selectedAddressIndex, // selected one
-                                  onChanged: (value) {
-                                    setStateModal(() {
-                                      selectedAddressIndex = value;
-                                    });
-                                  },
-                                ),
-                                Flexible(
-                                  child: InkWell(
-                                      onTap: () {
-                                        setStateModal(() {
-                                          selectedAddressIndex =
-                                              index; // also allow tap on row
-                                        });
-                                      },
-                                      child: Text(
-                                        addresses[index],
-                                        style: TextStyle(
-                                            overflow: TextOverflow.visible,
-                                            fontWeight:
-                                                selectedAddressIndex == index
-                                                    ? FontWeight.bold
-                                                    : FontWeight.normal),
-                                      )),
-                                ),
-                              ]),
+                          Text("Add new address",
+                              style: TextStyle(
+                                  fontSize: width * 0.03,
+                                  overflow: TextOverflow.visible,
+                                  fontWeight: FontWeight.bold)),
                         ],
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  InkWell(
-                    onTap: () => Navigator.pushNamed(
-                        arguments: true, context, MyMap.routename),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.add,
-                          color: Colors.black,
-                          size: 24,
-                        ),
-                        Text("Add new address",
-                            style: TextStyle(
-                                overflow: TextOverflow.visible,
-                                fontWeight: FontWeight.bold)),
-                      ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  const Divider(
-                    color: Colors.black,
-                    height: 1,
-                  ),
-                  const SizedBox(height: 20),
-                  InkWell(
-                    borderRadius: BorderRadius.circular(width * 0.14),
-                    onTap: () {},
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                          height: 50,
-                          width: double.maxFinite,
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            boxShadow: const [
-                              BoxShadow(
-                                  spreadRadius: 2,
-                                  color: Color.fromRGBO(230, 81, 0, 1),
-                                  blurRadius: 2)
-                            ],
-                            color: Colors.orange[100],
-                            borderRadius: BorderRadius.circular(width * 0.14),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: Center(
-                              child: Text("Confirm location",
-                                  style: TextStyle(
-                                      color: Colors.orange[900],
-                                      overflow: TextOverflow.visible,
-                                      fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 20),
+                    const Divider(
+                      color: Colors.black,
+                      height: 1,
+                    ),
+                    const SizedBox(height: 20),
+                    InkWell(
+                      borderRadius: BorderRadius.circular(width * 0.14),
+                      onTap: () {},
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                            height: 50,
+                            width: double.maxFinite,
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              boxShadow: const [
+                                BoxShadow(
+                                    spreadRadius: 2,
+                                    color: Color.fromRGBO(230, 81, 0, 1),
+                                    blurRadius: 2)
+                              ],
+                              color: Colors.orange[100],
+                              borderRadius: BorderRadius.circular(width * 0.14),
                             ),
-                          )),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: Center(
+                                child: Text("Confirm location",
+                                    style: TextStyle(
+                                        fontSize: width * 0.03,
+                                        color: Colors.orange[900],
+                                        overflow: TextOverflow.visible,
+                                        fontWeight: FontWeight.bold)),
+                              ),
+                            )),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ),
-        );
-      },
-    );
+            );
+          });
+        });
   }
 
-  int? selectedAddressIndex; // Holds the selected index
+  int selectedAddressIndex = 0; // Holds the selected index
 
-  final List<String> addresses = [
-    "123 Main Street, Hometown albert einstient venue, near cashier siliser",
-    "456 Park Avenue, Uptown",
-    "789 Sunset Blvd, Midtown",
-  ];
+  // final List<String> addresses = [
+  //   "123 Main Street, Hometown albert einstient venue, near cashier siliser",
+  //   "456 Park Avenue, Uptown",
+  //   "789 Sunset Blvd, Midtown",
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -400,25 +409,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                           ),
                         ),
                         Flexible(
-                          child: Center(
-                            child: Column(children: [
-                              Text(
-                                'Delivering to',
-                                style: GoogleFonts.aBeeZee(
-                                    fontSize: size.width * 0.04,
-                                    color: Colors.white),
-                              ),
-                              Text(
-                                address ?? '',
-                                style: TextStyle(
-                                    overflow: TextOverflow.ellipsis,
-                                    // GoogleFonts.aBeeZee(
-                                    fontSize: size.width * 0.04,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
-                              ),
-                            ]),
-                          ),
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Delivering to',
+                                  style: GoogleFonts.aBeeZee(
+                                      fontSize: size.width * 0.04,
+                                      color: Colors.white),
+                                ),
+                                Text(
+                                  address ?? '',
+                                  style: TextStyle(
+                                      overflow: TextOverflow.ellipsis,
+                                      // GoogleFonts.aBeeZee(
+                                      fontSize: size.width * 0.04,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                ),
+                              ]),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
