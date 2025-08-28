@@ -24,7 +24,7 @@ List screens = [
   const Center(child: Text("Settings")),
 ];
 List screen = [
-  const HomeScreen(),
+  const HomeScreen(''),
 
   ShopHome(),
   const AccountScreen(),

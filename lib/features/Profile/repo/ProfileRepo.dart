@@ -9,6 +9,7 @@ var userProvider = StateProvider<User?>((ref) => null);
 class ProfileRepo {
   Future<void> fetchCurrentUserData(
       {required userid, required WidgetRef ref}) async {
+    if (userid == null) return;
     final res = await supabaseClient.from('users').select('*').eq('id', userid);
     if (res.isNotEmpty) {
       ref.read(userDataProvider.notifier).state =
@@ -26,6 +27,7 @@ class ProfileRepo {
           .single();
       if (res.isNotEmpty) {
         ref.read(userProvider.notifier).state = User.fromjson(res);
+
         print('...userdata fetched11');
       }
     } catch (e) {

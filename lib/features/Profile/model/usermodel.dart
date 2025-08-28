@@ -8,6 +8,7 @@ class User {
   double? longitude;
   String? address;
   int? contactno;
+  String? lastAddress;
 
   User({
     this.id,
@@ -19,6 +20,7 @@ class User {
     this.longitude,
     this.address,
     this.contactno,
+    this.lastAddress,
   });
 
 //tojson
@@ -33,6 +35,7 @@ class User {
       'longitude': longitude,
       "address": address,
       'contactno': contactno,
+      'last_address': lastAddress,
     };
   }
 
@@ -49,6 +52,7 @@ class User {
       longitude: json['longitude'] ?? 0.0,
       address: json['address'] ?? '',
       contactno: json['contactno'] ?? 0,
+      lastAddress: json['last_address'] ?? '',
     );
   }
 }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/Cartmodel.dart';
+import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/dish%20menu/dishmenuVAriation.dart';
@@ -26,6 +27,7 @@ class CartCard extends ConsumerStatefulWidget {
     this.buttonIncDecHeight,
     this.buttonIncDecWidth,
     required this.titleVariationList,
+    required this.restaurantdata,
   });
   final double? cardHeight;
   final double? elevation;
@@ -35,6 +37,7 @@ class CartCard extends ConsumerStatefulWidget {
   final double? imageWidth;
   final Cartmodel? cartItem;
   final String? userId;
+  final RestaurantModel restaurantdata;
 
   int? quantityIndex;
   double? addbuttonHeight;
@@ -73,52 +76,6 @@ class _CartCardState extends ConsumerState<CartCard> {
       });
     });
   }
-
-  // void addtocart({
-  //   required DishData dish,
-  // }) {
-  //   final isInCart = ref
-  //       .read(cartProvider.notifier)
-  //       .state
-  //       .indexWhere((element) => element.dish_id == dish.dishid);
-  //   if (isInCart == -1) {
-  //     ref.read(cartReopProvider).addToCart(
-  //         dish.dish_price!,
-  //         dish.dish_name,
-  //         dish.dish_description,
-  //         ref,
-  //         supabaseClient.auth.currentUser!.id,
-  //         dish.dishid!,
-  //         dish.dish_price!.toDouble(),
-  //         widget.dish!.dish_discount,
-  //         dish.dish_imageurl!,
-  //         [],
-  //         false,
-  //         1,
-  //         null);
-  //   }
-  //   expandbutton();
-  // }
-
-  // void increaseQuantity({required int dishid}) {
-  //   // final isInCart=ref.read(cartProvider.notifier).state.indexWhere((element) => element.dish_id==dishid);
-  //   //  if(isInCart!=-1){
-  //   ref
-  //       .read(cartReopProvider)
-  //       .increaseQuantity(ref, widget.dish!.dishid!, widget.dish!.dish_price!);
-  //   //  }
-  //   startcollapseTimer();
-  // }
-
-  // void decreaseQuantity({required int dishid}) {
-  //   // final isInCart=ref.read(cartProvider.notifier).state.indexWhere((element) => element.dish_id==dishid);
-  //   //  if(isInCart!=-1){
-  //   ref
-  //       .read(cartReopProvider)
-  //       .decreaseQuantity(ref, widget.dish!.dishid!, widget.dish!.dish_price!);
-  //   //  }
-  //   startcollapseTimer();
-  // }
 
   @override
   Widget build(
@@ -235,6 +192,8 @@ class _CartCardState extends ConsumerState<CartCard> {
                                             'cartdish': widget.cartItem,
                                             'isbasket': false,
                                             'isdishscreen': true,
+                                            'restaurantdata':
+                                                widget.restaurantdata,
                                           });
                                       // }
                                     });

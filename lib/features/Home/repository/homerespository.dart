@@ -5,6 +5,7 @@ import 'package:spicy_eats/Register%20shop/repository/registershop_repository.da
 import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
 import 'package:spicy_eats/commons/mysnackbar.dart';
 import 'package:spicy_eats/features/Home/model/AddressModel.dart';
+import 'package:spicy_eats/features/Profile/repo/ProfileRepo.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/main.dart';
 
@@ -140,6 +141,8 @@ class HomeRepository {
       String? floor,
       String? label,
       String? othersDetails,
+      double? lat,
+      double? long,
       required context}) async {
     try {
       if (userId != null) {
@@ -150,6 +153,8 @@ class HomeRepository {
           'floor': floor ?? '',
           'label': label ?? '',
           'othersDetails': othersDetails ?? '',
+          'lat': lat,
+          'long': long,
         }).select();
 
         if (response.isNotEmpty) {
@@ -182,5 +187,47 @@ class HomeRepository {
       debugPrint("Error in Fetching All addresses : $e");
     }
     return null;
+  }
+
+  Future<void> updateAddress({
+    required addressID,
+    required address,
+    required context,
+    String? streetNumber,
+    String? floor,
+    String? label,
+    String? othersDetails,
+    double? lat,
+    double? long,
+  }) async {
+    try {
+      final response = await supabaseClient.from('user_address').update({
+        'address': address,
+        'streetNumber': streetNumber ?? '',
+        'floor': floor ?? '',
+        'label': label ?? '',
+        'othersDetails': othersDetails ?? '',
+        'lat': lat,
+        'long': long,
+      }).eq('id', addressID);
+      if (response != null) {
+        mysnackbar(context: context, text: 'Address Updated Successfully');
+      }
+    } catch (e) {
+      debugPrint("Error in Updating  Address $e");
+    }
+    // }
+
+    // Future<void> changeLastAddress(
+    //     {required address, required userId, required WidgetRef ref}) async {
+    //   try {
+    //     await supabaseClient.from('users').upsert({
+    //       'last_address': address,
+    //     }).eq('id', userId);
+    //   } catch (e) {
+    //     debugPrint("Error in changing last address : $e");
+    //   }
+    //   await ref.read(profileRepoProvider).fetchuser(userId, ref);
+    // }
   }
 }

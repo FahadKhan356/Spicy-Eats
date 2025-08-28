@@ -436,6 +436,7 @@ class _RappiProductState extends ConsumerState<RappiProduct> {
         buttonIncDecWidth: 40,
         quantityIndex: widget.qunatityindex,
         titleVariationList: widget.titleVariationList,
+        restaurantdata: widget.restaurantData!,
       ),
     );
   }

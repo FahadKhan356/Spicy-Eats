@@ -59,8 +59,12 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
 
     case Confirmlocation.routename:
       return MaterialPageRoute(builder: (_) {
-        final locationResult = settings.arguments as dynamic;
-        return Confirmlocation(locationResult: locationResult);
+        final argument = settings.arguments as Map;
+        return Confirmlocation(
+          locationResult: argument['locationResult'],
+          isEdit: argument['isEdit'] ?? false,
+          addressmodel: argument['addressModel'],
+        );
       });
     // case MenuItemDetailScreen.routename:
     //   return MaterialPageRoute(builder: (context) {
@@ -121,7 +125,7 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
     case OtpScreen.routename:
       return MaterialPageRoute(builder: (context) => const OtpScreen());
     case HomeScreen.routename:
-      return MaterialPageRoute(builder: (context) => const HomeScreen());
+      return MaterialPageRoute(builder: (context) => const HomeScreen(''));
     case RegisterRestaurant.routename:
       return MaterialPageRoute(
           builder: (context) => const RegisterRestaurant());

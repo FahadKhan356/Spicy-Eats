@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/commons/custommap.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:spicy_eats/features/Home/model/AddressModel.dart';
 import 'package:spicy_eats/features/Home/repository/homerespository.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
@@ -13,12 +14,18 @@ import 'package:spicy_eats/main.dart';
 
 final lableIndex = StateProvider<int?>((ref) => null);
 final isOther = StateProvider<bool>((ref) => false);
+final labelTitle = StateProvider<String?>((ref) => '');
 
 class Confirmlocation extends ConsumerStatefulWidget {
   static const String routename = "/conformLocation";
-
+  final bool? isEdit;
+  final AddressModel? addressmodel;
   final LocationResult? locationResult;
-  Confirmlocation({super.key, required this.locationResult});
+  const Confirmlocation(
+      {super.key,
+      required this.locationResult,
+      this.isEdit,
+      this.addressmodel});
 
   @override
   ConsumerState<Confirmlocation> createState() => _ConfirmlocationState();
@@ -87,6 +94,17 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
     _longitude = 110.40950678599624;
     // TODO: implement initState
     super.initState();
+    if (widget.isEdit != null) {
+      _latitude = widget.locationResult!.latitude;
+      _longitude = widget.locationResult!.longitude;
+
+      streetController.text = widget.addressmodel?.streetNumber ?? '';
+      floorController.text = widget.addressmodel?.floor ?? '';
+      othersController.text = widget.addressmodel?.othersDetails ?? '';
+    } else {
+      _latitude = -6.984072660841485;
+      _longitude = 110.40950678599624;
+    }
   }
 
   Timer? _timer;
@@ -135,6 +153,7 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
     final size = MediaQuery.of(context).size;
     final selected = ref.watch(lableIndex);
     final others = ref.watch(isOther);
+    final labeltitle = ref.watch(labelTitle);
     return Scaffold(
       backgroundColor: Colors.white,
       body: loader
@@ -181,6 +200,8 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
                         TileLayer(
                           urlTemplate: _mapType == MapType.normal
                               ? "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=7b2RKYzYW5lBAVIkQzK3"
+                              // for dark "https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"
+
                               : 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.jpg',
                           userAgentPackageName: 'com.example.app',
                         ),
@@ -331,6 +352,9 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
                                                     .read(isOther.notifier)
                                                     .state = false;
                                               }
+                                              ref
+                                                  .read(labelTitle.notifier)
+                                                  .state = labels[index].title;
                                             } else {
                                               // tapped a new item
                                               ref
@@ -347,6 +371,7 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
                                                     .state = false;
                                               }
                                             }
+                                            debugPrint(labeltitle);
                                           },
                                           child: Column(
                                             children: [
@@ -357,7 +382,11 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
                                                   height: size.width * 0.13,
                                                   width: size.width * 0.13,
                                                   decoration: BoxDecoration(
-                                                      color: isSelected
+                                                      color: isSelected ||
+                                                              widget.addressmodel
+                                                                      ?.label ==
+                                                                  labels[index]
+                                                                      .title
                                                           ? Colors.grey
                                                           : Colors.white,
                                                       border: Border.all(
@@ -408,14 +437,37 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
                                 ref.read(isloaderProvider.notifier).state =
                                     true;
 
-                                await ref.read(homeRepositoryController).addAddress(
-                                    userId: supabaseClient.auth.currentUser!.id,
-                                    address:
-                                        "${_locationResult?.locationName} ${_locationResult?.placemark!.locality}",
-                                    streetNumber: streetController.text,
-                                    floor: floorController.text,
-                                    othersDetails: othersController.text,
-                                    context: context);
+                                if (widget.isEdit!) {
+                                  await ref
+                                      .read(homeRepositoryController)
+                                      .updateAddress(
+                                        addressID: widget.addressmodel!.id,
+                                        address:
+                                            "${_locationResult?.locationName} ${_locationResult?.placemark!.locality}",
+                                        streetNumber: streetController.text,
+                                        floor: floorController.text,
+                                        othersDetails: othersController.text,
+                                        label: labeltitle,
+                                        context: context,
+                                        lat: _locationResult?.latitude,
+                                        long: _locationResult?.longitude,
+                                      );
+                                } else {
+                                  await ref
+                                      .read(homeRepositoryController)
+                                      .addAddress(
+                                          userId: supabaseClient
+                                              .auth.currentUser!.id,
+                                          address:
+                                              "${_locationResult?.locationName} ${_locationResult?.placemark!.locality}",
+                                          streetNumber: streetController.text,
+                                          floor: floorController.text,
+                                          othersDetails: othersController.text,
+                                          label: labeltitle,
+                                          context: context);
+                                }
+
+                                ref.read(labelTitle.notifier).state = '';
 
                                 Navigator.pushNamedAndRemoveUntil(
                                     context, Home.routename, (route) => false);
@@ -445,11 +497,23 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 10),
                                       child: Center(
-                                        child: Text("Confirm location",
-                                            style: TextStyle(
-                                                color: Colors.orange[900],
-                                                overflow: TextOverflow.visible,
-                                                fontWeight: FontWeight.bold)),
+                                        child: widget.isEdit!
+                                            ? Text("Update Address",
+                                                style: TextStyle(
+                                                    fontSize: size.width * 0.03,
+                                                    color: Colors.orange[900],
+                                                    overflow:
+                                                        TextOverflow.visible,
+                                                    fontWeight:
+                                                        FontWeight.bold))
+                                            : Text("Confirm location",
+                                                style: TextStyle(
+                                                    fontSize: size.width * 0.03,
+                                                    color: Colors.orange[900],
+                                                    overflow:
+                                                        TextOverflow.visible,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
                                       ),
                                     )),
                               ),

@@ -373,13 +373,15 @@ class _MapLocationPickerState extends State<CustomMap> {
                                 // if (widget.isAddScreen) {
                                 Navigator.pushNamed(
                                     context, Confirmlocation.routename,
-                                    arguments: _locationResult ??
-                                        LocationResult(
-                                            latitude: _latitude,
-                                            longitude: _longitude,
-                                            completeAddress: null,
-                                            placemark: null,
-                                            locationName: null));
+                                    arguments: {
+                                      'locationResult': _locationResult ??
+                                          LocationResult(
+                                              latitude: _latitude,
+                                              longitude: _longitude,
+                                              completeAddress: null,
+                                              placemark: null,
+                                              locationName: null),
+                                    });
 
                                 // Confirmlocation(
                                 //     locationResult: _locationResult ??
@@ -565,6 +567,7 @@ class _MapLocationPickerState extends State<CustomMap> {
     return FlutterMap(
       mapController: _controller,
       options: MapOptions(
+        backgroundColor: Colors.black,
         initialCenter: LatLng(_latitude, _longitude),
         initialZoom: 16,
         maxZoom: 18,

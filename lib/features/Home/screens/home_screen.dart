@@ -8,6 +8,7 @@ import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/widgets/map.dart';
 import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
+import 'package:spicy_eats/commons/ConfirmLocation.dart';
 import 'package:spicy_eats/commons/custommap.dart';
 import 'package:spicy_eats/features/Home/model/AddressModel.dart';
 import 'package:spicy_eats/features/Home/repository/homerespository.dart';
@@ -17,18 +18,18 @@ import 'package:spicy_eats/features/Home/screens/homedrawer.dart';
 import 'package:spicy_eats/features/Home/screens/widgets/cusineslist.dart';
 import 'package:spicy_eats/features/Profile/repo/ProfileRepo.dart';
 import 'dart:math' as math;
-
+import 'package:geocoding/geocoding.dart';
 import 'package:spicy_eats/main.dart';
 import 'package:spicy_eats/tabexample.dart/RestaurantMenuScreen.dart';
 
 var searchProvider = StateProvider<bool>((ref) => false);
-final pickedAddressProvider = StateProvider<String?>((ref) => null);
+final pickedAddressProvider = StateProvider<AddressModel?>((ref) => null);
 final selectedIndexProvider = StateProvider<int?>((ref) => null);
 
 class HomeScreen extends ConsumerStatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen(this.locale, {super.key});
   static const String routename = '/homescreen';
-
+  final String? locale;
   @override
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
@@ -48,8 +49,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         await getLocationResult(latitude: _latitude!, longitude: _longitude!);
     if (mounted) {
       // setState(() {});
-      ref.read(pickedAddressProvider.notifier).state =
-          locationResult!.completeAddress;
+      var address = AddressModel(
+          userId: supabaseClient.auth.currentUser!.id,
+          address: locationResult!.completeAddress,
+          lat: locationResult!.latitude!,
+          long: locationResult!.longitude!);
+
+      ref.read(pickedAddressProvider.notifier).state = address;
     }
   }
 
@@ -57,9 +63,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   List<AddressModel?> allAdress = [];
   List<String>? restuid;
   // List<DishData> dishList = [];
+  LocationResult? _locationResult;
   final userid = supabaseClient.auth.currentUser!.id;
   bool isloader = true;
   bool showSheet = true;
+
+  _setupInitalLocation(double lat, double long) async {
+    if (widget.locale != null) {
+      await setLocaleIdentifier(widget.locale!);
+    }
+    _locationResult = LocationResult(
+        latitude: _latitude,
+        longitude: _longitude,
+        completeAddress: null,
+        locationName: null,
+        placemark: null);
+    _getLocationResult(lat, long);
+  }
+
+  _getLocationResult(double lat, double long) async {
+    _locationResult = await getLocationResult(latitude: lat, longitude: long);
+    if (mounted) {
+      setState(() {});
+    }
+  }
 
   @override
   void initState() {
@@ -105,11 +132,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     await ref.read(profileRepoProvider).fetchuser(userid, ref);
 
     allAdress = (await ref
-        .read(homeRepositoryController)
-        .fetchAllAddress(userId: supabaseClient.auth.currentUser!.id))!;
+            .read(homeRepositoryController)
+            .fetchAllAddress(userId: supabaseClient.auth.currentUser!.id)) ??
+        [];
 
     if (showSheet) {
-      _showBottomSheet(addresses: allAdress);
+      _showBottomSheet(addresses: allAdress, isEdit: false);
     }
   }
 
@@ -121,119 +149,110 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     }
   }
 
-  // Future<List<Restaurant>> readjsondata() async {
-  //   final data =
-  //       await rootBundle.loadString('lib/assets/data/restaurants.json');
-  //   final list = jsonDecode(data) as List<dynamic>;
-  //   return list.map((e) => Restaurant.fromjson(e)).toList();
-  // }
-
-  // String? rest_name;
-  // RestaurantModel? restaurant;
-  void _showBottomSheet({required List<AddressModel?> addresses}) {
+  void _showBottomSheet(
+      {required List<AddressModel?> addresses, bool? isEdit}) {
     final width = MediaQuery.of(context).size.width;
 
     final height = MediaQuery.of(context).size.height;
     showModalBottomSheet(
         context: context,
         enableDrag: true,
-        isScrollControlled: true, // Full height if needed
+        clipBehavior: Clip.none, // no clipping,
+        // isScrollControlled: true, // Full height if needed
+
         builder: (context) {
           return Consumer(builder: (context, ref, _) {
             final selectedIndex = ref.watch(selectedIndexProvider);
 
-            return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              height: height * 0.5,
-              width: double.infinity,
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min, // Fit content
-                  children: [
-                    Text(
-                      "Where’s your food going? 🍕",
-                      style: TextStyle(
-                          fontSize: width * 0.05, fontWeight: FontWeight.bold),
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min, // Fit content
+                children: [
+                  Text(
+                    "Where’s your food going? 🍕",
+                    style: TextStyle(
+                        fontSize: width * 0.05, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 20),
+                  InkWell(
+                    onTap: () async {
+                      // Check for location permission
+                      LocationPermission permission =
+                          await Geolocator.checkPermission();
+                      if (permission == LocationPermission.denied) {
+                        permission = await Geolocator.requestPermission();
+                      }
+
+                      if (permission == LocationPermission.denied ||
+                          permission == LocationPermission.deniedForever) {
+                        // Handle permission denied case
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text("Location permission denied")),
+                        );
+                        return;
+                      }
+
+                      // Get the current location
+                      try {
+                        Position position = await Geolocator.getCurrentPosition(
+                          desiredAccuracy: LocationAccuracy.high,
+                        );
+
+                        _latitude = position.latitude;
+                        _longitude = position.longitude;
+
+                        // Optionally, you can fetch the location details here
+                        await onCurrentLocation();
+                        Navigator.pop(context);
+                      } catch (e) {
+                        // Handle error (e.g., GPS not available)
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Error getting location: $e")),
+                        );
+                      }
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Icons.location_on,
+                          size: width * 0.04,
+                        ),
+                        Text(
+                          "Choose current location",
+                          style: TextStyle(
+                              fontSize: width * 0.04,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 20),
-                    InkWell(
-                      onTap: () async {
-                        // Check for location permission
-                        LocationPermission permission =
-                            await Geolocator.checkPermission();
-                        if (permission == LocationPermission.denied) {
-                          permission = await Geolocator.requestPermission();
-                        }
-
-                        if (permission == LocationPermission.denied ||
-                            permission == LocationPermission.deniedForever) {
-                          // Handle permission denied case
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text("Location permission denied")),
-                          );
-                          return;
-                        }
-
-                        // Get the current location
-                        try {
-                          Position position =
-                              await Geolocator.getCurrentPosition(
-                            desiredAccuracy: LocationAccuracy.high,
-                          );
-
-                          _latitude = position.latitude;
-                          _longitude = position.longitude;
-
-                          // Optionally, you can fetch the location details here
-                          await onCurrentLocation();
-                        } catch (e) {
-                          // Handle error (e.g., GPS not available)
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                                content: Text("Error getting location: $e")),
-                          );
-                        }
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                  ),
+                  const SizedBox(height: 10),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: addresses.length,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(
-                            Icons.location_on,
-                            size: width * 0.04,
-                          ),
-                          Text(
-                            "Choose current location",
-                            style: TextStyle(
-                                fontSize: width * 0.04,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: addresses.length,
-                      itemBuilder: (context, index) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 10),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
-                              child: Text(
-                                addresses[index]?.label ?? '',
-                                style: TextStyle(
-                                    overflow: TextOverflow.visible,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: width * 0.03),
-                              ),
+                          const SizedBox(height: 10),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Text(
+                              addresses[index]?.label ?? '',
+                              style: TextStyle(
+                                  overflow: TextOverflow.visible,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: width * 0.03),
                             ),
-                            Row(
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Radio<int>(
@@ -252,98 +271,125 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
                                       ref
                                           .read(pickedAddressProvider.notifier)
-                                          .state = addresses[value!]
-                                              ?.address ??
-                                          '';
+                                          .state = addresses[value!];
+
+                                      Navigator.pop(context);
                                     },
                                   ),
-                                  Flexible(
-                                    child: InkWell(
-                                        onTap: () {
-                                          // setStateModal(() {
-                                          //   selectedIndex =
-                                          //       index; // also allow tap on row
-                                          // });
-                                          ref
-                                              .read(selectedIndexProvider
-                                                  .notifier)
-                                              .state = index;
-                                        },
-                                        child: Text(
-                                          addresses[index]?.address ?? '',
-                                          style: TextStyle(
-                                              fontSize: width * 0.02,
-                                              overflow: TextOverflow.visible,
-                                              fontWeight: selectedIndex == index
-                                                  ? FontWeight.bold
-                                                  : FontWeight.normal),
-                                        )),
-                                  ),
-                                ]),
-                          ],
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    InkWell(
-                      onTap: () => Navigator.pushNamed(
-                          arguments: true, context, MyMap.routename),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.add,
-                            color: Colors.black,
-                            size: width * 0.03,
-                          ),
-                          Text("Add new address",
-                              style: TextStyle(
-                                  fontSize: width * 0.03,
-                                  overflow: TextOverflow.visible,
-                                  fontWeight: FontWeight.bold)),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    const Divider(
-                      color: Colors.black,
-                      height: 1,
-                    ),
-                    const SizedBox(height: 20),
-                    InkWell(
-                      borderRadius: BorderRadius.circular(width * 0.14),
-                      onTap: () {},
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                            height: 50,
-                            width: double.maxFinite,
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              boxShadow: const [
-                                BoxShadow(
-                                    spreadRadius: 2,
-                                    color: Color.fromRGBO(230, 81, 0, 1),
-                                    blurRadius: 2)
-                              ],
-                              color: Colors.orange[100],
-                              borderRadius: BorderRadius.circular(width * 0.14),
-                            ),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              child: Center(
-                                child: Text("Confirm location",
-                                    style: TextStyle(
-                                        fontSize: width * 0.03,
-                                        color: Colors.orange[900],
-                                        overflow: TextOverflow.visible,
-                                        fontWeight: FontWeight.bold)),
+                                  InkWell(
+                                      onTap: () {
+                                        // setStateModal(() {
+                                        //   selectedIndex =
+                                        //       index; // also allow tap on row
+                                        // });
+                                        ref
+                                            .read(
+                                                selectedIndexProvider.notifier)
+                                            .state = index;
+
+                                        ref
+                                            .read(
+                                                pickedAddressProvider.notifier)
+                                            .state = addresses[index];
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text(
+                                        '${addresses[index]?.address} + ${addresses[index]!.id}' ??
+                                            '',
+                                        style: TextStyle(
+                                            fontSize: width * 0.02,
+                                            overflow: TextOverflow.visible,
+                                            fontWeight: selectedIndex == index
+                                                ? FontWeight.bold
+                                                : FontWeight.normal),
+                                      )),
+                                ],
                               ),
-                            )),
-                      ),
+                              isEdit!
+                                  ? IconButton(
+                                      onPressed: () {
+                                        var locationresult = LocationResult(
+                                            latitude: allAdress[index]!.lat,
+                                            longitude: allAdress[index]!.long,
+                                            completeAddress:
+                                                allAdress[index]!.address,
+                                            placemark: null,
+                                            locationName: '');
+                                        Navigator.pushNamed(
+                                            context, Confirmlocation.routename,
+                                            arguments: {
+                                              'locationResult': locationresult,
+                                              'isEdit': true,
+                                              'addressModel': allAdress[index],
+                                            });
+                                      },
+                                      icon: const Icon(Icons.edit_location_alt))
+                                  : const SizedBox(),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  InkWell(
+                    onTap: () => Navigator.pushNamed(
+                        arguments: true, context, MyMap.routename),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.add,
+                          color: Colors.black,
+                          size: width * 0.03,
+                        ),
+                        Text("Add new address",
+                            style: TextStyle(
+                                fontSize: width * 0.03,
+                                overflow: TextOverflow.visible,
+                                fontWeight: FontWeight.bold)),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                  // const SizedBox(height: 20),
+                  // const Divider(
+                  //   color: Colors.black,
+                  //   height: 1,
+                  // ),
+                  // const SizedBox(height: 20),
+                  // InkWell(
+                  //   borderRadius: BorderRadius.circular(width * 0.14),
+                  //   onTap: () {},
+                  //   child: Padding(
+                  //     padding: const EdgeInsets.all(8.0),
+                  //     child: Container(
+                  //         height: 50,
+                  //         width: double.maxFinite,
+                  //         padding: const EdgeInsets.all(10),
+                  //         decoration: BoxDecoration(
+                  //           boxShadow: const [
+                  //             BoxShadow(
+                  //                 spreadRadius: 2,
+                  //                 color: Color.fromRGBO(230, 81, 0, 1),
+                  //                 blurRadius: 2)
+                  //           ],
+                  //           color: Colors.orange[100],
+                  //           borderRadius: BorderRadius.circular(width * 0.14),
+                  //         ),
+                  //         child: Padding(
+                  //           padding:
+                  //               const EdgeInsets.symmetric(horizontal: 10),
+                  //           child: Center(
+                  //             child: Text("Confirm location",
+                  //                 style: TextStyle(
+                  //                     fontSize: width * 0.03,
+                  //                     color: Colors.orange[900],
+                  //                     overflow: TextOverflow.visible,
+                  //                     fontWeight: FontWeight.bold)),
+                  //           ),
+                  //         )),
+                  //   ),
+                  // ),
+                ],
               ),
             );
           });
@@ -392,140 +438,176 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               flexibleSpace: Padding(
                 padding: EdgeInsets.symmetric(horizontal: size.width * 0.03),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            setState(() {
-                              clicked = !clicked;
-                              onclick();
-                            });
-                          },
-                          icon: const Icon(
-                            Icons.menu,
-                            color: Colors.white,
+                    Flexible(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                clicked = !clicked;
+                                onclick();
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.menu,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                        Flexible(
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Delivering to',
-                                  style: GoogleFonts.aBeeZee(
-                                      fontSize: size.width * 0.04,
-                                      color: Colors.white),
-                                ),
-                                Text(
-                                  address ?? '',
-                                  style: TextStyle(
-                                      overflow: TextOverflow.ellipsis,
-                                      // GoogleFonts.aBeeZee(
-                                      fontSize: size.width * 0.04,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white),
-                                ),
-                              ]),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              InkWell(
-                                onTap: () {},
-                                child: Container(
-                                  height: 40,
-                                  width: 40,
-                                  decoration: BoxDecoration(
-                                      color: Colors.orange[900],
-                                      //color: Colors.white70,
-                                      // color: Color(0x2E2E2E),
-                                      // color: Color.fromARGB(0, 92, 86, 86),
-                                      borderRadius: BorderRadius.circular(20)
-                                      // Hex color in Flutter
-                                      ),
-                                  child: Center(
-                                    child: IconButton(
-                                      icon: const Icon(Icons.search,
-                                          size: 25, color: Colors.white),
-                                      onPressed: () {
-                                        ref
-                                                .read(searchProvider.notifier)
-                                                .state =
-                                            !ref
-                                                .read(searchProvider.notifier)
-                                                .state;
-
-                                        debugPrint(
-                                            'searProvider ${ref.watch(searchProvider.notifier).state}');
-                                      },
+                          address != null
+                              ? Flexible(
+                                  child: InkWell(
+                                    onTap: () {
+                                      _showBottomSheet(
+                                          addresses: allAdress, isEdit: true);
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 10),
+                                      child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Flexible(
+                                              child: Text(
+                                                'Delivering to',
+                                                style: TextStyle(
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    // GoogleFonts.aBeeZee(
+                                                    fontSize:
+                                                        size.width * 0.036,
+                                                    // fontWeight: FontWeight.bold,
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                            Text(
+                                              '${address.address}' ?? '',
+                                              style: TextStyle(
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  // GoogleFonts.aBeeZee(
+                                                  fontSize: size.width * 0.036,
+                                                  // fontWeight: FontWeight.bold,
+                                                  color: Colors.white),
+                                            ),
+                                          ]),
                                     ),
                                   ),
+                                )
+                              : InkWell(
+                                  onTap: () {
+                                    _showBottomSheet(
+                                        addresses: allAdress, isEdit: false);
+                                  },
+                                  child: Text(
+                                    'Select Address',
+                                    style: GoogleFonts.aBeeZee(
+                                        fontSize: size.width * 0.035,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Stack(
-                                children: [
-                                  Container(
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                InkWell(
+                                  onTap: () {},
+                                  child: Container(
                                     height: 40,
                                     width: 40,
                                     decoration: BoxDecoration(
-                                      color: Colors.orange[900],
-                                      borderRadius: BorderRadius.circular(
-                                          // size.width * 0.12 / 2
-                                          20),
-                                    ),
+                                        color: Colors.orange[900],
+                                        //color: Colors.white70,
+                                        // color: Color(0x2E2E2E),
+                                        // color: Color.fromARGB(0, 92, 86, 86),
+                                        borderRadius: BorderRadius.circular(20)
+                                        // Hex color in Flutter
+                                        ),
                                     child: Center(
                                       child: IconButton(
-                                          onPressed: () {},
-                                          icon: const Icon(
-                                            Icons.shopping_cart,
-                                            size: 25,
-                                            color: Colors.white,
-                                          )),
+                                        icon: const Icon(Icons.search,
+                                            size: 25, color: Colors.white),
+                                        onPressed: () {
+                                          ref
+                                                  .read(searchProvider.notifier)
+                                                  .state =
+                                              !ref
+                                                  .read(searchProvider.notifier)
+                                                  .state;
+
+                                          debugPrint(
+                                              'searProvider ${ref.watch(searchProvider.notifier).state}');
+                                        },
+                                      ),
                                     ),
                                   ),
-                                  showCart
-                                      ? Positioned(
-                                          top: 5,
-                                          right: 0,
-                                          child: Container(
-                                            height: 25,
-                                            width: 25,
-                                            decoration: BoxDecoration(
-                                              color:
-                                                  Colors.red.withOpacity(0.8),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Stack(
+                                  children: [
+                                    Container(
+                                      height: 40,
+                                      width: 40,
+                                      decoration: BoxDecoration(
+                                        color: Colors.orange[900],
+                                        borderRadius: BorderRadius.circular(
+                                            // size.width * 0.12 / 2
+                                            20),
+                                      ),
+                                      child: Center(
+                                        child: IconButton(
+                                            onPressed: () {},
+                                            icon: const Icon(
+                                              Icons.shopping_cart,
+                                              size: 25,
+                                              color: Colors.white,
+                                            )),
+                                      ),
+                                    ),
+                                    showCart
+                                        ? Positioned(
+                                            top: 5,
+                                            right: 0,
+                                            child: Container(
+                                              height: 25,
+                                              width: 25,
+                                              decoration: BoxDecoration(
+                                                color:
+                                                    Colors.red.withOpacity(0.8),
 
-                                              // color: Colors.red,
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                12.5,
-                                                // size.width * 0.12 / 2
+                                                // color: Colors.red,
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                  12.5,
+                                                  // size.width * 0.12 / 2
+                                                ),
+                                              ),
+                                              child: Center(
+                                                child: Text(
+                                                  '$cartsize',
+                                                  style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
                                               ),
                                             ),
-                                            child: Center(
-                                              child: Text(
-                                                '$cartsize',
-                                                style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 15,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                      : const SizedBox(),
-                                ],
-                              ),
-                            ],
+                                          )
+                                        : const SizedBox(),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                     const SizedBox(
                       height: 10,
