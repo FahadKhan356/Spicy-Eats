@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:spicy_eats/Register%20shop/controller/registershop_controller.dart';
 import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/widgets/map.dart';
@@ -18,7 +17,7 @@ import 'package:spicy_eats/features/Home/screens/homedrawer.dart';
 import 'package:spicy_eats/features/Home/screens/widgets/cusineslist.dart';
 import 'package:spicy_eats/features/Profile/repo/ProfileRepo.dart';
 import 'dart:math' as math;
-import 'package:geocoding/geocoding.dart';
+// import 'package:geocoding/geocoding.dart';
 import 'package:spicy_eats/main.dart';
 import 'package:spicy_eats/tabexample.dart/RestaurantMenuScreen.dart';
 
@@ -63,30 +62,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   List<AddressModel?> allAdress = [];
   List<String>? restuid;
   // List<DishData> dishList = [];
-  LocationResult? _locationResult;
+  // LocationResult? _locationResult;
   final userid = supabaseClient.auth.currentUser!.id;
   bool isloader = true;
   bool showSheet = true;
 
-  _setupInitalLocation(double lat, double long) async {
-    if (widget.locale != null) {
-      await setLocaleIdentifier(widget.locale!);
-    }
-    _locationResult = LocationResult(
-        latitude: _latitude,
-        longitude: _longitude,
-        completeAddress: null,
-        locationName: null,
-        placemark: null);
-    _getLocationResult(lat, long);
-  }
+  // _setupInitalLocation(double lat, double long) async {
+  //   if (widget.locale != null) {
+  //     await setLocaleIdentifier(widget.locale!);
+  //   }
+  //   _locationResult = LocationResult(
+  //       latitude: _latitude,
+  //       longitude: _longitude,
+  //       completeAddress: null,
+  //       locationName: null,
+  //       placemark: null);
+  //   _getLocationResult(lat, long);
+  // }
 
-  _getLocationResult(double lat, double long) async {
-    _locationResult = await getLocationResult(latitude: lat, longitude: long);
-    if (mounted) {
-      setState(() {});
-    }
-  }
+  // _getLocationResult(double lat, double long) async {
+  //   _locationResult = await getLocationResult(latitude: lat, longitude: long);
+  //   if (mounted) {
+  //     setState(() {});
+  //   }
+  // }
 
   @override
   void initState() {
@@ -153,7 +152,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       {required List<AddressModel?> addresses, bool? isEdit}) {
     final width = MediaQuery.of(context).size.width;
 
-    final height = MediaQuery.of(context).size.height;
     showModalBottomSheet(
         context: context,
         enableDrag: true,
@@ -294,8 +292,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                         Navigator.pop(context);
                                       },
                                       child: Text(
-                                        '${addresses[index]?.address} + ${addresses[index]!.id}' ??
-                                            '',
+                                        '${addresses[index]?.address} + ${addresses[index]!.id}',
                                         style: TextStyle(
                                             fontSize: width * 0.02,
                                             overflow: TextOverflow.visible,
@@ -407,7 +404,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   @override
   Widget build(BuildContext context) {
     final address = ref.watch(pickedAddressProvider);
-    final width = MediaQuery.of(context).size.width;
+
     final isSearch = ref.watch(searchProvider);
     final showCart = ref.watch(showCartButton);
     final cartsize = ref.watch(cartLength);
@@ -484,7 +481,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                               ),
                                             ),
                                             Text(
-                                              '${address.address}' ?? '',
+                                              '${address.address}',
                                               style: TextStyle(
                                                   overflow:
                                                       TextOverflow.ellipsis,

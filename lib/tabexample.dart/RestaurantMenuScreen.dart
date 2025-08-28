@@ -364,76 +364,76 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
                     ),
                   )
                 : const SliverToBoxAdapter(child: SizedBox()),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 60),
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                  width: double.maxFinite,
-                  height: 80,
+            // SliverToBoxAdapter(
+            //   child: Padding(
+            //     padding:
+            //         const EdgeInsets.symmetric(vertical: 20, horizontal: 60),
+            // child: Container(
+            //   padding:
+            //       const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            //   width: double.maxFinite,
+            //   height: 80,
 
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: Colors.black12, width: 1.5),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  //const Color.fromRGBO(209, 209, 209, 1),
-                  //Color.fromARGB(255, 247, 208, 158).withOpacity(0.2),
-                  child: Row(
-                    children: [
-                      Container(
-                        height: 60,
-                        width: 60,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: Colors.black12, width: 1.5),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Icon(
-                          Icons.electric_bike_sharp,
-                          size: 30,
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: Container(
-                          height: 70,
-                          width: 60,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border:
-                                Border.all(color: Colors.black12, width: 1.5),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                ' Delivery : ${widget.restaurantData.minTime} - ${widget.restaurantData.maxTime} ',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                'Delivery Fee : \$${widget.restaurantData.deliveryFee}',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black),
-                              )
-                            ],
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            //   decoration: BoxDecoration(
+            //     color: Colors.white,
+            //     border: Border.all(color: Colors.black12, width: 1.5),
+            //     borderRadius: BorderRadius.circular(10),
+            //   ),
+            //   //const Color.fromRGBO(209, 209, 209, 1),
+            //   //Color.fromARGB(255, 247, 208, 158).withOpacity(0.2),
+            //   child: Row(
+            //     children: [
+            //       Container(
+            //         height: 60,
+            //         width: 60,
+            //         decoration: BoxDecoration(
+            //           color: Colors.white,
+            //           border: Border.all(color: Colors.black12, width: 1.5),
+            //           borderRadius: BorderRadius.circular(10),
+            //         ),
+            //         child: const Icon(
+            //           Icons.electric_bike_sharp,
+            //           size: 30,
+            //         ),
+            //       ),
+            //       const SizedBox(
+            //         width: 10,
+            //       ),
+            //       Expanded(
+            //         child: Container(
+            //           height: 70,
+            //           width: 60,
+            //           decoration: BoxDecoration(
+            //             color: Colors.white,
+            //             border:
+            //                 Border.all(color: Colors.black12, width: 1.5),
+            //             borderRadius: BorderRadius.circular(10),
+            //           ),
+            //           child: Column(
+            //             crossAxisAlignment: CrossAxisAlignment.center,
+            //             mainAxisAlignment: MainAxisAlignment.center,
+            //             children: [
+            //               Text(
+            //                 ' Delivery : ${widget.restaurantData.minTime} - ${widget.restaurantData.maxTime} ',
+            //                 style: const TextStyle(
+            //                   fontWeight: FontWeight.bold,
+            //                 ),
+            //               ),
+            //               Text(
+            //                 'Delivery Fee : \$${widget.restaurantData.deliveryFee}',
+            //                 style: const TextStyle(
+            //                     fontWeight: FontWeight.bold,
+            //                     color: Colors.black),
+            //               )
+            //             ],
+            //           ),
+            //         ),
+            //       )
+            //     ],
+            //   ),
+            // ),
+            //   ),
+            // ),
             SliverList(
                 delegate: SliverChildBuilderDelegate(
                     childCount: bloc.items.length, (context, index) {

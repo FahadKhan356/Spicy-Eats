@@ -31,7 +31,8 @@ migrate_working_dir/
 .pub/
 /build/
 lib/.env
-lib\Supabse Backend\supabase_config.dart
+lib/Supabse Backend/supabase_config.dart
+.fvm/flutter_sdk
 
 # Symbolication related
 app.*.symbols

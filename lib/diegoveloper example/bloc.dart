@@ -2,10 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 
+/*expandedheight=250
+slivertabbar headerTitle = 60
+deliveryfee cotainer = 80
+Rappitabcategory = 65
+rappiproduct height 130 
+*/
+
 double categoryHeight = 65;
 double productHeight = 130;
 // double productsCardMargin = 60;
-double additionalWidgetsHeight = 250.0;
+double additionalWidgetsHeight = 340.0;
 
 class RappiBloc with ChangeNotifier {
   List<RapitabCategory> tabs = [];

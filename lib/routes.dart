@@ -130,15 +130,15 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
       return MaterialPageRoute(
           builder: (context) => const RegisterRestaurant());
 
-    case MyFinalScrollScreen.routename:
-      return MaterialPageRoute(builder: (context) {
-        final argument = settings.arguments as Map;
+    // case MyFinalScrollScreen.routename:
+    //   return MaterialPageRoute(builder: (context) {
+    //     final argument = settings.arguments as Map;
 
-        return MyFinalScrollScreen(
-          restuid: argument['restuid'],
-          restaurantData: argument['restaurantdata'],
-        );
-      });
+    //     return MyFinalScrollScreen(
+    //       restuid: argument['restuid'],
+    //       restaurantData: argument['restaurantdata'],
+    //     );
+    //   });
 
     //DishMenuScreen
     case DishMenuScreen.routename:
