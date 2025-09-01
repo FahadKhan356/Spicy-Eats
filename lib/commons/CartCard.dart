@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/Cartmodel.dart';
 import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
+import 'package:spicy_eats/diegoveloper%20example/bloc.dart';
 import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/dish%20menu/dishmenuVAriation.dart';
@@ -101,7 +102,7 @@ class _CartCardState extends ConsumerState<CartCard> {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: Colors.black26)),
-                height: widget.cardHeight ?? 130,
+                height: productHeight, // widget.cardHeight ?? 130,
                 width: double.maxFinite,
                 // surfaceTintColor: Colors.orange,
                 margin: const EdgeInsets.symmetric(vertical: 10),

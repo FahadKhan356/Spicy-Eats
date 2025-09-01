@@ -2,17 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 
-/*expandedheight=250
-slivertabbar headerTitle = 60
-deliveryfee cotainer = 80
-Rappitabcategory = 65
-rappiproduct height 130 
-*/
-
 double categoryHeight = 65;
 double productHeight = 130;
 // double productsCardMargin = 60;
-double additionalWidgetsHeight = 340.0;
+// double additionalWidgetsHeight = 250;
 
 class RappiBloc with ChangeNotifier {
   List<RapitabCategory> tabs = [];
@@ -46,23 +39,26 @@ class RappiBloc with ChangeNotifier {
         offsetFrom = tabs[i - 1].offsetTo;
       }
       if (i < categories.length - 1) {
-        final value = categoryDishesMap[categories[i + 1].category_id] ?? [];
+        final value = categoryDishesMap[categories[i].category_id] ?? [];
 
         offsetTo = offsetFrom +
-            categoryHeight +
+            productHeight +
+            // categoryHeight +
             // productsCardMargin +
-            (value.length * productHeight) +
-            additionalWidgetsHeight;
-        //+ additionalWidgetsHeight;
-        additionalWidgetsHeight = 0;
+            (value.length * productHeight);
+        //      +
+        //     additionalWidgetsHeight;
+        // //+ additionalWidgetsHeight;
+        // additionalWidgetsHeight = 0;
       } else {
         // offsetTo = double.infinity;
         offsetTo = offsetFrom +
             // productsCardMargin +
             categoryHeight +
-            (categoryDishes.length * productHeight) +
-            additionalWidgetsHeight;
-        additionalWidgetsHeight = 0;
+            (categoryDishes.length * productHeight);
+        //     +
+        //     additionalWidgetsHeight;
+        // additionalWidgetsHeight = 0;
 
         //+additionalWidgetsHeight;
       }

@@ -353,11 +353,11 @@ class RappiCategory extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
         // color: Colors.red,
-        height: 65,
+        height: categoryHeight,
         width: double.maxFinite,
         child: Card(
             elevation: 0,
-            color: Colors.white,
+            color: Colors.red,
             child: Center(
               child: Text(
                 category!.category_name,

@@ -163,230 +163,257 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             final selectedIndex = ref.watch(selectedIndexProvider);
 
             return SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min, // Fit content
-                children: [
-                  Text(
-                    "Where’s your food going? 🍕",
-                    style: TextStyle(
-                        fontSize: width * 0.05, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 20),
-                  InkWell(
-                    onTap: () async {
-                      // Check for location permission
-                      LocationPermission permission =
-                          await Geolocator.checkPermission();
-                      if (permission == LocationPermission.denied) {
-                        permission = await Geolocator.requestPermission();
-                      }
-
-                      if (permission == LocationPermission.denied ||
-                          permission == LocationPermission.deniedForever) {
-                        // Handle permission denied case
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text("Location permission denied")),
-                        );
-                        return;
-                      }
-
-                      // Get the current location
-                      try {
-                        Position position = await Geolocator.getCurrentPosition(
-                          desiredAccuracy: LocationAccuracy.high,
-                        );
-
-                        _latitude = position.latitude;
-                        _longitude = position.longitude;
-
-                        // Optionally, you can fetch the location details here
-                        await onCurrentLocation();
-                        Navigator.pop(context);
-                      } catch (e) {
-                        // Handle error (e.g., GPS not available)
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Error getting location: $e")),
-                        );
-                      }
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(
-                          Icons.location_on,
-                          size: width * 0.04,
-                        ),
-                        Text(
-                          "Choose current location",
-                          style: TextStyle(
-                              fontSize: width * 0.04,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ],
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  // mainAxisSize: MainAxisSize.min, // Fit content
+                  children: [
+                    const SizedBox(
+                      height: 20,
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: addresses.length,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    Text(
+                      "Where’s your food going? 🍕",
+                      style: TextStyle(
+                          fontSize: width * 0.05, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 20),
+                    InkWell(
+                      onTap: () async {
+                        // Check for location permission
+                        LocationPermission permission =
+                            await Geolocator.checkPermission();
+                        if (permission == LocationPermission.denied) {
+                          permission = await Geolocator.requestPermission();
+                        }
+
+                        if (permission == LocationPermission.denied ||
+                            permission == LocationPermission.deniedForever) {
+                          // Handle permission denied case
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text("Location permission denied")),
+                          );
+                          return;
+                        }
+
+                        // Get the current location
+                        try {
+                          Position position =
+                              await Geolocator.getCurrentPosition(
+                            desiredAccuracy: LocationAccuracy.high,
+                          );
+
+                          _latitude = position.latitude;
+                          _longitude = position.longitude;
+
+                          // Optionally, you can fetch the location details here
+                          await onCurrentLocation();
+                          Navigator.pop(context);
+                        } catch (e) {
+                          // Handle error (e.g., GPS not available)
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text("Error getting location: $e")),
+                          );
+                        }
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          const SizedBox(height: 10),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Text(
-                              addresses[index]?.label ?? '',
-                              style: TextStyle(
-                                  overflow: TextOverflow.visible,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: width * 0.03),
-                            ),
+                          Icon(
+                            Icons.location_on,
+                            size: width * 0.04,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Radio<int>(
-                                    fillColor: WidgetStateProperty.all(
-                                        Colors.orange[900]),
-                                    value:
-                                        index, // each radio gets its index as value
-                                    groupValue: selectedIndex, // selected one
-                                    onChanged: (value) {
-                                      // setStateModal(() {
-                                      //   selectedAddressIndex = value!;
-                                      // });
-                                      ref
-                                          .read(selectedIndexProvider.notifier)
-                                          .state = value;
+                          Text(
+                            "Choose current location",
+                            style: TextStyle(
+                                fontSize: width * 0.04,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
 
-                                      ref
-                                          .read(pickedAddressProvider.notifier)
-                                          .state = addresses[value!];
-
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                  InkWell(
-                                      onTap: () {
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: addresses.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 10),
+                            const Divider(
+                              height: 2,
+                              color: Colors.black26,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
+                              child: Text(
+                                addresses[index]?.label ?? '',
+                                style: TextStyle(
+                                    overflow: TextOverflow.visible,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: width * 0.04),
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Radio<int>(
+                                      fillColor: WidgetStateProperty.all(
+                                          Colors.orange[900]),
+                                      value:
+                                          index, // each radio gets its index as value
+                                      groupValue: selectedIndex, // selected one
+                                      onChanged: (value) {
                                         // setStateModal(() {
-                                        //   selectedIndex =
-                                        //       index; // also allow tap on row
+                                        //   selectedAddressIndex = value!;
                                         // });
                                         ref
                                             .read(
                                                 selectedIndexProvider.notifier)
-                                            .state = index;
+                                            .state = value;
 
                                         ref
                                             .read(
                                                 pickedAddressProvider.notifier)
-                                            .state = addresses[index];
+                                            .state = addresses[value!];
+
                                         Navigator.pop(context);
                                       },
-                                      child: Text(
-                                        '${addresses[index]?.address} + ${addresses[index]!.id}',
-                                        style: TextStyle(
-                                            fontSize: width * 0.02,
-                                            overflow: TextOverflow.visible,
-                                            fontWeight: selectedIndex == index
-                                                ? FontWeight.bold
-                                                : FontWeight.normal),
-                                      )),
-                                ],
-                              ),
-                              isEdit!
-                                  ? IconButton(
-                                      onPressed: () {
-                                        var locationresult = LocationResult(
-                                            latitude: allAdress[index]!.lat,
-                                            longitude: allAdress[index]!.long,
-                                            completeAddress:
-                                                allAdress[index]!.address,
-                                            placemark: null,
-                                            locationName: '');
-                                        Navigator.pushNamed(
-                                            context, Confirmlocation.routename,
-                                            arguments: {
-                                              'locationResult': locationresult,
-                                              'isEdit': true,
-                                              'addressModel': allAdress[index],
-                                            });
-                                      },
-                                      icon: const Icon(Icons.edit_location_alt))
-                                  : const SizedBox(),
-                            ],
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  InkWell(
-                    onTap: () => Navigator.pushNamed(
-                        arguments: true, context, MyMap.routename),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.add,
-                          color: Colors.black,
-                          size: width * 0.03,
-                        ),
-                        Text("Add new address",
-                            style: TextStyle(
-                                fontSize: width * 0.03,
-                                overflow: TextOverflow.visible,
-                                fontWeight: FontWeight.bold)),
-                      ],
+                                    ),
+                                    InkWell(
+                                        onTap: () {
+                                          // setStateModal(() {
+                                          //   selectedIndex =
+                                          //       index; // also allow tap on row
+                                          // });
+                                          ref
+                                              .read(selectedIndexProvider
+                                                  .notifier)
+                                              .state = index;
+
+                                          ref
+                                              .read(pickedAddressProvider
+                                                  .notifier)
+                                              .state = addresses[index];
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text(
+                                          '${addresses[index]?.address} + ${addresses[index]!.id}',
+                                          style: TextStyle(
+                                              fontSize: width * 0.03,
+                                              overflow: TextOverflow.visible,
+                                              fontWeight: selectedIndex == index
+                                                  ? FontWeight.bold
+                                                  : FontWeight.normal),
+                                        )),
+                                  ],
+                                ),
+                                isEdit!
+                                    ? IconButton(
+                                        onPressed: () {
+                                          var locationresult = LocationResult(
+                                              latitude: allAdress[index]!.lat,
+                                              longitude: allAdress[index]!.long,
+                                              completeAddress:
+                                                  allAdress[index]!.address,
+                                              placemark: null,
+                                              locationName: '');
+                                          Navigator.pushNamed(context,
+                                              Confirmlocation.routename,
+                                              arguments: {
+                                                'locationResult':
+                                                    locationresult,
+                                                'isEdit': true,
+                                                'addressModel':
+                                                    allAdress[index],
+                                              });
+                                        },
+                                        icon: Icon(
+                                          Icons.edit_location_alt,
+                                          color: Colors.orange[900],
+                                        ))
+                                    : const SizedBox(),
+                              ],
+                            ),
+                          ],
+                        );
+                      },
                     ),
-                  ),
-                  // const SizedBox(height: 20),
-                  // const Divider(
-                  //   color: Colors.black,
-                  //   height: 1,
-                  // ),
-                  // const SizedBox(height: 20),
-                  // InkWell(
-                  //   borderRadius: BorderRadius.circular(width * 0.14),
-                  //   onTap: () {},
-                  //   child: Padding(
-                  //     padding: const EdgeInsets.all(8.0),
-                  //     child: Container(
-                  //         height: 50,
-                  //         width: double.maxFinite,
-                  //         padding: const EdgeInsets.all(10),
-                  //         decoration: BoxDecoration(
-                  //           boxShadow: const [
-                  //             BoxShadow(
-                  //                 spreadRadius: 2,
-                  //                 color: Color.fromRGBO(230, 81, 0, 1),
-                  //                 blurRadius: 2)
-                  //           ],
-                  //           color: Colors.orange[100],
-                  //           borderRadius: BorderRadius.circular(width * 0.14),
-                  //         ),
-                  //         child: Padding(
-                  //           padding:
-                  //               const EdgeInsets.symmetric(horizontal: 10),
-                  //           child: Center(
-                  //             child: Text("Confirm location",
-                  //                 style: TextStyle(
-                  //                     fontSize: width * 0.03,
-                  //                     color: Colors.orange[900],
-                  //                     overflow: TextOverflow.visible,
-                  //                     fontWeight: FontWeight.bold)),
-                  //           ),
-                  //         )),
-                  //   ),
-                  // ),
-                ],
+                    const SizedBox(height: 10),
+                    const Divider(
+                      height: 2,
+                      color: Colors.black26,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: InkWell(
+                        onTap: () => Navigator.pushNamed(
+                            arguments: true, context, MyMap.routename),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.add,
+                              color: Colors.black,
+                              size: width * 0.03,
+                            ),
+                            Text("Add new address",
+                                style: TextStyle(
+                                    fontSize: width * 0.04,
+                                    overflow: TextOverflow.visible,
+                                    fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      ),
+                    ),
+                    // const SizedBox(height: 20),
+                    // const Divider(
+                    //   color: Colors.black,
+                    //   height: 1,
+                    // ),
+                    // const SizedBox(height: 20),
+                    // InkWell(
+                    //   borderRadius: BorderRadius.circular(width * 0.14),
+                    //   onTap: () {},
+                    //   child: Padding(
+                    //     padding: const EdgeInsets.all(8.0),
+                    //     child: Container(
+                    //         height: 50,
+                    //         width: double.maxFinite,
+                    //         padding: const EdgeInsets.all(10),
+                    //         decoration: BoxDecoration(
+                    //           boxShadow: const [
+                    //             BoxShadow(
+                    //                 spreadRadius: 2,
+                    //                 color: Color.fromRGBO(230, 81, 0, 1),
+                    //                 blurRadius: 2)
+                    //           ],
+                    //           color: Colors.orange[100],
+                    //           borderRadius: BorderRadius.circular(width * 0.14),
+                    //         ),
+                    //         child: Padding(
+                    //           padding:
+                    //               const EdgeInsets.symmetric(horizontal: 10),
+                    //           child: Center(
+                    //             child: Text("Confirm location",
+                    //                 style: TextStyle(
+                    //                     fontSize: width * 0.03,
+                    //                     color: Colors.orange[900],
+                    //                     overflow: TextOverflow.visible,
+                    //                     fontWeight: FontWeight.bold)),
+                    //           ),
+                    //         )),
+                    //   ),
+                    // ),
+                  ],
+                ),
               ),
             );
           });

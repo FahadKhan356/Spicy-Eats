@@ -200,20 +200,25 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
           controller: bloc.scrollController,
           slivers: [
             SliverAppBar(
-              stretch: true,
+              leadingWidth: 70,
+              // stretch: true,
               centerTitle: true,
-              leading: InkWell(
-                splashColor: Colors.orange,
-                // highlightColor: Colors.red,
-                onTap: () => Navigator.pushNamed(context, Home.routename),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
+              leading: Padding(
+                padding: EdgeInsets.only(left: 20),
+                child: InkWell(
+                  splashColor: Colors.orange,
+                  // highlightColor: Colors.red,
+                  onTap: () => Navigator.pushNamed(context, Home.routename),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: Container(
-                      height: 40,
-                      width: 40,
-                      color: Colors.white.withOpacity(0.2),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white.withOpacity(0.2),
+                      ),
+                      height: 50,
+                      width: 50,
+                      // color: Colors.white.withOpacity(0.2),
                       child: const Icon(
                         Icons.arrow_back,
                         size: 22,
@@ -225,34 +230,35 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
               ),
               actions: [
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: InkWell(
-                      hoverColor: Colors.red,
-                      onTap: () => ref
-                          .read(registershoprepoProvider)
-                          .togglefavorites(
-                              userid: supabaseClient.auth.currentUser!.id,
-                              restid: widget.restaurantData.restuid!,
-                              ref: ref,
-                              context: context),
-                      child: Container(
-                        height: 40,
-                        width: 40,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20, vertical: 10.0),
+                  child: InkWell(
+                    hoverColor: Colors.red,
+                    onTap: () => ref
+                        .read(registershoprepoProvider)
+                        .togglefavorites(
+                            userid: supabaseClient.auth.currentUser!.id,
+                            restid: widget.restaurantData.restuid!,
+                            ref: ref,
+                            context: context),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
                         color: Colors.white.withOpacity(0.2),
-                        child: isfav
-                            ? Icon(
-                                Icons.favorite,
-                                size: 22,
-                                color: Colors.orange[900],
-                              )
-                            : const Icon(
-                                Icons.favorite_outline_sharp,
-                                size: 22,
-                                color: Colors.black,
-                              ),
                       ),
+                      height: 50,
+                      width: 50,
+                      child: isfav
+                          ? Icon(
+                              Icons.favorite,
+                              size: 22,
+                              color: Colors.orange[900],
+                            )
+                          : const Icon(
+                              Icons.favorite_outline_sharp,
+                              size: 22,
+                              color: Colors.black,
+                            ),
                     ),
                   ),
                 )
@@ -265,91 +271,161 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
               flexibleSpace: FlexibleSpaceBar(
                 centerTitle: true,
                 titlePadding: const EdgeInsets.only(bottom: 16, top: 10),
-                title: showTabBar
-                    ? Center(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              '${widget.restaurantData.restaurantName}',
-                              style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Center(
-                              child: Row(
+                title: SizedBox(
+                    height: 60, // 👈 fixed height for the title area
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 250),
+                      child: showTabBar
+                          ? Column(
+                              key: const ValueKey('withTitle'),
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  widget.restaurantData.restaurantName!,
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 5),
+                                Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     RatingBar.builder(
-                                        ignoreGestures: true,
-                                        allowHalfRating: true,
-                                        initialRating: widget
-                                            .restaurantData.averageRatings!
-                                            .toDouble(),
-                                        itemSize: 15,
-                                        itemCount: 5,
-                                        itemBuilder: (context, index) =>
-                                            const Icon(
-                                              Icons.star,
-                                              size: 22,
-                                            ),
-                                        onRatingUpdate: (double) {}),
-                                    const SizedBox(
-                                      width: 5,
+                                      ignoreGestures: true,
+                                      allowHalfRating: true,
+                                      initialRating: widget
+                                          .restaurantData.averageRatings!
+                                          .toDouble(),
+                                      itemSize: 15,
+                                      itemCount: 5,
+                                      itemBuilder: (context, index) =>
+                                          const Icon(
+                                        Icons.star,
+                                        size: 22,
+                                      ),
+                                      onRatingUpdate: (_) {},
                                     ),
+                                    const SizedBox(width: 5),
                                     Text(
                                       '${widget.restaurantData.averageRatings}',
                                       style: const TextStyle(
                                           color: Colors.black, fontSize: 15),
                                     ),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(3.5),
-                                      child: Center(
-                                          child: Container(
-                                        height: 7,
-                                        width: 7,
+                                    const SizedBox(width: 5),
+                                    Container(
+                                      height: 7,
+                                      width: 7,
+                                      decoration: BoxDecoration(
                                         color: Colors.black,
-                                      )),
+                                        borderRadius:
+                                            BorderRadius.circular(3.5),
+                                      ),
                                     ),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
+                                    const SizedBox(width: 5),
                                     Text(
                                       '${widget.restaurantData.totalRatings} Ratings',
                                       style: const TextStyle(
                                           color: Colors.black, fontSize: 15),
                                     ),
-                                  ]
-                                  //  List.generate(
-                                  //   5,
-                                  //   (index) => Icon(
-                                  //     Icons.star,
-                                  //     size: 22,
-                                  //   ),
-                                  // )
-
-                                  ),
+                                  ],
+                                )
+                              ],
                             )
-                          ],
-                        ),
-                      )
-                    : const SizedBox(),
-                background: ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(20),
-                      bottomRight: Radius.circular(20)),
-                  child: Image.network(
-                    widget.restaurantData.restaurantImageUrl!,
-                    //'https://mrqaapzhzeqvarrtfkgv.supabase.co/storage/v1/object/public/Restaurant_Registeration//8d019a6b-b66a-466e-99b9-c66f9745ba70/Restaurant_covers',
-                    fit: BoxFit.cover,
+                          : const SizedBox.shrink(
+                              key: ValueKey('empty')), // 👈 k
+
+                      // ? Center(
+                      //     child: Column(
+                      //       crossAxisAlignment: CrossAxisAlignment.center,
+                      //       children: [
+                      //         Text(
+                      //           '${widget.restaurantData.restaurantName}',
+                      //           style: const TextStyle(
+                      //               color: Colors.black,
+                      //               fontSize: 20,
+                      //               fontWeight: FontWeight.bold),
+                      //         ),
+                      //         const SizedBox(
+                      //           height: 5,
+                      //         ),
+                      //         Center(
+                      //           child: Row(
+                      //               mainAxisAlignment: MainAxisAlignment.center,
+                      //               crossAxisAlignment: CrossAxisAlignment.center,
+                      //               children: [
+                      //                 RatingBar.builder(
+                      //                     ignoreGestures: true,
+                      //                     allowHalfRating: true,
+                      //                     initialRating: widget
+                      //                         .restaurantData.averageRatings!
+                      //                         .toDouble(),
+                      //                     itemSize: 15,
+                      //                     itemCount: 5,
+                      //                     itemBuilder: (context, index) =>
+                      //                         const Icon(
+                      //                           Icons.star,
+                      //                           size: 22,
+                      //                         ),
+                      //                     onRatingUpdate: (double) {}),
+                      //                 const SizedBox(
+                      //                   width: 5,
+                      //                 ),
+                      //                 Text(
+                      //                   '${widget.restaurantData.averageRatings}',
+                      //                   style: const TextStyle(
+                      //                       color: Colors.black, fontSize: 15),
+                      //                 ),
+                      //                 const SizedBox(
+                      //                   width: 5,
+                      //                 ),
+                      //                 ClipRRect(
+                      //                   borderRadius: BorderRadius.circular(3.5),
+                      //                   child: Center(
+                      //                       child: Container(
+                      //                     height: 7,
+                      //                     width: 7,
+                      //                     color: Colors.black,
+                      //                   )),
+                      //                 ),
+                      //                 const SizedBox(
+                      //                   width: 5,
+                      //                 ),
+                      //                 Text(
+                      //                   '${widget.restaurantData.totalRatings} Ratings',
+                      //                   style: const TextStyle(
+                      //                       color: Colors.black, fontSize: 15),
+                      //                 ),
+                      //               ]
+                      //               //  List.generate(
+                      //               //   5,
+                      //               //   (index) => Icon(
+                      //               //     Icons.star,
+                      //               //     size: 22,
+                      //               //   ),
+                      //               // )
+
+                      //               ),
+                      //         )
+                      //       ],
+                      //     ),
+                      //   )
+                    )),
+                background: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(
+                        // bottomLeft: Radius.circular(20),
+                        // bottomRight: Radius.circular(20)),
+                        20),
+                    child: Image.network(
+                      widget.restaurantData.restaurantImageUrl!,
+                      //'https://mrqaapzhzeqvarrtfkgv.supabase.co/storage/v1/object/public/Restaurant_Registeration//8d019a6b-b66a-466e-99b9-c66f9745ba70/Restaurant_covers',
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
@@ -485,46 +561,40 @@ class _SliverTabBar extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return ClipRRect(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Container(
-          height: headertitle,
-          decoration: BoxDecoration(
-              boxShadow: [
-                isshowtabbar
-                    ? BoxShadow(
-                        offset: const Offset(0.0, 2.0),
-                        color: Colors.black.withOpacity(0.3),
-                        blurRadius: 5)
-                    : const BoxShadow(color: Colors.transparent)
-              ],
-              // border: Border.symmetric(
-              //     horizontal: BorderSide(width: 5, color: Colors.black87)),
-              color: Colors.white.withOpacity(0.2),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10),
-                // bottomLeft: Radius.circular(10),
-                // bottomRight: Radius.circular(10)
-              )),
-          child: AnimatedBuilder(
-              animation: bloc,
-              builder: (_, __) {
-                return TabBar(
-                  tabs: bloc.tabs
-                      .map((e) => Rappi_tab_widget(category: e))
-                      .toList(),
-                  padding: EdgeInsets.zero,
-                  dividerColor: Colors.transparent,
-                  indicatorColor: Colors.transparent,
-                  onTap: (index) => bloc.onCategoryTab(index),
-                  isScrollable: true,
-                  controller: bloc.tabController,
-                );
-              }),
-        ),
-      ),
+    return Container(
+      height: headertitle,
+      decoration: BoxDecoration(
+          boxShadow: [
+            isshowtabbar
+                ? BoxShadow(
+                    offset: const Offset(0.0, 2.0),
+                    color: Colors.black.withOpacity(0.3),
+                    blurRadius: 5)
+                : const BoxShadow(color: Colors.transparent)
+          ],
+          // border: Border.symmetric(
+          //     horizontal: BorderSide(width: 5, color: Colors.black87)),
+          color: Colors.white,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(10),
+            topRight: Radius.circular(10),
+            // bottomLeft: Radius.circular(10),
+            // bottomRight: Radius.circular(10)
+          )),
+      child: AnimatedBuilder(
+          animation: bloc,
+          builder: (_, __) {
+            return TabBar(
+              tabs:
+                  bloc.tabs.map((e) => Rappi_tab_widget(category: e)).toList(),
+              padding: EdgeInsets.zero,
+              dividerColor: Colors.transparent,
+              indicatorColor: Colors.transparent,
+              onTap: (index) => bloc.onCategoryTab(index),
+              isScrollable: true,
+              controller: bloc.tabController,
+            );
+          }),
     );
   }
 
