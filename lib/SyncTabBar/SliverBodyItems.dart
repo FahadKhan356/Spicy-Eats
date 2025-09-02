@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
 import 'package:spicy_eats/commons/ItemQuantity.dart';
 import 'package:spicy_eats/commons/quantity_button.dart';
 import 'package:spicy_eats/features/Basket/model/basketModel.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
-import 'package:spicy_eats/features/Restaurant_Menu/screens/restaurant_menu.dart';
 
 final totalQuantityprovider = StateProvider<int?>((ref) => null);
 final quantityProvider = StateProvider<List<ItemQuantity>>((ref) => []);

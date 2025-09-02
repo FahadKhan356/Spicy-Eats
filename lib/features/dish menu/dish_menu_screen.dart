@@ -14,7 +14,7 @@ import 'package:spicy_eats/features/dish%20menu/controller/dish-menu_controller.
 import 'package:spicy_eats/features/dish%20menu/repository/dishmenu_repo.dart';
 import 'package:spicy_eats/features/dish%20menu/widget/customBottomBar.dart';
 import 'package:spicy_eats/features/dish%20menu/widget/freqDishesList.dart';
-import 'package:spicy_eats/tabexample.dart/RestaurantMenuScreen.dart';
+import 'package:spicy_eats/features/Restaurant_Menu/screens/RestaurantMenuScreen.dart';
 
 final isloaderProvider = StateProvider<bool>((ref) => false);
 var quantityPrvider = StateProvider<int>((ref) => 1);
@@ -458,6 +458,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                         right: 20,
                         left: 20,
                         child: customBottomBar(
+                            true,
                             mounted,
                             scaffoldMessengerKey,
                             false,
@@ -490,7 +491,10 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                           Navigator.pushNamed(
                             context,
                             RestaurantMenuScreen.routename,
-                            arguments: widget.restaurantData,
+                            arguments: {
+                              'restaurantData': widget.restaurantData,
+                              'initTab': false,
+                            },
                           );
                         }),
                       ),

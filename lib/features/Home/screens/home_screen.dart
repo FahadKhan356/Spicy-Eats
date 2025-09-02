@@ -19,7 +19,7 @@ import 'package:spicy_eats/features/Profile/repo/ProfileRepo.dart';
 import 'dart:math' as math;
 // import 'package:geocoding/geocoding.dart';
 import 'package:spicy_eats/main.dart';
-import 'package:spicy_eats/tabexample.dart/RestaurantMenuScreen.dart';
+import 'package:spicy_eats/features/Restaurant_Menu/screens/RestaurantMenuScreen.dart';
 
 var searchProvider = StateProvider<bool>((ref) => false);
 final pickedAddressProvider = StateProvider<AddressModel?>((ref) => null);
@@ -726,7 +726,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                       Navigator.pushNamed(
                                         context,
                                         RestaurantMenuScreen.routename,
-                                        arguments: restaurantData[index],
+                                        arguments: {
+                                          'restaurantData':
+                                              restaurantData[index],
+                                          'initTab': true,
+                                        },
                                       );
                                     },
                                     child: Padding(

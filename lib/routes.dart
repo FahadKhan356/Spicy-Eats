@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map_location_picker/flutter_map_location_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/screens/BasketScreen.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/widgets/map.dart';
@@ -20,17 +19,12 @@ import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/scree
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/paymentmethodescreen.dart';
 import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/register_restaurant.dart';
 import 'package:spicy_eats/Register%20shop/screens/shophome.dart';
-import 'package:spicy_eats/commons/restaurantModel.dart';
 import 'package:spicy_eats/features/Home/screens/home_screen.dart';
-import 'package:spicy_eats/features/Restaurant_Menu/menu_Item_detail_screen.dart';
-import 'package:spicy_eats/features/Restaurant_Menu/screens/restaurant_menu.dart';
 import 'package:spicy_eats/features/authentication/otp.dart';
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 import 'package:spicy_eats/features/dish%20menu/dishmenuVAriation.dart';
 import 'package:spicy_eats/features/orders/screens/order_screen.dart';
-import 'package:spicy_eats/main.dart';
-import 'package:spicy_eats/tabexample.dart/RestaurantMenuScreen.dart';
-import 'package:spicy_eats/tabexample.dart/tabexample.dart';
+import 'package:spicy_eats/features/Restaurant_Menu/screens/RestaurantMenuScreen.dart';
 
 Route<dynamic> generateRoutes(RouteSettings settings) {
   switch (settings.name) {
@@ -171,9 +165,11 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
       return customRouteAnimation(const PaymentScreen());
 
     case RestaurantMenuScreen.routename:
-      final restaurantData = settings.arguments as RestaurantModel;
-      return customRouteAnimation(
-          RestaurantMenuScreen(restaurantData: restaurantData));
+      final arguments = settings.arguments as Map;
+      return customRouteAnimation(RestaurantMenuScreen(
+        restaurantData: arguments['restaurantData'],
+        initTab: arguments['initTab'],
+      ));
 
     case ProfileScreen.routename:
       return MaterialPageRoute(builder: (_) => ProfileScreen());

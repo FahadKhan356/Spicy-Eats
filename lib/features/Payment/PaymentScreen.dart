@@ -6,8 +6,8 @@ import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/Payment/repo/paymentRepo.dart';
 import 'package:spicy_eats/features/Payment/utils/optionsModel.dart';
 import 'package:spicy_eats/features/Profile/repo/ProfileRepo.dart';
+import 'package:spicy_eats/features/Restaurant_Menu/screens/RestaurantMenuScreen.dart';
 import 'package:spicy_eats/features/orders/repo/orderRepo.dart';
-import 'package:spicy_eats/tabexample.dart/RestaurantMenuScreen.dart';
 
 var selectedmethodProvider = StateProvider<String?>((ref) => '');
 var onclickprovier = StateProvider<bool>((ref) => false);

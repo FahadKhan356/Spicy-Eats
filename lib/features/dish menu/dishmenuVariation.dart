@@ -9,12 +9,12 @@ import 'package:spicy_eats/Practice%20for%20cart/screens/BasketScreen.dart';
 import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
 import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
+import 'package:spicy_eats/features/Restaurant_Menu/screens/RestaurantMenuScreen.dart';
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
 import 'package:spicy_eats/features/dish%20menu/repository/dishmenu_repo.dart';
 import 'package:spicy_eats/features/dish%20menu/widget/customBottomBar.dart';
 import 'package:spicy_eats/features/dish%20menu/widget/freqDishesList.dart';
-import 'package:spicy_eats/tabexample.dart/RestaurantMenuScreen.dart';
 
 final variationListProvider = StateProvider<List<Variation>?>((ref) => null);
 final freqDishesProvider = StateProvider<List<DishData>?>((ref) => []);
@@ -130,6 +130,8 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
 
       ref.read(updatedQuantityProvider.notifier).state =
           widget.cartDish!.quantity;
+    } else {
+      ref.read(variationListProvider.notifier).state = null;
     }
     //   ref.read(variationListProvider.notifier).state =
     //       widget.cartDish!.variation;
@@ -177,6 +179,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
       await initialDataLoad(widget.dish!.dishid!);
       ref.read(isloaderProvider.notifier).state = false;
       // fetchfrequentlybought;
+      ref.read(quantityPrvider.notifier).state = 1;
 
       // fetchVariations(widget.dish!.dishid!);
       // ref.read(variationListProvider.notifier).state = null;
@@ -645,6 +648,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                         left: 20,
                         right: 20,
                         child: customBottomBar(
+                            false,
                             mounted,
                             scaffoldMessengerKey,
                             true,
@@ -659,21 +663,6 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                             widget.restaurantData!,
                             height,
                             _debouncer, onAction: () {
-                          // double totalvariation = 0.0;
-                          // for (int i = 0;
-                          //     i <
-                          //         ref
-                          //             .read(variationListProvider.notifier)
-                          //             .state!
-                          //             .length;
-                          //     i++) {
-                          //   final item = ref
-                          //       .read(variationListProvider.notifier)
-                          //       .state![i];
-                          //   totalvariation =
-                          //       item.variationPrice! * updatedQuantity;
-                          // }
-
                           debugPrint(
                               ' variation check  ${ref.read(variationListProvider.notifier).state}');
 
@@ -703,7 +692,10 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                           Navigator.pushNamed(
                             context,
                             RestaurantMenuScreen.routename,
-                            arguments: widget.restaurantData,
+                            arguments: {
+                              'restaurantData': widget.restaurantData,
+                              'initTab': false,
+                            },
                           );
                         }))
                     : const SizedBox(),

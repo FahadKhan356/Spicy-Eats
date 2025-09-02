@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
+
+final restaurantScrollProvider =
+    ChangeNotifierProvider<RestaurantScrollNotifier>((ref) {
+  return RestaurantScrollNotifier();
+});
 
 double categoryHeight = 65;
 double productHeight = 130;
 // double productsCardMargin = 60;
 // double additionalWidgetsHeight = 250;
 
-class RappiBloc with ChangeNotifier {
+class RestaurantScrollNotifier with ChangeNotifier {
   List<RapitabCategory> tabs = [];
   List<RappiItem> items = [];
   bool _listen = true;
@@ -17,7 +23,7 @@ class RappiBloc with ChangeNotifier {
 
   void init(TickerProvider ticker,
       {List<DishData>? dishes, List<Categories>? categories}) {
-    // tabController = TabController(length: categories!.length, vsync: ticker);
+    tabController = TabController(length: categories!.length, vsync: ticker);
     final Map<String, List<DishData>> categoryDishesMap = {};
     double offsetFrom = 0.0;
     double offsetTo = 0.0;
@@ -64,12 +70,20 @@ class RappiBloc with ChangeNotifier {
       }
 
       // Add the category to tabs and items
-      tabs.add(RapitabCategory(
-        category: category,
-        selected: (i == 0),
-        offsetFrom: offsetFrom, // Ensure this is set
-        offsetTo: offsetTo,
-      ));
+      if (tabController == null || tabs.length < categories.length) {
+        tabs.add(RapitabCategory(
+          category: category,
+          selected: (i == 0),
+          offsetFrom: offsetFrom, // Ensure this is set
+          offsetTo: offsetTo,
+        ));
+      }
+      // tabs.add(RapitabCategory(
+      //   category: category,
+      //   selected: (i == 0),
+      //   offsetFrom: offsetFrom, // Ensure this is set
+      //   offsetTo: offsetTo,
+      // ));
 
       items.add(RappiItem(category: category));
 

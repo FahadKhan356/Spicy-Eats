@@ -13,7 +13,7 @@ import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 import 'package:spicy_eats/features/dish%20menu/dishmenuVariation.dart';
 import 'package:spicy_eats/features/dish%20menu/repository/dishmenu_repo.dart';
 import 'package:spicy_eats/main.dart';
-import 'package:spicy_eats/tabexample.dart/RestaurantMenuScreen.dart';
+import 'package:spicy_eats/features/Restaurant_Menu/screens/RestaurantMenuScreen.dart';
 
 class BasketScreen extends ConsumerStatefulWidget {
   List<DishData> dishes = [];

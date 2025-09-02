@@ -15,6 +15,7 @@ import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
+import 'package:spicy_eats/features/Restaurant_Menu/widgets/sliverTabBar.dart';
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
 import 'package:spicy_eats/features/dish%20menu/repository/dishmenu_repo.dart';
@@ -24,9 +25,11 @@ var restaurantProvider = StateProvider<RestaurantModel?>((ref) => null);
 
 class RestaurantMenuScreen extends ConsumerStatefulWidget {
   static const String routename = 'RestaurantMenuScreen/';
+  final bool? initTab;
   final RestaurantModel restaurantData;
   const RestaurantMenuScreen({
     super.key,
+    this.initTab,
     required this.restaurantData,
   });
 
@@ -37,7 +40,7 @@ class RestaurantMenuScreen extends ConsumerStatefulWidget {
 
 class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
     with TickerProviderStateMixin {
-  final bloc = RappiBloc();
+  // final bloc = RappiBloc();
   List<DishData> dishes = [];
   List<Categories> allcategories = [];
   List<VariattionTitleModel>? titleVariationList = [];
@@ -46,23 +49,23 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
   bool cartFetched = false;
   final userId = supabaseClient.auth.currentUser!.id;
   bool isloader = true;
+
+  Future<void> initTab() async {
+    final notifier = ref.read(restaurantScrollProvider);
+
+    if (notifier.tabController?.length != notifier.tabs.length) {
+      notifier.tabController?.dispose();
+      notifier.tabController = null;
+    }
+
+    notifier.tabController =
+        TabController(length: allcategories.length, vsync: this);
+  }
+
   Future fetchcategoriesAnddishes(String restuid) async {
     setState(() {
       isloader = true;
     });
-    // await ref
-    // .read(homeControllerProvider)
-    //     .fetchDishes(restuid: widget.restaurantData.restuid)
-    //     .then((value) {
-    //   if (value != null) {
-    //     setState(() {
-    //       dishes = value;
-    //     });
-
-    //     ref.read(dishesListProvider.notifier).state = value;
-    //     ref.read(restaurantProvider.notifier).state = widget.restaurantData;
-    //   }
-    // });
 
     await ref
         .read(homeControllerProvider)
@@ -78,15 +81,19 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
         .read(homeControllerProvider)
         .fetchCategories(restuid: widget.restaurantData.restuid!)
         .then((value) {
-      if (value != null && mounted) {
+      if (value != null) {
         setState(() {
           allcategories = value.cast<Categories>();
           print(allcategories[0].category_name);
         });
       }
     });
-    setState(() {
-      isloader = false;
+
+    ref
+        .read(restaurantScrollProvider)
+        .init(this, dishes: dishes, categories: allcategories);
+    ref.read(restaurantScrollProvider).scrollController!.addListener(() {
+      _scrollListener();
     });
   }
 
@@ -94,43 +101,35 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (mounted) {
-        fetchcategoriesAnddishes(widget.restaurantData.restuid!).then((value) {
-          if (allcategories.isNotEmpty) {
-            setState(() {
-              // bloc.tabController =
-              //     TabController(length: allcategories.length, vsync: this);
-              // print('Number of tabs: ${bloc.tabs.length}');
-              // print('TabController length: ${bloc.tabController?.length}');
-              // Initialize TabController once categories are fetched
-              bloc.tabController =
-                  TabController(length: allcategories.length, vsync: this);
+        final notifier = ref.read(restaurantScrollProvider);
 
-              isTabControllerReady = true; // Mark as ready
-            });
-          }
+        await fetchcategoriesAnddishes(widget.restaurantData.restuid!);
+        setState(() {
+          isloader = false;
+        });
+        // if (notifier.tabController?.length != notifier.tabs.length ) {
+        //   notifier.tabController?.dispose();
+        //   notifier.tabController = null;
+        //   debugPrint('done null to tabcontroller');
+        // }
 
-          bloc.init(this, dishes: dishes, categories: allcategories);
-          bloc.scrollController!.addListener(() {
-            _scrollListener();
-          });
+        // notifier.tabController =
+        //     TabController(length: allcategories.length, vsync: this);
+        // debugPrint('tabcontroller to ${allcategories.length}');
+        // // initTab();
+        setState(() {
+          isTabControllerReady = true;
         });
       }
     });
 
-    // ref.read(cartReopProvider).fetchCart(ref, userId).then((value) {
-    //   cartFetched = true;
-    //   final cart = ref.read(cartProvider.notifier).state;
-    //   if (cart.isNotEmpty) {
-    //     print('${cart[0].tprice}');
-    //   }
-    // });
     ref.read(cartReopProvider).initializeCart(userId: userId, ref: ref);
   }
 
   void _scrollListener() {
-    double offset = bloc.scrollController!.offset;
+    double offset = ref.read(restaurantScrollProvider).scrollController!.offset;
     double triggerOffset = 180; // Change based on your UI
 
     if (offset >= triggerOffset && !showTabBar) {
@@ -146,19 +145,11 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
 
   @override
   Widget build(BuildContext context) {
+    final notifier = ref.watch(restaurantScrollProvider);
     final isfav =
         ref.watch(favoriteProvider)[widget.restaurantData.restuid] ?? false;
     final cart = ref.watch(cartProvider);
-    return
-        // isloader
-        //     ? const Scaffold(
-        //         body: Center(
-        //             child: CircularProgressIndicator(
-        //         color: Colors.black,
-        //         backgroundColor: Colors.black12,
-        //       )))
-        //     :
-        Scaffold(
+    return Scaffold(
       floatingActionButton: cart.isEmpty
           ? const SizedBox()
           : Align(
@@ -197,14 +188,14 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
         enabled: isloader,
         enableSwitchAnimation: true,
         child: CustomScrollView(
-          controller: bloc.scrollController,
+          controller: ref.read(restaurantScrollProvider).scrollController,
           slivers: [
             SliverAppBar(
               leadingWidth: 70,
               // stretch: true,
               centerTitle: true,
               leading: Padding(
-                padding: EdgeInsets.only(left: 20),
+                padding: const EdgeInsets.only(left: 20),
                 child: InkWell(
                   splashColor: Colors.orange,
                   // highlightColor: Colors.red,
@@ -214,7 +205,7 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
                     child: Container(
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                       ),
                       height: 50,
                       width: 50,
@@ -244,7 +235,7 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
                     child: Container(
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                       ),
                       height: 50,
                       width: 50,
@@ -335,8 +326,7 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
                                 )
                               ],
                             )
-                          : const SizedBox.shrink(
-                              key: ValueKey('empty')), // 👈 k
+                          : const SizedBox.shrink(key: ValueKey('empty')),
 
                       // ? Center(
                       //     child: Column(
@@ -417,29 +407,30 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
                 background: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(
-                        // bottomLeft: Radius.circular(20),
-                        // bottomRight: Radius.circular(20)),
-                        20),
+                    borderRadius: BorderRadius.circular(20),
                     child: Image.network(
                       widget.restaurantData.restaurantImageUrl!,
-                      //'https://mrqaapzhzeqvarrtfkgv.supabase.co/storage/v1/object/public/Restaurant_Registeration//8d019a6b-b66a-466e-99b9-c66f9745ba70/Restaurant_covers',
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
               ),
             ),
-            isTabControllerReady
-                ? SliverPersistentHeader(
+            !isTabControllerReady ||
+                    notifier.tabController == null ||
+                    notifier.tabController?.length != notifier.tabs.length
+                ? SliverToBoxAdapter(
+                    child: Text(
+                        ' notifier controller length : ${notifier.tabController?.length} tabs length : ${notifier.tabs.length} '))
+                : SliverPersistentHeader(
                     pinned: true,
-                    delegate: _SliverTabBar(
+                    delegate: SliverTabBar(
                       isshowtabbar: showTabBar,
                       isTabControllerReady: isTabControllerReady,
-                      bloc: bloc,
+                      bloc: notifier,
                     ),
-                  )
-                : const SliverToBoxAdapter(child: SizedBox()),
+                  ),
+            // : const SliverToBoxAdapter(child: SizedBox()),
             // SliverToBoxAdapter(
             //   child: Padding(
             //     padding:
@@ -512,18 +503,30 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
             // ),
             SliverList(
                 delegate: SliverChildBuilderDelegate(
-                    childCount: bloc.items.length, (context, index) {
+                    childCount: ref.read(restaurantScrollProvider).items.length,
+                    (context, index) {
               final cartIndex = cart.firstWhere(
-                  (dish) => dish.dish_id == bloc.items[index].product?.dishid,
+                  (dish) =>
+                      dish.dish_id ==
+                      ref
+                          .read(restaurantScrollProvider)
+                          .items[index]
+                          .product
+                          ?.dishid,
                   orElse: () =>
                       Cartmodel(created_at: '', dish_id: 0, quantity: 0));
-              if (bloc.items[index].isCategory) {
-                return RappiCategory(category: bloc.items[index].category);
+              if (ref.read(restaurantScrollProvider).items[index].isCategory) {
+                return RappiCategory(
+                    category: ref
+                        .read(restaurantScrollProvider)
+                        .items[index]
+                        .category);
               } else {
                 return RappiProduct(
                   restaurantData: widget.restaurantData,
                   dishes: dishes,
-                  dish: bloc.items[index].product!,
+                  dish:
+                      ref.read(restaurantScrollProvider).items[index].product!,
                   cartItem: cartIndex,
                   // qunatityindex: quantityindex,
                   userId: supabaseClient.auth.currentUser!.id,
@@ -536,71 +539,5 @@ class _RestaurantMenuScreenState extends ConsumerState<RestaurantMenuScreen>
         ),
       ),
     );
-  }
-}
-
-const double headertitle = 60;
-
-class _SliverTabBar extends SliverPersistentHeaderDelegate {
-  RappiBloc bloc;
-  bool isshowtabbar;
-  bool isTabControllerReady;
-  _SliverTabBar(
-      {required this.bloc,
-      required this.isTabControllerReady,
-      required this.isshowtabbar});
-
-  @override
-  // TODO: implement maxExtent
-  double get maxExtent => headertitle;
-
-  @override
-  // TODO: implement minExtent
-  double get minExtent => headertitle;
-
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(
-      height: headertitle,
-      decoration: BoxDecoration(
-          boxShadow: [
-            isshowtabbar
-                ? BoxShadow(
-                    offset: const Offset(0.0, 2.0),
-                    color: Colors.black.withOpacity(0.3),
-                    blurRadius: 5)
-                : const BoxShadow(color: Colors.transparent)
-          ],
-          // border: Border.symmetric(
-          //     horizontal: BorderSide(width: 5, color: Colors.black87)),
-          color: Colors.white,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(10),
-            topRight: Radius.circular(10),
-            // bottomLeft: Radius.circular(10),
-            // bottomRight: Radius.circular(10)
-          )),
-      child: AnimatedBuilder(
-          animation: bloc,
-          builder: (_, __) {
-            return TabBar(
-              tabs:
-                  bloc.tabs.map((e) => Rappi_tab_widget(category: e)).toList(),
-              padding: EdgeInsets.zero,
-              dividerColor: Colors.transparent,
-              indicatorColor: Colors.transparent,
-              onTap: (index) => bloc.onCategoryTab(index),
-              isScrollable: true,
-              controller: bloc.tabController,
-            );
-          }),
-    );
-  }
-
-  @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
-    // TODO: implement shouldRebuild
-    return true;
   }
 }

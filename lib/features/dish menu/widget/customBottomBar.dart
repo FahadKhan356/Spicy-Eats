@@ -9,6 +9,7 @@ import 'package:spicy_eats/features/dish%20menu/controller/dish-menu_controller.
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 
 Widget customBottomBar(
+    bool? isnoVariation,
     bool? mounted,
     GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey,
     bool isDishMenuScreen,
@@ -126,30 +127,63 @@ Widget customBottomBar(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     IconButton(
-                      onPressed: withvariation
-                          ? () {
-                              debugPrint('height $height width $width');
-                              ref
-                                  .read(dishMenuControllerProvider)
-                                  .increaseItemQuantity(
-                                    isCart,
-                                    debouncer,
-                                    ref,
-                                  );
-                            }
-                          : () {
-                              if (scaffoldMessengerKey!.currentState != null) {
-                                scaffoldMessengerKey.currentState!.showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                        'Please choose required Variation'),
-                                    behavior: SnackBarBehavior.floating,
-                                    margin: EdgeInsets.only(
-                                        bottom: 100, left: 20, right: 20),
-                                  ),
-                                );
-                              }
-                            },
+                      onPressed: () {
+                        if (isnoVariation!) {
+                          debugPrint('height $height width $width');
+                          ref
+                              .read(dishMenuControllerProvider)
+                              .increaseItemQuantity(
+                                isCart,
+                                debouncer,
+                                ref,
+                              );
+                        } else if (!isnoVariation && withvariation) {
+                          debugPrint('height $height width $width');
+                          ref
+                              .read(dishMenuControllerProvider)
+                              .increaseItemQuantity(
+                                isCart,
+                                debouncer,
+                                ref,
+                              );
+                        } else {
+                          if (scaffoldMessengerKey!.currentState != null) {
+                            scaffoldMessengerKey.currentState!.showSnackBar(
+                              const SnackBar(
+                                content:
+                                    Text('Please choose required Variation'),
+                                behavior: SnackBarBehavior.floating,
+                                margin: EdgeInsets.only(
+                                    bottom: 100, left: 20, right: 20),
+                              ),
+                            );
+                          }
+                        }
+                      },
+                      // withvariation
+                      //     ? () {
+                      //         debugPrint('height $height width $width');
+                      //         ref
+                      //             .read(dishMenuControllerProvider)
+                      //             .increaseItemQuantity(
+                      //               isCart,
+                      //               debouncer,
+                      //               ref,
+                      //             );
+                      //       }
+                      //     : () {
+                      //         if (scaffoldMessengerKey!.currentState != null) {
+                      //           scaffoldMessengerKey.currentState!.showSnackBar(
+                      //             const SnackBar(
+                      //               content: Text(
+                      //                   'Please choose required Variation'),
+                      //               behavior: SnackBarBehavior.floating,
+                      //               margin: EdgeInsets.only(
+                      //                   bottom: 100, left: 20, right: 20),
+                      //             ),
+                      //           );
+                      //         }
+                      //       },
                       icon: Icon(
                         Icons.add,
                         size: width * 0.045,
@@ -177,30 +211,64 @@ Widget customBottomBar(
                           ),
                     const SizedBox(width: 5),
                     IconButton(
-                      onPressed: withvariation
-                          ? () {
-                              ref
-                                  .read(dishMenuControllerProvider)
-                                  .decreaseItemQuantity(
-                                    isCart,
-                                    debouncer,
-                                    ref,
-                                  );
-                            }
-                          : () {
-                              if (mounted! &&
-                                  scaffoldMessengerKey!.currentState != null) {
-                                scaffoldMessengerKey.currentState!.showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                        'Please choose required Variation'),
-                                    behavior: SnackBarBehavior.floating,
-                                    margin: EdgeInsets.only(
-                                        bottom: 100, left: 20, right: 20),
-                                  ),
-                                );
-                              }
-                            },
+                      onPressed: () {
+                        if (isnoVariation!) {
+                          debugPrint('height $height width $width');
+                          ref
+                              .read(dishMenuControllerProvider)
+                              .decreaseItemQuantity(
+                                isCart,
+                                debouncer,
+                                ref,
+                              );
+                        } else if (!isnoVariation && withvariation) {
+                          debugPrint('height $height width $width');
+                          ref
+                              .read(dishMenuControllerProvider)
+                              .decreaseItemQuantity(
+                                isCart,
+                                debouncer,
+                                ref,
+                              );
+                        } else {
+                          if (scaffoldMessengerKey!.currentState != null) {
+                            scaffoldMessengerKey.currentState!.showSnackBar(
+                              const SnackBar(
+                                content:
+                                    Text('Please choose required Variation'),
+                                behavior: SnackBarBehavior.floating,
+                                margin: EdgeInsets.only(
+                                    bottom: 100, left: 20, right: 20),
+                              ),
+                            );
+                          }
+                        }
+                      },
+
+                      // withvariation
+                      // ? () {
+                      //     ref
+                      //         .read(dishMenuControllerProvider)
+                      //         .decreaseItemQuantity(
+                      //           isCart,
+                      //           debouncer,
+                      //           ref,
+                      //         );
+                      //   }
+                      // : () {
+                      //     if (mounted! &&
+                      //         scaffoldMessengerKey!.currentState != null) {
+                      //       scaffoldMessengerKey.currentState!.showSnackBar(
+                      //         const SnackBar(
+                      //           content: Text(
+                      //               'Please choose required Variation'),
+                      //           behavior: SnackBarBehavior.floating,
+                      //           margin: EdgeInsets.only(
+                      //               bottom: 100, left: 20, right: 20),
+                      //         ),
+                      //       );
+                      //     }
+                      //   },
                       icon: Icon(
                         Icons.remove,
                         size: width * 0.050,
