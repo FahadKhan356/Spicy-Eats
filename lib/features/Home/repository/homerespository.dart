@@ -14,7 +14,7 @@ var homeRepositoryController = Provider((ref) => HomeRepository());
 class HomeRepository {
   Future<List<DishData>?> fetchDishes({
     required String? restuid,
-    required ProviderRef ref,
+    required Ref ref,
   }) async {
     List<DishData>? dishList;
     try {
@@ -42,11 +42,7 @@ class HomeRepository {
   Future<List<Categories>?> fetchcategorieslist(
       {required String? restuid}) async {
     List<Categories>? categories;
-    if (restuid == null) {
-      print('$restuid its null');
-    } else {
-      print('$restuid rest uid value');
-    }
+
     try {
       List<dynamic> response = await supabaseClient
           .from('categories')
@@ -59,10 +55,7 @@ class HomeRepository {
       categories = response.map((e) => Categories.fromjson(e)).toList();
       return categories;
     } catch (e) {
-      print('$e this is categories');
-      //print('${ref.read(rest_ui_Provider)} this is rest uid in the homerepo');
-
-      print('$e....we are in fetchcategories catch block');
+      debugPrint(' Failed Fetching Categories : $e ');
     }
     return null;
   }

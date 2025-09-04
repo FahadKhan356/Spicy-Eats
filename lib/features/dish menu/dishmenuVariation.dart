@@ -665,6 +665,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                             _debouncer, onAction: () {
                           debugPrint(
                               ' variation check  ${ref.read(variationListProvider.notifier).state}');
+                          ref.read(isloaderProvider.notifier).state = true;
 
                           ref.read(dishMenuRepoProvider).dishMenuCrud(
                               cart: widget.cartDish!,
@@ -692,10 +693,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                           Navigator.pushNamed(
                             context,
                             RestaurantMenuScreen.routename,
-                            arguments: {
-                              'restaurantData': widget.restaurantData,
-                              'initTab': false,
-                            },
+                            arguments: widget.restaurantData,
                           );
                         }))
                     : const SizedBox(),

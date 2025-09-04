@@ -473,6 +473,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                             widget.restaurantData!,
                             height,
                             _debouncer, onAction: () {
+                          ref.read(isloaderProvider.notifier).state = true;
                           ref.read(dishMenuRepoProvider).dishesCrud(
                               cart: widget.cartDish!,
                               context: context,
@@ -491,10 +492,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                           Navigator.pushNamed(
                             context,
                             RestaurantMenuScreen.routename,
-                            arguments: {
-                              'restaurantData': widget.restaurantData,
-                              'initTab': false,
-                            },
+                            arguments: widget.restaurantData,
                           );
                         }),
                       ),

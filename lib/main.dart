@@ -8,6 +8,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:spicy_eats/commons/ConfirmLocation.dart';
 import 'package:spicy_eats/features/Favorites/Screens/FavoriteScrren.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
+import 'package:spicy_eats/features/Home/screens/fooddeliver.dart';
+import 'package:spicy_eats/features/Restaurant_Menu/screens/dummyrestdetailscreen.dart';
+import 'package:spicy_eats/features/Restaurant_Menu/screens/dummyrestscreen.dart';
 import 'package:spicy_eats/features/Sqlight%20Database/Cart/services/CartLocalDatabase.dart';
 import 'package:spicy_eats/features/Sqlight%20Database/Dishes/services/DishesLocalDataBase.dart';
 import 'package:spicy_eats/features/Sqlight%20Database/Restaurants/services/RestaurantLocalDataBase.dart';
@@ -136,7 +139,15 @@ class _MyAppState extends ConsumerState<MyApp> {
             //drawerTheme: DrawerThemeData(backgroundColor: Colors.),
             tabBarTheme: const TabBarTheme(),
             appBarTheme: const AppBarTheme(backgroundColor: Colors.white)),
-        home: const SplashScreen()
+        home:
+            // FoodDeliveryScreen()
+
+            const SplashScreen()
+        // RestaurantMenu()
+
+        // PerfectBlurGlassEffect(),
+
+        // const SplashScreen()
 
         //     Confirmlocation(
         //   locationResult: null,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
+import 'package:spicy_eats/features/Restaurant_Menu/widgets/GlassIconButton.dart';
+import 'package:spicy_eats/main.dart';
 
 class RestaurantContainer extends ConsumerStatefulWidget {
   final String name;
@@ -34,7 +36,7 @@ class _RestaurantContainerState extends ConsumerState<RestaurantContainer> {
   Widget build(BuildContext context) {
     bool isFav = ref.watch(favoriteProvider)[widget.restid] ?? false;
 
-    var size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
     return Padding(
       padding: const EdgeInsets.only(top: 5),
       child: Column(
@@ -51,43 +53,34 @@ class _RestaurantContainerState extends ConsumerState<RestaurantContainer> {
                       errorBuilder: (context, obj, stack) =>
                           const Icon(Icons.image),
                       widget.image,
-                      // 'https://assets.epicurious.com/photos/62f16ed5fe4be95d5a460eed/1:1/w_4318,h_4318,c_limit/RoastChicken_RECIPE_080420_37993.jpg',
                       fit: BoxFit.cover,
                       width: double.maxFinite,
                     ),
                   ),
                   Positioned(
-                    right: size.width * 0.03,
-                    top: 20,
-                    child: InkWell(
-                      onTap: () => ref
-                          .read(registershoprepoProvider)
-                          .togglefavorites(
-                              userid: widget.userid,
-                              restid: widget.restid,
-                              ref: ref,
-                              context: context),
-                      child: Container(
-                          // color: Colors.white,
-                          child: isFav
-                              ? Icon(
-                                  Icons.favorite,
-                                  size: size.width * 0.06,
-                                  color: Colors.orange[900],
-                                )
-                              : Icon(
-                                  Icons.favorite_outline_rounded,
-                                  size: size.width * 0.06,
-                                  color: Colors.white,
-                                )),
-                    ),
-                  )
+                      right: size.width * 0.03,
+                      top: size.height * 0.02,
+                      child: GlassIconButton(
+                        height: 50,
+                        width: 50,
+                        icon: isFav
+                            ? Icons.favorite
+                            : Icons.favorite_outline_sharp,
+                        iconColor: isFav ? Colors.orange[900] : Colors.white,
+                        onTap: () => ref
+                            .read(registershoprepoProvider)
+                            .togglefavorites(
+                                userid: supabaseClient.auth.currentUser!.id,
+                                restid: widget.restid,
+                                ref: ref,
+                                context: context),
+                      ))
                 ],
               ),
             ),
           ),
-          const SizedBox(
-            height: 10,
+          SizedBox(
+            height: size.height * 0.015,
           ),
           Row(
             children: [
@@ -105,8 +98,13 @@ class _RestaurantContainerState extends ConsumerState<RestaurantContainer> {
                       ),
 
                       Row(children: [
+                        Icon(
+                          Icons.access_time_sharp,
+                          color: Colors.black54,
+                          size: size.width * 0.05,
+                        ),
                         Text(
-                          "\$${widget.price}",
+                          "${widget.mindeliverytime}-${widget.maxdeliverytime} mins",
                           style: TextStyle(
                               fontSize: size.width * 0.035,
                               color: Colors.black54,
@@ -116,7 +114,7 @@ class _RestaurantContainerState extends ConsumerState<RestaurantContainer> {
                           width: 10,
                         ),
                         Text(
-                          "${widget.mindeliverytime}-${widget.maxdeliverytime}",
+                          "\$${widget.price}",
                           style: TextStyle(
                               fontSize: size.width * 0.035,
                               color: Colors.black54,
@@ -152,8 +150,7 @@ class _RestaurantContainerState extends ConsumerState<RestaurantContainer> {
                 height: size.width * 0.1,
                 width: size.width * 0.1,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    color: Colors.orange[900]),
+                    shape: BoxShape.circle, color: Colors.orange[900]),
                 child: Center(
                   child: Text(
                     widget.ratings.toString(),

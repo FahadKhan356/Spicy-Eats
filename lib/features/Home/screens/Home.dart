@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/widgets/Lists.dart';
+import 'package:spicy_eats/features/Home/screens/customnavbar.dart';
 import 'package:spicy_eats/main.dart';
 
 var currentIndexProvider = StateProvider<int>((ref) => 0);
@@ -15,24 +16,33 @@ class Home extends ConsumerStatefulWidget {
 }
 
 class _HomeState extends ConsumerState<Home> {
+  int _selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
     var currentIndex = ref.watch(currentIndexProvider);
     return Scaffold(
         body: screen[currentIndex],
         bottomNavigationBar: supabaseClient.auth.currentSession != null
-            ? BottomNavigationBar(
-                items: bitems,
-                onTap: (index) {
+            ? AnimatedNavBar(
+                selectedIndex: currentIndex,
+                onItemTapped: (index) {
                   ref
                       .read(currentIndexProvider.notifier)
                       .update((state) => index);
                 },
-                currentIndex: currentIndex,
-                selectedItemColor: Colors.black,
-                unselectedItemColor: Colors.black38,
-                elevation: 2,
               )
+            //  BottomNavigationBar(
+            //     items: bitems,
+            //     onTap: (index) {
+            //       ref
+            //           .read(currentIndexProvider.notifier)
+            //           .update((state) => index);
+            //     },
+            //     currentIndex: currentIndex,
+            //     selectedItemColor: Colors.black,
+            //     unselectedItemColor: Colors.black38,
+            //     elevation: 2,
+            //   )
             : const CircularProgressIndicator());
   }
 }

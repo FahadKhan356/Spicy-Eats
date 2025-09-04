@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/authentication/passwordless_signup.dart';
+import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 import 'package:spicy_eats/main.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -44,6 +45,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(isloaderProvider.notifier).state = true;
+    });
     onPersistence();
   }
 

@@ -24,53 +24,56 @@ class RestaurantModel {
   String? restaurantImageUrl;
   String? restaurantLogoImageUrl;
   double? platformfee;
+  List<int>? cuisineIds;
 
-  RestaurantModel copywith(
-      {String? restaurantName,
-      double? deliveryFee,
-      int? minTime,
-      int? maxTime,
-      double? averageRatings,
-      int? totalRatings,
-      String? address,
-      int? phoneNumber,
-      String? deliveryArea,
-      String? postalCode,
-      int? idNumber,
-      String? description,
-      double? lat,
-      double? long,
-      String? email,
-      String? idFirstName,
-      String? idLastName,
-      String? idPhotoUrl,
-      String? userId,
-      String? paymentMethod,
-      Map<String, Map<String, dynamic>>? openingHours,
-      String? restaurantImageUrl}) {
+  RestaurantModel copywith({
+    String? restaurantName,
+    double? deliveryFee,
+    int? minTime,
+    int? maxTime,
+    double? averageRatings,
+    int? totalRatings,
+    String? address,
+    int? phoneNumber,
+    String? deliveryArea,
+    String? postalCode,
+    int? idNumber,
+    String? description,
+    double? lat,
+    double? long,
+    String? email,
+    String? idFirstName,
+    String? idLastName,
+    String? idPhotoUrl,
+    String? userId,
+    String? paymentMethod,
+    Map<String, Map<String, dynamic>>? openingHours,
+    String? restaurantImageUrl,
+    List<int>? cuisineIds,
+  }) {
     return RestaurantModel(
-      phoneNumber: phoneNumber ?? this.phoneNumber,
-      address: address ?? this.address,
-      restaurantName: restaurantName ?? this.restaurantName,
-      averageRatings: averageRatings ?? this.averageRatings,
-      totalRatings: totalRatings ?? this.totalRatings,
-      email: email ?? this.email,
-      lat: lat ?? this.lat,
-      long: long ?? this.long,
-      description: description ?? this.description,
-      deliveryFee: deliveryFee ?? this.deliveryFee,
-      minTime: minTime ?? this.minTime,
-      maxTime: maxTime ?? this.maxTime,
-      deliveryArea: deliveryArea ?? this.deliveryArea,
-      postalCode: postalCode ?? this.postalCode,
-      idNumber: idNumber ?? this.idNumber,
-      idFirstName: idFirstName ?? this.idFirstName,
-      idLastName: idLastName ?? this.idLastName,
-      idPhotoUrl: idPhotoUrl ?? this.idPhotoUrl,
-      openingHours: openingHours ?? this.openingHours,
-      paymentMethod: paymentMethod ?? this.paymentMethod,
-      restaurantImageUrl: restaurantImageUrl ?? this.restaurantImageUrl,
-    );
+        phoneNumber: phoneNumber ?? this.phoneNumber,
+        address: address ?? this.address,
+        restaurantName: restaurantName ?? this.restaurantName,
+        averageRatings: averageRatings ?? this.averageRatings,
+        totalRatings: totalRatings ?? this.totalRatings,
+        email: email ?? this.email,
+        lat: lat ?? this.lat,
+        long: long ?? this.long,
+        description: description ?? this.description,
+        deliveryFee: deliveryFee ?? this.deliveryFee,
+        minTime: minTime ?? this.minTime,
+        maxTime: maxTime ?? this.maxTime,
+        deliveryArea: deliveryArea ?? this.deliveryArea,
+        postalCode: postalCode ?? this.postalCode,
+        idNumber: idNumber ?? this.idNumber,
+        idFirstName: idFirstName ?? this.idFirstName,
+        idLastName: idLastName ?? this.idLastName,
+        idPhotoUrl: idPhotoUrl ?? this.idPhotoUrl,
+        openingHours: openingHours ?? this.openingHours,
+        paymentMethod: paymentMethod ?? this.paymentMethod,
+        restaurantImageUrl: restaurantImageUrl ?? this.restaurantImageUrl,
+        cuisineIds: cuisineIds ?? this.cuisineIds);
   }
 
   RestaurantModel({
@@ -98,6 +101,7 @@ class RestaurantModel {
     this.restuid,
     this.restaurantLogoImageUrl,
     this.platformfee,
+    this.cuisineIds,
   });
 
   Map<String, dynamic> toJson() {
@@ -126,6 +130,7 @@ class RestaurantModel {
       'rest_uid': restuid,
       'restLogoUrl': restaurantLogoImageUrl,
       'platformfee': platformfee,
+      'cuisineIds': cuisineIds,
     };
   }
 
@@ -163,6 +168,8 @@ class RestaurantModel {
       restuid: json['rest_uid'],
       restaurantLogoImageUrl: json['restLogoUrl'],
       platformfee: json['platformfee'] ?? 0.0,
+      cuisineIds:
+          json['cuisineIds'] != null ? List<int>.from(json['cuisineIds']) : [],
     );
   }
 }

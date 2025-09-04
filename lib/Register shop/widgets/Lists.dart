@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:spicy_eats/features/Favorites/Screens/FavoriteScrren.dart';
 import 'package:spicy_eats/features/account/screen/accountscreen.dart';
 import 'package:spicy_eats/features/dashboard/DrawerScreens/Menu/MenuScreen.dart';
 import 'package:spicy_eats/Register%20shop/screens/shophome.dart';
 import 'package:spicy_eats/Register%20shop/widgets/drawerRow.dart';
 import 'package:spicy_eats/commons/country.dart';
 import 'package:spicy_eats/features/Home/screens/home_screen.dart';
+import 'package:spicy_eats/features/orders/screens/order_screen.dart';
 
 final List<DrawerRow> drawerList = [
   // DrawerRow(text: 'Home', icon: Icons.home),
@@ -25,9 +27,9 @@ List screens = [
 ];
 List screen = [
   const HomeScreen(''),
-
-  ShopHome(),
+  const Favoritescrren(),
   const AccountScreen(),
+  const OrdersScreen(),
   // const Center(child: Text("Accont screen comming soon"))
 ];
 List<BottomNavigationBarItem> bitems = [

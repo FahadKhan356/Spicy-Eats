@@ -165,11 +165,9 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
       return customRouteAnimation(const PaymentScreen());
 
     case RestaurantMenuScreen.routename:
-      final arguments = settings.arguments as Map;
-      return customRouteAnimation(RestaurantMenuScreen(
-        restaurantData: arguments['restaurantData'],
-        initTab: arguments['initTab'],
-      ));
+      final restaurantData = settings.arguments as RestaurantModel;
+      return customRouteAnimation(
+          RestaurantMenuScreen(restaurantData: restaurantData));
 
     case ProfileScreen.routename:
       return MaterialPageRoute(builder: (_) => ProfileScreen());

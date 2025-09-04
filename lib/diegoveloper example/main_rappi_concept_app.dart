@@ -291,38 +291,38 @@ import 'package:spicy_eats/features/dish%20menu/repository/dishmenu_repo.dart';
 //   }
 // }
 
-class Rappi_tab_widget extends StatefulWidget {
-  RapitabCategory? category;
-  Rappi_tab_widget({super.key, required this.category});
+// class Rappi_tab_widget extends StatefulWidget {
+//   RapitabCategory? category;
+//   Rappi_tab_widget({super.key, required this.category});
 
-  @override
-  State<Rappi_tab_widget> createState() => _Rapp_tab_widgetState();
-}
+//   @override
+//   State<Rappi_tab_widget> createState() => _Rapp_tab_widgetState();
+// }
 
-class _Rapp_tab_widgetState extends State<Rappi_tab_widget> {
-  @override
-  Widget build(BuildContext context) {
-    final isSelected = widget.category!.selected ?? false;
-    return Card(
-      margin: const EdgeInsets.all(5),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      borderOnForeground: false,
-      color: isSelected ? Colors.black : Colors.white,
-      elevation: isSelected ? 6 : 0,
-      shadowColor: Colors.black12,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text(
-          widget.category!.category.category_name.toString(),
-          style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-              color: isSelected ? Colors.white : Colors.black),
-        ),
-      ),
-    );
-  }
-}
+// class _Rapp_tab_widgetState extends State<Rappi_tab_widget> {
+//   @override
+//   Widget build(BuildContext context) {
+//     final isSelected = widget.category!.selected ?? false;
+//     return Card(
+//       margin: const EdgeInsets.all(5),
+//       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+//       borderOnForeground: false,
+//       color: isSelected ? Colors.black : Colors.white,
+//       elevation: isSelected ? 6 : 0,
+//       shadowColor: Colors.black12,
+//       child: Padding(
+//         padding: const EdgeInsets.all(8.0),
+//         child: Text(
+//           widget.category!.category.category_name.toString(),
+//           style: TextStyle(
+//               fontSize: 12,
+//               fontWeight: FontWeight.normal,
+//               color: isSelected ? Colors.white : Colors.black),
+//         ),
+//       ),
+//     );
+//   }
+// }
 //  Rappi_tab_widget({RapitabCategory? category}) {
 //   return Card(
 //     margin: const EdgeInsets.all(5),
@@ -345,99 +345,99 @@ class _Rapp_tab_widgetState extends State<Rappi_tab_widget> {
 // }
 
 // ignore: non_constant_identifier_names
-class RappiCategory extends StatelessWidget {
-  const RappiCategory({super.key, required this.category});
-  final Categories? category;
+// class RappiCategory extends StatelessWidget {
+//   const RappiCategory({super.key, required this.category});
+//   final Categories? category;
 
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-        // color: Colors.red,
-        height: categoryHeight,
-        width: double.maxFinite,
-        child: Card(
-            elevation: 0,
-            color: Colors.red,
-            child: Center(
-              child: Text(
-                category!.category_name,
-                style:
-                    const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-            )));
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return SizedBox(
+//         // color: Colors.red,
+//         height: categoryHeight,
+//         width: double.maxFinite,
+//         child: Card(
+//             elevation: 0,
+//             color: Colors.white,
+//             child: Center(
+//               child: Text(
+//                 category!.category_name,
+//                 style:
+//                     const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+//               ),
+//             )));
+//   }
+// }
 
-// ignore: non_constant_identifier_names
-class RappiProduct extends ConsumerStatefulWidget {
-  RappiProduct({
-    super.key,
-    required this.dishes,
-    required this.dish,
-    this.cartItem,
-    this.qunatityindex,
-    this.userId,
-    this.titleVariationList,
-    // this.variattionTitle
-    required this.restaurantData,
-  });
-  List<DishData> dishes = [];
-  final DishData dish;
-  final Cartmodel? cartItem;
-  final int? qunatityindex;
-  final String? userId;
-  List<VariattionTitleModel>? titleVariationList;
-  RestaurantModel? restaurantData;
-  // VariattionTitleModel? variattionTitle;
+// // ignore: non_constant_identifier_names
+// class RappiProduct extends ConsumerStatefulWidget {
+//   RappiProduct({
+//     super.key,
+//     required this.dishes,
+//     required this.dish,
+//     this.cartItem,
+//     this.qunatityindex,
+//     this.userId,
+//     this.titleVariationList,
+//     // this.variattionTitle
+//     required this.restaurantData,
+//   });
+//   List<DishData> dishes = [];
+//   final DishData dish;
+//   final Cartmodel? cartItem;
+//   final int? qunatityindex;
+//   final String? userId;
+//   List<VariattionTitleModel>? titleVariationList;
+//   RestaurantModel? restaurantData;
+//   // VariattionTitleModel? variattionTitle;
 
-  @override
-  ConsumerState<RappiProduct> createState() => _RappiProductState();
-}
+//   @override
+//   ConsumerState<RappiProduct> createState() => _RappiProductState();
+// }
 
-class _RappiProductState extends ConsumerState<RappiProduct> {
-  @override
-  Widget build(
-    BuildContext context,
-  ) {
-    return InkWell(
-      onTap: () {
-        ref.read(isloaderProvider.notifier).state = true;
-        widget.dish.isVariation
-            ? Navigator.pushNamed(context, DishMenuVariation.routename,
-                arguments: {
-                    'dishes': widget.dishes,
-                    'dish': widget.dish,
-                    'iscart': false,
-                    'cartdish': widget.cartItem,
-                    'isbasket': false,
-                    'restaurantdata': widget.restaurantData,
-                    'isdishscreen': true,
-                  })
-            : Navigator.pushNamed(context, DishMenuScreen.routename,
-                arguments: {
-                    'restaurantdata': widget.restaurantData,
-                    'dish': widget.dish,
-                    'iscart': false,
-                    'cartdish': widget.cartItem,
-                    'isbasket': false,
-                    'isdishscreen': true,
-                  });
-      },
-      child: CartCard(
-        elevation: 0,
-        cardColor: null,
-        dish: widget.dish,
-        imageHeight: 140,
-        imageWidth: 120,
-        cartItem: widget.cartItem!,
-        userId: widget.userId,
-        addbuttonHeight: 40,
-        buttonIncDecHeight: 40,
-        buttonIncDecWidth: 40,
-        quantityIndex: widget.qunatityindex,
-        titleVariationList: widget.titleVariationList,
-        restaurantdata: widget.restaurantData!,
-      ),
-    );
-  }
-}
+// class _RappiProductState extends ConsumerState<RappiProduct> {
+//   @override
+//   Widget build(
+//     BuildContext context,
+//   ) {
+//     return InkWell(
+//       onTap: () {
+//         ref.read(isloaderProvider.notifier).state = true;
+//         widget.dish.isVariation
+//             ? Navigator.pushNamed(context, DishMenuVariation.routename,
+//                 arguments: {
+//                     'dishes': widget.dishes,
+//                     'dish': widget.dish,
+//                     'iscart': false,
+//                     'cartdish': widget.cartItem,
+//                     'isbasket': false,
+//                     'restaurantdata': widget.restaurantData,
+//                     'isdishscreen': true,
+//                   })
+//             : Navigator.pushNamed(context, DishMenuScreen.routename,
+//                 arguments: {
+//                     'restaurantdata': widget.restaurantData,
+//                     'dish': widget.dish,
+//                     'iscart': false,
+//                     'cartdish': widget.cartItem,
+//                     'isbasket': false,
+//                     'isdishscreen': true,
+//                   });
+//       },
+//       child: CartCard(
+//         elevation: 0,
+//         cardColor: null,
+//         dish: widget.dish,
+//         imageHeight: 140,
+//         imageWidth: 120,
+//         cartItem: widget.cartItem!,
+//         userId: widget.userId,
+//         addbuttonHeight: 40,
+//         buttonIncDecHeight: 40,
+//         buttonIncDecWidth: 40,
+//         quantityIndex: widget.qunatityindex,
+//         titleVariationList: widget.titleVariationList,
+//         restaurantdata: widget.restaurantData!,
+//       ),
+//     );
+//   }
+// }
