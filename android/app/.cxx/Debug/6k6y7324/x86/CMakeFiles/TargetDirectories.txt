@@ -1,0 +1,2 @@
+D:/flutter projects/Spicy-Eats/android/app/.cxx/Debug/6k6y7324/x86/CMakeFiles/edit_cache.dir
+D:/flutter projects/Spicy-Eats/android/app/.cxx/Debug/6k6y7324/x86/CMakeFiles/rebuild_cache.dir
