@@ -21,14 +21,14 @@ class _AnimatedNavBarState extends State<AnimatedNavBar> {
       // <- keeps it above system navigation
       child: Container(
         height: 70, // ✅ fixed height like normal nav bar
-        margin: const EdgeInsets.all(12),
+        margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
         decoration: BoxDecoration(
           color: Colors.black,
           borderRadius: BorderRadius.circular(30),
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _buildNavItem(index: 0, icon: Icons.explore, label: "Explore"),
             _buildNavItem(index: 1, icon: Icons.favorite, label: "Favorites"),

@@ -120,107 +120,102 @@ class _CustomBottomSheetState extends ConsumerState<CustomBottomSheet> {
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: widget.allAdress.length,
                 itemBuilder: (context, index) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 10),
-                      const Divider(
-                        height: 2,
-                        color: Colors.black26,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
-                        child: Text(
-                          widget.allAdress[index]?.label ?? '',
-                          style: TextStyle(
-                              overflow: TextOverflow.visible,
-                              fontWeight: FontWeight.bold,
-                              fontSize: width * 0.04),
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
+                  return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Radio<int>(
-                                fillColor:
-                                    WidgetStateProperty.all(Colors.orange[900]),
-                                value:
-                                    index, // each radio gets its index as value
-                                groupValue: selectedIndex, // selected one
-                                onChanged: (value) {
-                                  // setStateModal(() {
-                                  //   selectedAddressIndex = value!;
-                                  // });
-                                  ref
-                                      .read(selectedIndexProvider.notifier)
-                                      .state = value;
-
-                                  ref
-                                      .read(pickedAddressProvider.notifier)
-                                      .state = widget.allAdress[value!];
-
-                                  Navigator.pop(context);
-                                },
-                              ),
-                              InkWell(
-                                  onTap: () {
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 10),
+                                child: Radio<int>(
+                                  fillColor: WidgetStateProperty.all(
+                                      Colors.orange[900]),
+                                  value:
+                                      index, // each radio gets its index as value
+                                  groupValue: selectedIndex, // selected one
+                                  onChanged: (value) {
                                     // setStateModal(() {
-                                    //   selectedIndex =
-                                    //       index; // also allow tap on row
+                                    //   selectedAddressIndex = value!;
                                     // });
                                     ref
                                         .read(selectedIndexProvider.notifier)
-                                        .state = index;
+                                        .state = value;
 
                                     ref
                                         .read(pickedAddressProvider.notifier)
-                                        .state = widget.allAdress[index];
+                                        .state = widget.allAdress[value!];
+
                                     Navigator.pop(context);
                                   },
-                                  child: Text(
-                                    '${widget.allAdress[index]?.address} + ${widget.allAdress[index]!.id}',
-                                    style: TextStyle(
-                                        fontSize: width * 0.03,
-                                        overflow: TextOverflow.visible,
-                                        fontWeight: selectedIndex == index
-                                            ? FontWeight.bold
-                                            : FontWeight.normal),
-                                  )),
-                            ],
-                          ),
-                          widget.isEdit!
-                              ? IconButton(
-                                  onPressed: () {
-                                    var locationresult = LocationResult(
-                                        latitude: widget.allAdress[index]!.lat,
-                                        longitude:
-                                            widget.allAdress[index]!.long,
-                                        completeAddress:
-                                            widget.allAdress[index]!.address,
-                                        placemark: null,
-                                        locationName: '');
-                                    Navigator.pushNamed(
-                                        context, Confirmlocation.routename,
-                                        arguments: {
-                                          'locationResult': locationresult,
-                                          'isEdit': true,
-                                          'addressModel':
-                                              widget.allAdress[index],
-                                        });
-                                  },
-                                  icon: Icon(
-                                    Icons.edit_location_alt,
-                                    color: Colors.orange[900],
-                                  ))
-                              : const SizedBox(),
-                        ],
-                      ),
-                    ],
-                  );
+                                ),
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  widget.allAdress[index]?.label != null ||
+                                          widget.allAdress[index]!.label!
+                                              .isNotEmpty
+                                      ? Text(
+                                          widget.allAdress[index]?.label ?? '',
+                                          style: TextStyle(
+                                              overflow: TextOverflow.visible,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: width * 0.04),
+                                        )
+                                      : const SizedBox(),
+                                  InkWell(
+                                      onTap: () {
+                                        ref
+                                            .read(
+                                                selectedIndexProvider.notifier)
+                                            .state = index;
+
+                                        ref
+                                            .read(
+                                                pickedAddressProvider.notifier)
+                                            .state = widget.allAdress[index];
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text(
+                                        '${widget.allAdress[index]?.address} ',
+                                        style: TextStyle(
+                                            fontSize: width * 0.03,
+                                            overflow: TextOverflow.visible,
+                                            fontWeight: selectedIndex == index
+                                                ? FontWeight.bold
+                                                : FontWeight.normal),
+                                      )),
+                                ],
+                              ),
+                            ]),
+                        widget.isEdit!
+                            ? IconButton(
+                                onPressed: () {
+                                  var locationresult = LocationResult(
+                                      latitude: widget.allAdress[index]!.lat,
+                                      longitude: widget.allAdress[index]!.long,
+                                      completeAddress:
+                                          widget.allAdress[index]!.address,
+                                      placemark: null,
+                                      locationName: '');
+                                  Navigator.pushNamed(
+                                      context, Confirmlocation.routename,
+                                      arguments: {
+                                        'locationResult': locationresult,
+                                        'isEdit': true,
+                                        'addressModel': widget.allAdress[index],
+                                      });
+                                },
+                                icon: Icon(
+                                  Icons.edit_location_alt,
+                                  color: Colors.orange[900],
+                                ))
+                            : const SizedBox(),
+                      ]);
                 },
               ),
               const SizedBox(height: 10),

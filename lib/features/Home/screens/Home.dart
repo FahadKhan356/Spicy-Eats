@@ -21,15 +21,20 @@ class _HomeState extends ConsumerState<Home> {
   Widget build(BuildContext context) {
     var currentIndex = ref.watch(currentIndexProvider);
     return Scaffold(
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         body: screen[currentIndex],
-        bottomNavigationBar: supabaseClient.auth.currentSession != null
-            ? AnimatedNavBar(
-                selectedIndex: currentIndex,
-                onItemTapped: (index) {
-                  ref
-                      .read(currentIndexProvider.notifier)
-                      .update((state) => index);
-                },
+        floatingActionButton: supabaseClient.auth.currentSession != null
+            ? Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: AnimatedNavBar(
+                  selectedIndex: currentIndex,
+                  onItemTapped: (index) {
+                    ref
+                        .read(currentIndexProvider.notifier)
+                        .update((state) => index);
+                  },
+                ),
               )
             //  BottomNavigationBar(
             //     items: bitems,

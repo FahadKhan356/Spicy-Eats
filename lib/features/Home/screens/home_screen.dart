@@ -19,6 +19,7 @@ import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/Home/screens/homedrawer.dart';
 import 'package:spicy_eats/features/Home/screens/widgets/cusineslist.dart';
 import 'package:spicy_eats/features/Profile/repo/ProfileRepo.dart';
+import 'package:spicy_eats/features/Restaurant_Menu/screens/dummyrestaurantmenu.dart';
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 import 'dart:math' as math;
 // import 'package:geocoding/geocoding.dart';
@@ -33,6 +34,7 @@ final restaurantlistProvider =
 
 final restaurantDisplayListProvider =
     StateProvider<List<RestaurantModel>>((ref) => []);
+final cusineListProvider = StateProvider<List<CusinesModel>>((ref) => []);
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen(this.locale, {super.key});
@@ -44,7 +46,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen>
     with SingleTickerProviderStateMixin {
-  List<CusinesModel>? allCusines;
+  // List<CusinesModel>? allCusines;
 
   @override
   void initState() {
@@ -83,10 +85,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     await ref
         .read(registershoprepoProvider)
         .fetchFavorites(userid: userid, ref: ref);
-
-    await ref
-        .read(profileRepoProvider)
-        .fetchCurrentUserData(userid: userid, ref: ref);
+    if (mounted) {
+      await ref
+          .read(profileRepoProvider)
+          .fetchCurrentUserData(userid: userid, ref: ref);
+    }
 
     await ref.read(profileRepoProvider).fetchuser(userid, ref);
 
@@ -100,9 +103,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     }
     final cusines = await ref.read(cusinesRepo).fetchCusines();
     if (mounted) {
-      setState(() {
-        allCusines = cusines;
-      });
+      ref.read(cusineListProvider.notifier).state = cusines!;
     }
     ref.read(isloaderProvider.notifier).state = false;
   }
@@ -110,7 +111,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   void _showBottomSheet(
       {required List<AddressModel?> addresses, bool? isEdit}) {
     showModalBottomSheet(
+        showDragHandle: true,
         context: context,
+        sheetAnimationStyle: AnimationStyle(
+            curve: Curves.easeInOut, duration: Duration(milliseconds: 300)),
         enableDrag: true,
         clipBehavior: Clip.none, // no clipping,
         // isScrollControlled: true, // Full height if needed
@@ -126,6 +130,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   @override
   Widget build(BuildContext context) {
     final restaurantData = ref.watch(restaurantDisplayListProvider);
+    final allCusines = ref.watch(cusineListProvider);
     final address = ref.watch(pickedAddressProvider);
     final isLoading = ref.watch(isloaderProvider);
     final isSearch = ref.watch(searchProvider);
@@ -137,197 +142,206 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final searchHeaderHeight = size.width * 0.2;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            // SliverAppBar ONLY for the Address row
-            SliverAppBar(
-              elevation: 0,
-              scrolledUnderElevation:
-                  0, // 👈 removes the automatic divider line
-              shadowColor: Colors.transparent, // just in case
-              pinned: false, // this part should collapse away
-              floating: false,
-              expandedHeight: expandedHeight,
-              collapsedHeight: collapsedHeight,
-              toolbarHeight: collapsedHeight,
-              backgroundColor: Colors.black,
-              flexibleSpace: FlexibleSpaceBar(
-                collapseMode: CollapseMode.parallax,
-                background: SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Icon(
-                                Icons.location_on,
-                                color: Colors.orange,
-                                size: size.width * 0.07,
-                              ),
-                              const SizedBox(width: 6),
-                              address != null
-                                  ? Expanded(
-                                      child: InkWell(
-                                        onTap: () {
-                                          _showBottomSheet(
-                                              addresses: allAdress,
-                                              isEdit: true);
-                                        },
-                                        child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Flexible(
-                                                child: Text(
-                                                  'Delivering to',
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
+        child: Skeletonizer(
+          ignorePointers: true,
+          ignoreContainers: true,
+          enabled: isLoading,
+          enableSwitchAnimation: true,
+          child: CustomScrollView(
+            slivers: [
+              // SliverAppBar ONLY for the Address row
+              SliverAppBar(
+                elevation: 0,
+                scrolledUnderElevation:
+                    0, // 👈 removes the automatic divider line
+                shadowColor: Colors.transparent, // just in case
+                pinned: false, // this part should collapse away
+                floating: false,
+                expandedHeight: expandedHeight,
+                collapsedHeight: collapsedHeight,
+                toolbarHeight: collapsedHeight,
+                backgroundColor: Colors.white,
+                flexibleSpace: FlexibleSpaceBar(
+                  collapseMode: CollapseMode.parallax,
+                  background: SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(
+                                  Icons.location_on,
+                                  color: Colors.orange,
+                                  size: size.width * 0.07,
+                                ),
+                                const SizedBox(width: 6),
+                                address != null
+                                    ? Expanded(
+                                        child: InkWell(
+                                          onTap: () {
+                                            _showBottomSheet(
+                                                addresses: allAdress,
+                                                isEdit: true);
+                                          },
+                                          child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Flexible(
+                                                  child: Text(
+                                                    'Delivering to',
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        fontSize:
+                                                            size.width * 0.036,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        color: Colors.orange),
+                                                  ),
+                                                ),
+                                                Text(
+                                                  '${address.address}',
                                                   style: TextStyle(
                                                       overflow:
                                                           TextOverflow.ellipsis,
+                                                      // GoogleFonts.aBeeZee(
                                                       fontSize:
                                                           size.width * 0.036,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      color: Colors.orange),
+                                                      // fontWeight: FontWeight.bold,
+                                                      color: Colors.white),
                                                 ),
-                                              ),
-                                              Text(
-                                                '${address.address}',
-                                                style: TextStyle(
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    // GoogleFonts.aBeeZee(
-                                                    fontSize:
-                                                        size.width * 0.036,
-                                                    // fontWeight: FontWeight.bold,
-                                                    color: Colors.white),
-                                              ),
-                                            ]),
+                                              ]),
+                                        ),
+                                      )
+                                    : InkWell(
+                                        onTap: () {
+                                          _showBottomSheet(
+                                              addresses: allAdress,
+                                              isEdit: false);
+                                        },
+                                        child: Text(
+                                          'Select Address',
+                                          style: GoogleFonts.aBeeZee(
+                                              fontSize: size.width * 0.035,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white),
+                                        ),
                                       ),
-                                    )
-                                  : InkWell(
-                                      onTap: () {
-                                        _showBottomSheet(
-                                            addresses: allAdress,
-                                            isEdit: false);
-                                      },
-                                      child: Text(
-                                        'Select Address',
-                                        style: GoogleFonts.aBeeZee(
-                                            fontSize: size.width * 0.035,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white),
-                                      ),
-                                    ),
-                            ],
-                          ),
-                        ),
-                        // 🛒 Cart part
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          decoration: BoxDecoration(
-                            color: Colors.orange,
-                            borderRadius: BorderRadius.circular(
-                              size.width * 0.025,
+                              ],
                             ),
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            mainAxisSize:
-                                MainAxisSize.min, // <--- keep cart compact
-                            children: [
-                              IconButton(
-                                onPressed: () {},
-                                icon: const Icon(Icons.shopping_cart_outlined,
-                                    color: Colors.black),
+                          // 🛒 Cart part
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.orange,
+                              borderRadius: BorderRadius.circular(
+                                size.width * 0.025,
                               ),
-                              Text(
-                                '6',
-                                style: TextStyle(
-                                  fontSize: size.width * 0.05,
-                                  fontWeight: FontWeight.bold,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize:
+                                  MainAxisSize.min, // <--- keep cart compact
+                              children: [
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.shopping_cart_outlined,
+                                      color: Colors.black),
                                 ),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
+                                Text(
+                                  '6',
+                                  style: TextStyle(
+                                    fontSize: size.width * 0.05,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
 
-            // Sticky Search Bar
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: _SearchHeaderDelegate(height: searchHeaderHeight),
-            ),
-
-            SliverToBoxAdapter(
-              child: allCusines != null
-                  ? CusinesList(
-                      cusineList: allCusines,
-                    )
-                  : const SizedBox(),
-            ),
-            // Content list
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      ref.read(registershoprepoProvider).checkIfFavorites(
-                          userid: supabaseClient.auth.currentUser!.id,
-                          restid: restaurantData[index].restuid!,
-                          ref: ref);
-                      print(MediaQuery.of(context).size.width);
-
-                      ref.read(isloaderProvider.notifier).state = true;
-                      Navigator.pushNamed(
-                        context,
-                        RestaurantMenuScreen.routename,
-                        arguments: restaurantData[index],
-                      );
-                    },
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10.0, vertical: 20),
-                          child: RestaurantContainer(
-                            name:
-                                restaurantData[index].restaurantName.toString(),
-                            price: restaurantData[index].deliveryFee.toString(),
-                            image: restaurantData[index]
-                                .restaurantImageUrl
-                                .toString(),
-                            mindeliverytime: restaurantData[index].minTime!,
-                            maxdeliverytime: restaurantData[index].maxTime!,
-                            ratings: restaurantData[index].averageRatings!,
-                            restid: restaurantData[index].restuid!,
-                            userid: supabaseClient.auth.currentUser!.id,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-                childCount: restaurantData.length,
+              // Sticky Search Bar
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: _SearchHeaderDelegate(height: searchHeaderHeight),
               ),
-            ),
-          ],
+
+              SliverToBoxAdapter(
+                child: allCusines.isNotEmpty
+                    ? CusinesList(
+                        cusineList: allCusines,
+                      )
+                    : const SizedBox(),
+              ),
+              // Content list
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        ref.read(registershoprepoProvider).checkIfFavorites(
+                            userid: supabaseClient.auth.currentUser!.id,
+                            restid: restaurantData[index].restuid!,
+                            ref: ref);
+
+                        ref.read(isloaderProvider.notifier).state = true;
+                        Navigator.pushNamed(
+                          context,
+                          // RestaurantMenuScreen.routename,
+                          DummyRestaurantMenuScreen.routename,
+                          arguments: restaurantData[index],
+                        );
+                      },
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10.0, vertical: 20),
+                            child: RestaurantContainer(
+                              name: restaurantData[index]
+                                  .restaurantName
+                                  .toString(),
+                              price:
+                                  restaurantData[index].deliveryFee.toString(),
+                              image: restaurantData[index]
+                                  .restaurantImageUrl
+                                  .toString(),
+                              mindeliverytime: restaurantData[index].minTime!,
+                              maxdeliverytime: restaurantData[index].maxTime!,
+                              ratings: restaurantData[index].averageRatings!,
+                              restid: restaurantData[index].restuid!,
+                              userid: supabaseClient.auth.currentUser!.id,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  childCount: restaurantData.length,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -348,19 +362,21 @@ class _SearchHeaderDelegate extends SliverPersistentHeaderDelegate {
     final size = MediaQuery.of(context).size;
     final searchHeaderHeight = size.width * 0.2;
     return Container(
-      color: Colors.black, // same as AppBar
+      color: Colors.white, // same as AppBar
       child: Padding(
-        padding: EdgeInsets.symmetric(
-            vertical: searchHeaderHeight - 70, horizontal: size.width * 0.025),
+        padding: EdgeInsets.symmetric(horizontal: size.width * 0.025),
         child: SizedBox(
-          height: searchHeaderHeight - 10,
+          height: searchHeaderHeight,
           child: Center(
-            child: TextField(
+            child: TextFormField(
               decoration: InputDecoration(
                 hintText: "Search for dishes or restaurants",
-                prefixIcon: const Icon(Icons.search),
+                prefixIcon: Icon(
+                  Icons.search,
+                  color: Colors.grey[200],
+                ),
                 filled: true,
-                fillColor: Colors.grey[200],
+                fillColor: Colors.white,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                   borderSide: BorderSide.none,

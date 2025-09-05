@@ -12,6 +12,7 @@ class DishData {
   String? restuid;
   int? frequentlyid;
   int? id;
+  bool? isVeg;
 
   DishData({
     this.dishid,
@@ -27,6 +28,7 @@ class DishData {
     this.restuid,
     this.id,
     this.frequentlyid,
+    this.isVeg,
   });
 
 //tojson
@@ -45,6 +47,7 @@ class DishData {
       'rest_uid': restuid,
       'frequentlyid': frequentlyid,
       'id': id,
+      'isVeg': isVeg,
     };
   }
 
@@ -64,6 +67,7 @@ class DishData {
       restuid: json['rest_uid'] ?? '',
       frequentlyid: json['frequentlyid'] ?? 0,
       id: json['id'] ?? 0,
+      isVeg: json['isVeg'],
     );
   }
 }

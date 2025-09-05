@@ -140,6 +140,7 @@ class _MyAppState extends ConsumerState<MyApp> {
             tabBarTheme: const TabBarTheme(),
             appBarTheme: const AppBarTheme(backgroundColor: Colors.white)),
         home:
+            //  RestaurantMenu()
             // FoodDeliveryScreen()
 
             const SplashScreen()

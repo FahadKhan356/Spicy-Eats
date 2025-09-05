@@ -10,6 +10,7 @@ import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/Payment/PaymentScreen.dart';
 import 'package:spicy_eats/features/Profile/commons/EditScreen.dart';
 import 'package:spicy_eats/features/Profile/screen/ProfileScreen.dart';
+import 'package:spicy_eats/features/Restaurant_Menu/screens/dummyrestaurantmenu.dart';
 import 'package:spicy_eats/features/account/screen/accountscreen.dart';
 import 'package:spicy_eats/features/authentication/passwordless_signup.dart';
 import 'package:spicy_eats/features/dashboard/DrawerScreens/Menu/ineroverview.dart';
@@ -189,6 +190,11 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
 
     case Favoritescrren.routename:
       return MaterialPageRoute(builder: (context) => const Favoritescrren());
+    case DummyRestaurantMenuScreen.routename:
+      return MaterialPageRoute(builder: (_) {
+        final restaurantData = settings.arguments as RestaurantModel;
+        return DummyRestaurantMenuScreen(restaurantData: restaurantData);
+      });
 
     case AccountScreen.routename:
       return MaterialPageRoute(builder: (_) => const AccountScreen());
