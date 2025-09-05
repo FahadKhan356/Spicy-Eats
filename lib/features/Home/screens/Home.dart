@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Register%20shop/widgets/Lists.dart';
+import 'package:spicy_eats/commons/Responsive.dart';
 import 'package:spicy_eats/features/Home/screens/customnavbar.dart';
 import 'package:spicy_eats/main.dart';
 
 var currentIndexProvider = StateProvider<int>((ref) => 0);
 
 class Home extends ConsumerStatefulWidget {
-  bool? isloader = false;
   static const String routename = '/Home';
   Home({super.key});
 
@@ -16,7 +16,6 @@ class Home extends ConsumerStatefulWidget {
 }
 
 class _HomeState extends ConsumerState<Home> {
-  int _selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
     var currentIndex = ref.watch(currentIndexProvider);
@@ -26,7 +25,7 @@ class _HomeState extends ConsumerState<Home> {
         floatingActionButton: supabaseClient.auth.currentSession != null
             ? Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                   EdgeInsets.symmetric(horizontal: Responsive.w20px, vertical: Responsive.w10px),
                 child: AnimatedNavBar(
                   selectedIndex: currentIndex,
                   onItemTapped: (index) {

@@ -6,6 +6,7 @@ import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/widge
 import 'package:spicy_eats/Supabse%20Backend/supabase_config.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:spicy_eats/commons/ConfirmLocation.dart';
+import 'package:spicy_eats/commons/Responsive.dart';
 import 'package:spicy_eats/features/Favorites/Screens/FavoriteScrren.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/Home/screens/fooddeliver.dart';
@@ -130,6 +131,7 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+     Responsive.init(context);
     return MaterialApp(
         onGenerateRoute: generateRoutes,
         debugShowCheckedModeBanner: false,

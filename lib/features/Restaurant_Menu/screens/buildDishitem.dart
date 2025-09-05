@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/Practice%20for%20cart/model/Cartmodel.dart';
 import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
-import 'package:spicy_eats/diegoveloper%20example/bloc.dart';
+import 'package:spicy_eats/commons/Responsive.dart';
 import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/dish%20menu/dishmenuVariation.dart';
@@ -90,14 +90,14 @@ class _BuildDishItemState extends ConsumerState<BuildDishItem> {
     final quantity =
         ref.read(cartReopProvider).getTotalQuantityofdish(ref, dish!.dishid!);
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      padding: const EdgeInsets.all(12),
+      margin: EdgeInsets.symmetric(horizontal: Responsive.w16px, vertical: Responsive.w8px),
+      padding:  EdgeInsets.all(Responsive.w12px),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(Responsive.w12px),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha:0.1),
             spreadRadius: 1,
             blurRadius: 4,
             offset: const Offset(0, 2),
@@ -122,12 +122,12 @@ class _BuildDishItemState extends ConsumerState<BuildDishItem> {
                             size: 16,
                           )
                         : const Icon(Icons.more_outlined),
-                    const SizedBox(width: 8),
+                     SizedBox(width: Responsive.w8px),
                     Expanded(
                       child: Text(
                         widget.dish!.dish_name!,
-                        style: const TextStyle(
-                          fontSize: 16,
+                        style:  TextStyle(
+                          fontSize: Responsive.w16px,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
