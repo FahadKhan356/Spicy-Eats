@@ -27,7 +27,7 @@ class BoardingScreenWidget extends StatelessWidget {
         ),
         Text('Healthy & Tasty',style: GoogleFonts.rubik(fontSize: 25,fontWeight: FontWeight.w500),) ,
 SizedBox(height: 20,),
-            Text('Eat today and live another \n another memorable day',style: GoogleFonts.rubik(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.grey[300]),) ,
+            Text('Eat today and live another \n another memorable dayrrr',style: GoogleFonts.rubik(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.grey[300]),) ,
 SizedBox(height: 20,),
   Row(
     mainAxisAlignment: MainAxisAlignment.center,
