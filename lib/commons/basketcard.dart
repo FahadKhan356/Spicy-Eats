@@ -271,7 +271,7 @@ class _CartCardState extends ConsumerState<BasketCard> {
                                           cartRepo.decQuantity(
                                               ref: ref,
                                               cartId: widget.cartItem!.cart_id!,
-                                              price: widget.dish!.dish_price!);
+                                              price: widget.dish!.dish_price?? 0);
 
                                           // await ref
                                           //     .read(cartReopProvider)

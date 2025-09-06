@@ -10,6 +10,7 @@ import 'package:spicy_eats/SyncTabBar/home_sliver_with_scrollable_tabs.dart';
 import 'package:spicy_eats/commons/ConfirmLocation.dart';
 import 'package:spicy_eats/commons/Responsive.dart';
 import 'package:spicy_eats/commons/custommap.dart';
+import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Cusines/model/CusinesModel.dart';
 import 'package:spicy_eats/features/Cusines/repository/CusinesRepo.dart';
 import 'package:spicy_eats/features/Home/model/AddressModel.dart';
@@ -53,6 +54,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       fetchInitialData();
+   
+      ref.read(cartReopProvider).initializeCart(userId: supabaseClient.auth.currentUser!.id, ref: ref);
     });
     // fetchInitialData();
 
@@ -134,10 +137,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final allCusines = ref.watch(cusineListProvider);
     final address = ref.watch(pickedAddressProvider);
     final isLoading = ref.watch(isloaderProvider);
-    var size = MediaQuery.of(context).size;
-    final expandedHeight = Responsive.h100px ;
+    final cart = ref.watch(cartProvider);
+
+    final expandedHeight = Responsive.h70px ;
     final collapsedHeight = Responsive.h36px;
-    final searchHeaderHeight = Responsive.h50px;
+    final searchHeaderHeight = Responsive.h70px;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -165,7 +169,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   collapseMode: CollapseMode.parallax,
                   background: SafeArea(
                     child: Padding(
-                      padding: const EdgeInsets.all(20.0),
+                      padding: EdgeInsets.all(Responsive.w20px),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -173,12 +177,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                           Expanded(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Icon(
                                   Icons.location_on,
                                   color: Colors.orange,
-                                  size: Responsive.w28px,
+                                  size: Responsive.w20px,
                                 ),
                                  SizedBox(width: Responsive.w6px),
                                 address != null
@@ -243,33 +247,35 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                             ),
                           ),
                           // 🛒 Cart part
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            decoration: BoxDecoration(
-                              color: Colors.orange,
-                              borderRadius: BorderRadius.circular(
-                                Responsive.w10px,
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              mainAxisSize:
-                                  MainAxisSize.min, // <--- keep cart compact
-                              children: [
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.shopping_cart_outlined,
-                                      color: Colors.black),
-                                ),
-                                Text(
-                                  '6',
-                                  style: TextStyle(
-                                    fontSize: Responsive.w20px,
-                                    fontWeight: FontWeight.bold,
+                          Stack(
+                            children:[
+                              
+                              IconButton(
+                              onPressed: () {},
+                              icon:  Icon(Icons.shopping_cart_outlined,
+                              size: Responsive.w25px,
+                                  color: Colors.orange),
+                                                          ),
+                             cart.isNotEmpty? Positioned(top: Responsive.w5px, right: Responsive.w5px, bottom:Responsive.w5px, child: Container(
+                                height: Responsive.w18px,
+                                width: Responsive.w18px,decoration:const BoxDecoration(shape: BoxShape.circle,color: Colors.red),
+                                child: Center(
+                                  child: Text(
+                                    cart.length.toString(),
+                                    style: TextStyle(
+                                      fontSize: Responsive.w12px,
+                                      fontWeight: FontWeight.bold,
+                                       color: Colors.white,
+                                    ),
                                   ),
                                 ),
-                              ],
-                            ),
+                              
+                              
+                             )): const SizedBox(),
+                               
+                            
+                            ],
+                        
                           )
                         ],
                       ),
@@ -306,7 +312,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                         Navigator.pushNamed(
                           context,
                           // RestaurantMenuScreen.routename,
-                          DummyRestaurantMenuScreen.routename,
+                          RestaurantMenuScreen.routename,
                           arguments: restaurantData[index],
                         );
                       },
@@ -362,9 +368,9 @@ class _SearchHeaderDelegate extends SliverPersistentHeaderDelegate {
     return Container(
       color: Colors.black, // same as AppBar
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: Responsive.w10px),
+        padding: EdgeInsets.symmetric(horizontal: Responsive.w10px,vertical: Responsive.w10px),
         child: SizedBox(
-          height: height,
+          height: height-Responsive.w10px,
           child: Center(
             child: TextFormField(
               decoration: InputDecoration(
@@ -376,7 +382,7 @@ class _SearchHeaderDelegate extends SliverPersistentHeaderDelegate {
                 filled: true,
                 fillColor: Colors.white,
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
+                  borderRadius: BorderRadius.circular(Responsive.w30px),
                   borderSide: BorderSide.none,
                 ),
               ),

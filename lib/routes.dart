@@ -190,11 +190,7 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
 
     case Favoritescrren.routename:
       return MaterialPageRoute(builder: (context) => const Favoritescrren());
-    case DummyRestaurantMenuScreen.routename:
-      return MaterialPageRoute(builder: (_) {
-        final restaurantData = settings.arguments as RestaurantModel;
-        return DummyRestaurantMenuScreen(restaurantData: restaurantData);
-      });
+ 
 
     case AccountScreen.routename:
       return MaterialPageRoute(builder: (_) => const AccountScreen());

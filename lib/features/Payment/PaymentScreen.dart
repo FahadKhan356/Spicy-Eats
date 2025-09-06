@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
+import 'package:spicy_eats/features/Home/screens/home_screen.dart';
 import 'package:spicy_eats/features/Payment/repo/paymentRepo.dart';
 import 'package:spicy_eats/features/Payment/utils/optionsModel.dart';
 import 'package:spicy_eats/features/Profile/repo/ProfileRepo.dart';
@@ -120,6 +121,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
   Widget build(BuildContext context) {
     final selectedmethod = ref.watch(selectedmethodProvider);
     final restaurant = ref.watch(restaurantProvider);
+        final address = ref.watch(pickedAddressProvider);
 
     final subTotal = ref.read(cartReopProvider).getTotalPrice(ref);
     cartTotal = subTotal + restaurant!.deliveryFee! + restaurant.platformfee!;
@@ -155,7 +157,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Row(
+                               Row(
                                   children: [
                                     Icon(
                                       Icons.location_on_sharp,
@@ -163,7 +165,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                                     ),
                                     SizedBox(width: 10),
                                     Text(
-                                      '{Delivery to}',
+                                      '${address?.address}',
                                       style: TextStyle(
                                           fontSize: 15,
                                           fontWeight: FontWeight.w400),

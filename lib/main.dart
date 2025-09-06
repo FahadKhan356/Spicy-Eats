@@ -15,6 +15,7 @@ import 'package:spicy_eats/features/Restaurant_Menu/screens/dummyrestscreen.dart
 import 'package:spicy_eats/features/Sqlight%20Database/Cart/services/CartLocalDatabase.dart';
 import 'package:spicy_eats/features/Sqlight%20Database/Dishes/services/DishesLocalDataBase.dart';
 import 'package:spicy_eats/features/Sqlight%20Database/Restaurants/services/RestaurantLocalDataBase.dart';
+import 'package:spicy_eats/features/onBoarding/widget/BoardingScreenWidget.dart';
 import 'package:spicy_eats/features/orders/screens/order_screen.dart';
 import 'package:spicy_eats/features/splashscreen/SplashScreen.dart';
 import 'package:spicy_eats/routes.dart';
@@ -131,6 +132,8 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint(MediaQuery.of(context).size.width.toString());
+       debugPrint(MediaQuery.of(context).size.height.toString());
      Responsive.init(context);
     return MaterialApp(
         onGenerateRoute: generateRoutes,
@@ -141,11 +144,11 @@ class _MyAppState extends ConsumerState<MyApp> {
             //drawerTheme: DrawerThemeData(backgroundColor: Colors.),
             tabBarTheme: const TabBarTheme(),
             appBarTheme: const AppBarTheme(backgroundColor: Colors.white)),
-        home:
+        home:BoardingScreenWidget(),
             //  RestaurantMenu()
             // FoodDeliveryScreen()
 
-            const SplashScreen()
+           // const SplashScreen()
         // RestaurantMenu()
 
         // PerfectBlurGlassEffect(),

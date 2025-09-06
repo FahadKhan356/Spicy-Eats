@@ -143,7 +143,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
 
     final totalquantity = ref
         .read(cartReopProvider)
-        .getTotalQuantityofdish(ref, widget.dish!.dishid!);
+        .getTotalQuantityofdish(ref, widget.dish!.dishid?? 0);
 
     return Scaffold(
       key: scaffoldMessengerKey,
@@ -398,10 +398,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                                                                       .read(dishesListProvider
                                                                           .notifier)
                                                                       .state,
-                                                                  'restdata': ref
-                                                                      .read(restaurantProvider
-                                                                          .notifier)
-                                                                      .state
+                                                                  'restdata': widget.restaurantData,
                                                                 }),
                                                             child: Text(
                                                               'Edit in cart',
