@@ -39,7 +39,7 @@ Spacer(),
 Padding(
   padding: EdgeInsets.symmetric(horizontal: 30,vertical: 20),
   child: SizedBox(
-    height: 70,
+    height: 65,
     width: double.maxFinite,
     child: ElevatedButton(onPressed:(){}, child: Text('Next',style: GoogleFonts.rubik(fontSize: 20,fontWeight: FontWeight.w500,color: Colors.white),),
     style: ElevatedButton.styleFrom(
