@@ -15,13 +15,14 @@ import 'package:spicy_eats/features/Restaurant_Menu/screens/dummyrestscreen.dart
 import 'package:spicy_eats/features/Sqlight%20Database/Cart/services/CartLocalDatabase.dart';
 import 'package:spicy_eats/features/Sqlight%20Database/Dishes/services/DishesLocalDataBase.dart';
 import 'package:spicy_eats/features/Sqlight%20Database/Restaurants/services/RestaurantLocalDataBase.dart';
-import 'package:spicy_eats/features/onBoarding/widget/BoardingScreenWidget.dart';
+import 'package:spicy_eats/features/Sqlight%20Database/onBoarding/services/OnBoardingLocalDatabase.dart';
+import 'package:spicy_eats/features/onBoarding/screen/BoardingScreen.dart';
 import 'package:spicy_eats/features/orders/screens/order_screen.dart';
 import 'package:spicy_eats/features/splashscreen/SplashScreen.dart';
 import 'package:spicy_eats/routes.dart';
 // import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:app_links/app_links.dart';
+
 
 var showBottomMap = StateProvider<bool>((ref) => true);
 
@@ -30,6 +31,7 @@ void main() async {
   await CartLocalDatabase.instance.database;
   await RestaurantLocalDatabase.instance.database;
   await DishesLocalDatabase.instance.database;
+  await OnBoardingLocalDatabase.instance.database;
 
   Supabase.initialize(url: supabaseUrl, anonKey: supabasekey);
   await dotenv.load(fileName: 'lib/.env');
@@ -144,11 +146,12 @@ class _MyAppState extends ConsumerState<MyApp> {
             //drawerTheme: DrawerThemeData(backgroundColor: Colors.),
             tabBarTheme: const TabBarTheme(),
             appBarTheme: const AppBarTheme(backgroundColor: Colors.white)),
-        home:BoardingScreenWidget(),
+        home:
+        // BoardingScreen(),
             //  RestaurantMenu()
             // FoodDeliveryScreen()
 
-           // const SplashScreen()
+           const SplashScreen()
         // RestaurantMenu()
 
         // PerfectBlurGlassEffect(),

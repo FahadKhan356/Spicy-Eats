@@ -24,6 +24,7 @@ import 'package:spicy_eats/features/Home/screens/home_screen.dart';
 import 'package:spicy_eats/features/authentication/otp.dart';
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 import 'package:spicy_eats/features/dish%20menu/dishmenuVAriation.dart';
+import 'package:spicy_eats/features/onBoarding/screen/BoardingScreen.dart';
 import 'package:spicy_eats/features/orders/screens/order_screen.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/screens/RestaurantMenuScreen.dart';
 
@@ -184,6 +185,10 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
         final ref = settings.arguments as WidgetRef;
         return PasswordlessScreen(ref: ref);
       });
+
+case BoardingScreen.routename:
+return MaterialPageRoute(builder:(context)=>const BoardingScreen());
+
 
     case OrdersScreen.routename:
       return MaterialPageRoute(builder: (context) => const OrdersScreen());

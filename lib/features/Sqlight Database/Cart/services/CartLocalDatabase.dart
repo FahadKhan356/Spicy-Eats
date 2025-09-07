@@ -24,7 +24,7 @@ class CartLocalDatabase {
     return await openDatabase(
       path,
       version: 1,
-      onCreate: _createDB,
+      onCreate: _createDB
     );
   }
   //  id INTEGER PRIMARY KEY AUTOINCREMENT,

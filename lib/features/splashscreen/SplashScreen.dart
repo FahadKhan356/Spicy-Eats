@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
+import 'package:spicy_eats/features/Sqlight%20Database/onBoarding/services/OnBoardingLocalDatabase.dart';
 import 'package:spicy_eats/features/authentication/passwordless_signup.dart';
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
+import 'package:spicy_eats/features/onBoarding/screen/BoardingScreen.dart';
 import 'package:spicy_eats/main.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -13,7 +15,13 @@ class SplashScreen extends ConsumerStatefulWidget {
 }
 
 class _SplashScreenState extends ConsumerState<SplashScreen> {
+  bool? flag;
   Future<void> onPersistence() async {
+    flag = await OnBoardingLocalDatabase.instance.getFlag('boardingFlag');
+    debugPrint('onboarding before: $flag');
+await OnBoardingLocalDatabase.instance.setFlag('boardingFlag',false);
+     debugPrint('onboarding before: $flag');
+
     await Future.delayed(const Duration(seconds: 3), () {
       // final session = supabaseClient.auth.currentSession;
       if (!mounted) return;
@@ -22,6 +30,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         // Already logged in (like from magic link)
         Navigator.pushNamedAndRemoveUntil(
             context, Home.routename, (route) => false);
+      } else if (flag != null && flag == false) {
+        Navigator.pushNamedAndRemoveUntil(
+            context, BoardingScreen.routename, (route) => false);
       } else {
         // Not logged in, show login screen
         Navigator.pushNamedAndRemoveUntil(
