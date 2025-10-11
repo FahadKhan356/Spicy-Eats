@@ -6,7 +6,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
-import 'package:spicy_eats/Practice%20for%20cart/model/Cartmodel.dart';
+import 'package:spicy_eats/commons/Cartmodel.dart';
 import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Payment/utils/optionsModel.dart';
 import 'package:spicy_eats/main.dart';

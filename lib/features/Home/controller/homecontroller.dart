@@ -1,8 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spicy_eats/commons/categoriesmodel.dart';
 import 'package:spicy_eats/features/Home/repository/homerespository.dart';
 import 'package:spicy_eats/features/Sqlight%20Database/Dishes/services/DishesLocalDataBase.dart';
 
-import '../../../SyncTabBar/categoriesmodel.dart';
+
 import '../../Restaurant_Menu/model/dish.dart';
 
 var homeControllerProvider = Provider((ref) {

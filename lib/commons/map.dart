@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/register_restaurant.dart';
+import 'package:spicy_eats/commons/Providers.dart';
+
+
 import 'package:spicy_eats/commons/custommap.dart';
 
 class MyMap extends ConsumerStatefulWidget {

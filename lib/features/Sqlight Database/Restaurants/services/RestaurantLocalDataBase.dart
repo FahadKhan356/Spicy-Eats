@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
-import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
+import 'package:spicy_eats/commons/restaurant_model.dart';
 import 'package:spicy_eats/features/Sqlight%20Database/Restaurants/model/CachedRestauartsModel.dart';
 import 'package:spicy_eats/main.dart';
 import 'package:sqflite/sqflite.dart';

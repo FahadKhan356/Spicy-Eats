@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:spicy_eats/Register%20shop/widgets/restauarantTextfield.dart';
+import 'package:spicy_eats/commons/restauarantTextfield.dart';
 import 'package:spicy_eats/commons/country.dart';
 import 'package:spicy_eats/commons/mysnackbar.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
@@ -87,7 +87,7 @@ class _PhonenumberScreenState extends ConsumerState<PasswordlessScreen>
     } else {
       print('value of user $user');
       uploaddata(user);
-      Navigator.pushNamed(context, HomeScreen.routename);
+     if(mounted) Navigator.pushNamed(context, HomeScreen.routename);
       mysnackbar(context: context, text: 'data loaded to users table ');
     }
   }
@@ -120,7 +120,7 @@ class _PhonenumberScreenState extends ConsumerState<PasswordlessScreen>
   uploaddata(user) async {
     if (user != null) {
       await supabaseClient.from('users').insert({
-        'id': user.session?.user.id,
+        'id': user.id,
         'email': user.session?.user.email,
       });
     } else {

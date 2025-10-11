@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
-import 'package:spicy_eats/diegoveloper%20example/bloc.dart';
+import 'package:spicy_eats/commons/categoriesmodel.dart';
+import 'package:spicy_eats/commons/bloc.dart';
 
 class RestaurantCategory extends StatelessWidget {
   const RestaurantCategory({super.key, required this.category});

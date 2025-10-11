@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/Practice%20for%20cart/model/Cartmodel.dart';
+import 'package:spicy_eats/commons/Cartmodel.dart';
 import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
@@ -76,12 +76,7 @@ class DishMenuRepository {
         if (res.isEmpty) return [];
         final frequentlybuyList = List<int>.from(res['freq_bought']);
         for (var dish in frequentlybuyList) {
-          // items = ref
-          //     .read(dishesListProvider.notifier)
-          //     .state!
-          //     .where((element) => element.dishid == dish)
-          //     .toList();
-
+        
           items = ref
               .read(dishesListProvider.notifier)
               .state!

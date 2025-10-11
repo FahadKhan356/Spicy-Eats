@@ -1,25 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:spicy_eats/features/Favorites/Screens/FavoriteScrren.dart';
 import 'package:spicy_eats/features/account/screen/accountscreen.dart';
-import 'package:spicy_eats/features/dashboard/DrawerScreens/Menu/MenuScreen.dart';
-import 'package:spicy_eats/Register%20shop/screens/shophome.dart';
-import 'package:spicy_eats/Register%20shop/widgets/drawerRow.dart';
 import 'package:spicy_eats/commons/country.dart';
 import 'package:spicy_eats/features/Home/screens/home_screen.dart';
 import 'package:spicy_eats/features/orders/screens/order_screen.dart';
 
-final List<DrawerRow> drawerList = [
-  // DrawerRow(text: 'Home', icon: Icons.home),
-  DrawerRow(text: 'Menu', icon: Icons.menu_book),
-  DrawerRow(text: 'Feedback', icon: Icons.feedback),
-  DrawerRow(text: 'Payment', icon: Icons.payment),
-  DrawerRow(text: 'Documents', icon: Icons.document_scanner),
-  DrawerRow(text: 'Settings', icon: Icons.settings_applications_sharp),
-];
+
 
 List screens = [
 //  const Center(child: HomeScreen()),
-  const MenuScreen(),
+ 
   const Center(child: Text("Feedback")),
 
   const Center(child: Text("Documents")),

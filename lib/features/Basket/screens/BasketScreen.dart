@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
-import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/screens/paymentmethodescreen.dart';
+import 'package:spicy_eats/commons/restaurant_model.dart';
 import 'package:spicy_eats/commons/basketcard.dart';
 import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Payment/PaymentScreen.dart';

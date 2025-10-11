@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:spicy_eats/Register%20shop/widgets/Lists.dart';
+import 'package:spicy_eats/commons/Lists.dart';
 import 'package:spicy_eats/commons/country.dart';
 import 'package:spicy_eats/features/authentication/otp.dart';
 

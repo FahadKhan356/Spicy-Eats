@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/Register%20shop/widgets/Lists.dart';
+import 'package:spicy_eats/commons/Lists.dart';
+
 import 'package:spicy_eats/commons/Responsive.dart';
 import 'package:spicy_eats/features/Home/screens/customnavbar.dart';
 import 'package:spicy_eats/main.dart';
@@ -29,24 +30,16 @@ class _HomeState extends ConsumerState<Home> {
                 child: AnimatedNavBar(
                   selectedIndex: currentIndex,
                   onItemTapped: (index) {
-                    ref
+                  WidgetsBinding.instance.addPostFrameCallback((_){
+  ref
                         .read(currentIndexProvider.notifier)
                         .update((state) => index);
+                  });
+                  
                   },
                 ),
               )
-            //  BottomNavigationBar(
-            //     items: bitems,
-            //     onTap: (index) {
-            //       ref
-            //           .read(currentIndexProvider.notifier)
-            //           .update((state) => index);
-            //     },
-            //     currentIndex: currentIndex,
-            //     selectedItemColor: Colors.black,
-            //     unselectedItemColor: Colors.black38,
-            //     elevation: 2,
-            //   )
+       
             : const CircularProgressIndicator());
   }
 }

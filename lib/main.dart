@@ -1,23 +1,18 @@
-import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/Register%20shop/screens/Sign_in&up%20Restaurant/widgets/map.dart';
+
 import 'package:spicy_eats/Supabse%20Backend/supabase_config.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:spicy_eats/commons/ConfirmLocation.dart';
+
 import 'package:spicy_eats/commons/Responsive.dart';
-import 'package:spicy_eats/features/Favorites/Screens/FavoriteScrren.dart';
-import 'package:spicy_eats/features/Home/screens/Home.dart';
-import 'package:spicy_eats/features/Home/screens/fooddeliver.dart';
-import 'package:spicy_eats/features/Restaurant_Menu/screens/dummyrestdetailscreen.dart';
-import 'package:spicy_eats/features/Restaurant_Menu/screens/dummyrestscreen.dart';
+
 import 'package:spicy_eats/features/Sqlight%20Database/Cart/services/CartLocalDatabase.dart';
 import 'package:spicy_eats/features/Sqlight%20Database/Dishes/services/DishesLocalDataBase.dart';
 import 'package:spicy_eats/features/Sqlight%20Database/Restaurants/services/RestaurantLocalDataBase.dart';
 import 'package:spicy_eats/features/Sqlight%20Database/onBoarding/services/OnBoardingLocalDatabase.dart';
-import 'package:spicy_eats/features/onBoarding/screen/BoardingScreen.dart';
-import 'package:spicy_eats/features/orders/screens/order_screen.dart';
+
 import 'package:spicy_eats/features/splashscreen/SplashScreen.dart';
 import 'package:spicy_eats/routes.dart';
 // import 'package:flutter_stripe/flutter_stripe.dart';

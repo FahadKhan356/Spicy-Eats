@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
-import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
+import 'package:spicy_eats/commons/Providers.dart';
+import 'package:spicy_eats/commons/categoriesmodel.dart';
 import 'package:spicy_eats/commons/mysnackbar.dart';
+import 'package:spicy_eats/commons/restaurant_model.dart';
 import 'package:spicy_eats/features/Home/model/AddressModel.dart';
 import 'package:spicy_eats/features/Profile/repo/ProfileRepo.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
+import 'package:spicy_eats/features/Sqlight%20Database/Restaurants/services/RestaurantLocalDataBase.dart';
 import 'package:spicy_eats/main.dart';
 
-var homeRepositoryController = Provider((ref) => HomeRepository());
+var homeRepositoryController = Provider((ref) => HomeRepository(RestaurantLocalDatabase.instance));
 
 class HomeRepository {
+  HomeRepository(this._database);
+  final RestaurantLocalDatabase _database;
   Future<List<DishData>?> fetchDishes({
     required String? restuid,
     required Ref ref,
@@ -32,12 +36,92 @@ class HomeRepository {
       return dishList;
     } catch (e) {
       print('$dishList this is dishlist');
-      print('${ref.read(rest_ui_Provider)} this is rest uid in the homerepo');
+      // print('${ref.read(rest_ui_Provider)} this is rest uid in the homerepo');
 
       print(e.toString());
     }
     return null;
   }
+
+  Future<void> togglefavorites(
+      {required String userid,
+      required String restid,
+      required WidgetRef ref,
+      required BuildContext context}) async {
+    final isFav = ref.read(favoriteProvider)[restid] ?? false;
+    try {
+      if (isFav) {
+        await supabaseClient
+            .from('favorites')
+            .delete()
+            .eq('user_id', userid)
+            .eq('rest_id', restid);
+      } else {
+        await supabaseClient.from('favorites').insert({
+          'user_id': userid,
+          'rest_id': restid,
+        });
+      }
+
+      ref.read(favoriteProvider.notifier).state = {
+        ...ref.read(favoriteProvider),
+        restid: !isFav,
+      };
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  Future<void> fetchFavorites(
+      {required String userid, required WidgetRef ref}) async {
+    try {
+      final res = await supabaseClient
+          .from('favorites')
+          .select('*')
+          .eq('user_id', userid);
+      if (res.isNotEmpty) {
+        final favs = res.map((e) => e['rest_id'] as String).toList();
+
+        for (var eachvalue in favs) {
+          ref.read(favoriteProvider.notifier).state = {
+            ...ref.read(favoriteProvider),
+            eachvalue: true
+          };
+        }
+      }
+    } catch (e) {
+      debugPrint("Failed Fetching Favorires $e");
+    }
+  }
+
+Future<List<RestaurantModel>> getRestaurantsData() async {
+    // 1. Try to get cached data
+    return await _database.getRestaurants();
+  }
+
+  Future<void> checkIfFavorites(
+      {required String userid,
+      required String restid,
+      required WidgetRef ref}) async {
+    try {
+      final existingUser = await supabaseClient
+          .from('favorites')
+          .select('id')
+          .eq('user_id', userid)
+          .eq('rest_id', restid)
+          .maybeSingle();
+
+      ref.read(favoriteProvider.notifier).state = {
+        ...ref.read(favoriteProvider),
+        restid: existingUser != null,
+      };
+    } catch (e) {
+      // ScaffoldMessenger.of(context)
+      //     .showSnackBar(SnackBar(content: Text(e.toString())));
+      print(e.toString());
+    }
+  }
+
 
   Future<List<Categories>?> fetchcategorieslist(
       {required String? restuid}) async {
@@ -209,6 +293,11 @@ class HomeRepository {
     } catch (e) {
       debugPrint("Error in Updating  Address $e");
     }
+
+
+    
+
+  
     // }
 
     // Future<void> changeLastAddress(

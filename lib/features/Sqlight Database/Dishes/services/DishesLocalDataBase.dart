@@ -43,7 +43,7 @@ class DishesLocalDatabase {
 ''');
   }
 
-  static const Duration cacheTTL = Duration(hours: 1);
+  static const Duration cacheTTL = Duration(minutes: 2);
 
 //Get Dishes Data
   Future<List<DishData>?> getDishes(String restaurantUid) async {

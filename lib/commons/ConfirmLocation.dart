@@ -16,16 +16,585 @@ final lableIndex = StateProvider<int?>((ref) => null);
 final isOther = StateProvider<bool>((ref) => false);
 final labelTitle = StateProvider<String?>((ref) => '');
 
+// class Confirmlocation extends ConsumerStatefulWidget {
+//   static const String routename = "/conformLocation";
+//   final bool? isEdit;
+//   final AddressModel? addressmodel;
+//   final LocationResult? locationResult;
+//   const Confirmlocation(
+//       {super.key,
+//       required this.locationResult,
+//       this.isEdit,
+//       this.addressmodel});
+
+//   @override
+//   ConsumerState<Confirmlocation> createState() => _ConfirmlocationState();
+// }
+
+// class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
+//   double? _latitude;
+//   double? _longitude;
+//   TextEditingController streetController = TextEditingController();
+//   TextEditingController floorController = TextEditingController();
+//   TextEditingController othersController = TextEditingController();
+
+//   Future<LocationResult> getLocationResult(
+//       {required double latitude, required double longitude}) async {
+//     try {
+//       List<Placemark> placemarks =
+//           await placemarkFromCoordinates(latitude, longitude);
+//       if (placemarks.isNotEmpty) {
+//         return LocationResult(
+//             latitude: latitude,
+//             longitude: longitude,
+//             locationName: getLocationName(placemark: placemarks.first),
+//             completeAddress: getCompleteAdress(placemark: placemarks.first),
+//             placemark: placemarks.first);
+//       } else {
+//         return LocationResult(
+//             latitude: latitude,
+//             longitude: longitude,
+//             completeAddress: null,
+//             placemark: null,
+//             locationName: null);
+//       }
+//     } catch (e) {
+//       return LocationResult(
+//           latitude: latitude,
+//           longitude: longitude,
+//           completeAddress: null,
+//           placemark: null,
+//           locationName: null);
+//     }
+//   }
+
+//   LocationResult? _locationResult;
+//   _getLocationResult() async {
+//     _locationResult =
+//         await getLocationResult(latitude: _latitude!, longitude: _longitude!);
+//     if (mounted) {
+//       setState(() {});
+//     }
+//   }
+
+//   MapType _mapType = MapType.normal;
+//   bool _move = false;
+
+//   @override
+//   void dispose() {
+//     floorController.dispose();
+//     streetController.dispose();
+//     // TODO: implement dispose
+//     super.dispose();
+//   }
+
+//   @override
+//   void initState() {
+//     _latitude = -6.984072660841485;
+//     _longitude = 110.40950678599624;
+//     // TODO: implement initState
+//     super.initState();
+//     if (widget.isEdit != null) {
+//       _latitude = widget.locationResult!.latitude;
+//       _longitude = widget.locationResult!.longitude;
+
+//       streetController.text = widget.addressmodel?.streetNumber ?? '';
+//       floorController.text = widget.addressmodel?.floor ?? '';
+//       othersController.text = widget.addressmodel?.othersDetails ?? '';
+//     } else {
+//       _latitude = -6.984072660841485;
+//       _longitude = 110.40950678599624;
+//     }
+//   }
+
+//   Timer? _timer;
+//   final MapController _controller = MapController();
+//   Widget viewLocationName() {
+//     return Container(
+//       decoration: const BoxDecoration(
+//         borderRadius: BorderRadius.only(
+//             topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+//         color: Colors.white,
+//       ),
+//       padding: const EdgeInsets.all(10),
+//       child: Column(
+//         children: [
+//           Row(
+//             children: [
+//               const Icon(
+//                 Icons.location_on,
+//               ),
+//               const SizedBox(
+//                 width: 10,
+//               ),
+//               Expanded(
+//                   child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   Text(
+//                     _locationResult?.locationName ??
+//                         "Name not found. Tap close by.",
+//                   ),
+//                   Text(
+//                     _locationResult?.completeAddress ?? "-",
+//                   ),
+//                 ],
+//               ))
+//             ],
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final loader = ref.watch(isloaderProvider);
+//     final size = MediaQuery.of(context).size;
+//     final selected = ref.watch(lableIndex);
+//     final others = ref.watch(isOther);
+//     final labeltitle = ref.watch(labelTitle);
+//     return Scaffold(
+//       backgroundColor: Colors.white,
+//       body: loader
+//           ? const Center(
+//               child: CircularProgressIndicator(
+//               color: Colors.black,
+//             ))
+//           : Stack(
+//               children: [
+//                 Positioned(
+//                   top: 0,
+//                   left: 0,
+//                   right: 0,
+//                   child: SizedBox(
+//                     height: size.height * 0.4,
+//                     width: double.maxFinite,
+//                     child: FlutterMap(
+//                       mapController: _controller,
+//                       options: MapOptions(
+//                         initialCenter: LatLng(
+//                             widget.locationResult?.latitude ?? _latitude!,
+//                             widget.locationResult?.longitude! ?? _longitude!),
+//                         initialZoom: 16,
+//                         maxZoom: 18,
+//                         onMapReady: () {
+//                           _controller.mapEventStream.listen((evt) async {
+//                             _timer?.cancel();
+//                             if (!_move) {
+//                               _timer =
+//                                   Timer(const Duration(milliseconds: 200), () {
+//                                 _latitude = evt.camera.center.latitude;
+//                                 _longitude = evt.camera.center.longitude;
+//                                 _getLocationResult();
+//                               });
+//                             } else {
+//                               _move = false;
+//                             }
+
+//                             setState(() {});
+//                           });
+//                         },
+//                       ),
+//                       children: [
+//                         TileLayer(
+//                           urlTemplate: _mapType == MapType.normal
+//                               ? "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=7b2RKYzYW5lBAVIkQzK3"
+//                               // for dark "https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"
+
+//                               : 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.jpg',
+//                           userAgentPackageName: 'com.example.app',
+//                         ),
+//                         Stack(
+//                           children: [
+//                             Center(
+//                                 child: Icon(Icons.person_pin,
+//                                     size: size.width * 0.1,
+//                                     color: Colors.black87)),
+//                           ],
+//                         )
+//                       ],
+//                     ),
+//                   ),
+//                 ),
+//                 Positioned(
+//                   top: size.height * 0.3,
+//                   left: 0,
+//                   right: 0,
+//                   bottom: 0,
+//                   child: ClipRRect(
+//                     borderRadius: const BorderRadius.only(
+//                       topLeft: Radius.circular(20),
+//                       topRight: Radius.circular(20),
+//                     ),
+//                     child: Container(
+//                       padding: const EdgeInsets.symmetric(
+//                           horizontal: 10, vertical: 20),
+//                       height: double.maxFinite,
+//                       width: double.maxFinite,
+//                       color: Colors.white,
+//                       child: SingleChildScrollView(
+//                         child: Column(
+//                           crossAxisAlignment: CrossAxisAlignment.start,
+//                           mainAxisSize: MainAxisSize.min, // Fit content
+//                           children: [
+//                             Text(
+//                               "Add details to help us find you",
+//                               style: TextStyle(
+//                                   fontSize: size.height * 0.03,
+//                                   fontWeight: FontWeight.bold),
+//                             ),
+//                             const SizedBox(height: 20),
+//                             Row(
+//                               mainAxisAlignment: MainAxisAlignment.start,
+//                               crossAxisAlignment: CrossAxisAlignment.start,
+//                               children: [
+//                                 const Icon(Icons.location_on),
+//                                 Column(
+//                                   crossAxisAlignment: CrossAxisAlignment.start,
+//                                   children: [
+//                                     Text(
+//                                       "${_locationResult?.locationName}",
+//                                       style: TextStyle(
+//                                           fontSize: size.height * 0.02,
+//                                           fontWeight: FontWeight.bold),
+//                                     ),
+//                                     Text(
+//                                       "${_locationResult?.placemark?.locality}",
+//                                       style: TextStyle(
+//                                           fontSize: size.height * 0.02,
+//                                           fontWeight: FontWeight.normal),
+//                                     ),
+//                                   ],
+//                                 ),
+//                               ],
+//                             ),
+//                             const SizedBox(height: 20),
+//                             TextFormField(
+//                               controller: streetController,
+//                               decoration: InputDecoration(
+//                                 suffixIcon: TextButton(
+//                                   child: const Text('x'),
+//                                   onPressed: () {
+//                                     streetController.text = '';
+//                                   },
+//                                 ),
+//                                 focusedBorder: OutlineInputBorder(
+//                                     borderSide:
+//                                         const BorderSide(color: Colors.black),
+//                                     borderRadius: BorderRadius.circular(10)),
+//                                 enabledBorder: OutlineInputBorder(
+//                                     borderSide:
+//                                         const BorderSide(color: Colors.black),
+//                                     borderRadius: BorderRadius.circular(10)),
+//                                 contentPadding: const EdgeInsets.symmetric(
+//                                     vertical: 10, horizontal: 10),
+//                                 label: const Text('Street Name/Number'),
+//                               ),
+//                             ),
+//                             const SizedBox(height: 20),
+//                             TextFormField(
+//                               controller: floorController,
+//                               decoration: InputDecoration(
+//                                 suffixIcon: TextButton(
+//                                   child: const Text('x'),
+//                                   onPressed: () {
+//                                     floorController.text = '';
+//                                   },
+//                                 ),
+//                                 focusedBorder: OutlineInputBorder(
+//                                     borderSide:
+//                                         const BorderSide(color: Colors.black),
+//                                     borderRadius: BorderRadius.circular(10)),
+//                                 enabledBorder: OutlineInputBorder(
+//                                     borderSide:
+//                                         const BorderSide(color: Colors.black),
+//                                     borderRadius: BorderRadius.circular(10)),
+//                                 contentPadding: const EdgeInsets.symmetric(
+//                                     vertical: 10, horizontal: 10),
+//                                 label: const Text('Floor'),
+//                               ),
+//                             ),
+//                             const SizedBox(height: 20),
+//                             Text(
+//                               "Add a label",
+//                               style: TextStyle(
+//                                   fontSize: size.height * 0.03,
+//                                   fontWeight: FontWeight.bold),
+//                             ),
+//                             const SizedBox(height: 10),
+//                             Column(
+//                               crossAxisAlignment: CrossAxisAlignment.start,
+//                               children: [
+//                                 SizedBox(
+//                                   height: size.height * 0.2,
+//                                   child: ListView.builder(
+//                                       physics: const BouncingScrollPhysics(),
+//                                       shrinkWrap: true,
+//                                       scrollDirection: Axis.horizontal,
+//                                       itemCount: labels.length,
+//                                       itemBuilder: (context, index) {
+//                                         final selectedIndex =
+//                                             ref.watch(lableIndex);
+//                                         final isSelected =
+//                                             selectedIndex == index;
+
+//                                         return InkWell(
+//                                           onTap: () {
+//                                             if (index == selectedIndex) {
+//                                               // tapped same item again
+//                                               ref
+//                                                   .read(lableIndex.notifier)
+//                                                   .state = null;
+//                                               if (labels[index].title ==
+//                                                   "Others") {
+//                                                 ref
+//                                                     .read(isOther.notifier)
+//                                                     .state = false;
+//                                               }
+//                                               ref
+//                                                   .read(labelTitle.notifier)
+//                                                   .state = labels[index].title;
+//                                             } else {
+//                                               // tapped a new item
+//                                               ref
+//                                                   .read(lableIndex.notifier)
+//                                                   .state = index;
+//                                               if (labels[index].title ==
+//                                                   "Others") {
+//                                                 ref
+//                                                     .read(isOther.notifier)
+//                                                     .state = true;
+//                                               } else {
+//                                                 ref
+//                                                     .read(isOther.notifier)
+//                                                     .state = false;
+//                                               }
+//                                             }
+//                                             debugPrint(labeltitle);
+//                                           },
+//                                           child: Column(
+//                                             children: [
+//                                               Padding(
+//                                                 padding:
+//                                                     const EdgeInsets.all(8.0),
+//                                                 child: Container(
+//                                                   height: size.width * 0.13,
+//                                                   width: size.width * 0.13,
+//                                                   decoration: BoxDecoration(
+//                                                       color: isSelected ||
+//                                                               widget.addressmodel
+//                                                                       ?.label ==
+//                                                                   labels[index]
+//                                                                       .title
+//                                                           ? Colors.grey
+//                                                           : Colors.white,
+//                                                       border: Border.all(
+//                                                           color: Colors.black26,
+//                                                           width: 1),
+//                                                       borderRadius:
+//                                                           BorderRadius.circular(
+//                                                               size.width *
+//                                                                   0.13 /
+//                                                                   2)),
+//                                                   child: Icon(
+//                                                     labels[index].icon,
+//                                                     size: size.width * 0.06,
+//                                                     color: Colors.black,
+//                                                   ),
+//                                                 ),
+//                                               ),
+//                                               const SizedBox(
+//                                                 height: 10,
+//                                               ),
+//                                               Text(
+//                                                 labels[index].title,
+//                                                 style: const TextStyle(
+//                                                     fontSize: 16,
+//                                                     fontWeight:
+//                                                         FontWeight.bold),
+//                                               )
+//                                             ],
+//                                           ),
+//                                         );
+//                                       }),
+//                                 ),
+//                                 others
+//                                     ? othersWidget(controller: othersController)
+//                                     : const SizedBox(),
+//                               ],
+//                             ),
+//                             const SizedBox(height: 20),
+//                             const Divider(
+//                               color: Colors.black,
+//                               height: 1,
+//                             ),
+//                             const SizedBox(height: 20),
+//                             InkWell(
+//                               borderRadius:
+//                                   BorderRadius.circular(size.width * 0.14),
+//                               onTap: () async {
+//                                 ref.read(isloaderProvider.notifier).state =
+//                                     true;
+
+//                                 if (widget.isEdit!) {
+//                                   await ref
+//                                       .read(homeRepositoryController)
+//                                       .updateAddress(
+//                                         addressID: widget.addressmodel!.id,
+//                                         address:
+//                                             "${_locationResult?.locationName} ${_locationResult?.placemark!.locality}",
+//                                         streetNumber: streetController.text,
+//                                         floor: floorController.text,
+//                                         othersDetails: othersController.text,
+//                                         label: labeltitle,
+//                                         context: context,
+//                                         lat: _locationResult?.latitude,
+//                                         long: _locationResult?.longitude,
+//                                       );
+//                                 } else {
+//                                   await ref
+//                                       .read(homeRepositoryController)
+//                                       .addAddress(
+//                                           userId: supabaseClient
+//                                               .auth.currentUser!.id,
+//                                           address:
+//                                               "${_locationResult?.locationName} ${_locationResult?.placemark!.locality}",
+//                                           streetNumber: streetController.text,
+//                                           floor: floorController.text,
+//                                           othersDetails: othersController.text,
+//                                           label: labeltitle,
+//                                           context: context);
+//                                 }
+
+//                                 ref.read(labelTitle.notifier).state = '';
+
+//                                 Navigator.pushNamedAndRemoveUntil(
+//                                     context, Home.routename, (route) => false);
+
+//                                 ref.read(isloaderProvider.notifier).state =
+//                                     false;
+//                               },
+//                               child: Padding(
+//                                 padding: const EdgeInsets.all(8.0),
+//                                 child: Container(
+//                                     height: size.height * 0.07,
+//                                     width: double.maxFinite,
+//                                     padding: const EdgeInsets.all(10),
+//                                     decoration: BoxDecoration(
+//                                       boxShadow: const [
+//                                         BoxShadow(
+//                                             spreadRadius: 2,
+//                                             color:
+//                                                 Color.fromRGBO(230, 81, 0, 1),
+//                                             blurRadius: 2)
+//                                       ],
+//                                       color: Colors.orange[100],
+//                                       borderRadius: BorderRadius.circular(
+//                                           size.width * 0.14),
+//                                     ),
+//                                     child: Padding(
+//                                       padding: const EdgeInsets.symmetric(
+//                                           horizontal: 10),
+//                                       child: Center(
+//                                         child: widget.isEdit!
+//                                             ? Text("Update Address",
+//                                                 style: TextStyle(
+//                                                     fontSize: size.width * 0.03,
+//                                                     color: Colors.orange[900],
+//                                                     overflow:
+//                                                         TextOverflow.visible,
+//                                                     fontWeight:
+//                                                         FontWeight.bold))
+//                                             : Text("Confirm location",
+//                                                 style: TextStyle(
+//                                                     fontSize: size.width * 0.03,
+//                                                     color: Colors.orange[900],
+//                                                     overflow:
+//                                                         TextOverflow.visible,
+//                                                     fontWeight:
+//                                                         FontWeight.bold)),
+//                                       ),
+//                                     )),
+//                               ),
+//                             ),
+//                           ],
+//                         ),
+//                       ),
+//                     ),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//     );
+//   }
+// }
+
+// List<label> labels = [
+//   label(
+//     icon: Icons.home_outlined,
+//     title: "Home",
+//   ),
+//   label(
+//     icon: Icons.work_outline,
+//     title: "Work",
+//   ),
+//   label(
+//     icon: Icons.favorite_border_outlined,
+//     title: "Partner",
+//   ),
+//   label(
+//     icon: Icons.more_horiz,
+//     title: "Others",
+//   ),
+// ];
+
+// class label {
+//   final IconData icon;
+//   final String title;
+
+//   label({
+//     required this.icon,
+//     required this.title,
+//   });
+// }
+
+// Widget othersWidget({required controller}) {
+//   return TextFormField(
+//     controller: controller,
+//     decoration: InputDecoration(
+//       suffixIcon: TextButton(
+//         child: const Text('x'),
+//         onPressed: () {
+//           controller.text = '';
+//         },
+//       ),
+//       focusedBorder: OutlineInputBorder(
+//           borderSide: const BorderSide(color: Colors.black),
+//           borderRadius: BorderRadius.circular(10)),
+//       enabledBorder: OutlineInputBorder(
+//           borderSide: const BorderSide(color: Colors.black),
+//           borderRadius: BorderRadius.circular(10)),
+//       contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+//       label: const Text('eg. 🏠 Alex\'s house'),
+//     ),
+//   );
+// }
+
+
+// Enhanced Confirm Location Screen with professional UI
 class Confirmlocation extends ConsumerStatefulWidget {
   static const String routename = "/conformLocation";
   final bool? isEdit;
   final AddressModel? addressmodel;
   final LocationResult? locationResult;
-  const Confirmlocation(
-      {super.key,
-      required this.locationResult,
-      this.isEdit,
-      this.addressmodel});
+  
+  const Confirmlocation({
+    super.key,
+    required this.locationResult,
+    this.isEdit,
+    this.addressmodel,
+  });
 
   @override
   ConsumerState<Confirmlocation> createState() => _ConfirmlocationState();
@@ -38,37 +607,43 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
   TextEditingController floorController = TextEditingController();
   TextEditingController othersController = TextEditingController();
 
-  Future<LocationResult> getLocationResult(
-      {required double latitude, required double longitude}) async {
+  Future<LocationResult> getLocationResult({
+    required double latitude,
+    required double longitude,
+  }) async {
     try {
       List<Placemark> placemarks =
           await placemarkFromCoordinates(latitude, longitude);
       if (placemarks.isNotEmpty) {
         return LocationResult(
-            latitude: latitude,
-            longitude: longitude,
-            locationName: getLocationName(placemark: placemarks.first),
-            completeAddress: getCompleteAdress(placemark: placemarks.first),
-            placemark: placemarks.first);
+          latitude: latitude,
+          longitude: longitude,
+          locationName: getLocationName(placemark: placemarks.first),
+          completeAddress: getCompleteAdress(placemark: placemarks.first),
+          placemark: placemarks.first,
+        );
       } else {
         return LocationResult(
-            latitude: latitude,
-            longitude: longitude,
-            completeAddress: null,
-            placemark: null,
-            locationName: null);
-      }
-    } catch (e) {
-      return LocationResult(
           latitude: latitude,
           longitude: longitude,
           completeAddress: null,
           placemark: null,
-          locationName: null);
+          locationName: null,
+        );
+      }
+    } catch (e) {
+      return LocationResult(
+        latitude: latitude,
+        longitude: longitude,
+        completeAddress: null,
+        placemark: null,
+        locationName: null,
+      );
     }
   }
 
   LocationResult? _locationResult;
+  
   _getLocationResult() async {
     _locationResult =
         await getLocationResult(latitude: _latitude!, longitude: _longitude!);
@@ -84,20 +659,16 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
   void dispose() {
     floorController.dispose();
     streetController.dispose();
-    // TODO: implement dispose
+    othersController.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
-    _latitude = -6.984072660841485;
-    _longitude = 110.40950678599624;
-    // TODO: implement initState
     super.initState();
-    if (widget.isEdit != null) {
+    if (widget.isEdit != null && widget.isEdit!) {
       _latitude = widget.locationResult!.latitude;
       _longitude = widget.locationResult!.longitude;
-
       streetController.text = widget.addressmodel?.streetNumber ?? '';
       floorController.text = widget.addressmodel?.floor ?? '';
       othersController.text = widget.addressmodel?.othersDetails ?? '';
@@ -109,43 +680,6 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
 
   Timer? _timer;
   final MapController _controller = MapController();
-  Widget viewLocationName() {
-    return Container(
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-        color: Colors.white,
-      ),
-      padding: const EdgeInsets.all(10),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              const Icon(
-                Icons.location_on,
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              Expanded(
-                  child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    _locationResult?.locationName ??
-                        "Name not found. Tap close by.",
-                  ),
-                  Text(
-                    _locationResult?.completeAddress ?? "-",
-                  ),
-                ],
-              ))
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -154,296 +688,416 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
     final selected = ref.watch(lableIndex);
     final others = ref.watch(isOther);
     final labeltitle = ref.watch(labelTitle);
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey[50],
       body: loader
           ? const Center(
               child: CircularProgressIndicator(
-              color: Colors.black,
-            ))
+                color: Colors.orange,
+              ),
+            )
           : Stack(
               children: [
+                // Map Section
                 Positioned(
                   top: 0,
                   left: 0,
                   right: 0,
                   child: SizedBox(
-                    height: size.height * 0.4,
-                    width: double.maxFinite,
-                    child: FlutterMap(
-                      mapController: _controller,
-                      options: MapOptions(
-                        initialCenter: LatLng(
-                            widget.locationResult?.latitude ?? _latitude!,
-                            widget.locationResult?.longitude! ?? _longitude!),
-                        initialZoom: 16,
-                        maxZoom: 18,
-                        onMapReady: () {
-                          _controller.mapEventStream.listen((evt) async {
-                            _timer?.cancel();
-                            if (!_move) {
-                              _timer =
-                                  Timer(const Duration(milliseconds: 200), () {
-                                _latitude = evt.camera.center.latitude;
-                                _longitude = evt.camera.center.longitude;
-                                _getLocationResult();
-                              });
-                            } else {
-                              _move = false;
-                            }
-
-                            setState(() {});
-                          });
-                        },
-                      ),
+                    height: size.height * 0.45,
+                    child: Stack(
                       children: [
-                        TileLayer(
-                          urlTemplate: _mapType == MapType.normal
-                              ? "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=7b2RKYzYW5lBAVIkQzK3"
-                              // for dark "https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"
-
-                              : 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.jpg',
-                          userAgentPackageName: 'com.example.app',
-                        ),
-                        Stack(
+                        FlutterMap(
+                          mapController: _controller,
+                          options: MapOptions(
+                            initialCenter: LatLng(
+                              widget.locationResult?.latitude ?? _latitude!,
+                              widget.locationResult?.longitude ?? _longitude!,
+                            ),
+                            initialZoom: 16,
+                            maxZoom: 18,
+                            onMapReady: () {
+                              _controller.mapEventStream.listen((evt) async {
+                                _timer?.cancel();
+                                if (!_move) {
+                                  _timer = Timer(
+                                    const Duration(milliseconds: 200),
+                                    () {
+                                      _latitude = evt.camera.center.latitude;
+                                      _longitude = evt.camera.center.longitude;
+                                      _getLocationResult();
+                                    },
+                                  );
+                                } else {
+                                  _move = false;
+                                }
+                                setState(() {});
+                              });
+                            },
+                          ),
                           children: [
+                            TileLayer(
+                              urlTemplate: _mapType == MapType.normal
+                                  ? "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=7b2RKYzYW5lBAVIkQzK3"
+                                  : 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.jpg',
+                              userAgentPackageName: 'com.example.app',
+                            ),
                             Center(
-                                child: Icon(Icons.person_pin,
-                                    size: size.width * 0.1,
-                                    color: Colors.black87)),
+                              child: Icon(
+                                Icons.location_on,
+                                size: size.width * 0.12,
+                                color: Colors.red[700],
+                              ),
+                            ),
                           ],
-                        )
+                        ),
+
+                        // Top Bar with Back Button and Map Type Toggle
+                        Positioned(
+                          top: MediaQuery.of(context).padding.top + 16,
+                          left: 16,
+                          right: 16,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.2),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: IconButton(
+                                  icon: const Icon(Icons.arrow_back),
+                                  onPressed: () => Navigator.pop(context),
+                                ),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.2),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: Row(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.map,
+                                        color: _mapType == MapType.normal
+                                            ? Colors.orange[700]
+                                            : Colors.grey,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _mapType = MapType.normal;
+                                        });
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.satellite,
+                                        color: _mapType != MapType.normal
+                                            ? Colors.orange[700]
+                                            : Colors.grey,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _mapType = MapType.satelite;
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // Location Info Badge at Bottom
+                        Positioned(
+                          bottom: 20,
+                          left: 16,
+                          right: 16,
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.orange[50],
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Icon(
+                                    Icons.location_on,
+                                    color: Colors.orange[700],
+                                    size: 24,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        _locationResult?.locationName ??
+                                            "Finding location...",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      Text(
+                                        _locationResult?.placemark?.locality ?? "-",
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
                 ),
+
+                // Bottom Sheet with Form
                 Positioned(
-                  top: size.height * 0.3,
+                  top: size.height * 0.4,
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    ),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 20),
-                      height: double.maxFinite,
-                      width: double.maxFinite,
+                  child: Container(
+                    decoration: BoxDecoration(
                       color: Colors.white,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min, // Fit content
-                          children: [
-                            Text(
-                              "Add details to help us find you",
-                              style: TextStyle(
-                                  fontSize: size.height * 0.03,
-                                  fontWeight: FontWeight.bold),
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(24),
+                        topRight: Radius.circular(24),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 20,
+                          offset: const Offset(0, -4),
+                        ),
+                      ],
+                    ),
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Header
+                          Text(
+                            "Complete Your Address",
+                            style: TextStyle(
+                              fontSize: size.width * 0.055,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
                             ),
-                            const SizedBox(height: 20),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Icon(Icons.location_on),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "${_locationResult?.locationName}",
-                                      style: TextStyle(
-                                          fontSize: size.height * 0.02,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      "${_locationResult?.placemark?.locality}",
-                                      style: TextStyle(
-                                          fontSize: size.height * 0.02,
-                                          fontWeight: FontWeight.normal),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            "Add details to help us find you easily",
+                            style: TextStyle(
+                              fontSize: size.width * 0.035,
+                              color: Colors.grey[600],
                             ),
-                            const SizedBox(height: 20),
-                            TextFormField(
-                              controller: streetController,
-                              decoration: InputDecoration(
-                                suffixIcon: TextButton(
-                                  child: const Text('x'),
-                                  onPressed: () {
-                                    streetController.text = '';
-                                  },
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide:
-                                        const BorderSide(color: Colors.black),
-                                    borderRadius: BorderRadius.circular(10)),
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide:
-                                        const BorderSide(color: Colors.black),
-                                    borderRadius: BorderRadius.circular(10)),
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 10),
-                                label: const Text('Street Name/Number'),
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            TextFormField(
-                              controller: floorController,
-                              decoration: InputDecoration(
-                                suffixIcon: TextButton(
-                                  child: const Text('x'),
-                                  onPressed: () {
-                                    floorController.text = '';
-                                  },
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide:
-                                        const BorderSide(color: Colors.black),
-                                    borderRadius: BorderRadius.circular(10)),
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide:
-                                        const BorderSide(color: Colors.black),
-                                    borderRadius: BorderRadius.circular(10)),
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 10),
-                                label: const Text('Floor'),
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            Text(
-                              "Add a label",
-                              style: TextStyle(
-                                  fontSize: size.height * 0.03,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 10),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  height: size.height * 0.2,
-                                  child: ListView.builder(
-                                      physics: const BouncingScrollPhysics(),
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: labels.length,
-                                      itemBuilder: (context, index) {
-                                        final selectedIndex =
-                                            ref.watch(lableIndex);
-                                        final isSelected =
-                                            selectedIndex == index;
+                          ),
+                          const SizedBox(height: 24),
 
-                                        return InkWell(
-                                          onTap: () {
-                                            if (index == selectedIndex) {
-                                              // tapped same item again
-                                              ref
-                                                  .read(lableIndex.notifier)
-                                                  .state = null;
-                                              if (labels[index].title ==
-                                                  "Others") {
-                                                ref
-                                                    .read(isOther.notifier)
-                                                    .state = false;
-                                              }
-                                              ref
-                                                  .read(labelTitle.notifier)
-                                                  .state = labels[index].title;
-                                            } else {
-                                              // tapped a new item
-                                              ref
-                                                  .read(lableIndex.notifier)
-                                                  .state = index;
-                                              if (labels[index].title ==
-                                                  "Others") {
-                                                ref
-                                                    .read(isOther.notifier)
-                                                    .state = true;
-                                              } else {
-                                                ref
-                                                    .read(isOther.notifier)
-                                                    .state = false;
-                                              }
-                                            }
-                                            debugPrint(labeltitle);
-                                          },
-                                          child: Column(
-                                            children: [
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Container(
-                                                  height: size.width * 0.13,
-                                                  width: size.width * 0.13,
-                                                  decoration: BoxDecoration(
-                                                      color: isSelected ||
-                                                              widget.addressmodel
-                                                                      ?.label ==
-                                                                  labels[index]
-                                                                      .title
-                                                          ? Colors.grey
-                                                          : Colors.white,
-                                                      border: Border.all(
-                                                          color: Colors.black26,
-                                                          width: 1),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              size.width *
-                                                                  0.13 /
-                                                                  2)),
-                                                  child: Icon(
-                                                    labels[index].icon,
-                                                    size: size.width * 0.06,
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                              Text(
-                                                labels[index].title,
-                                                style: const TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              )
-                                            ],
+                          // Street Number Field
+                          _buildTextField(
+                            controller: streetController,
+                            label: "Street Name/Number",
+                            hint: "e.g., 123 Main Street",
+                            icon: Icons.signpost,
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Floor Field
+                          _buildTextField(
+                            controller: floorController,
+                            label: "Floor/Apartment",
+                            hint: "e.g., 3rd Floor, Apt 405",
+                            icon: Icons.apartment,
+                          ),
+                          const SizedBox(height: 24),
+
+                          // Label Section
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: Colors.purple[50],
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Icon(
+                                  Icons.label,
+                                  color: Colors.purple[700],
+                                  size: 20,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                "Save Address As",
+                                style: TextStyle(
+                                  fontSize: size.width * 0.045,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Label Options
+                          SizedBox(
+                            height: 120,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: labels.length,
+                              itemBuilder: (context, index) {
+                                final selectedIndex = ref.watch(lableIndex);
+                                final isSelected = selectedIndex == index;
+
+                                return InkWell(
+                                  onTap: () {
+                                    if (index == selectedIndex) {
+                                      ref.read(lableIndex.notifier).state = null;
+                                      if (labels[index].title == "Others") {
+                                        ref.read(isOther.notifier).state = false;
+                                      }
+                                    } else {
+                                      ref.read(lableIndex.notifier).state = index;
+                                      ref.read(labelTitle.notifier).state =
+                                          labels[index].title;
+                                      if (labels[index].title == "Others") {
+                                        ref.read(isOther.notifier).state = true;
+                                      } else {
+                                        ref.read(isOther.notifier).state = false;
+                                      }
+                                    }
+                                  },
+                                  child: Container(
+                                    width: 90,
+                                    margin: const EdgeInsets.only(right: 12),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          width: 70,
+                                          height: 70,
+                                          decoration: BoxDecoration(
+                                            color: isSelected ||
+                                                    widget.addressmodel?.label ==
+                                                        labels[index].title
+                                                ? Colors.orange[50]
+                                                : Colors.grey[100],
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                              color: isSelected ||
+                                                      widget.addressmodel?.label ==
+                                                          labels[index].title
+                                                  ? Colors.orange[700]!
+                                                  : Colors.grey[300]!,
+                                              width: 2,
+                                            ),
                                           ),
-                                        );
-                                      }),
-                                ),
-                                others
-                                    ? othersWidget(controller: othersController)
-                                    : const SizedBox(),
-                              ],
+                                          child: Icon(
+                                            labels[index].icon,
+                                            size: 28,
+                                            color: isSelected ||
+                                                    widget.addressmodel?.label ==
+                                                        labels[index].title
+                                                ? Colors.orange[700]
+                                                : Colors.grey[600],
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          labels[index].title,
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: isSelected ||
+                                                    widget.addressmodel?.label ==
+                                                        labels[index].title
+                                                ? FontWeight.bold
+                                                : FontWeight.w500,
+                                            color: isSelected ||
+                                                    widget.addressmodel?.label ==
+                                                        labels[index].title
+                                                ? Colors.orange[700]
+                                                : Colors.grey[700],
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
-                            const SizedBox(height: 20),
-                            const Divider(
-                              color: Colors.black,
-                              height: 1,
-                            ),
-                            const SizedBox(height: 20),
-                            InkWell(
-                              borderRadius:
-                                  BorderRadius.circular(size.width * 0.14),
-                              onTap: () async {
-                                ref.read(isloaderProvider.notifier).state =
-                                    true;
+                          ),
 
-                                if (widget.isEdit!) {
+                          // Others TextField
+                          if (others) ...[
+                            const SizedBox(height: 16),
+                            _buildTextField(
+                              controller: othersController,
+                              label: "Custom Label",
+                              hint: "e.g., 🏠 Alex's house",
+                              icon: Icons.edit,
+                            ),
+                          ],
+
+                          const SizedBox(height: 32),
+
+                          // Confirm Button
+                          SizedBox(
+                            width: double.infinity,
+                            height: 56,
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                ref.read(isloaderProvider.notifier).state = true;
+
+                                if (widget.isEdit != null && widget.isEdit!) {
                                   await ref
                                       .read(homeRepositoryController)
                                       .updateAddress(
                                         addressID: widget.addressmodel!.id,
                                         address:
-                                            "${_locationResult?.locationName} ${_locationResult?.placemark!.locality}",
+                                            "${_locationResult?.locationName} ${_locationResult?.placemark?.locality}",
                                         streetNumber: streetController.text,
                                         floor: floorController.text,
                                         othersDetails: othersController.text,
@@ -456,70 +1110,47 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
                                   await ref
                                       .read(homeRepositoryController)
                                       .addAddress(
-                                          userId: supabaseClient
-                                              .auth.currentUser!.id,
-                                          address:
-                                              "${_locationResult?.locationName} ${_locationResult?.placemark!.locality}",
-                                          streetNumber: streetController.text,
-                                          floor: floorController.text,
-                                          othersDetails: othersController.text,
-                                          label: labeltitle,
-                                          context: context);
+                                        userId: supabaseClient.auth.currentUser!.id,
+                                        address:
+                                            "${_locationResult?.locationName} ${_locationResult?.placemark?.locality}",
+                                        streetNumber: streetController.text,
+                                        floor: floorController.text,
+                                        othersDetails: othersController.text,
+                                        label: labeltitle,
+                                        context: context,
+                                      );
                                 }
 
                                 ref.read(labelTitle.notifier).state = '';
 
                                 Navigator.pushNamedAndRemoveUntil(
-                                    context, Home.routename, (route) => false);
+                                  context,
+                                  Home.routename,
+                                  (route) => false,
+                                );
 
-                                ref.read(isloaderProvider.notifier).state =
-                                    false;
+                                ref.read(isloaderProvider.notifier).state = false;
                               },
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                    height: size.height * 0.07,
-                                    width: double.maxFinite,
-                                    padding: const EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                      boxShadow: const [
-                                        BoxShadow(
-                                            spreadRadius: 2,
-                                            color:
-                                                Color.fromRGBO(230, 81, 0, 1),
-                                            blurRadius: 2)
-                                      ],
-                                      color: Colors.orange[100],
-                                      borderRadius: BorderRadius.circular(
-                                          size.width * 0.14),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10),
-                                      child: Center(
-                                        child: widget.isEdit!
-                                            ? Text("Update Address",
-                                                style: TextStyle(
-                                                    fontSize: size.width * 0.03,
-                                                    color: Colors.orange[900],
-                                                    overflow:
-                                                        TextOverflow.visible,
-                                                    fontWeight:
-                                                        FontWeight.bold))
-                                            : Text("Confirm location",
-                                                style: TextStyle(
-                                                    fontSize: size.width * 0.03,
-                                                    color: Colors.orange[900],
-                                                    overflow:
-                                                        TextOverflow.visible,
-                                                    fontWeight:
-                                                        FontWeight.bold)),
-                                      ),
-                                    )),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.orange[700],
+                                foregroundColor: Colors.white,
+                                elevation: 2,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                              ),
+                              child: Text(
+                                widget.isEdit != null && widget.isEdit!
+                                    ? "Update Address"
+                                    : "Confirm Location",
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -528,55 +1159,65 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
             ),
     );
   }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required String hint,
+    required IconData icon,
+  }) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+      //  focusColor: Colors.orange[700],
+         floatingLabelStyle: TextStyle(color: Colors.orange[700],),
+        labelText: label,
+        hintText: hint,
+        prefixIcon: Icon(icon, size: 20),
+        suffixIcon: controller.text.isNotEmpty
+            ? IconButton(
+                icon: Icon(Icons.close, size: 18, color: Colors.grey[600]),
+                onPressed: () {
+                  setState(() {
+                    controller.clear();
+                  });
+                },
+              )
+            : null,
+        filled: true,
+        fillColor: Colors.grey[50],
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey[300]!),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey[300]!),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.orange[700]!, width: 2),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
+      ),
+      onChanged: (value) => setState(() {}),
+    );
+  }
 }
 
 List<label> labels = [
-  label(
-    icon: Icons.home_outlined,
-    title: "Home",
-  ),
-  label(
-    icon: Icons.work_outline,
-    title: "Work",
-  ),
-  label(
-    icon: Icons.favorite_border_outlined,
-    title: "Partner",
-  ),
-  label(
-    icon: Icons.more_horiz,
-    title: "Others",
-  ),
+  label(icon: Icons.home_outlined, title: "Home"),
+  label(icon: Icons.work_outline, title: "Work"),
+  label(icon: Icons.favorite_border, title: "Partner"),
+  label(icon: Icons.more_horiz, title: "Others"),
 ];
 
 class label {
   final IconData icon;
   final String title;
 
-  label({
-    required this.icon,
-    required this.title,
-  });
-}
-
-Widget othersWidget({required controller}) {
-  return TextFormField(
-    controller: controller,
-    decoration: InputDecoration(
-      suffixIcon: TextButton(
-        child: const Text('x'),
-        onPressed: () {
-          controller.text = '';
-        },
-      ),
-      focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.black),
-          borderRadius: BorderRadius.circular(10)),
-      enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.black),
-          borderRadius: BorderRadius.circular(10)),
-      contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      label: const Text('eg. 🏠 Alex\'s house'),
-    ),
-  );
+  label({required this.icon, required this.title});
 }

@@ -4,15 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:spicy_eats/Practice%20for%20cart/model/Cartmodel.dart';
-import 'package:spicy_eats/Practice%20for%20cart/screens/BasketScreen.dart';
-import 'package:spicy_eats/Register%20shop/models/restaurant_model.dart';
-import 'package:spicy_eats/Register%20shop/repository/registershop_repository.dart';
-import 'package:spicy_eats/SyncTabBar/categoriesmodel.dart';
-import 'package:spicy_eats/diegoveloper%20example/bloc.dart';
+import 'package:spicy_eats/commons/Cartmodel.dart';
+import 'package:spicy_eats/commons/Providers.dart';
+import 'package:spicy_eats/commons/restaurant_model.dart';
+import 'package:spicy_eats/commons/categoriesmodel.dart';
+import 'package:spicy_eats/commons/bloc.dart';
 import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
+import 'package:spicy_eats/features/Basket/screens/BasketScreen.dart';
 import 'package:spicy_eats/features/Cusines/model/CusinesModel.dart';
 import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
+import 'package:spicy_eats/features/Home/repository/homerespository.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/Home/screens/home_screen.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
@@ -213,7 +214,7 @@ class _RestaurantMenuScreenState
                             : Icons.favorite_outline_sharp,
                         iconColor: isfav ? Colors.orange[900] : Colors.black,
                         onTap: () => ref
-                            .read(registershoprepoProvider)
+                            .read(homeRepositoryController)
                             .togglefavorites(
                                 userid: supabaseClient.auth.currentUser!.id,
                                 restid: widget.restaurantData.restuid!,

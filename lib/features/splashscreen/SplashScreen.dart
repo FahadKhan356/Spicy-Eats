@@ -18,16 +18,18 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   bool? flag;
   Future<void> onPersistence() async {
     flag = await OnBoardingLocalDatabase.instance.getFlag('boardingFlag');
-    debugPrint('onboarding before: $flag');
-await OnBoardingLocalDatabase.instance.setFlag('boardingFlag',false);
-     debugPrint('onboarding before: $flag');
+//     debugPrint('onboarding before: $flag');
+// await OnBoardingLocalDatabase.instance.setFlag('boardingFlag',false);
+//      debugPrint('onboarding before: $flag');
 
-    await Future.delayed(const Duration(seconds: 3), () {
+    await Future.delayed(const Duration(seconds: 3), ()async {
       // final session = supabaseClient.auth.currentSession;
       if (!mounted) return;
       final session = supabaseClient.auth.currentSession;
-      if (session != null) {
+      // await OnBoardingLocalDatabase.instance.setFlag('boardingFlag',false);
+      if (session != null && flag==true) {
         // Already logged in (like from magic link)
+        
         Navigator.pushNamedAndRemoveUntil(
             context, Home.routename, (route) => false);
       } else if (flag != null && flag == false) {

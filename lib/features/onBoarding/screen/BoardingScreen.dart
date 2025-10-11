@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:spicy_eats/commons/Responsive.dart';
 import 'package:spicy_eats/features/Sqlight%20Database/onBoarding/services/OnBoardingLocalDatabase.dart';
 import 'package:spicy_eats/features/authentication/passwordless_signup.dart';
 
@@ -11,7 +12,6 @@ class BoardingScreen extends ConsumerStatefulWidget {
   @override
   ConsumerState<BoardingScreen> createState() => _BoardingScreenState();
 }
-
 class _BoardingScreenState extends ConsumerState<BoardingScreen> {
   @override
   void dispose() {
@@ -24,7 +24,7 @@ class _BoardingScreenState extends ConsumerState<BoardingScreen> {
   final List<Map<String, dynamic>> boarding = [
     {
       'image': 'lib/assets/images/onboarding1.jpg',
-      'title': 'fast Delivery',
+      'title': 'Fast Delivery',
       'body': 'Fast food delivery to your home or office',
     },
     {
@@ -49,16 +49,15 @@ class _BoardingScreenState extends ConsumerState<BoardingScreen> {
 
     return Scaffold(
         appBar: AppBar(
-          leading:
-              const Icon(Icons.arrow_back_ios_new_sharp, color: Colors.orange),
+        
           actions: [
             TextButton(
               onPressed: () {
                 onboardingDone();
               },
-              child: const Text(
+              child:  Text(
                 'Skip',
-                style: TextStyle(color: Colors.orange),
+                style: TextStyle(color: Colors.orange,fontSize: Responsive.w14px),
               ),
             )
           ],
@@ -77,7 +76,7 @@ class _BoardingScreenState extends ConsumerState<BoardingScreen> {
               return Column(
                 children: [
                   Container(
-                    height: 300,
+                    height: Responsive.h300px,
                     width: double.maxFinite,
                     decoration: BoxDecoration(
                         image: DecorationImage(
@@ -87,27 +86,34 @@ class _BoardingScreenState extends ConsumerState<BoardingScreen> {
                   Text(
                     item['title'],
                     style: GoogleFonts.rubik(
-                        fontSize: 25, fontWeight: FontWeight.w500),
+                        fontSize: Responsive.w25px, fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  Text(
-                    item['body'],
-                    style: GoogleFonts.rubik(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.grey[300]),
+                  Padding(
+                    padding:  EdgeInsets.symmetric(horizontal:Responsive.w12px ),
+                    child: Center(
+                      child: Text(
+                        item['body'],
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.rubik(
+                       
+                            fontSize: Responsive.w20px,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey[300]),
+                      ),
+                    ),
                   ),
-                  const SizedBox(
-                    height: 20,
+                   SizedBox(
+                    height: Responsive.w20px,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(
                         3,
                         (index) => Container(
-                              margin: const EdgeInsets.all(8),
+                              margin:  EdgeInsets.all(Responsive.w6px),
                               height: index == _selectedIndex ? 10 : 8,
                               width: index == _selectedIndex ? 10 : 8,
                               decoration: BoxDecoration(
@@ -119,10 +125,10 @@ class _BoardingScreenState extends ConsumerState<BoardingScreen> {
                   ),
                   const Spacer(),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30, vertical: 20),
+                    padding:  EdgeInsets.symmetric(
+                        horizontal: Responsive.w30px, vertical: Responsive.h20px),
                     child: SizedBox(
-                      height: 65,
+                      height:70, // Responsive.h70px-5,
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () async {
@@ -131,11 +137,10 @@ class _BoardingScreenState extends ConsumerState<BoardingScreen> {
 
                             final val = await OnBoardingLocalDatabase.instance
                                 .getFlag('boardingFlag');
-                            debugPrint('onBoarding Flag before $val');
+                          
                             onboardingDone();
-                            final val1 = await OnBoardingLocalDatabase.instance
-                                .getFlag('boardingFlag');
-                            debugPrint('onBoarding Flag afet $val1');
+                          
+                     
                             Navigator.pushNamedAndRemoveUntil(
                               context,
                               PasswordlessScreen.routename,
@@ -160,7 +165,8 @@ class _BoardingScreenState extends ConsumerState<BoardingScreen> {
                               ? 'Done'
                               : 'Next',
                           style: GoogleFonts.rubik(
-                            fontSize: 20,
+                            
+                            fontSize: Responsive.w20px,
                             fontWeight: FontWeight.w500,
                             color: Colors.white,
                           ),

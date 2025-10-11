@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/diegoveloper%20example/bloc.dart';
-import 'package:spicy_eats/diegoveloper%20example/main_rappi_concept_app.dart';
+import 'package:spicy_eats/commons/bloc.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/widgets/RestaurantColumnBox.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/widgets/RestaurantTabWidget.dart';
 

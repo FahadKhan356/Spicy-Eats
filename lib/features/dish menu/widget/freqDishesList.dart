@@ -18,7 +18,7 @@ class Freqdisheslist extends ConsumerWidget {
       physics: const NeverScrollableScrollPhysics(),
       itemCount: freqList.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          mainAxisExtent: 280, crossAxisCount: 2),
+          mainAxisExtent: 300, crossAxisCount: 2),
       itemBuilder: (context, index) {
         final fetchedItem = freqList[index];
         final provierItem = ref.watch(freqDishesProvider) ?? [];

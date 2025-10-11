@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'package:spicy_eats/Practice%20for%20cart/model/Cartmodel.dart';
+import 'package:spicy_eats/commons/Cartmodel.dart';
 import 'package:sqflite/sqflite.dart';
 
 class CartLocalDatabase {

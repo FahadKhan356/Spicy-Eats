@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/Practice%20for%20cart/model/Cartmodel.dart';
+import 'package:spicy_eats/commons/Cartmodel.dart';
 import 'package:spicy_eats/main.dart';
 
 var orderRepoProvider = Provider((ref) => OrderRepo());

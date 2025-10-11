@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:spicy_eats/diegoveloper%20example/bloc.dart';
+import 'package:spicy_eats/commons/bloc.dart';
 
 class RestaurantTabWidget extends StatefulWidget {
   final RapitabCategory? category;
