@@ -327,6 +327,8 @@ class _CartCardState extends ConsumerState<CartCard> {
                                               ref
                                                   .read(cartReopProvider)
                                                   .addCartItem(
+                                                    restaurantId: widget.restaurantdata.restuid!,
+                                                    restaurantName: widget.restaurantdata.restaurantName,
                                                       itemprice:
                                                           dish.dish_price!,
                                                       name: dish.dish_name,

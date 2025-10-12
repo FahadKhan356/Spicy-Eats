@@ -23,10 +23,26 @@ class CartLocalDatabase {
 
     return await openDatabase(
       path,
-      version: 1,
-      onCreate: _createDB
+      version: 4,
+      onCreate: _createDB,
+      onUpgrade: _onUpgrade,
     );
   }
+ 
+ 
+// ⬅️ ADD THIS METHOD
+Future _onUpgrade(Database db, int oldVersion, int newVersion) async {
+  if (oldVersion < 2) {
+    await db.execute('ALTER TABLE cart_items ADD COLUMN restaurant_id TEXT');
+  }
+  if(oldVersion < 4){
+     await db.execute('ALTER TABLE cart_items ADD COLUMN restaurant_name TEXT');
+  }
+  }
+
+ 
+ 
+ 
   //  id INTEGER PRIMARY KEY AUTOINCREMENT,
 
   Future _createDB(db, version) async {
@@ -44,7 +60,10 @@ class CartLocalDatabase {
         name TEXT NOT NULL,
         description TEXT,
         variation TEXT,  
-        frequently_boughtList TEXT  
+        frequently_boughtList TEXT,
+        restaurant_id TEXT,
+        restaurant_name TEXT
+
       )
     ''');
   }

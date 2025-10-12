@@ -564,7 +564,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
   Future<void> fetchInitialData() async {
     final list = await ref
         .read(dishMenuControllerProvider)
-        .fetchfrequentlybought(freqId: widget.dish!.frequentlyid!, ref: ref);
+        .fetchfrequentlybought(freqId: widget.dish!.frequentlyid, ref: ref);
     setState(() {
       widget.freqList = list;
     });
@@ -723,7 +723,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                                 children: [
                                   Positioned.fill(
                                     child: Image.network(
-                                      widget.dish!.dish_imageurl!,
+                                      widget.dish!.dish_imageurl ?? "",
                                       fit: BoxFit.cover,
                                       errorBuilder: (context, error, stackTrace) =>
                                           Container(
@@ -1057,7 +1057,9 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                                       ),
                                     ),
                                     const SizedBox(height: 16),
-                                  ],
+                                  ]else...[
+                                    const SizedBox(),
+                                  ]
                                 ],
                               ),
                             ),
@@ -1117,6 +1119,8 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                             onAction: () {
                               ref.read(isloaderProvider.notifier).state = true;
                               ref.read(dishMenuRepoProvider).dishesCrud(
+                                restaurantName: widget.restaurantData!.restaurantName!,
+                                restaurantId: widget.restaurantData!.restuid!,
                                   cart: widget.cartDish!,
                                   context: context,
                                   ref: ref,
@@ -1127,7 +1131,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
 
                               ref
                                   .read(dishMenuRepoProvider)
-                                  .addAllFreqBoughtItems(ref: ref);
+                                  .addAllFreqBoughtItems(ref: ref,restaurantId: widget.restaurantData!.restuid!,restaurantName: widget.restaurantData!.restaurantName!);
 
                               Navigator.pushNamed(
                                 context,

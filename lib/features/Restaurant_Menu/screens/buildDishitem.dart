@@ -510,6 +510,8 @@ class _BuildDishItemState extends ConsumerState<BuildDishItem> {
                                                   element.dish_id == dish.dishid);
                                           if (isInCart == -1) {
                                             ref.read(cartReopProvider).addCartItem(
+                                              restaurantName: widget.restaurantdata.restaurantName,
+                                              restaurantId: widget.restaurantdata.restuid!,
                                                 itemprice: dish.dish_price!,
                                                 name: dish.dish_name,
                                                 description: dish.dish_description,

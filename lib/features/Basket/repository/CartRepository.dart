@@ -138,6 +138,8 @@ class CartRepository {
     required int quantity,
     required List<DishData>? freqboughts,
     bool? withVariation,
+    required restaurantId,
+    required restaurantName,
   }) async {
     try {
       final cartNotifier = ref.read(cartProvider.notifier);
@@ -167,6 +169,7 @@ class CartRepository {
             newCart.fold(0, (sum, item) => sum + (item.tprice!.toDouble()));
       } else {
         final newItem = Cartmodel(
+          restaurant_name: restaurantName,
             tprice: price,
             description: description,
             user_id: userId,
@@ -177,7 +180,9 @@ class CartRepository {
             variation: variations ?? [],
             created_at: DateTime.now().toIso8601String(),
             name: name,
-            quantity: quantity);
+            quantity: quantity,
+            restaurant_id: restaurantId,
+            );
 
         final newId = await _database.insertCartItem(newItem);
         if (newId <= 0) {
@@ -281,7 +286,7 @@ class CartRepository {
         for (int j = 0; j < cart[i].variation!.length; j++) {
           if (cart[i].variation![j].variationPrice != 0) {
             tvariation +=
-                cart[i].variation![j].variationPrice! * cart[i].quantity;
+                cart[i].variation![j].variationPrice!; // * cart[i].quantity;
           }
 
           debugPrint(
@@ -337,6 +342,7 @@ class CartRepository {
     // 3. Insert all items into SQLite
     for (final item in response) {
       await _database.insertCartItem(Cartmodel(
+        
         cart_id: item['id'],
         dish_id: item['dish_id'],
         quantity: item['quantity'],

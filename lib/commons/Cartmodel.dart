@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
@@ -17,10 +16,12 @@ class Cartmodel {
   final String? name;
   final String? description;
   final List<Variation>? variation;
-  // int? variationId;
+ final restaurant_id;
+ final String? restaurant_name;
   final List<DishData>? freqboughts;
 
   Cartmodel({
+    this.restaurant_name,
     this.name,
     this.description,
     this.itemprice,
@@ -34,6 +35,7 @@ class Cartmodel {
     this.variation,
     // this.variationId,
     this.freqboughts,
+    this.restaurant_id,
   });
 
 //tomap / tojson
@@ -54,6 +56,9 @@ class Cartmodel {
       // 'variationId': variationId,
       'frequently_boughtList':
           jsonEncode(freqboughts?.map((v) => v.tojson()).toList()),
+          'restaurant_id': restaurant_id,
+               'restaurant_name' : restaurant_name,
+
     };
   }
 //copywith
@@ -70,6 +75,9 @@ class Cartmodel {
     String? name,
     String? description,
     List<Variation>? variation,
+    final restaurant_id,
+    final String? restaurant_name,
+    
   }) {
     return Cartmodel(
       variation: variation ?? this.variation,
@@ -83,6 +91,8 @@ class Cartmodel {
       name: name ?? this.name,
       description: description ?? this.description,
       created_at: created_at ?? this.created_at,
+      restaurant_id: restaurant_id ?? this.restaurant_id,
+      restaurant_name: restaurant_name ?? this.restaurant_name,
     );
   }
 
@@ -173,6 +183,9 @@ class Cartmodel {
         //     .map((e) => Variation.fromjson(e))
         //     .toList(),
         // variationId: json['variationId'] ?? 0,
-        freqboughts: freqboughtsList);
+        freqboughts: freqboughtsList,
+       restaurant_name: json['restaurant_name'] ?? '',
+        restaurant_id: json['restaurant_id']?? '',
+        );
   }
 }

@@ -1548,6 +1548,8 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                         onAction: () {
                           ref.read(isloaderProvider.notifier).state = true;
                           ref.read(dishMenuRepoProvider).dishMenuCrud(
+                            restaurantName: widget.restaurantData!.restaurantName!,
+                            restaurantId:  widget.restaurantData!.restuid!,
                               cart: widget.cartDish!,
                               variations: ref
                                   .read(variationListProvider.notifier)
@@ -1564,7 +1566,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                               context: context);
                           ref
                               .read(dishMenuRepoProvider)
-                              .addAllFreqBoughtItems(ref: ref);
+                              .addAllFreqBoughtItems(ref: ref,restaurantId: widget.restaurantData!.restuid!,restaurantName: widget.restaurantData!.restaurantName!);
                           Navigator.pushNamed(
                             context,
                             RestaurantMenuScreen.routename,

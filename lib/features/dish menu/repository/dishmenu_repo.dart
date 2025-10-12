@@ -98,6 +98,8 @@ class DishMenuRepository {
 
   void addAllFreqBoughtItems({
     required WidgetRef ref,
+    required String restaurantId,
+    required String restaurantName,
   }) {
     final freqItems = ref.watch(freqnewListProvider.notifier).state;
     if (freqItems != null && freqItems.isNotEmpty) {
@@ -106,6 +108,8 @@ class DishMenuRepository {
           i++) {
         final freq = ref.watch(freqnewListProvider.notifier).state!;
         ref.read(cartReopProvider).addCartItem(
+         restaurantName: restaurantName,
+          restaurantId: restaurantId,
             itemprice: freq[i].dish_price!,
             name: freq[i].dish_name,
             description: freq[i].dish_description,
@@ -119,7 +123,9 @@ class DishMenuRepository {
             isdishScreen: false,
             quantity: 1,
             freqboughts: null);
+          
       }
+      ref.read(freqnewListProvider.notifier).state=[];
     }
   }
 
@@ -131,6 +137,8 @@ class DishMenuRepository {
       required DishData dish,
       required Cartmodel cart,
       required int quantity,
+      required String restaurantId,
+      required String restaurantName,
       required context}) async {
     final cartItem = ref.watch(cartProvider);
     final index = cartItem.indexWhere((item) => item.cart_id == cart.cart_id);
@@ -148,6 +156,8 @@ class DishMenuRepository {
           .deleteCartItem(dishId: dish.dishid!, ref: ref);
     } else if (index == -1) {
       await ref.read(cartReopProvider).addCartItem(
+        restaurantId: restaurantId,
+         restaurantName: restaurantName,
           itemprice: dish.dish_price!,
           name: dish.dish_name,
           description: dish.dish_description,
@@ -185,6 +195,8 @@ class DishMenuRepository {
       required DishData dish,
       required Cartmodel cart,
       required int quantity,
+      required String restaurantId,
+      required String restaurantName,
       required context}) async {
     debouncer.run(() async {
       if (withvariation && isCart == true && updatedQuantity > 0) {
@@ -197,6 +209,8 @@ class DishMenuRepository {
             newVariations: variations!);
       } else if (withvariation && isCart == false && quantity > 0) {
         await ref.read(cartReopProvider).addCartItem(
+          restaurantName: restaurantName,
+           restaurantId: restaurantId,
             withVariation: true,
             itemprice: dish.dish_price!,
             name: dish.dish_name,
@@ -219,7 +233,7 @@ class DishMenuRepository {
             .deleteCartItem(dishId: dish.dishid!, ref: ref);
       }
 
-      ref.read(dishMenuRepoProvider).addAllFreqBoughtItems(ref: ref);
+      ref.read(dishMenuRepoProvider).addAllFreqBoughtItems(ref: ref,restaurantId: restaurantId,restaurantName:restaurantName );
     });
   }
 }
