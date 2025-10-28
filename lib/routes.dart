@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/commons/map.dart';
 import 'package:spicy_eats/commons/ConfirmLocation.dart';
 import 'package:spicy_eats/commons/routeAnimation.dart';
-import 'package:spicy_eats/features/Basket/screens/BasketScreen.dart';
 import 'package:spicy_eats/features/Favorites/Screens/FavoriteScrren.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/Payment/PaymentScreen.dart';
@@ -14,6 +13,7 @@ import 'package:spicy_eats/features/authentication/passwordless_signup.dart';
 import 'package:spicy_eats/commons/restaurant_model.dart';
 import 'package:spicy_eats/features/Home/screens/home_screen.dart';
 import 'package:spicy_eats/features/authentication/otp.dart';
+import 'package:spicy_eats/features/cart/screens/BasketScreen.dart';
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 import 'package:spicy_eats/features/dish%20menu/dishmenuVAriation.dart';
 import 'package:spicy_eats/features/onBoarding/screen/BoardingScreen.dart';
@@ -29,21 +29,7 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
           isAddScreen: argument,
         );
       });
-    // case RestaurantMenu.routename:
-    //   Map argument = settings.arguments as Map;
-    //   // final restaurant = settings.arguments as Restaurant;
-    //   // final List<DishData> dishdata = settings.arguments as List<DishData>;
-    //   return MaterialPageRoute(
-    //       builder: (_) => RestaurantMenu(
-    //             restaurant: argument['restaurant'],
-    //             //dishData: argument['dishes'],
-    //             rest_uid: argument['rest_uid'],
-    //           ));
-    // case InnerOverview.routename:
-    //   return MaterialPageRoute(builder: (_) {
-    //     final restuid = settings.arguments as String;
-    //     return InnerOverview(restuid: restuid);
-    //   });
+ 
 
     case Confirmlocation.routename:
       return MaterialPageRoute(builder: (_) {
@@ -54,19 +40,12 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
           addressmodel: argument['addressModel'],
         );
       });
-    // case MenuItemDetailScreen.routename:
-    //   return MaterialPageRoute(builder: (context) {
-    //     final argument = settings.arguments as Dish;
-    //     return MenuItemDetailScreen(
-    //       dish: argument,
-    //     );
-    //   });
- 
+
     
-    case BasketScreen.routename:
+    case CartScreen.routename:
       return MaterialPageRoute(builder: (context) {
         final argument = settings.arguments as Map;
-        return BasketScreen(
+        return CartScreen(
           // cart: argument['cart'],
           dishes: argument['dishes'],
 
@@ -83,16 +62,6 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
     case HomeScreen.routename:
       return MaterialPageRoute(builder: (context) => const HomeScreen(''));
 
-
-    // case MyFinalScrollScreen.routename:
-    //   return MaterialPageRoute(builder: (context) {
-    //     final argument = settings.arguments as Map;
-
-    //     return MyFinalScrollScreen(
-    //       restuid: argument['restuid'],
-    //       restaurantData: argument['restaurantdata'],
-    //     );
-    //   });
 
     //DishMenuScreen
     case DishMenuScreen.routename:

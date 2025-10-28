@@ -49,10 +49,13 @@ dependencies:
   just_audio: ^0.9.17 
   flutter_rating_bar: ^4.0.1
   skeletonizer: ^1.4.3
-  # flutter_stripe: ^11.0.0
+  flutter_stripe: ^11.0.0
   flutter_dotenv: ^5.2.1
   http: ^1.2.2
   carousel_slider: ^5.1.1
+  google_sign_in: ^6.1.5
+  flutter_facebook_auth: ^6.0.0
+
   # app_links: ^3.1.0
   
 

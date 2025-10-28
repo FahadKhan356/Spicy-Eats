@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/commons/Cartmodel.dart';
-import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
+import 'package:spicy_eats/features/Cart/model/Cartmodel.dart';
+import 'package:spicy_eats/features/Cart/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
-import 'package:spicy_eats/features/dish%20menu/dishmenuVariation.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
 import 'package:spicy_eats/main.dart';
 
@@ -141,7 +140,7 @@ class DishMenuRepository {
       required String restaurantName,
       required context}) async {
     final cartItem = ref.watch(cartProvider);
-    final index = cartItem.indexWhere((item) => item.cart_id == cart.cart_id);
+    final index = cartItem.indexWhere((item) => (item as Cartmodel).cart_id == cart.cart_id);
 
     if (isCart && updatedQuantity > 0) {
       await ref.read(cartReopProvider).updateCartItems(

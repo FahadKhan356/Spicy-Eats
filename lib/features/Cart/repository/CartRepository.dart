@@ -4,7 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' show ScaffoldMessenger, SnackBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/commons/Cartmodel.dart';
+import 'package:spicy_eats/features/Cart/model/Cartmodel.dart' show Cartmodel;
+
+
 
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/Sqlight%20Database/Cart/services/CartLocalDatabase.dart';

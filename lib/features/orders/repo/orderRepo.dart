@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/commons/Cartmodel.dart';
+import 'package:spicy_eats/features/Cart/model/Cartmodel.dart';
 import 'package:spicy_eats/main.dart';
 
 var orderRepoProvider = Provider((ref) => OrderRepo());
@@ -9,7 +9,10 @@ class OrderRepo {
       {required List<Cartmodel> orders,
       required String orderedFrom,
       required String deliveredTo,
-      required String paytype}) async {
+      required String paytype,
+      required String customerId,
+      required String orderStatus,
+      }) async {
     try {
       final List<Map<String, dynamic>> orderitems =
           orders.map((e) => e.tojson()).toList();

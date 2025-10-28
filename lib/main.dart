@@ -12,10 +12,13 @@ import 'package:spicy_eats/features/Sqlight%20Database/Cart/services/CartLocalDa
 import 'package:spicy_eats/features/Sqlight%20Database/Dishes/services/DishesLocalDataBase.dart';
 import 'package:spicy_eats/features/Sqlight%20Database/Restaurants/services/RestaurantLocalDataBase.dart';
 import 'package:spicy_eats/features/Sqlight%20Database/onBoarding/services/OnBoardingLocalDatabase.dart';
+import 'package:spicy_eats/features/authentication/authServices.dart';
+import 'package:spicy_eats/features/authentication/signinscreen.dart';
+import 'package:spicy_eats/features/authentication/signupscreeen.dart';
 
 import 'package:spicy_eats/features/splashscreen/SplashScreen.dart';
 import 'package:spicy_eats/routes.dart';
-// import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 
@@ -30,7 +33,7 @@ void main() async {
 
   Supabase.initialize(url: supabaseUrl, anonKey: supabasekey);
   await dotenv.load(fileName: 'lib/.env');
-  // Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
+  Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
   // debugPaintSizeEnabled = true;
   runApp(const ProviderScope(child: MyApp()));
 }
@@ -145,8 +148,9 @@ class _MyAppState extends ConsumerState<MyApp> {
         // BoardingScreen(),
             //  RestaurantMenu()
             // FoodDeliveryScreen()
-
-           const SplashScreen()
+          //  const SignUpScreen(),
+          // const SignInScreen()
+          const SplashScreen()
         // RestaurantMenu()
 
         // PerfectBlurGlassEffect(),

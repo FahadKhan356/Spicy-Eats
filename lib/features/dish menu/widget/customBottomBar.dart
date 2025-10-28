@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/commons/restaurant_model.dart';
-import 'package:spicy_eats/features/Basket/repository/CartRepository.dart';
+import 'package:spicy_eats/features/Cart/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/dish%20menu/controller/dish-menu_controller.dart';
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';

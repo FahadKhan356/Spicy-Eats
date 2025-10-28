@@ -135,36 +135,7 @@ class Cartmodel {
         debugPrint(stack.toString());
       }
     }
-    // List<Variation> variationList = [];
-    // if (json['variation'] != null && json['variation'].toString().isNotEmpty) {
-    //   try {
-    //     final decoded = jsonDecode(json['variation']);
-    //     if (decoded is List) {
-    //       variationList = decoded.map((e) => Variation.fromjson(e)).toList();
-    //     }
-    //   } catch (e) {
-    //     debugPrint('Error decoding variation: $e');
-    //   }
-    // }
-
-    // List<DishData> freqboughtsList = [];
-    // if (json['frequently_boughtList'] != null &&
-    //     json['frequently_boughtList'].toString().isNotEmpty) {
-    //   try {
-    //     final decoded = jsonDecode(json['frequently_boughtList']);
-    //     if (decoded is List) {
-    //       freqboughtsList = decoded.map((e) => DishData.fromJson(e)).toList();
-    //     }
-    //   } catch (e) {
-    //     debugPrint('Error decoding frequently_boughtList: $e');
-    //   }
-    // }
-    // final freqboughts = json['frequently_boughtList'] as List? ?? [];
-    // List<DishData> freqboughtslist =
-    //     freqboughts.map((e) => DishData.fromJson(e)).toList();
-    // final variation = json['variations'] as List? ?? [];
-    // List<Variation> variationList =
-    //     variation.map((e) => Variation.fromjson(e)).toList();
+   
     return Cartmodel(
         cart_id: json['id'] ?? 0,
         quantity: json['quantity'] ?? 0,

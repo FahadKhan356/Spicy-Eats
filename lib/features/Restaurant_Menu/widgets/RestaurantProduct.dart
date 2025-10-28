@@ -1,9 +1,8 @@
 // ignore: non_constant_identifier_names
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/commons/Cartmodel.dart';
-import 'package:spicy_eats/commons/restaurant_model.dart';
-import 'package:spicy_eats/commons/CartCard.dart';
+import 'package:spicy_eats/features/Cart/model/Cartmodel.dart';
+import 'package:spicy_eats/features/Home/model/restaurant_model.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/screens/buildDishitem.dart';
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
@@ -79,21 +78,6 @@ class _RappiProductState extends ConsumerState<RestaurantProduct> {
         restaurantdata: widget.restaurantData!,
       ),
     );
-    //    CartCard(
-    //     elevation: 0,
-    //     cardColor: null,
-    //     dish: widget.dish,
-    //     imageHeight: 140,
-    //     imageWidth: 120,
-    //     cartItem: widget.cartItem!,
-    //     userId: widget.userId,
-    //     addbuttonHeight: 40,
-    //     buttonIncDecHeight: 40,
-    //     buttonIncDecWidth: 40,
-    //     quantityIndex: widget.qunatityindex,
-    //     titleVariationList: widget.titleVariationList,
-    //     restaurantdata: widget.restaurantData!,
-    //   ),
-    // );
+   
   }
 }
