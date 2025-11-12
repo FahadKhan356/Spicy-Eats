@@ -30,6 +30,12 @@ void main() async {
   await RestaurantLocalDatabase.instance.database;
   await DishesLocalDatabase.instance.database;
   await OnBoardingLocalDatabase.instance.database;
+  await LocationLocalDatabase.instance.database;
+  
+  // Get stored data (if any)
+
+
+  
 
   Supabase.initialize(url: supabaseUrl, anonKey: supabasekey);
   await dotenv.load(fileName: 'lib/.env');
@@ -50,6 +56,22 @@ class MyApp extends ConsumerStatefulWidget {
 int currentindex = 0;
 
 class _MyAppState extends ConsumerState<MyApp> {
+//    final db = LocationLocalDatabase.instance;
+//     void resetFlag()async{
+// final stored = await db.getLocationWithFlag('locationData');
+
+
+//   if (stored != null) {
+//     // Only reset the flag, keep the last location
+//     await db.setLocationWithFlag(
+//       'locationData',
+//        true, // reset for new session
+//      stored['lastLocation'],
+//     ).then((value)=>debugPrint('inside then flag value : ${stored['flag']}  Last Loocation : ${stored['lastLocation']}'));
+  
+//   debugPrint('flag value : ${stored['flag']}  Last Loocation : ${stored['lastLocation']}');
+//   }
+//   }
   GlobalKey<NavigatorState> navigatorkey = GlobalKey<NavigatorState>();
   // late final StreamSubscription<AuthState> _authstateSubscription;
   // late final StreamSubscription<Uri?> _linksubscription;
@@ -95,7 +117,10 @@ class _MyAppState extends ConsumerState<MyApp> {
   void initState() {
     // TODO: implement initState
     super.initState();
+   
+   
 
+  
     // _initialAuth();
 
     // _initializeDeeplink();
@@ -132,6 +157,7 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    
     debugPrint(MediaQuery.of(context).size.width.toString());
        debugPrint(MediaQuery.of(context).size.height.toString());
      Responsive.init(context);

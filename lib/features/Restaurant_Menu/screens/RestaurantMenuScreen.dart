@@ -3,13 +3,14 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spicy_eats/commons/Providers.dart';
-import 'package:spicy_eats/commons/restaurant_model.dart';
+
+import 'package:spicy_eats/features/Restaurant_Menu/widgets/bloc.dart';
 import 'package:spicy_eats/commons/categoriesmodel.dart';
-import 'package:spicy_eats/commons/bloc.dart';
 import 'package:spicy_eats/features/Cart/model/Cartmodel.dart';
 import 'package:spicy_eats/features/Cart/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Cusines/model/CusinesModel.dart';
 import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
+import 'package:spicy_eats/features/Home/model/restaurant_model.dart';
 import 'package:spicy_eats/features/Home/repository/homerespository.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/Home/screens/home_screen.dart';

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:spicy_eats/commons/orderModel.dart';
+import 'package:spicy_eats/features/orders/model/orderModel.dart';
 class OrdersScreen extends StatelessWidget {
   static const String routename = '/orders';
 

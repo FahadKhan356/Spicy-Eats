@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/commons/map.dart';
-import 'package:spicy_eats/commons/ConfirmLocation.dart';
+import 'package:spicy_eats/features/Home/model/restaurant_model.dart';
+import 'package:spicy_eats/features/Location/Widgets/ConfirmLocation.dart';
 import 'package:spicy_eats/commons/routeAnimation.dart';
 import 'package:spicy_eats/features/Favorites/Screens/FavoriteScrren.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
@@ -10,9 +11,10 @@ import 'package:spicy_eats/features/Profile/commons/EditScreen.dart';
 import 'package:spicy_eats/features/Profile/screen/ProfileScreen.dart';
 import 'package:spicy_eats/features/account/screen/accountscreen.dart';
 import 'package:spicy_eats/features/authentication/passwordless_signup.dart';
-import 'package:spicy_eats/commons/restaurant_model.dart';
 import 'package:spicy_eats/features/Home/screens/home_screen.dart';
 import 'package:spicy_eats/features/authentication/otp.dart';
+import 'package:spicy_eats/features/authentication/signinscreen.dart';
+import 'package:spicy_eats/features/authentication/signupscreeen.dart';
 import 'package:spicy_eats/features/cart/screens/BasketScreen.dart';
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 import 'package:spicy_eats/features/dish%20menu/dishmenuVAriation.dart';
@@ -60,7 +62,7 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
     case OtpScreen.routename:
       return MaterialPageRoute(builder: (context) => const OtpScreen());
     case HomeScreen.routename:
-      return MaterialPageRoute(builder: (context) => const HomeScreen(''));
+      return MaterialPageRoute(builder: (context) =>  HomeScreen(''));
 
 
     //DishMenuScreen
@@ -116,12 +118,19 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
 case BoardingScreen.routename:
 return MaterialPageRoute(builder:(context)=>const BoardingScreen());
 
+case SignInScreen.routeName:
+return MaterialPageRoute(builder: (context) => const SignInScreen(),);
+
+case SignUpScreen.routeName:
+return MaterialPageRoute(builder: (context) => const SignUpScreen(),);
+
+
 
     case OrdersScreen.routename:
       return MaterialPageRoute(builder: (context) => const OrdersScreen());
 
-    case Favoritescrren.routename:
-      return MaterialPageRoute(builder: (context) => const Favoritescrren());
+    case Favoritescreen.routename:
+      return MaterialPageRoute(builder: (context) => const Favoritescreen());
  
 
     case AccountScreen.routename:

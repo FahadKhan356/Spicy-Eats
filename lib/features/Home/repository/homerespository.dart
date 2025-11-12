@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/commons/Providers.dart';
 import 'package:spicy_eats/commons/categoriesmodel.dart';
 import 'package:spicy_eats/commons/mysnackbar.dart';
-import 'package:spicy_eats/commons/restaurant_model.dart';
+import 'package:spicy_eats/features/Home/model/restaurant_model.dart';
 import 'package:spicy_eats/features/Home/model/AddressModel.dart';
-import 'package:spicy_eats/features/Profile/repo/ProfileRepo.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/Sqlight%20Database/Restaurants/services/RestaurantLocalDataBase.dart';
+import 'dart:math' show asin, cos, pi, sin, sqrt;
 import 'package:spicy_eats/main.dart';
 
 var homeRepositoryController = Provider((ref) => HomeRepository(RestaurantLocalDatabase.instance));
@@ -293,23 +292,45 @@ Future<List<RestaurantModel>> getRestaurantsData() async {
     } catch (e) {
       debugPrint("Error in Updating  Address $e");
     }
+  }
 
-
+    //Calculate Distance For Restaurant Near By Within X Km
     
+double _deg2rad(double deg) => deg * (pi / 180);
+    double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+  const earthRadius = 6371; // 🌍 radius of Earth in km
+
+  final dLat = _deg2rad(lat2 - lat1);
+  final dLon = _deg2rad(lon2 - lon1);
+
+  final a = sin(dLat / 2) * sin(dLat / 2) +
+      cos(_deg2rad(lat1)) * cos(_deg2rad(lat2)) *
+      sin(dLon / 2) * sin(dLon / 2);
+
+  final c = 2 * asin(sqrt(a));
+  return earthRadius * c; // Distance in km
+}
+
+Future<List<RestaurantModel>> getNearbyRestaurants({
+  required List<RestaurantModel> allRestaurants,
+  required double userLat,
+  required double userLong,
+  double radiusKm = 10,
+}) async{
+  return allRestaurants.where((restaurant) {
+    final distance = calculateDistance(
+      userLat,
+      userLong,
+      restaurant.lat!,
+      restaurant.long!,
+    );
+    print('Coordinates for ${restaurant.restaurantName}: Lat ${restaurant.lat}, Long ${restaurant.long}');
+    print('Distance to ${restaurant.restaurantName}: $distance km');
+    return distance <= radiusKm;
+  }).toList();
+}
+
+
 
   
-    // }
-
-    // Future<void> changeLastAddress(
-    //     {required address, required userId, required WidgetRef ref}) async {
-    //   try {
-    //     await supabaseClient.from('users').upsert({
-    //       'last_address': address,
-    //     }).eq('id', userId);
-    //   } catch (e) {
-    //     debugPrint("Error in changing last address : $e");
-    //   }
-    //   await ref.read(profileRepoProvider).fetchuser(userId, ref);
-    // }
-  }
 }

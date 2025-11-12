@@ -5,22 +5,11 @@ import 'package:spicy_eats/commons/country.dart';
 import 'package:spicy_eats/features/Home/screens/home_screen.dart';
 import 'package:spicy_eats/features/orders/screens/order_screen.dart';
 
-
-
-List screens = [
-//  const Center(child: HomeScreen()),
- 
-  const Center(child: Text("Feedback")),
-
-  const Center(child: Text("Documents")),
-  const Center(child: Text("Settings")),
-];
-List screen = [
-  const HomeScreen(''),
-  const Favoritescrren(),
-  const AccountScreen(),
+List<Widget> screen = [
+  HomeScreen(''),
+  const Favoritescreen(),
   const OrdersScreen(),
-  // const Center(child: Text("Accont screen comming soon"))
+  const AccountScreen(),
 ];
 List<BottomNavigationBarItem> bitems = [
   const BottomNavigationBarItem(
@@ -181,4 +170,11 @@ List<Country> countries = [
   Country(
       name: 'Pakistan', code: '+92', image: 'lib/assets/images/pakistan.png'),
   Country(name: 'India', code: '+91', image: 'lib/assets/images/india.png'),
+];
+
+List<String> bannerImages = [
+  'lib/assets/images/banners/b1.jpg',
+  'lib/assets/images/banners/b3.jpg',
+  'lib/assets/images/banners/b4.jpg',
+  'lib/assets/images/banners/b5.jpg',
 ];

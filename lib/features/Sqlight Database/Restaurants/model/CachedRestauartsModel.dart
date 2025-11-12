@@ -1,4 +1,5 @@
-import 'package:spicy_eats/commons/restaurant_model.dart';
+
+import 'package:spicy_eats/features/Home/model/restaurant_model.dart';
 
 class CachedRestaurant {
   final List<RestaurantModel> restaurants;

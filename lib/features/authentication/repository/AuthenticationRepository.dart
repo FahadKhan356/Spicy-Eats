@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/commons/mysnackbar.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
+import 'package:spicy_eats/features/authentication/authServices.dart';
 import 'package:spicy_eats/features/authentication/passwordless_signup.dart';
+import 'package:spicy_eats/features/authentication/signinscreen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final authenticationRepositoryProvider = Provider((ref) =>
@@ -112,7 +114,7 @@ class AuthenticationRepository {
       await supabaseClient.auth.signOut();
 
       Navigator.pushNamedAndRemoveUntil(
-          context, PasswordlessScreen.routename, (route) => false,
+          context, SignInScreen.routeName, (route) => false,
           arguments: ref);
     } catch (e) {
       throw Exception(e);

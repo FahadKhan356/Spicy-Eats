@@ -15,7 +15,8 @@ class Responsive {
   static late double h10px;
   static late double h8px;
   static late double h6px;
-
+  static late double h260px;
+  static late double h230px;
 
 
 //WIDTH
@@ -34,16 +35,15 @@ class Responsive {
   static late double w30px;
   static late double w18px;
   static late double w24px;
-      static late double w50px;
-      static late double w280px;
-      static late double w22px;
+  static late double w50px;
+  static late double w280px;
+  static late double w180px;
 
-
+  static late double w22px;
 
   static late double w90px;
-    static late double w100px;
-     static late double w120px;
-
+  static late double w100px;
+  static late double w120px;
 
   static late double w7px;
 
@@ -61,7 +61,6 @@ class Responsive {
     h20px = screen.height * 0.027;
     h50px = screen.height * 0.07;
     h100px = screen.height * 0.138;
-    // h70px = screen.height * 0.095;
     h300px = screen.height * 0.41;
     h5px = screen.height * 0.007;
     h14px = screen.height * 0.02;
@@ -70,6 +69,9 @@ class Responsive {
     h8px = screen.height * 0.011;
     h6px = screen.height * 0.008;
     w7px = screen.height * 0.009;
+    h260px = screen.height * 0.355;
+    h230px = screen.height * 0.315;
+
 
     //HEIGHT-PADDING
 
@@ -96,6 +98,7 @@ class Responsive {
     w50px = screen.width * 0.125;
     w280px = screen.width * 0.7;
     w22px = screen.width * 0.055;
+    w180px=screen.width * 0.43;
 
     //WIDTH-PADDING
     w6px = screen.width * 0.015;

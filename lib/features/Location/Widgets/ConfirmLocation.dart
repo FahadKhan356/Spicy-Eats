@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/commons/custommap.dart';
+import 'package:spicy_eats/features/Location/Widgets/custommap.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:spicy_eats/features/Home/model/AddressModel.dart';
@@ -16,580 +16,14 @@ final lableIndex = StateProvider<int?>((ref) => null);
 final isOther = StateProvider<bool>((ref) => false);
 final labelTitle = StateProvider<String?>((ref) => '');
 
-// class Confirmlocation extends ConsumerStatefulWidget {
-//   static const String routename = "/conformLocation";
-//   final bool? isEdit;
-//   final AddressModel? addressmodel;
-//   final LocationResult? locationResult;
-//   const Confirmlocation(
-//       {super.key,
-//       required this.locationResult,
-//       this.isEdit,
-//       this.addressmodel});
-
-//   @override
-//   ConsumerState<Confirmlocation> createState() => _ConfirmlocationState();
-// }
-
-// class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
-//   double? _latitude;
-//   double? _longitude;
-//   TextEditingController streetController = TextEditingController();
-//   TextEditingController floorController = TextEditingController();
-//   TextEditingController othersController = TextEditingController();
-
-//   Future<LocationResult> getLocationResult(
-//       {required double latitude, required double longitude}) async {
-//     try {
-//       List<Placemark> placemarks =
-//           await placemarkFromCoordinates(latitude, longitude);
-//       if (placemarks.isNotEmpty) {
-//         return LocationResult(
-//             latitude: latitude,
-//             longitude: longitude,
-//             locationName: getLocationName(placemark: placemarks.first),
-//             completeAddress: getCompleteAdress(placemark: placemarks.first),
-//             placemark: placemarks.first);
-//       } else {
-//         return LocationResult(
-//             latitude: latitude,
-//             longitude: longitude,
-//             completeAddress: null,
-//             placemark: null,
-//             locationName: null);
-//       }
-//     } catch (e) {
-//       return LocationResult(
-//           latitude: latitude,
-//           longitude: longitude,
-//           completeAddress: null,
-//           placemark: null,
-//           locationName: null);
-//     }
-//   }
-
-//   LocationResult? _locationResult;
-//   _getLocationResult() async {
-//     _locationResult =
-//         await getLocationResult(latitude: _latitude!, longitude: _longitude!);
-//     if (mounted) {
-//       setState(() {});
-//     }
-//   }
-
-//   MapType _mapType = MapType.normal;
-//   bool _move = false;
-
-//   @override
-//   void dispose() {
-//     floorController.dispose();
-//     streetController.dispose();
-//     // TODO: implement dispose
-//     super.dispose();
-//   }
-
-//   @override
-//   void initState() {
-//     _latitude = -6.984072660841485;
-//     _longitude = 110.40950678599624;
-//     // TODO: implement initState
-//     super.initState();
-//     if (widget.isEdit != null) {
-//       _latitude = widget.locationResult!.latitude;
-//       _longitude = widget.locationResult!.longitude;
-
-//       streetController.text = widget.addressmodel?.streetNumber ?? '';
-//       floorController.text = widget.addressmodel?.floor ?? '';
-//       othersController.text = widget.addressmodel?.othersDetails ?? '';
-//     } else {
-//       _latitude = -6.984072660841485;
-//       _longitude = 110.40950678599624;
-//     }
-//   }
-
-//   Timer? _timer;
-//   final MapController _controller = MapController();
-//   Widget viewLocationName() {
-//     return Container(
-//       decoration: const BoxDecoration(
-//         borderRadius: BorderRadius.only(
-//             topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-//         color: Colors.white,
-//       ),
-//       padding: const EdgeInsets.all(10),
-//       child: Column(
-//         children: [
-//           Row(
-//             children: [
-//               const Icon(
-//                 Icons.location_on,
-//               ),
-//               const SizedBox(
-//                 width: 10,
-//               ),
-//               Expanded(
-//                   child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   Text(
-//                     _locationResult?.locationName ??
-//                         "Name not found. Tap close by.",
-//                   ),
-//                   Text(
-//                     _locationResult?.completeAddress ?? "-",
-//                   ),
-//                 ],
-//               ))
-//             ],
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final loader = ref.watch(isloaderProvider);
-//     final size = MediaQuery.of(context).size;
-//     final selected = ref.watch(lableIndex);
-//     final others = ref.watch(isOther);
-//     final labeltitle = ref.watch(labelTitle);
-//     return Scaffold(
-//       backgroundColor: Colors.white,
-//       body: loader
-//           ? const Center(
-//               child: CircularProgressIndicator(
-//               color: Colors.black,
-//             ))
-//           : Stack(
-//               children: [
-//                 Positioned(
-//                   top: 0,
-//                   left: 0,
-//                   right: 0,
-//                   child: SizedBox(
-//                     height: size.height * 0.4,
-//                     width: double.maxFinite,
-//                     child: FlutterMap(
-//                       mapController: _controller,
-//                       options: MapOptions(
-//                         initialCenter: LatLng(
-//                             widget.locationResult?.latitude ?? _latitude!,
-//                             widget.locationResult?.longitude! ?? _longitude!),
-//                         initialZoom: 16,
-//                         maxZoom: 18,
-//                         onMapReady: () {
-//                           _controller.mapEventStream.listen((evt) async {
-//                             _timer?.cancel();
-//                             if (!_move) {
-//                               _timer =
-//                                   Timer(const Duration(milliseconds: 200), () {
-//                                 _latitude = evt.camera.center.latitude;
-//                                 _longitude = evt.camera.center.longitude;
-//                                 _getLocationResult();
-//                               });
-//                             } else {
-//                               _move = false;
-//                             }
-
-//                             setState(() {});
-//                           });
-//                         },
-//                       ),
-//                       children: [
-//                         TileLayer(
-//                           urlTemplate: _mapType == MapType.normal
-//                               ? "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=7b2RKYzYW5lBAVIkQzK3"
-//                               // for dark "https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png"
-
-//                               : 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.jpg',
-//                           userAgentPackageName: 'com.example.app',
-//                         ),
-//                         Stack(
-//                           children: [
-//                             Center(
-//                                 child: Icon(Icons.person_pin,
-//                                     size: size.width * 0.1,
-//                                     color: Colors.black87)),
-//                           ],
-//                         )
-//                       ],
-//                     ),
-//                   ),
-//                 ),
-//                 Positioned(
-//                   top: size.height * 0.3,
-//                   left: 0,
-//                   right: 0,
-//                   bottom: 0,
-//                   child: ClipRRect(
-//                     borderRadius: const BorderRadius.only(
-//                       topLeft: Radius.circular(20),
-//                       topRight: Radius.circular(20),
-//                     ),
-//                     child: Container(
-//                       padding: const EdgeInsets.symmetric(
-//                           horizontal: 10, vertical: 20),
-//                       height: double.maxFinite,
-//                       width: double.maxFinite,
-//                       color: Colors.white,
-//                       child: SingleChildScrollView(
-//                         child: Column(
-//                           crossAxisAlignment: CrossAxisAlignment.start,
-//                           mainAxisSize: MainAxisSize.min, // Fit content
-//                           children: [
-//                             Text(
-//                               "Add details to help us find you",
-//                               style: TextStyle(
-//                                   fontSize: size.height * 0.03,
-//                                   fontWeight: FontWeight.bold),
-//                             ),
-//                             const SizedBox(height: 20),
-//                             Row(
-//                               mainAxisAlignment: MainAxisAlignment.start,
-//                               crossAxisAlignment: CrossAxisAlignment.start,
-//                               children: [
-//                                 const Icon(Icons.location_on),
-//                                 Column(
-//                                   crossAxisAlignment: CrossAxisAlignment.start,
-//                                   children: [
-//                                     Text(
-//                                       "${_locationResult?.locationName}",
-//                                       style: TextStyle(
-//                                           fontSize: size.height * 0.02,
-//                                           fontWeight: FontWeight.bold),
-//                                     ),
-//                                     Text(
-//                                       "${_locationResult?.placemark?.locality}",
-//                                       style: TextStyle(
-//                                           fontSize: size.height * 0.02,
-//                                           fontWeight: FontWeight.normal),
-//                                     ),
-//                                   ],
-//                                 ),
-//                               ],
-//                             ),
-//                             const SizedBox(height: 20),
-//                             TextFormField(
-//                               controller: streetController,
-//                               decoration: InputDecoration(
-//                                 suffixIcon: TextButton(
-//                                   child: const Text('x'),
-//                                   onPressed: () {
-//                                     streetController.text = '';
-//                                   },
-//                                 ),
-//                                 focusedBorder: OutlineInputBorder(
-//                                     borderSide:
-//                                         const BorderSide(color: Colors.black),
-//                                     borderRadius: BorderRadius.circular(10)),
-//                                 enabledBorder: OutlineInputBorder(
-//                                     borderSide:
-//                                         const BorderSide(color: Colors.black),
-//                                     borderRadius: BorderRadius.circular(10)),
-//                                 contentPadding: const EdgeInsets.symmetric(
-//                                     vertical: 10, horizontal: 10),
-//                                 label: const Text('Street Name/Number'),
-//                               ),
-//                             ),
-//                             const SizedBox(height: 20),
-//                             TextFormField(
-//                               controller: floorController,
-//                               decoration: InputDecoration(
-//                                 suffixIcon: TextButton(
-//                                   child: const Text('x'),
-//                                   onPressed: () {
-//                                     floorController.text = '';
-//                                   },
-//                                 ),
-//                                 focusedBorder: OutlineInputBorder(
-//                                     borderSide:
-//                                         const BorderSide(color: Colors.black),
-//                                     borderRadius: BorderRadius.circular(10)),
-//                                 enabledBorder: OutlineInputBorder(
-//                                     borderSide:
-//                                         const BorderSide(color: Colors.black),
-//                                     borderRadius: BorderRadius.circular(10)),
-//                                 contentPadding: const EdgeInsets.symmetric(
-//                                     vertical: 10, horizontal: 10),
-//                                 label: const Text('Floor'),
-//                               ),
-//                             ),
-//                             const SizedBox(height: 20),
-//                             Text(
-//                               "Add a label",
-//                               style: TextStyle(
-//                                   fontSize: size.height * 0.03,
-//                                   fontWeight: FontWeight.bold),
-//                             ),
-//                             const SizedBox(height: 10),
-//                             Column(
-//                               crossAxisAlignment: CrossAxisAlignment.start,
-//                               children: [
-//                                 SizedBox(
-//                                   height: size.height * 0.2,
-//                                   child: ListView.builder(
-//                                       physics: const BouncingScrollPhysics(),
-//                                       shrinkWrap: true,
-//                                       scrollDirection: Axis.horizontal,
-//                                       itemCount: labels.length,
-//                                       itemBuilder: (context, index) {
-//                                         final selectedIndex =
-//                                             ref.watch(lableIndex);
-//                                         final isSelected =
-//                                             selectedIndex == index;
-
-//                                         return InkWell(
-//                                           onTap: () {
-//                                             if (index == selectedIndex) {
-//                                               // tapped same item again
-//                                               ref
-//                                                   .read(lableIndex.notifier)
-//                                                   .state = null;
-//                                               if (labels[index].title ==
-//                                                   "Others") {
-//                                                 ref
-//                                                     .read(isOther.notifier)
-//                                                     .state = false;
-//                                               }
-//                                               ref
-//                                                   .read(labelTitle.notifier)
-//                                                   .state = labels[index].title;
-//                                             } else {
-//                                               // tapped a new item
-//                                               ref
-//                                                   .read(lableIndex.notifier)
-//                                                   .state = index;
-//                                               if (labels[index].title ==
-//                                                   "Others") {
-//                                                 ref
-//                                                     .read(isOther.notifier)
-//                                                     .state = true;
-//                                               } else {
-//                                                 ref
-//                                                     .read(isOther.notifier)
-//                                                     .state = false;
-//                                               }
-//                                             }
-//                                             debugPrint(labeltitle);
-//                                           },
-//                                           child: Column(
-//                                             children: [
-//                                               Padding(
-//                                                 padding:
-//                                                     const EdgeInsets.all(8.0),
-//                                                 child: Container(
-//                                                   height: size.width * 0.13,
-//                                                   width: size.width * 0.13,
-//                                                   decoration: BoxDecoration(
-//                                                       color: isSelected ||
-//                                                               widget.addressmodel
-//                                                                       ?.label ==
-//                                                                   labels[index]
-//                                                                       .title
-//                                                           ? Colors.grey
-//                                                           : Colors.white,
-//                                                       border: Border.all(
-//                                                           color: Colors.black26,
-//                                                           width: 1),
-//                                                       borderRadius:
-//                                                           BorderRadius.circular(
-//                                                               size.width *
-//                                                                   0.13 /
-//                                                                   2)),
-//                                                   child: Icon(
-//                                                     labels[index].icon,
-//                                                     size: size.width * 0.06,
-//                                                     color: Colors.black,
-//                                                   ),
-//                                                 ),
-//                                               ),
-//                                               const SizedBox(
-//                                                 height: 10,
-//                                               ),
-//                                               Text(
-//                                                 labels[index].title,
-//                                                 style: const TextStyle(
-//                                                     fontSize: 16,
-//                                                     fontWeight:
-//                                                         FontWeight.bold),
-//                                               )
-//                                             ],
-//                                           ),
-//                                         );
-//                                       }),
-//                                 ),
-//                                 others
-//                                     ? othersWidget(controller: othersController)
-//                                     : const SizedBox(),
-//                               ],
-//                             ),
-//                             const SizedBox(height: 20),
-//                             const Divider(
-//                               color: Colors.black,
-//                               height: 1,
-//                             ),
-//                             const SizedBox(height: 20),
-//                             InkWell(
-//                               borderRadius:
-//                                   BorderRadius.circular(size.width * 0.14),
-//                               onTap: () async {
-//                                 ref.read(isloaderProvider.notifier).state =
-//                                     true;
-
-//                                 if (widget.isEdit!) {
-//                                   await ref
-//                                       .read(homeRepositoryController)
-//                                       .updateAddress(
-//                                         addressID: widget.addressmodel!.id,
-//                                         address:
-//                                             "${_locationResult?.locationName} ${_locationResult?.placemark!.locality}",
-//                                         streetNumber: streetController.text,
-//                                         floor: floorController.text,
-//                                         othersDetails: othersController.text,
-//                                         label: labeltitle,
-//                                         context: context,
-//                                         lat: _locationResult?.latitude,
-//                                         long: _locationResult?.longitude,
-//                                       );
-//                                 } else {
-//                                   await ref
-//                                       .read(homeRepositoryController)
-//                                       .addAddress(
-//                                           userId: supabaseClient
-//                                               .auth.currentUser!.id,
-//                                           address:
-//                                               "${_locationResult?.locationName} ${_locationResult?.placemark!.locality}",
-//                                           streetNumber: streetController.text,
-//                                           floor: floorController.text,
-//                                           othersDetails: othersController.text,
-//                                           label: labeltitle,
-//                                           context: context);
-//                                 }
-
-//                                 ref.read(labelTitle.notifier).state = '';
-
-//                                 Navigator.pushNamedAndRemoveUntil(
-//                                     context, Home.routename, (route) => false);
-
-//                                 ref.read(isloaderProvider.notifier).state =
-//                                     false;
-//                               },
-//                               child: Padding(
-//                                 padding: const EdgeInsets.all(8.0),
-//                                 child: Container(
-//                                     height: size.height * 0.07,
-//                                     width: double.maxFinite,
-//                                     padding: const EdgeInsets.all(10),
-//                                     decoration: BoxDecoration(
-//                                       boxShadow: const [
-//                                         BoxShadow(
-//                                             spreadRadius: 2,
-//                                             color:
-//                                                 Color.fromRGBO(230, 81, 0, 1),
-//                                             blurRadius: 2)
-//                                       ],
-//                                       color: Colors.orange[100],
-//                                       borderRadius: BorderRadius.circular(
-//                                           size.width * 0.14),
-//                                     ),
-//                                     child: Padding(
-//                                       padding: const EdgeInsets.symmetric(
-//                                           horizontal: 10),
-//                                       child: Center(
-//                                         child: widget.isEdit!
-//                                             ? Text("Update Address",
-//                                                 style: TextStyle(
-//                                                     fontSize: size.width * 0.03,
-//                                                     color: Colors.orange[900],
-//                                                     overflow:
-//                                                         TextOverflow.visible,
-//                                                     fontWeight:
-//                                                         FontWeight.bold))
-//                                             : Text("Confirm location",
-//                                                 style: TextStyle(
-//                                                     fontSize: size.width * 0.03,
-//                                                     color: Colors.orange[900],
-//                                                     overflow:
-//                                                         TextOverflow.visible,
-//                                                     fontWeight:
-//                                                         FontWeight.bold)),
-//                                       ),
-//                                     )),
-//                               ),
-//                             ),
-//                           ],
-//                         ),
-//                       ),
-//                     ),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//     );
-//   }
-// }
-
-// List<label> labels = [
-//   label(
-//     icon: Icons.home_outlined,
-//     title: "Home",
-//   ),
-//   label(
-//     icon: Icons.work_outline,
-//     title: "Work",
-//   ),
-//   label(
-//     icon: Icons.favorite_border_outlined,
-//     title: "Partner",
-//   ),
-//   label(
-//     icon: Icons.more_horiz,
-//     title: "Others",
-//   ),
-// ];
-
-// class label {
-//   final IconData icon;
-//   final String title;
-
-//   label({
-//     required this.icon,
-//     required this.title,
-//   });
-// }
-
-// Widget othersWidget({required controller}) {
-//   return TextFormField(
-//     controller: controller,
-//     decoration: InputDecoration(
-//       suffixIcon: TextButton(
-//         child: const Text('x'),
-//         onPressed: () {
-//           controller.text = '';
-//         },
-//       ),
-//       focusedBorder: OutlineInputBorder(
-//           borderSide: const BorderSide(color: Colors.black),
-//           borderRadius: BorderRadius.circular(10)),
-//       enabledBorder: OutlineInputBorder(
-//           borderSide: const BorderSide(color: Colors.black),
-//           borderRadius: BorderRadius.circular(10)),
-//       contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-//       label: const Text('eg. 🏠 Alex\'s house'),
-//     ),
-//   );
-// }
-
-
 // Enhanced Confirm Location Screen with professional UI
 class Confirmlocation extends ConsumerStatefulWidget {
   static const String routename = "/conformLocation";
   final bool? isEdit;
   final AddressModel? addressmodel;
-  final LocationResult? locationResult;
-  
-  const Confirmlocation({
+  LocationResult? locationResult;
+
+  Confirmlocation({
     super.key,
     required this.locationResult,
     this.isEdit,
@@ -607,45 +41,10 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
   TextEditingController floorController = TextEditingController();
   TextEditingController othersController = TextEditingController();
 
-  Future<LocationResult> getLocationResult({
-    required double latitude,
-    required double longitude,
-  }) async {
-    try {
-      List<Placemark> placemarks =
-          await placemarkFromCoordinates(latitude, longitude);
-      if (placemarks.isNotEmpty) {
-        return LocationResult(
-          latitude: latitude,
-          longitude: longitude,
-          locationName: getLocationName(placemark: placemarks.first),
-          completeAddress: getCompleteAdress(placemark: placemarks.first),
-          placemark: placemarks.first,
-        );
-      } else {
-        return LocationResult(
-          latitude: latitude,
-          longitude: longitude,
-          completeAddress: null,
-          placemark: null,
-          locationName: null,
-        );
-      }
-    } catch (e) {
-      return LocationResult(
-        latitude: latitude,
-        longitude: longitude,
-        completeAddress: null,
-        placemark: null,
-        locationName: null,
-      );
-    }
-  }
 
-  LocationResult? _locationResult;
-  
-  _getLocationResult() async {
-    _locationResult =
+  Future<void>_getLocationResult() async {
+    // _locationResult =
+    widget.locationResult =
         await getLocationResult(latitude: _latitude!, longitude: _longitude!);
     if (mounted) {
       setState(() {});
@@ -718,23 +117,24 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
                             initialZoom: 16,
                             maxZoom: 18,
                             onMapReady: () {
-                              _controller.mapEventStream.listen((evt) async {
-                                _timer?.cancel();
-                                if (!_move) {
-                                  _timer = Timer(
-                                    const Duration(milliseconds: 200),
-                                    () {
-                                      _latitude = evt.camera.center.latitude;
-                                      _longitude = evt.camera.center.longitude;
-                                      _getLocationResult();
-                                    },
-                                  );
-                                } else {
-                                  _move = false;
-                                }
-                                setState(() {});
-                              });
-                            },
+  _controller.mapEventStream.listen((evt) async {
+      debugPrint('📍lat ${evt.camera.center.latitude} : long ${evt.camera.center.longitude}');
+    if (evt is MapEventMoveEnd) {
+      _latitude = evt.camera.center.latitude;
+      _longitude = evt.camera.center.longitude;
+
+
+      debugPrint('📍 User stopped dragging — fetching new location...');
+      await _getLocationResult();
+      debugPrint('Map is ready — initial location: $_latitude, $_longitude');
+      setState(() {}); // update UI
+    }
+  });
+
+  
+},
+
+                        
                           ),
                           children: [
                             TileLayer(
@@ -860,10 +260,22 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
                                 const SizedBox(width: 12),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
+                                      // widget.isEdit!? Text(
+                                      //    widget.locationResult?.locationName.toString() ??
+                                      //   // _locationResult?.locationName ??
+                                      //       "Finding location...",
+                                      //   style: const TextStyle(
+                                      //     fontWeight: FontWeight.bold,
+                                      //     fontSize: 14,
+                                      //   ),
+                                      //   maxLines: 1,
+                                      //   overflow: TextOverflow.ellipsis,
+                                      // ) :
                                       Text(
-                                        _locationResult?.locationName ??
+                                        "${widget.locationResult?.locationName}" ??
                                             "Finding location...",
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
@@ -873,7 +285,9 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                       Text(
-                                        _locationResult?.placemark?.locality ?? "-",
+                                        'null',
+                                        //widget.locationResult?.placemark?.locality?? "-",
+                                        // _locationResult?.placemark?.locality ?? "-",
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: Colors.grey[600],
@@ -995,18 +409,22 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
                                 return InkWell(
                                   onTap: () {
                                     if (index == selectedIndex) {
-                                      ref.read(lableIndex.notifier).state = null;
+                                      ref.read(lableIndex.notifier).state =
+                                          null;
                                       if (labels[index].title == "Others") {
-                                        ref.read(isOther.notifier).state = false;
+                                        ref.read(isOther.notifier).state =
+                                            false;
                                       }
                                     } else {
-                                      ref.read(lableIndex.notifier).state = index;
+                                      ref.read(lableIndex.notifier).state =
+                                          index;
                                       ref.read(labelTitle.notifier).state =
                                           labels[index].title;
                                       if (labels[index].title == "Others") {
                                         ref.read(isOther.notifier).state = true;
                                       } else {
-                                        ref.read(isOther.notifier).state = false;
+                                        ref.read(isOther.notifier).state =
+                                            false;
                                       }
                                     }
                                   },
@@ -1020,14 +438,16 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
                                           height: 70,
                                           decoration: BoxDecoration(
                                             color: isSelected ||
-                                                    widget.addressmodel?.label ==
+                                                    widget.addressmodel
+                                                            ?.label ==
                                                         labels[index].title
                                                 ? Colors.orange[50]
                                                 : Colors.grey[100],
                                             shape: BoxShape.circle,
                                             border: Border.all(
                                               color: isSelected ||
-                                                      widget.addressmodel?.label ==
+                                                      widget.addressmodel
+                                                              ?.label ==
                                                           labels[index].title
                                                   ? Colors.orange[700]!
                                                   : Colors.grey[300]!,
@@ -1038,7 +458,8 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
                                             labels[index].icon,
                                             size: 28,
                                             color: isSelected ||
-                                                    widget.addressmodel?.label ==
+                                                    widget.addressmodel
+                                                            ?.label ==
                                                         labels[index].title
                                                 ? Colors.orange[700]
                                                 : Colors.grey[600],
@@ -1050,12 +471,14 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
                                           style: TextStyle(
                                             fontSize: 13,
                                             fontWeight: isSelected ||
-                                                    widget.addressmodel?.label ==
+                                                    widget.addressmodel
+                                                            ?.label ==
                                                         labels[index].title
                                                 ? FontWeight.bold
                                                 : FontWeight.w500,
                                             color: isSelected ||
-                                                    widget.addressmodel?.label ==
+                                                    widget.addressmodel
+                                                            ?.label ==
                                                         labels[index].title
                                                 ? Colors.orange[700]
                                                 : Colors.grey[700],
@@ -1089,34 +512,46 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
                             height: 56,
                             child: ElevatedButton(
                               onPressed: () async {
-                                ref.read(isloaderProvider.notifier).state = true;
+                                ref.read(isloaderProvider.notifier).state =
+                                    true;
 
                                 if (widget.isEdit != null && widget.isEdit!) {
                                   await ref
                                       .read(homeRepositoryController)
                                       .updateAddress(
                                         addressID: widget.addressmodel!.id,
-                                        address:
-                                            "${_locationResult?.locationName} ${_locationResult?.placemark?.locality}",
+                                        address: widget.locationResult
+                                                ?.completeAddress ??
+                                            '',
+                                        // "${_locationResult?.locationName} ${_locationResult?.placemark?.locality}",
                                         streetNumber: streetController.text,
                                         floor: floorController.text,
                                         othersDetails: othersController.text,
                                         label: labeltitle,
                                         context: context,
-                                        lat: _locationResult?.latitude,
-                                        long: _locationResult?.longitude,
+                                        lat: widget.locationResult
+                                            ?.latitude, //_locationResult?.latitude,
+                                        long: widget.locationResult
+                                            ?.longitude, //_locationResult?.longitude,
                                       );
                                 } else {
                                   await ref
                                       .read(homeRepositoryController)
                                       .addAddress(
-                                        userId: supabaseClient.auth.currentUser!.id,
-                                        address:
-                                            "${_locationResult?.locationName} ${_locationResult?.placemark?.locality}",
+                                        userId:
+                                            supabaseClient.auth.currentUser!.id,
+                                        address: widget.locationResult
+                                                ?.completeAddress ??
+                                            '',
+                                        // "${_locationResult?.locationName} ${_locationResult?.placemark?.locality}",
                                         streetNumber: streetController.text,
                                         floor: floorController.text,
                                         othersDetails: othersController.text,
                                         label: labeltitle,
+                                        lat: widget.locationResult
+                                            ?.latitude, //_locationResult?.latitude,
+                                        long: widget.locationResult
+                                            ?.longitude, //_locationResult?.longitude,
                                         context: context,
                                       );
                                 }
@@ -1129,7 +564,8 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
                                   (route) => false,
                                 );
 
-                                ref.read(isloaderProvider.notifier).state = false;
+                                ref.read(isloaderProvider.notifier).state =
+                                    false;
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.orange[700],
@@ -1169,8 +605,10 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
-      //  focusColor: Colors.orange[700],
-         floatingLabelStyle: TextStyle(color: Colors.orange[700],),
+        //  focusColor: Colors.orange[700],
+        floatingLabelStyle: TextStyle(
+          color: Colors.orange[700],
+        ),
         labelText: label,
         hintText: hint,
         prefixIcon: Icon(icon, size: 20),

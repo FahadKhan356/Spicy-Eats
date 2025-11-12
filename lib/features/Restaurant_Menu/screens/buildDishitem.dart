@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/commons/restaurant_model.dart';
+import 'package:spicy_eats/features/Home/model/restaurant_model.dart';
 import 'package:spicy_eats/commons/Responsive.dart';
 import 'package:spicy_eats/features/Cart/model/Cartmodel.dart';
 import 'package:spicy_eats/features/Cart/repository/CartRepository.dart';

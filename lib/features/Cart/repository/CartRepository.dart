@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' show ScaffoldMessenger, SnackBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/features/Cart/model/Cartmodel.dart' show Cartmodel;

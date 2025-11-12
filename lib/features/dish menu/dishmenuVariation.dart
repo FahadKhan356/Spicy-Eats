@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:spicy_eats/commons/restaurant_model.dart';
+import 'package:spicy_eats/features/Home/model/restaurant_model.dart';
 import 'package:spicy_eats/features/Cart/model/Cartmodel.dart';
 import 'package:spicy_eats/features/Cart/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';

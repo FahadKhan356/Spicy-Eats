@@ -14,7 +14,7 @@ class ProfileRepo {
     if (res.isNotEmpty) {
       ref.read(userDataProvider.notifier).state =
           res.map((e) => User.fromjson(e)).toList();
-      print('...userdata fetched');
+      print('...userdata fetched r');
     }
   }
 
@@ -29,6 +29,7 @@ class ProfileRepo {
         ref.read(userProvider.notifier).state = User.fromjson(res);
 
         print('...userdata fetched11');
+     
       }
     } catch (e) {
       throw Exception(e);

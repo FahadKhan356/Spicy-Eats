@@ -33,7 +33,7 @@ class _AnimatedNavBarState extends State<AnimatedNavBar> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _buildNavItem(index: 0, icon: Icons.explore, label: "Explore"),
-            _buildNavItem(index: 1, icon: Icons.favorite, label: "Favorites"),
+            _buildNavItem(index: 1, icon: Icons.favorite, label: "Favs"),
             _buildNavItem(
                 index: 2, icon: Icons.shopping_bag_outlined, label: "Cart"),
             _buildNavItem(

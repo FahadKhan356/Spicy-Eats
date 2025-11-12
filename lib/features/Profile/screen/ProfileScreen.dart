@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spicy_eats/commons/orderModel.dart';
 import 'package:spicy_eats/features/Profile/commons/CommonContainer.dart';
 import 'package:spicy_eats/features/Profile/commons/EditScreen.dart';
 import 'package:spicy_eats/features/Profile/repo/ProfileRepo.dart';

@@ -3,7 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:spicy_eats/commons/restaurant_model.dart';
+import 'package:spicy_eats/features/Home/model/restaurant_model.dart';
 import 'package:spicy_eats/commons/Responsive.dart';
 
 import 'package:spicy_eats/features/Cusines/model/CusinesModel.dart';
@@ -19,108 +19,6 @@ class CusinesList extends ConsumerStatefulWidget {
 }
 
 
-// class _CusinesListState extends ConsumerState<CusinesList> {
-
-  
-//   @override
-//   Widget build(
-//     BuildContext context,
-//   ) {
-//     final isLoading = ref.watch(isloaderProvider);
-
-//     var size = MediaQuery.of(context).size;
-//     return Container(
-//      height: size.width * 0.25,
-//       width: double.infinity,
-//       color: Colors.white,
-//       child: Skeletonizer(
-//         ignorePointers: true,
-//         ignoreContainers: true,
-//         enabled: isLoading,
-//         enableSwitchAnimation: true,
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.start,
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             TextButton(
-//               onPressed: () {
-//                 ref.read(isloaderProvider.notifier).state = true;
-//                 Future.delayed(const Duration(seconds: 2));
-
-//                 // Reset back to full list
-//                 ref.read(restaurantDisplayListProvider.notifier).state =
-//                     ref.read(restaurantlistProvider);
-
-//                 ref.read(isloaderProvider.notifier).state = false;
-//               },
-//               child: const Text(
-//                 'Reset',
-//                 style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-//               ),
-//             ),
-//             Expanded(
-//               child: ListView.builder(
-                
-//                 scrollDirection: Axis.horizontal,
-//                 itemCount: widget.cusineList?.length, //cusines.length,
-//                 itemBuilder: ((context, index) => SizedBox(
-//                    height: size.width * 0.25,
-//                   child: Column(
-//                      mainAxisSize: MainAxisSize.min,
-//                         children: [
-//                           widget.cusineList != null
-//                               ? InkWell(
-//                                 onTap: () async {
-//                     await ref
-//                         .read(restaurantFilterProvider.notifier)
-//                         .filterByCuisine(widget.cusineList![index].id);
-//                   },
-                                
-//                                   child: Padding(
-//                                     padding: const EdgeInsets.symmetric(
-//                                         vertical: 10, horizontal: 10),
-//                                     child: Container(
-//                                       width: size.width * 0.10,
-//                                       height: size.width * 0.10,
-//                                       decoration: BoxDecoration(
-//                                         shape: BoxShape.circle,
-//                                         border: Border.all(
-//                                           color: const Color.fromRGBO(
-//                                               245, 124, 0, 1), // 🔸 border color
-//                                           width: 4, // border thickness
-//                                         ),
-//                                         image: DecorationImage(
-//                                           image: NetworkImage(widget
-//                                               .cusineList![index].cusineImage),
-//                                           fit: BoxFit.cover,
-//                                         ),
-//                                       ),
-//                                     ),
-//                                   ),
-//                                 )
-//                               : const SizedBox(),
-//                            SizedBox(
-//                             height: Responsive.h5px,
-//                           ),
-//                           widget.cusineList != null
-//                               ? Text(
-//                                   widget.cusineList![index].cusineName,
-//                                   style: TextStyle(
-//                                       fontSize: size.width * 0.02,
-//                                       fontWeight: FontWeight.w500),
-//                                 )
-//                               : const SizedBox()
-//                         ],
-//                       ),
-//                 )),
-//               ),
-//             )
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 class _CusinesListState extends ConsumerState<CusinesList> {
   @override

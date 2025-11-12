@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:spicy_eats/commons/restauarantTextfield.dart';
+import 'package:spicy_eats/features/authentication/Widgets/restauarantTextfield.dart';
 import 'package:spicy_eats/commons/country.dart';
 import 'package:spicy_eats/commons/mysnackbar.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';

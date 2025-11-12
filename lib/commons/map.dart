@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/commons/Providers.dart';
 
 
-import 'package:spicy_eats/commons/custommap.dart';
+import 'package:spicy_eats/features/Location/Widgets/custommap.dart';
 
 class MyMap extends ConsumerStatefulWidget {
   bool isAddScreen;
