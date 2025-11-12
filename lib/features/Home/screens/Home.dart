@@ -22,9 +22,11 @@ class _HomeState extends ConsumerState<Home> {
     var currentIndex = ref.watch(currentIndexProvider);
     return Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        body: IndexedStack(
+        body: 
+IndexedStack(
           index: currentIndex,
           children: screen,),
+
         floatingActionButton: supabaseClient.auth.currentSession != null
             ? Padding(
                 padding:
