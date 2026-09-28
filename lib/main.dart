@@ -168,7 +168,7 @@ class _MyAppState extends ConsumerState<MyApp> {
         theme: ThemeData(
             useMaterial3: true,
             //drawerTheme: DrawerThemeData(backgroundColor: Colors.),
-            tabBarTheme: const TabBarTheme(),
+            tabBarTheme: const TabBarThemeData(),
             appBarTheme: const AppBarTheme(backgroundColor: Colors.white)),
         home:
         // BoardingScreen(),
