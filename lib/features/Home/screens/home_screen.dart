@@ -20,6 +20,7 @@ import 'package:spicy_eats/features/Sqlight%20Database/onBoarding/services/OnBoa
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 import 'package:spicy_eats/main.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/screens/RestaurantMenuScreen.dart';
+import 'package:spicy_eats/features/authentication/signinscreen.dart';
 
 var searchProvider = StateProvider<bool>((ref) => false);
 final pickedAddressProvider = StateProvider<AddressModel?>((ref) => null);
@@ -48,19 +49,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   void initState() {
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    _initialDataFuture = fetchInitialData();
-    ref
-        .read(cartReopProvider)
-        .initializeCart(userId: supabaseClient.auth.currentUser!.id, ref: ref);
-    // });
-
     super.initState();
+
+    final authUser = supabaseClient.auth.currentUser;
+
+    // No session: bounce back to sign-in instead of dereferencing a null user.
+    // `supabaseClient.auth.currentUser!.id` used to be evaluated while the
+    // widget was mounting, so a partial/failed sign-in crashed the app here.
+    if (authUser == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        Navigator.pushNamedAndRemoveUntil(
+            context, SignInScreen.routeName, (route) => false);
+      });
+      return;
+    }
+
+    userid = authUser.id;
+
+    _initialDataFuture = fetchInitialData();
+    ref.read(cartReopProvider).initializeCart(userId: userid, ref: ref);
   }
 
   List<AddressModel>? allAdress = [];
   List<String>? restuid;
-  final userid = supabaseClient.auth.currentUser!.id;
+  late final String userid;
   String? lastLocation;
   bool? flag;
   List<RestaurantModel> nearByRestaurants = [];
@@ -80,24 +93,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     ref.read(restaurantlistProvider.notifier).state =
         await ref.read(homeRepositoryController).getRestaurantsData();
 
-    if (ref.read(restaurantlistProvider).isNotEmpty) {
+    final currentUser = ref.read(userProvider);
+
+    if (ref.read(restaurantlistProvider).isNotEmpty &&
+        currentUser?.latitude != null &&
+        currentUser?.longitude != null) {
       debugPrint('not empty');
       nearByRestaurants =
           await ref.read(homeRepositoryController).getNearbyRestaurants(
                 allRestaurants: ref.read(restaurantlistProvider.notifier).state,
-                userLat: ref.read(userProvider)!.latitude!,
-                userLong: ref.read(userProvider)!.longitude!, // 67.06,
+                userLat: currentUser!.latitude!,
+                userLong: currentUser.longitude!,
               );
       debugPrint('length of nearby: ${nearByRestaurants.length}');
     } else {
-      debugPrint('⚠️ No restaurants fetched from Supabase');
+      // No user row yet (or no saved coordinates): fall back to the full list
+      // instead of crashing on a null `userProvider`.
+      debugPrint('⚠️ Skipping nearby lookup (no user or no coordinates yet)');
+      nearByRestaurants = ref.read(restaurantlistProvider.notifier).state;
     }
 
     allAdress = await ref
             .read(homeRepositoryController)
-            .fetchAllAddress(userId: supabaseClient.auth.currentUser!.id) ??
+            .fetchAllAddress(userId: userid) ??
         [];
-    fetchLastLocation();
+    await fetchLastLocation();
 
     ref.read(restaurantDisplayListProvider.notifier).state =
         ref.read(restaurantlistProvider.notifier).state;
@@ -116,16 +136,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
     final cusines = await ref.read(cusinesRepo).fetchCusines();
     if (mounted) {
-      ref.read(cusineListProvider.notifier).state = cusines!;
+      ref.read(cusineListProvider.notifier).state = cusines ?? [];
     }
     ref.read(isloaderProvider.notifier).state = false;
 
-    _showBottomSheet(addresses: allAdress!, isEdit: false);
+    if (!mounted) return;
+    await _showBottomSheet(addresses: allAdress ?? [], isEdit: false);
   }
 
   Future<void> _showBottomSheet(
       {required List<AddressModel?> addresses, bool? isEdit}) async {
-    if (flag! || isEdit == true) {
+    if (flag != true && isEdit != true) return;
+    if (!mounted) return;
+    {
       showModalBottomSheet(
           backgroundColor: Colors.white,
           barrierColor: Colors.black.withOpacity(0.5),

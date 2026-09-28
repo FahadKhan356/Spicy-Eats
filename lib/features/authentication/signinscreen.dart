@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/Home/screens/home_screen.dart';
 import 'package:spicy_eats/features/authentication/authServices.dart';
+import 'package:spicy_eats/features/authentication/auth_config.dart';
 import 'package:spicy_eats/features/authentication/signupscreeen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -56,22 +57,30 @@ class _SignInScreenState extends State<SignInScreen> {
     }
   }
 
-  // Google Sign In
+  // Google Sign In.
+  // The native Google SDK used to throw raw PlatformExceptions (missing
+  // google-services.json / SHA-1, placeholder client id, dismissed sheet),
+  // which escaped as an unhandled async error and killed the app. Every
+  // failure path below shows a snackbar instead.
   Future<void> _handleGoogleSignIn() async {
+    if (_isLoading) return;
     setState(() => _isLoading = true);
 
     try {
       final response = await _authService.signInWithGoogle();
 
+      // null = user dismissed the Google account sheet: stay on the page.
       if (response?.user != null) {
         if (mounted) {
           Navigator.pushReplacementNamed(context, HomeScreen.routename);
         }
       }
+    } on SocialSignInNotConfiguredException catch (e) {
+      _showErrorSnackBar(e.message);
     } on AuthException catch (e) {
       _showErrorSnackBar(e.message);
     } catch (e) {
-      _showErrorSnackBar('Google sign in failed. Please try again.');
+      _showErrorSnackBar('Google sign in failed: $e');
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }

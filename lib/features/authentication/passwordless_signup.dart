@@ -533,7 +533,10 @@ class _PhonenumberScreenState extends ConsumerState<PasswordlessScreen>
                         child: ElevatedButton(
                           onPressed: () async {
                             if (_form.currentState!.validate()) {
-                              authController.Login(
+                              // Awaited: Login now returns Future<bool> and
+                              // navigates itself, so the dialog timer below must
+                              // only start after the attempt finishes.
+                              await authController.Login(
                                   context: context,
                                   email: withpass_signin_emailController.text,
                                   passwrod: signuppassController.text);

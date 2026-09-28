@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/features/Profile/model/usermodel.dart';
 import 'package:spicy_eats/main.dart';
@@ -10,30 +11,74 @@ class ProfileRepo {
   Future<void> fetchCurrentUserData(
       {required userid, required WidgetRef ref}) async {
     if (userid == null) return;
-    final res = await supabaseClient.from('users').select('*').eq('id', userid);
-    if (res.isNotEmpty) {
-      ref.read(userDataProvider.notifier).state =
-          res.map((e) => User.fromjson(e)).toList();
-      print('...userdata fetched r');
+    try {
+      final res =
+          await supabaseClient.from('users').select('*').eq('id', userid);
+      if (res.isNotEmpty) {
+        ref.read(userDataProvider.notifier).state =
+            res.map((e) => User.fromjson(e)).toList();
+        debugPrint('...userdata fetched');
+      }
+    } catch (e) {
+      debugPrint('Failed to fetch current user data: $e');
     }
   }
 
+  /// Loads the `users` row for [userid] into [userProvider].
+  ///
+  /// Social sign-ins (Google/Facebook) and magic links never inserted a row, and
+  /// a missing row used to make this throw. That left [userProvider] null and
+  /// crashed the home screen on `ref.read(userProvider)!.latitude!`. The row is
+  /// therefore created on the fly (self-healing) and failures are logged rather
+  /// than rethrown, so the rest of the home screen can still render.
   Future<void> fetchuser(String userid, WidgetRef ref) async {
     try {
-      final res = await supabaseClient
+      Map<String, dynamic>? res = await supabaseClient
           .from('users')
           .select('*')
           .eq('id', userid)
-          .single();
-      if (res.isNotEmpty) {
-        ref.read(userProvider.notifier).state = User.fromjson(res);
+          .maybeSingle();
 
-        print('...userdata fetched11');
-     
+      res ??= await _createMissingUserRow(userid);
+
+      if (res != null) {
+        ref.read(userProvider.notifier).state = User.fromjson(res);
+        debugPrint('...userdata fetched for $userid');
       }
     } catch (e) {
-      throw Exception(e);
+      debugPrint('Failed to fetch user data for $userid: $e');
     }
+  }
+
+  /// Creates the `users` row for a freshly authenticated user (e.g. the first
+  /// Google or Facebook login) and returns it. Returns null when it still cannot
+  /// be read back.
+  Future<Map<String, dynamic>?> _createMissingUserRow(String userid) async {
+    final authUser = supabaseClient.auth.currentUser;
+    try {
+      final metadata = authUser?.userMetadata;
+      final fullName = (metadata?['full_name'] ?? metadata?['name'])?.toString();
+      final nameParts = (fullName == null || fullName.trim().isEmpty)
+          ? const <String>[]
+          : fullName.trim().split(RegExp(r'\s+'));
+
+      await supabaseClient.from('users').upsert({
+        'id': userid,
+        if (authUser?.email != null) 'email': authUser!.email,
+        if (nameParts.isNotEmpty) 'firstname': nameParts.first,
+        if (nameParts.length > 1) 'lastname': nameParts.skip(1).join(' '),
+      });
+      debugPrint('Created missing users row for $userid');
+    } catch (e) {
+      debugPrint('Could not create users row for $userid: $e');
+      return null;
+    }
+
+    return supabaseClient
+        .from('users')
+        .select('*')
+        .eq('id', userid)
+        .maybeSingle();
   }
 
   Future<void> updatePersonalDetails(WidgetRef ref, String? firstname,

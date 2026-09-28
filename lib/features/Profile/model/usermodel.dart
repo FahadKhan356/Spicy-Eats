@@ -44,7 +44,11 @@ class User {
   factory User.fromjson(Map<String, dynamic> json) {
     return User(
       id: json['id'] ?? '',
-      createAt: DateTime.parse(json['created_at']),
+      // created_at is filled in by the DB default and can legitimately be
+      // absent on freshly created rows, so it must never hard-fail parsing.
+      createAt: json['created_at'] == null
+          ? null
+          : DateTime.tryParse(json['created_at'].toString()),
       email: json['email'] ?? '',
       firstname: json['firstname'] ?? '',
       lastname: json['lastname'] ?? '',

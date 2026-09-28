@@ -88,12 +88,12 @@ await Supabase.initialize(
 
 // ==================== AUTH SERVICE ====================
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:spicy_eats/features/Home/screens/home_screen.dart';
-import 'package:spicy_eats/main.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart' show debugPrint;
+import 'package:flutter/services.dart' show PlatformException;
+import 'package:spicy_eats/features/authentication/auth_config.dart';
 // ==================== FACEBOOK SETUP INSTRUCTIONS ====================
 /*
 1. Add to pubspec.yaml:
@@ -260,40 +260,74 @@ class AuthService {
   }
 
   // ==================== GOOGLE SIGN IN ====================
+  // NOTE: `GoogleSignIn.clientId` is only valid on iOS/macOS. On Android the
+  // plugin resolves the OAuth client from android/app/google-services.json, so
+  // passing an iOS client id there breaks the native flow. Previously this
+  // method always passed the literal placeholder 'YOUR_IOS_CLIENT_ID...', which
+  // made the native SDK throw and took the whole app down.
   Future<AuthResponse?> signInWithGoogle() async {
-    try {
-      const webClientId = '1018000999497-f8j2q1fg4gu1i95d33apej6v42mq9km0.apps.googleusercontent.com';
-      const iosClientId = 'YOUR_IOS_CLIENT_ID.apps.googleusercontent.com';
+    final bool isApplePlatform =
+        defaultTargetPlatform == TargetPlatform.iOS ||
+            defaultTargetPlatform == TargetPlatform.macOS;
 
-      final GoogleSignIn googleSignIn = GoogleSignIn(
-        clientId: iosClientId,
-        serverClientId: webClientId,
-        scopes: ['email', 'profile'],
+    if (!AuthConfig.isGoogleWebConfigured) {
+      throw const SocialSignInNotConfiguredException(
+        'Google Sign-In is not set up yet. Add the Web OAuth client id to '
+        'lib/features/authentication/auth_config.dart.',
       );
+    }
 
+    if (isApplePlatform && !AuthConfig.isGoogleIosConfigured) {
+      throw const SocialSignInNotConfiguredException(
+        'Google Sign-In is not set up for iOS/macOS yet. Add the iOS OAuth '
+        'client id to lib/features/authentication/auth_config.dart and the '
+        'reversed client id to ios/Runner/Info.plist.',
+      );
+    }
+
+    final GoogleSignIn googleSignIn = GoogleSignIn(
+      clientId: isApplePlatform ? AuthConfig.googleIosClientId : null,
+      serverClientId: AuthConfig.googleWebClientId,
+      scopes: const ['email', 'profile'],
+    );
+
+    try {
       await googleSignIn.signOut();
       final googleUser = await googleSignIn.signIn();
-      
+
+      // User dismissed the Google sheet - not an error.
       if (googleUser == null) return null;
 
       final googleAuth = await googleUser.authentication;
       final accessToken = googleAuth.accessToken;
       final idToken = googleAuth.idToken;
 
-      if (accessToken == null || idToken == null) {
-        throw 'Failed to get Google credentials';
+      if (idToken == null) {
+        throw const SocialSignInNotConfiguredException(
+          'Google did not return an id token. Check that the Web client id in '
+          'auth_config.dart matches the Google provider configured in Supabase.',
+        );
       }
 
-      final response = await _supabase.auth.signInWithIdToken(
+      return await _supabase.auth.signInWithIdToken(
         provider: OAuthProvider.google,
         idToken: idToken,
         accessToken: accessToken,
       );
-
-      return response;
-    } catch (e) {
-      print('Error signing in with Google: $e');
+    } on SocialSignInNotConfiguredException {
       rethrow;
+    } on AuthException {
+      rethrow;
+    } on PlatformException catch (e) {
+      // Native Google Sign-In failures (missing google-services.json, wrong
+      // bundle id / SHA-1, user-closed sheet on some OEMs, ...).
+      throw SocialSignInNotConfiguredException(
+        'Google Sign-In failed (${e.code})'
+        '${e.message == null ? '' : ': ${e.message}'}',
+      );
+    } catch (e) {
+      debugPrint('Error signing in with Google: $e');
+      throw SocialSignInNotConfiguredException('Google Sign-In failed: $e');
     }
   }
 
@@ -364,20 +398,23 @@ class AuthService {
 
   // ==================== SIGN OUT ====================
   Future<void> signOut() async {
+    // Every provider is shut down independently: on platforms without a Google
+    // / Facebook implementation (macOS, desktop, ...) the plugin throws, and
+    // previously that aborted the whole sign-out so the Supabase session was
+    // never cleared.
     try {
-      // Sign out from Google
-      final GoogleSignIn googleSignIn = GoogleSignIn();
-      await googleSignIn.signOut();
-      
-      // Sign out from Facebook
-      await FacebookAuth.instance.logOut();
-      
-      // Sign out from Supabase
-      await _supabase.auth.signOut();
+      await GoogleSignIn().signOut();
     } catch (e) {
-      print('Error signing out: $e');
-      rethrow;
+      debugPrint('Google sign out skipped: $e');
     }
+
+    try {
+      await FacebookAuth.instance.logOut();
+    } catch (e) {
+      debugPrint('Facebook sign out skipped: $e');
+    }
+
+    await _supabase.auth.signOut();
   }
 
   // ==================== PASSWORD RESET ====================

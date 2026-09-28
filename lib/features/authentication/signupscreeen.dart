@@ -1,16 +1,18 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spicy_eats/features/authentication/controller/AuthenicationController.dart';
 
-class SignUpScreen extends StatefulWidget {
+class SignUpScreen extends ConsumerStatefulWidget {
    const SignUpScreen({super.key});
   static const routeName = '/signup';
 
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderStateMixin {
+class _SignUpScreenState extends ConsumerState<SignUpScreen> with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -410,7 +412,8 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _socialButton(Icons.g_mobiledata, Colors.red),
+                        _socialButton(Icons.g_mobiledata, Colors.red,
+                            onTap: _handleGoogleSignUp),
                         const SizedBox(width: 16),
                         _socialButton(Icons.facebook, Colors.blue),
                         const SizedBox(width: 16),
@@ -489,7 +492,7 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
     );
   }
 
-  Widget _socialButton(IconData icon, Color color) {
+  Widget _socialButton(IconData icon, Color color, {VoidCallback? onTap}) {
     return Container(
       width: 56,
       height: 56,
@@ -507,27 +510,40 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
       ),
       child: IconButton(
         icon: Icon(icon, color: color, size: 28),
-        onPressed: () {
-          // Handle social login
-        },
+        onPressed: onTap,
       ),
     );
   }
 
-  void _handleSignUp() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-      });
-      
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
-      
-      setState(() {
-        _isLoading = false;
-      });
-      
-      // Navigate to home or show error
+  // Real sign-up: validates the form, calls Supabase through the
+  // AuthenticationController, and navigates on success. The repository shows
+  // snackbars + navigation itself, so here we only drive [_isLoading].
+  // Previously this was a stub (`Future.delayed`) that never created the
+  // account, which is why "sign up fail ho rha hai".
+  Future<void> _handleSignUp() async {
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+    if (!_agreeToTerms || _isLoading) return;
+    setState(() => _isLoading = true);
+    try {
+      await ref.read(authenticationControllerProvider).signup(
+            context: context,
+            email: _emailController.text.trim(),
+            passwrod: _passwordController.text,
+            fullName: _nameController.text.trim(),
+            phone: _phoneController.text.trim(),
+          );
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
+  }
+
+  Future<void> _handleGoogleSignUp() async {
+    if (_isLoading) return;
+    await ref.read(authenticationControllerProvider).signInWithGoogle(
+          context: context,
+          setLoading: () {
+            if (mounted) setState(() => _isLoading = !_isLoading);
+          },
+        );
   }
 }
