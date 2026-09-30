@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/commons/mysnackbar.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
-import 'package:spicy_eats/features/Home/screens/home_screen.dart';
 import 'package:spicy_eats/features/authentication/authServices.dart';
 import 'package:spicy_eats/features/authentication/auth_config.dart';
 import 'package:spicy_eats/features/authentication/repository/AuthenticationRepository.dart';
@@ -60,7 +59,7 @@ class AuthenticationController {
       final response = await authService.signInWithGoogle();
       if (response?.user == null) return false; // user dismissed the sheet
       if (context.mounted) {
-        Navigator.pushReplacementNamed(context, HomeScreen.routename);
+        Navigator.pushReplacementNamed(context, Home.routename);
       }
       return true;
     } on SocialSignInNotConfiguredException catch (e) {

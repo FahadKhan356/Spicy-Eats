@@ -91,7 +91,6 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart' show debugPrint;
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:spicy_eats/features/authentication/auth_config.dart';
 // ==================== FACEBOOK SETUP INSTRUCTIONS ====================
@@ -205,9 +204,6 @@ dependencies:
 */
 
 // ==================== ENHANCED AUTH SERVICE ====================
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class AuthService {
   final SupabaseClient _supabase = Supabase.instance.client;

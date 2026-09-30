@@ -2,7 +2,6 @@
 // ==================== UPDATED SIGN IN SCREEN ====================
 import 'package:flutter/material.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
-import 'package:spicy_eats/features/Home/screens/home_screen.dart';
 import 'package:spicy_eats/features/authentication/authServices.dart';
 import 'package:spicy_eats/features/authentication/auth_config.dart';
 import 'package:spicy_eats/features/authentication/signupscreeen.dart';
@@ -10,7 +9,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SignInScreen extends StatefulWidget {
   static const routeName = '/signin';
-  const SignInScreen({Key? key}) : super(key: key);
+  const SignInScreen({super.key});
 
   @override
   State<SignInScreen> createState() => _SignInScreenState();
@@ -45,7 +44,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
       if (response.user != null) {
         if (mounted) {
-          Navigator.pushReplacementNamed(context, HomeScreen.routename);
+          Navigator.pushReplacementNamed(context, Home.routename);
         }
       }
     } on AuthException catch (e) {
@@ -72,7 +71,7 @@ class _SignInScreenState extends State<SignInScreen> {
       // null = user dismissed the Google account sheet: stay on the page.
       if (response?.user != null) {
         if (mounted) {
-          Navigator.pushReplacementNamed(context, HomeScreen.routename);
+          Navigator.pushReplacementNamed(context, Home.routename);
         }
       }
     } on SocialSignInNotConfiguredException catch (e) {
@@ -95,7 +94,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
       if (response?.user != null) {
         if (mounted) {
-          Navigator.pushReplacementNamed(context, '/home');
+          Navigator.pushReplacementNamed(context, Home.routename);
         }
       }
     } on AuthException catch (e) {
@@ -144,7 +143,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.orange.withOpacity(0.3),
+                          color: Colors.orange.withValues(alpha: 0.3),
                           blurRadius: 20,
                           offset: const Offset(0, 10),
                         ),
@@ -174,7 +173,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.1),
+                          color: Colors.grey.withValues(alpha: 0.1),
                           blurRadius: 20,
                           offset: const Offset(0, 10),
                         ),
@@ -289,7 +288,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                   borderRadius: BorderRadius.circular(16),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.orange.withOpacity(0.4),
+                                      color: Colors.orange.withValues(alpha: 0.4),
                                       blurRadius: 12,
                                       offset: const Offset(0, 6),
                                     ),

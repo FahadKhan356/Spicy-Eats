@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/commons/mysnackbar.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
-import 'package:spicy_eats/features/Home/screens/home_screen.dart';
-import 'package:spicy_eats/features/authentication/authServices.dart';
 import 'package:spicy_eats/features/authentication/auth_config.dart';
-import 'package:spicy_eats/features/authentication/passwordless_signup.dart';
 import 'package:spicy_eats/features/authentication/signinscreen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -153,7 +150,7 @@ class AuthenticationRepository {
       }
       if (context.mounted) {
         Navigator.pushNamedAndRemoveUntil(
-            context, HomeScreen.routename, (route) => false);
+            context, Home.routename, (route) => false);
       }
       return true;
     } on AuthException catch (e) {
@@ -170,26 +167,19 @@ class AuthenticationRepository {
   }
 
   Future<bool> userExists(String email) async {
-    var value;
-    final PostgrestList response;
-    // print('value ${value!}');
-
+    // `auth.users` is not reachable through PostgREST; query the app-level
+    // `users` table instead.
     try {
-      response = await supabaseClient
-          .from('auth.users')
+      final response = await supabaseClient
+          .from('users')
           .select('id')
-          .eq('email', email);
-      if (response != null) {
-        print('error ${response}');
-      }
-
-      final data = response;
-      value = data.isNotEmpty;
+          .eq('email', email)
+          .limit(1);
+      return response.isNotEmpty;
     } catch (e) {
-      print('error2 ${e.toString()}');
+      print('userExists check failed: $e');
       return false;
     }
-    return value;
   }
 
   void logoutUser(context, WidgetRef ref) async {

@@ -84,7 +84,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with SingleTickerPr
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.orange.withOpacity(0.3),
+                            color: Colors.orange.withValues(alpha: 0.3),
                             blurRadius: 20,
                             offset: const Offset(0, 10),
                           ),
@@ -129,7 +129,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with SingleTickerPr
                         borderRadius: BorderRadius.circular(24),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.grey.withOpacity(0.1),
+                            color: Colors.grey.withValues(alpha: 0.1),
                             blurRadius: 20,
                             offset: const Offset(0, 10),
                           ),
@@ -361,7 +361,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with SingleTickerPr
                                     boxShadow: _agreeToTerms
                                         ? [
                                             BoxShadow(
-                                              color: Colors.orange.withOpacity(0.4),
+                                              color: Colors.orange.withValues(alpha: 0.4),
                                               blurRadius: 12,
                                               offset: const Offset(0, 6),
                                             ),
@@ -502,7 +502,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> with SingleTickerPr
         border: Border.all(color: Colors.grey[300]!),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,7 +7,6 @@ import 'package:spicy_eats/features/authentication/Widgets/restauarantTextfield.
 import 'package:spicy_eats/commons/country.dart';
 import 'package:spicy_eats/commons/mysnackbar.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
-import 'package:spicy_eats/features/Home/screens/home_screen.dart';
 import 'package:spicy_eats/features/authentication/controller/AuthenicationController.dart';
 import 'package:spicy_eats/main.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -87,29 +85,26 @@ class _PhonenumberScreenState extends ConsumerState<PasswordlessScreen>
     } else {
       print('value of user $user');
       uploaddata(user);
-     if(mounted) Navigator.pushNamed(context, HomeScreen.routename);
+     if(mounted) Navigator.pushNamed(context, Home.routename);
       mysnackbar(context: context, text: 'data loaded to users table ');
     }
   }
 
   Future<bool> userExists(String email) async {
-    var value;
-    final PostgrestList response;
-    print('value ${value!}');
-
+    // `auth.users` is not exposed through the PostgREST API, so this used to
+    // read an uninitialized `bool` after the query always threw. Check the
+    // app-level `users` table instead.
     try {
-      response =
-          await supabaseClient.from('auth.users').select().eq('email', email);
-      if (response != null) {
-        return true;
-      }
-
-      final data = response;
-      value = data.isNotEmpty;
+      final response = await supabaseClient
+          .from('users')
+          .select('id')
+          .eq('email', email)
+          .limit(1);
+      return response.isNotEmpty;
     } catch (e) {
-      e.toString();
+      print('userExists check failed: $e');
+      return false;
     }
-    return value;
   }
 
   List<bool> buttonsindex = [
