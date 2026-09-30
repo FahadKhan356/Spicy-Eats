@@ -5,7 +5,6 @@ import 'package:spicy_eats/features/Cart/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/Home/screens/home_screen.dart';
 import 'package:spicy_eats/features/Payment/repo/paymentRepo.dart';
-import 'package:spicy_eats/features/Payment/utils/optionsModel.dart';
 import 'package:spicy_eats/features/Profile/repo/ProfileRepo.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/screens/RestaurantMenuScreen.dart';
 import 'package:spicy_eats/features/orders/repo/orderRepo.dart';
@@ -591,7 +590,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                   },
                 ),
               );
-            }).toList(),
+            }),
             const SizedBox(height: 10),
           ],
         ),
@@ -664,7 +663,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.04),
+                              color: Colors.black.withValues(alpha: 0.04),
                               blurRadius: 10,
                               offset: const Offset(0, 2),
                             ),
@@ -768,7 +767,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.04),
+                              color: Colors.black.withValues(alpha: 0.04),
                               blurRadius: 10,
                               offset: const Offset(0, 2),
                             ),
@@ -920,7 +919,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.15),
+                          color: Colors.black.withValues(alpha: 0.15),
                           blurRadius: 20,
                           offset: const Offset(0, -4),
                         ),
@@ -1002,7 +1001,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                             width: double.infinity,
                             height: 54,
                             child: ElevatedButton(
-                              onPressed: selectedmethod == null || selectedmethod.isEmpty
+                              onPressed: selectedmethod.isEmpty
                                   ? null
                                   : () {
                                       setState(() => isloading = true);
@@ -1057,8 +1056,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                                       setState(() => isloading = false);
                                     },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: selectedmethod == null ||
-                                        selectedmethod.isEmpty
+                                backgroundColor: selectedmethod.isEmpty
                                     ? Colors.grey[300]
                                     : Colors.orange[700],
                                 foregroundColor: Colors.white,

@@ -85,21 +85,23 @@ class ProfileRepo {
       String? lastname, String userid, String? email, String? contactno) async {
     final user = ref.watch(userProvider);
     try {
-      if (firstname != user!.firstname) {
+      if (firstname != user?.firstname) {
         await supabaseClient.from('users').update({
           'firstname': firstname,
         }).eq('id', userid);
-      } else if (lastname != user.lastname) {
+      } else if (lastname != user?.lastname) {
         await supabaseClient.from('users').update({
           'lastname': lastname,
         }).eq('id', userid);
-      } else if (email != user.email) {
+      } else if (email != user?.email) {
         await supabaseClient.from('users').update({
           'email': email,
         }).eq('id', userid);
-      } else {
+      } else if (contactno != null && int.tryParse(contactno) != null) {
+        // Never `int.parse(contactno!)` here: the field is optional and an
+        // empty input used to throw instead of being ignored.
         await supabaseClient.from('users').update({
-          'contactno': int.parse(contactno!),
+          'contactno': int.parse(contactno),
         }).eq('id', userid);
       }
     } catch (e) {

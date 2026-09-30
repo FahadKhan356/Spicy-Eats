@@ -93,8 +93,9 @@ class DishesLocalDatabase {
       whereArgs: [restaurantUid],
       limit: 1,
     );
-    if (result.isNotEmpty)
+    if (result.isNotEmpty) {
       return jsonDecode(result.first['dish_data'] as String);
+    }
 
     return null;
   }

@@ -9,7 +9,7 @@ class GlassIconButton extends StatelessWidget {
   final double? width;
   final double? height;
 
-  const GlassIconButton({
+  const GlassIconButton({super.key, 
     required this.icon,
     required this.onTap,
     this.iconColor,

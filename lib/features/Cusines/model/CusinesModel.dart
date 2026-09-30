@@ -40,7 +40,7 @@ class CusinesModel {
   }) {
     return CusinesModel(
       id: id ?? this.id,
-      created_at: createdAt ?? this.created_at,
+      created_at: createdAt ?? created_at,
       cusineName: cusineName ?? this.cusineName,
       cusineImage: cusineImage ?? this.cusineImage,
     );

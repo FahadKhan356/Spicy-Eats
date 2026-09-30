@@ -6,7 +6,7 @@ import 'package:spicy_eats/features/Home/screens/home_screen.dart';
 import 'package:spicy_eats/features/orders/screens/order_screen.dart';
 
 List<Widget> screen = [
-  HomeScreen(''),
+  const HomeScreen(''),
   const Favoritescreen(),
   const OrdersScreen(),
   const AccountScreen(),

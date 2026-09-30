@@ -1,8 +1,6 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:spicy_eats/commons/Lists.dart';
 import 'package:spicy_eats/features/Home/model/restaurant_model.dart';
 import 'package:spicy_eats/commons/Responsive.dart';
 import 'package:spicy_eats/features/Cart/repository/CartRepository.dart';
@@ -35,7 +33,7 @@ final cusineListProvider = StateProvider<List<CusinesModel>>((ref) => []);
 final crouselIndicatorProvider = StateProvider<int>((ref) => 0);
 
 class HomeScreen extends ConsumerStatefulWidget {
-  HomeScreen(this.locale, {super.key});
+  const HomeScreen(this.locale, {super.key});
   static const String routename = '/homescreen';
   final String? locale;
 
@@ -151,12 +149,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     {
       showModalBottomSheet(
           backgroundColor: Colors.white,
-          barrierColor: Colors.black.withOpacity(0.5),
+          barrierColor: Colors.black.withValues(alpha: 0.5),
           showDragHandle: true,
           context: context,
-          sheetAnimationStyle: AnimationStyle(
+          sheetAnimationStyle: const AnimationStyle(
               curve: Curves.easeInOut,
-              duration: const Duration(milliseconds: 300)),
+              duration: Duration(milliseconds: 300)),
           enableDrag: true,
           clipBehavior: Clip.none,
           builder: (context) {
@@ -236,7 +234,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                 Container(
                                   padding: EdgeInsets.all(Responsive.w8px),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.2),
+                                    color: Colors.white.withValues(alpha: 0.2),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Icon(
@@ -279,8 +277,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                                             fontWeight:
                                                                 FontWeight.w500,
                                                             color: Colors.white
-                                                                .withOpacity(
-                                                                    0.9)),
+                                                                .withValues(
+                                                                    alpha: 0.9)),
                                                       ),
                                                       SizedBox(
                                                           height:
@@ -358,8 +356,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                                                               .w500,
                                                                       color: Colors
                                                                           .white
-                                                                          .withOpacity(
-                                                                              0.9)),
+                                                                          .withValues(
+                                                                              alpha: 0.9)),
                                                                 ),
                                                                 SizedBox(
                                                                     height:
@@ -417,7 +415,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                 // Cart Button
                                 Container(
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.2),
+                                    color: Colors.white.withValues(alpha: 0.2),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Stack(
@@ -614,7 +612,7 @@ class _SearchHeaderDelegate extends SliverPersistentHeaderDelegate {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),

@@ -163,7 +163,7 @@ class _CustomBottomSheetState extends ConsumerState<CustomBottomSheet> {
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
+                        color: Colors.black.withValues(alpha: 0.3),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),
@@ -174,7 +174,7 @@ class _CustomBottomSheetState extends ConsumerState<CustomBottomSheet> {
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
+                          color: Colors.white.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: const Icon(
@@ -200,13 +200,13 @@ class _CustomBottomSheetState extends ConsumerState<CustomBottomSheet> {
                               "Quick & accurate delivery",
                               style: TextStyle(
                                 fontSize: width * 0.03,
-                                color: Colors.white.withOpacity(0.9),
+                                color: Colors.white.withValues(alpha: 0.9),
                               ),
                             ),
                           ],
                         ),
                       ),
-                      Icon(
+                      const Icon(
                         Icons.arrow_forward_ios,
                         color: Colors.white,
                         size: 16,

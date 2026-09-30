@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/features/Profile/commons/CommonContainer.dart';
 import 'package:spicy_eats/features/Profile/commons/EditScreen.dart';
+import 'package:spicy_eats/features/Profile/model/usermodel.dart';
 import 'package:spicy_eats/features/Profile/repo/ProfileRepo.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
@@ -16,6 +17,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(userProvider);
+    // Opened straight from the account tab, so the `users` row may not have
+    // been fetched yet and its columns are nullable. Never force-unwrap here.
+    final name = accountDisplayName(user);
+    final email = user?.email ?? '';
+    final contact = accountContactText(user);
     return Scaffold(
       appBar: AppBar(
         leading: TextButton(
@@ -50,7 +56,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ),
               commonContainer(
                   title: 'Name',
-                  titlename: '${user!.firstname!}${user.lastname}',
+                  titlename: name.isEmpty ? 'Add your name' : name,
                   onpressed: () => Navigator.pushNamed(
                       context, EditScreen.routname,
                       arguments: 'Name')),
@@ -59,7 +65,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ),
               commonContainer(
                   title: 'Email',
-                  titlename: user.email!,
+                  titlename: email.isEmpty ? 'Add your email' : email,
                   onpressed: () => Navigator.pushNamed(
                       context, EditScreen.routname,
                       arguments: 'Email')),
@@ -68,7 +74,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ),
               commonContainer(
                   title: 'Mobile number',
-                  titlename: user.contactno.toString(),
+                  titlename: contact.isEmpty ? 'Add your number' : contact,
                   onpressed: () => Navigator.pushNamed(
                       context, EditScreen.routname,
                       arguments: 'Contactnumber')),

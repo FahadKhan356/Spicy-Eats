@@ -5,7 +5,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/features/Location/Widgets/custommap.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:spicy_eats/features/Home/model/AddressModel.dart';
 import 'package:spicy_eats/features/Home/repository/homerespository.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
@@ -52,7 +51,7 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
   }
 
   MapType _mapType = MapType.normal;
-  bool _move = false;
+  final bool _move = false;
 
   @override
   void dispose() {
@@ -167,7 +166,7 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
                                   shape: BoxShape.circle,
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withOpacity(0.2),
+                                      color: Colors.black.withValues(alpha: 0.2),
                                       blurRadius: 8,
                                       offset: const Offset(0, 2),
                                     ),
@@ -184,7 +183,7 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
                                   borderRadius: BorderRadius.circular(12),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withOpacity(0.2),
+                                      color: Colors.black.withValues(alpha: 0.2),
                                       blurRadius: 8,
                                       offset: const Offset(0, 2),
                                     ),
@@ -237,7 +236,7 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
                               borderRadius: BorderRadius.circular(16),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
+                                  color: Colors.black.withValues(alpha: 0.2),
                                   blurRadius: 12,
                                   offset: const Offset(0, 4),
                                 ),
@@ -320,7 +319,7 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
+                          color: Colors.black.withValues(alpha: 0.1),
                           blurRadius: 20,
                           offset: const Offset(0, -4),
                         ),

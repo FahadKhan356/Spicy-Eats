@@ -56,13 +56,13 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
       });
 
     case Home.routename:
-      return MaterialPageRoute(builder: (_) => Home());
+      return MaterialPageRoute(builder: (_) => const Home());
 
    
     case OtpScreen.routename:
       return MaterialPageRoute(builder: (context) => const OtpScreen());
     case HomeScreen.routename:
-      return MaterialPageRoute(builder: (context) =>  HomeScreen(''));
+      return MaterialPageRoute(builder: (context) =>  const HomeScreen(''));
 
 
     //DishMenuScreen
@@ -101,7 +101,7 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
           RestaurantMenuScreen(restaurantData: restaurantData));
 
     case ProfileScreen.routename:
-      return MaterialPageRoute(builder: (_) => ProfileScreen());
+      return MaterialPageRoute(builder: (_) => const ProfileScreen());
 
     case EditScreen.routname:
       return MaterialPageRoute(builder: (_) {

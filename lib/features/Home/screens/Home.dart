@@ -10,7 +10,7 @@ var currentIndexProvider = StateProvider<int>((ref) => 0);
 
 class Home extends ConsumerStatefulWidget {
   static const String routename = '/Home';
-  Home({super.key});
+  const Home({super.key});
 
   @override
   ConsumerState<Home> createState() => _HomeState();

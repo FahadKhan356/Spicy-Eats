@@ -143,7 +143,7 @@ class PaymentRepo {
 
       ref.read(cartProvider.notifier).update((state) {
         return state
-            .where((element) => !cartids.contains((element as Cartmodel).cart_id))
+            .where((element) => !cartids.contains((element).cart_id))
             .toList();
       });
 

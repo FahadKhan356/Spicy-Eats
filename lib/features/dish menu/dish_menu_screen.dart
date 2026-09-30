@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
@@ -176,7 +175,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(0.1),
+                                    color: Colors.black.withValues(alpha: 0.1),
                                     blurRadius: 8,
                                     offset: const Offset(0, 2),
                                   ),
@@ -254,7 +253,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                                           end: Alignment.bottomCenter,
                                           colors: [
                                             Colors.transparent,
-                                            Colors.black.withOpacity(0.3),
+                                            Colors.black.withValues(alpha: 0.3),
                                           ],
                                         ),
                                       ),
@@ -282,7 +281,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                                       borderRadius: BorderRadius.circular(20),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.black.withOpacity(0.05),
+                                          color: Colors.black.withValues(alpha: 0.05),
                                           blurRadius: 10,
                                           offset: const Offset(0, 2),
                                         ),
@@ -312,7 +311,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                                                   vertical: 6,
                                                 ),
                                                 decoration: BoxDecoration(
-                                                  color: Colors.green.withOpacity(0.1),
+                                                  color: Colors.green.withValues(alpha: 0.1),
                                                   borderRadius: BorderRadius.circular(8),
                                                 ),
                                                 child: Text(
@@ -362,7 +361,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                                                   vertical: 6,
                                                 ),
                                                 decoration: BoxDecoration(
-                                                  color: Colors.green.withOpacity(0.1),
+                                                  color: Colors.green.withValues(alpha: 0.1),
                                                   borderRadius: BorderRadius.circular(8),
                                                 ),
                                                 child: Text(
@@ -377,7 +376,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                                           ],
                                         ),
 
-                                        if (!widget.isCart && cartData.any((e) => (e as Cartmodel).dish_id == widget.dish!.dishid)) ...[
+                                        if (!widget.isCart && cartData.any((e) => (e).dish_id == widget.dish!.dishid)) ...[
                                           const SizedBox(height: 12),
                                           Container(
                                             padding: const EdgeInsets.symmetric(
@@ -458,7 +457,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                                         ),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: Colors.orange.withOpacity(0.2),
+                                            color: Colors.orange.withValues(alpha: 0.2),
                                             blurRadius: 10,
                                             offset: const Offset(0, 4),
                                           ),
@@ -468,7 +467,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                                         children: [
                                           Container(
                                             padding: const EdgeInsets.all(10),
-                                            decoration: BoxDecoration(
+                                            decoration: const BoxDecoration(
                                               color: Colors.white,
                                               shape: BoxShape.circle,
                                             ),
@@ -547,7 +546,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                                           Container(
                                             padding: const EdgeInsets.all(8),
                                             decoration: BoxDecoration(
-                                              color: Colors.purple.withOpacity(0.1),
+                                              color: Colors.purple.withValues(alpha: 0.1),
                                               borderRadius: BorderRadius.circular(8),
                                             ),
                                             child: Icon(
@@ -606,7 +605,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                             color: Colors.white,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
+                                color: Colors.black.withValues(alpha: 0.1),
                                 blurRadius: 20,
                                 offset: const Offset(0, -4),
                               ),

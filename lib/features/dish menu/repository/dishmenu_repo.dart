@@ -140,7 +140,7 @@ class DishMenuRepository {
       required String restaurantName,
       required context}) async {
     final cartItem = ref.watch(cartProvider);
-    final index = cartItem.indexWhere((item) => (item as Cartmodel).cart_id == cart.cart_id);
+    final index = cartItem.indexWhere((item) => (item).cart_id == cart.cart_id);
 
     if (isCart && updatedQuantity > 0) {
       await ref.read(cartReopProvider).updateCartItems(

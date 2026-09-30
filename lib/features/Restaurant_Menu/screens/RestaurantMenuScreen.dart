@@ -181,7 +181,7 @@ class _RestaurantMenuScreenState
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
+                      color: Colors.black.withValues(alpha: 0.2),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -198,7 +198,7 @@ class _RestaurantMenuScreenState
                           Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
+                              color: Colors.white.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Stack(
@@ -278,7 +278,7 @@ class _RestaurantMenuScreenState
                           Container(
                             padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
+                              color: Colors.white.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: const Icon(
@@ -517,7 +517,7 @@ floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
                   delegate: SliverChildBuilderDelegate(
                       childCount: bloc.items.length, (context, index) {
                 final cartIndex = cart.firstWhere(
-                    (dish) => (dish as Cartmodel).dish_id == bloc.items[index].product?.dishid,
+                    (dish) => (dish).dish_id == bloc.items[index].product?.dishid,
                     orElse: () =>
                         Cartmodel(created_at: '', dish_id: 0, quantity: 0));
                 if (bloc.items[index].isCategory) {

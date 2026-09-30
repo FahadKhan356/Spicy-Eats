@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/Sqlight%20Database/onBoarding/services/OnBoardingLocalDatabase.dart';
-import 'package:spicy_eats/features/authentication/authServices.dart';
-import 'package:spicy_eats/features/authentication/passwordless_signup.dart';
 import 'package:spicy_eats/features/authentication/signinscreen.dart';
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 import 'package:spicy_eats/features/onBoarding/screen/BoardingScreen.dart';
@@ -195,9 +193,9 @@ _initAsync();
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.black.withOpacity(0.7),
-                  Colors.black.withOpacity(0.85),
-                  Colors.black.withOpacity(0.95),
+                  Colors.black.withValues(alpha: 0.7),
+                  Colors.black.withValues(alpha: 0.85),
+                  Colors.black.withValues(alpha: 0.95),
                 ],
               ),
             ),
@@ -210,9 +208,9 @@ _initAsync();
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Colors.orange.withOpacity(0.2),
+                  Colors.orange.withValues(alpha: 0.2),
                   Colors.transparent,
-                  Colors.orange.withOpacity(0.1),
+                  Colors.orange.withValues(alpha: 0.1),
                 ],
               ),
             ),
@@ -235,7 +233,7 @@ _initAsync();
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.orange.withOpacity(0.3),
+                            color: Colors.orange.withValues(alpha: 0.3),
                             blurRadius: 40,
                             spreadRadius: 10,
                           ),
@@ -268,7 +266,7 @@ _initAsync();
                             letterSpacing: 2,
                             shadows: [
                               Shadow(
-                                color: Colors.orange.withOpacity(0.5),
+                                color: Colors.orange.withValues(alpha: 0.5),
                                 blurRadius: 10,
                               ),
                             ],
@@ -283,13 +281,13 @@ _initAsync();
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
-                                Colors.orange[600]!.withOpacity(0.3),
-                                Colors.orange[400]!.withOpacity(0.3),
+                                Colors.orange[600]!.withValues(alpha: 0.3),
+                                Colors.orange[400]!.withValues(alpha: 0.3),
                               ],
                             ),
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
-                              color: Colors.orange.withOpacity(0.5),
+                              color: Colors.orange.withValues(alpha: 0.5),
                             ),
                           ),
                           child: const Text(
@@ -322,7 +320,7 @@ _initAsync();
                           valueColor: AlwaysStoppedAnimation<Color>(
                             Colors.orange[400]!,
                           ),
-                          backgroundColor: Colors.white.withOpacity(0.2),
+                          backgroundColor: Colors.white.withValues(alpha: 0.2),
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -330,7 +328,7 @@ _initAsync();
                         'Loading...',
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.white.withOpacity(0.7),
+                          color: Colors.white.withValues(alpha: 0.7),
                           letterSpacing: 1,
                         ),
                       ),
@@ -353,7 +351,7 @@ _initAsync();
                             'Version 1.0.0',
                             style: TextStyle(
                               fontSize: 12,
-                              color: Colors.white.withOpacity(0.5),
+                              color: Colors.white.withValues(alpha: 0.5),
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -361,7 +359,7 @@ _initAsync();
                             'Made with ❤️ for food lovers',
                             style: TextStyle(
                               fontSize: 11,
-                              color: Colors.white.withOpacity(0.4),
+                              color: Colors.white.withValues(alpha: 0.4),
                             ),
                           ),
                         ],
@@ -382,7 +380,7 @@ _initAsync();
               child: Icon(
                 Icons.restaurant,
                 size: 30,
-                color: Colors.orange.withOpacity(0.2),
+                color: Colors.orange.withValues(alpha: 0.2),
               ),
             ),
           ),
@@ -394,7 +392,7 @@ _initAsync();
               child: Icon(
                 Icons.fastfood,
                 size: 25,
-                color: Colors.orange.withOpacity(0.15),
+                color: Colors.orange.withValues(alpha: 0.15),
               ),
             ),
           ),
@@ -406,7 +404,7 @@ _initAsync();
               child: Icon(
                 Icons.local_pizza,
                 size: 20,
-                color: Colors.orange.withOpacity(0.1),
+                color: Colors.orange.withValues(alpha: 0.1),
               ),
             ),
           ),

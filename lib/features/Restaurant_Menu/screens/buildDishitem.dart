@@ -85,7 +85,7 @@ class _BuildDishItemState extends ConsumerState<BuildDishItem> {
     final dish = widget.dish;
     final cartlistener = ref.watch(cartProvider);
     final index =
-        cartlistener.indexWhere((element) => (element as Cartmodel).dish_id == dish!.dishid!);
+        cartlistener.indexWhere((element) => (element).dish_id == dish!.dishid!);
 
     final quantity =
         ref.read(cartReopProvider).getTotalQuantityofdish(ref, dish!.dishid!);
@@ -312,7 +312,7 @@ class _BuildDishItemState extends ConsumerState<BuildDishItem> {
                                               .read(cartProvider.notifier)
                                               .state
                                               .indexWhere((element) =>
-                                                 ( element as Cartmodel).dish_id == dish.dishid);
+                                                 ( element).dish_id == dish.dishid);
                                           if (isInCart == -1) {
                                             ref.read(cartReopProvider).addCartItem(
                                               restaurantName: widget.restaurantdata.restaurantName,
@@ -343,7 +343,7 @@ class _BuildDishItemState extends ConsumerState<BuildDishItem> {
                                           }
                                         },
                                         child: cartlistener.any((element) =>
-                                               ( element as Cartmodel).dish_id == dish.dishid)
+                                               ( element).dish_id == dish.dishid)
                                             ? Container(
                                                 height: Responsive.w40px,
                                                 width:  Responsive.w40px,

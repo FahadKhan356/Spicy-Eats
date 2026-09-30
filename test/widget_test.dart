@@ -1,30 +1,30 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+// Regression tests for the post-login crash: AccountScreen is built eagerly
+// inside Home's IndexedStack, so the user row (userProvider) is still null on
+// the first frames. Force-unwrapping it threw
+// "Null check operator used on a null value" at app start.
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:spicy_eats/main.dart';
+import 'package:spicy_eats/features/Profile/model/usermodel.dart';
+import 'package:spicy_eats/features/account/screen/accountscreen.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  group('account header name', () {
+    test('stays safe while the profile row is not loaded yet', () {
+      expect(accountDisplayName(null), '');
+      expect(accountAvatarInitial(accountDisplayName(null)), 'U');
+    });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    test('uses the loaded profile name', () {
+      final user = User(firstname: 'Fahad', lastname: 'Khan');
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+      expect(accountDisplayName(user), 'Fahad Khan');
+      expect(accountAvatarInitial(accountDisplayName(user)), 'F');
+    });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    test('ignores blank name parts', () {
+      expect(accountDisplayName(User(firstname: '   ')), '');
+      expect(accountDisplayName(User(lastname: 'Khan')), 'Khan');
+    });
   });
 }

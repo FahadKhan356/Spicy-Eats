@@ -60,3 +60,27 @@ class User {
     );
   }
 }
+
+/// Display name used by the account/profile headers.
+///
+/// [user] is null until `ProfileRepo.fetchuser` fills `userProvider` (both
+/// screens read it on their very first frame) and the `users` row itself can
+/// have blank columns, so this must never assume a non-null user. Force
+/// unwrapping it used to throw "Null check operator used on a null value"
+/// right after login.
+String accountDisplayName(User? user) {
+  return [user?.firstname, user?.lastname]
+      .whereType<String>()
+      .where((part) => part.trim().isNotEmpty)
+      .join(' ');
+}
+
+/// Single letter shown in the avatar bubble, 'U' when the name is unknown.
+String accountAvatarInitial(String displayName) =>
+    displayName.isEmpty ? 'U' : displayName.substring(0, 1).toUpperCase();
+
+/// Phone number as display text, empty string when the column is unset.
+String accountContactText(User? user) {
+  final contact = user?.contactno;
+  return (contact == null || contact == 0) ? '' : contact.toString();
+}

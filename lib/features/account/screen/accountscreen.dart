@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/features/Favorites/Screens/FavoriteScrren.dart';
+import 'package:spicy_eats/features/Profile/model/usermodel.dart';
 import 'package:spicy_eats/features/Profile/repo/ProfileRepo.dart';
 import 'package:spicy_eats/features/Profile/screen/ProfileScreen.dart';
-import 'package:spicy_eats/features/account/commons/RowContainer.dart';
 import 'package:spicy_eats/features/authentication/controller/AuthenicationController.dart';
 import 'package:spicy_eats/features/orders/screens/order_screen.dart';
 import 'package:spicy_eats/main.dart';
@@ -128,8 +128,18 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
   @override
   Widget build(BuildContext context) {
     final authController = ref.watch(authenticationControllerProvider);
-    final identities = supabaseClient.auth.currentUser!.identities!;
+    // AccountScreen lives inside Home's IndexedStack, so it is built as soon as
+    // Home mounts - before ProfileRepo has filled userProvider. Force-unwrapping
+    // either of these crashed the app right after login ("Null check operator
+    // used on a null value"). Derive both defensively instead.
+    final authUser = supabaseClient.auth.currentUser;
+    final identities = authUser?.identities ?? [];
     final user = ref.watch(userProvider);
+
+    // Name shown in the header. userProvider is still null on first frame, so
+    // fall back to a friendly placeholder instead of blowing up.
+    final userName = accountDisplayName(user);
+    final avatarInitial = accountAvatarInitial(userName);
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
@@ -167,7 +177,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                           radius: 45,
                           backgroundColor: Colors.white,
                           child: Text(
-                            '${user!.firstname?.substring(0, 1).toUpperCase() ?? 'U'}${user.lastname?.substring(0, 1).toUpperCase() ?? ''}',
+                            avatarInitial,
                             style: TextStyle(
                               fontSize: 32,
                               fontWeight: FontWeight.bold,
@@ -179,7 +189,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                       const SizedBox(height: 12),
                       // User Name
                       Text(
-                        '${user.firstname ?? ''} ${user.lastname ?? ''}',
+                        userName.isEmpty ? 'Spicy Eats User' : userName,
                         style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -316,7 +326,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.grey.withOpacity(0.1),
+                              color: Colors.grey.withValues(alpha: 0.1),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
@@ -382,7 +392,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.grey.withOpacity(0.1),
+                                color: Colors.grey.withValues(alpha: 0.1),
                                 blurRadius: 10,
                                 offset: const Offset(0, 4),
                               ),
@@ -456,7 +466,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
+              color: Colors.grey.withValues(alpha: 0.1),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -468,7 +478,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
+                color: color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, color: color, size: 28),
@@ -564,7 +574,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: providerColor.withOpacity(0.1),
+              color: providerColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(providerIcon, color: providerColor, size: 24),
@@ -584,7 +594,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  supabaseClient.auth.currentUser!.email ?? 'Connected',
+                  supabaseClient.auth.currentUser?.email ?? 'Connected',
                   style: TextStyle(
                     fontSize: 13,
                     color: Colors.grey[600],

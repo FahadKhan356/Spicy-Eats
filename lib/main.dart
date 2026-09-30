@@ -1,6 +1,5 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:spicy_eats/Supabse%20Backend/supabase_config.dart';
@@ -12,9 +11,6 @@ import 'package:spicy_eats/features/Sqlight%20Database/Cart/services/CartLocalDa
 import 'package:spicy_eats/features/Sqlight%20Database/Dishes/services/DishesLocalDataBase.dart';
 import 'package:spicy_eats/features/Sqlight%20Database/Restaurants/services/RestaurantLocalDataBase.dart';
 import 'package:spicy_eats/features/Sqlight%20Database/onBoarding/services/OnBoardingLocalDatabase.dart';
-import 'package:spicy_eats/features/authentication/authServices.dart';
-import 'package:spicy_eats/features/authentication/signinscreen.dart';
-import 'package:spicy_eats/features/authentication/signupscreeen.dart';
 
 import 'package:spicy_eats/features/splashscreen/SplashScreen.dart';
 import 'package:spicy_eats/routes.dart';
