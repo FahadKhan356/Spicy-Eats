@@ -135,12 +135,12 @@ class _BoardingScreenState extends ConsumerState<BoardingScreen> {
                           if (_selectedIndex == boarding.length - 1) {
                             // TODO: Save "onboarding_done = true" in SQLite and go to home
 
-                            final val = await OnBoardingLocalDatabase.instance
+                            await OnBoardingLocalDatabase.instance
                                 .getFlag('boardingFlag');
                           
                             onboardingDone();
-                          
-                     
+
+                            if (!context.mounted) return;
                             Navigator.pushNamedAndRemoveUntil(
                               context,
                               PasswordlessScreen.routename,

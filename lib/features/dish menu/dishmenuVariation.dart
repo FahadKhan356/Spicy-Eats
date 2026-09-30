@@ -20,6 +20,10 @@ final freqDishesProvider = StateProvider<List<DishData>?>((ref) => []);
 
 
 // Enhanced DishMenuVariation with professional UI
+// NOTE: `freqList`/`variationList` are populated from Supabase after initState,
+// so this widget still carries mutable state. Moving it into the State object
+// is a follow-up.
+// ignore: must_be_immutable
 class DishMenuVariation extends ConsumerStatefulWidget {
   static const String routename = '/DishMenuVariation';
   final DishData? dish;

@@ -39,7 +39,7 @@ class AuthenticationController {
 
 //sign in with email and password
 
-  Future<bool> Login(
+  Future<bool> login(
       {required BuildContext context,
       required String email,
       required String passwrod}) {

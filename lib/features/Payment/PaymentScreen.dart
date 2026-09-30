@@ -73,7 +73,7 @@ var onclickprovier = StateProvider<bool>((ref) => false);
 //                                 ref
 //                                     .read(selectedmethodProvider.notifier)
 //                                     .state = value!;
-//                                 print(ref
+//                                 debugPrint(ref
 //                                     .read(selectedmethodProvider.notifier)
 //                                     .state);
 //                                 Navigator.pop(context);
@@ -504,95 +504,100 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
         ),
       ),
       context: context,
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
+      builder: (context) => RadioGroup<String>(
+        // `Radio.groupValue`/`onChanged` are deprecated since Flutter 3.32; the
+        // group state now lives on a RadioGroup ancestor. Tapping a tile pops
+        // the sheet with the newly picked method, same as before.
+        groupValue: ref.watch(selectedmethodProvider),
+        onChanged: (value) {
+          ref.read(selectedmethodProvider.notifier).state = value;
+          Navigator.pop(context);
+        },
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.orange[50],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(
+                      Icons.payment,
+                      color: Colors.orange[700],
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  const Text(
+                    'Select Payment Method',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              ...ref.read(paymentRepProvider).paymentoption.map((option) {
+                final isSelected = ref.watch(selectedmethodProvider) == option.option;
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 12),
                   decoration: BoxDecoration(
-                    color: Colors.orange[50],
-                    borderRadius: BorderRadius.circular(10),
+                    color: isSelected ? Colors.orange[50] : Colors.grey[50],
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: isSelected ? Colors.orange[300]! : Colors.grey[200]!,
+                      width: 2,
+                    ),
                   ),
-                  child: Icon(
-                    Icons.payment,
-                    color: Colors.orange[700],
-                    size: 24,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                const Text(
-                  'Select Payment Method',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            ...ref.read(paymentRepProvider).paymentoption.map((option) {
-              final isSelected = ref.watch(selectedmethodProvider) == option.option;
-              return Container(
-                margin: const EdgeInsets.only(bottom: 12),
-                decoration: BoxDecoration(
-                  color: isSelected ? Colors.orange[50] : Colors.grey[50],
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: isSelected ? Colors.orange[300]! : Colors.grey[200]!,
-                    width: 2,
-                  ),
-                ),
-                child: RadioListTile<String>(
-                  activeColor: Colors.orange[700],
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  title: Row(
-                    children: [
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        padding: const EdgeInsets.all(6),
-                        child: Image.network(
-                          option.imagurl,
-                          fit: BoxFit.contain,
-                          errorBuilder: (context, error, stackTrace) =>
-                              Icon(Icons.payment, color: Colors.grey[400]),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Text(
-                          option.option,
-                          style: TextStyle(
-                            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                            fontSize: 15,
+                  child: RadioListTile<String>(
+                    activeColor: Colors.orange[700],
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    title: Row(
+                      children: [
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.all(6),
+                          child: Image.network(
+                            option.imagurl,
+                            fit: BoxFit.contain,
+                            errorBuilder: (context, error, stackTrace) =>
+                                Icon(Icons.payment, color: Colors.grey[400]),
                           ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Text(
+                            option.option,
+                            style: TextStyle(
+                              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                              fontSize: 15,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    value: option.option,
                   ),
-                  value: option.option,
-                  groupValue: ref.watch(selectedmethodProvider),
-                  onChanged: (value) {
-                    ref.read(selectedmethodProvider.notifier).state = value!;
-                    Navigator.pop(context);
-                  },
-                ),
-              );
-            }),
-            const SizedBox(height: 10),
-          ],
+                );
+              }),
+              const SizedBox(height: 10),
+            ],
+          ),
         ),
       ),
     );

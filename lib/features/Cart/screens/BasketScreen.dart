@@ -38,7 +38,6 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 
     // Group cart items by restaurant_id
     Map<String, List<Cartmodel>> groupedByRestaurant = {};
-    Map<String, String> restaurantNames = {}; // Store restaurant names
     
     for (var cartItem in cart) {
       final restaurantId = cartItem.restaurant_id ?? 'unknown';

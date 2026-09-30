@@ -6,7 +6,7 @@ class QuantityButton1 extends StatefulWidget {
   const QuantityButton1({super.key});
 
   @override
-  _QuantityButton1State createState() => _QuantityButton1State();
+  State<QuantityButton1> createState() => _QuantityButton1State();
 }
 
 class _QuantityButton1State extends State<QuantityButton1> {
@@ -27,7 +27,7 @@ class _QuantityButton1State extends State<QuantityButton1> {
       await player.setAsset('lib/assets/pop-on-269286.mp3');
       await player.play();
     } catch (e) {
-      print("Error playing sound: $e"); // Handle error safely
+      debugPrint("Error playing sound: $e"); // Handle error safely
     }
   }
 

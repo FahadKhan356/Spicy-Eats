@@ -305,6 +305,9 @@ class AuthService {
         );
       }
 
+      // `signInWithIdToken` is still flagged experimental by supabase_flutter
+      // but is the documented way to exchange native provider tokens.
+      // ignore: experimental_member_use
       return await _supabase.auth.signInWithIdToken(
         provider: OAuthProvider.google,
         idToken: idToken,
@@ -345,6 +348,9 @@ class AuthService {
         }
 
         // Sign in to Supabase with Facebook credentials
+        // `signInWithIdToken` is still flagged experimental by supabase_flutter
+        // but is the documented way to exchange native provider tokens.
+        // ignore: experimental_member_use
         final response = await _supabase.auth.signInWithIdToken(
           provider: OAuthProvider.facebook,
           idToken: accessToken.token,
@@ -359,7 +365,7 @@ class AuthService {
         throw 'Facebook login failed: ${result.message}';
       }
     } catch (e) {
-      print('Error signing in with Facebook: $e');
+      debugPrint('Error signing in with Facebook: $e');
       rethrow;
     }
   }
@@ -374,7 +380,7 @@ class AuthService {
       );
       return true;
     } catch (e) {
-      print('Error with Facebook redirect: $e');
+      debugPrint('Error with Facebook redirect: $e');
       return false;
     }
   }
@@ -387,7 +393,7 @@ class AuthService {
       );
       return userData;
     } catch (e) {
-      print('Error getting Facebook user data: $e');
+      debugPrint('Error getting Facebook user data: $e');
       return null;
     }
   }

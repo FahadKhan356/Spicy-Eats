@@ -115,6 +115,7 @@ class _CustomBottomSheetState extends ConsumerState<CustomBottomSheet> {
 
                   if (permission == LocationPermission.denied ||
                       permission == LocationPermission.deniedForever) {
+                    if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: const Text("Location permission denied"),
@@ -137,8 +138,10 @@ class _CustomBottomSheetState extends ConsumerState<CustomBottomSheet> {
                     longitude = position.longitude;
 
                     await onCurrentLocation();
+                    if (!context.mounted) return;
                     Navigator.pop(context);
                   } catch (e) {
+                    if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text("Error getting location: $e"),

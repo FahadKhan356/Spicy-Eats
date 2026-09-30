@@ -9,20 +9,32 @@
 # packages, and plugins designed to encourage good coding practices.
 include: package:flutter_lints/flutter.yaml
 
+analyzer:
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+
 linter:
-  # The lint rules applied to this project can be customized in the
-  # section below to disable rules from the `package:flutter_lints/flutter.yaml`
-  # included above or to enable additional rules. A list of all available lints
-  # and their documentation is published at https://dart.dev/lints.
-  #
-  # Instead of disabling a lint rule for the entire project in the
-  # section below, it can also be suppressed for a single line of code
-  # or a specific dart file by using the `// ignore: name_of_lint` and
-  # `// ignore_for_file: name_of_lint` syntax on the line or in the file
-  # producing the lint.
   rules:
-    # avoid_print: false  # Uncomment to disable the `avoid_print` rule
-    # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
+    # keep the recommended set from flutter_lints and adjust below.
+
+    # --- Intentionally disabled (documented, not accidental) -------------------
+    #
+    # The data layer mirrors the Supabase/Postgres column names verbatim
+    # (`rest_uid`, `dish_id`, `created_at`, `dish_imageurl`, ...). Keeping the
+    # Dart fields identical to the columns means `fromjson`/`tojson` stay 1:1 and
+    # a query can never silently drift from its model. Renaming ~45 of these to
+    # lowerCamelCase is a wide refactor that is only safe with integration tests
+    # around the cart/orders round-trip, so the rule stays off until then.
+    non_constant_identifier_names: false
+
+    # Files follow the project's existing convention: PascalCase for
+    # screens/widgets/classes, camelCase for helpers, repos and models. Renaming
+    # 50+ files would also rewrite every `package:spicy_eats/...` import,
+    # including the URL-encoded `features/dish%20menu/` directory. That churn is
+    # deliberately not mixed into behaviour fixes; do it as its own commit
+    # (`git mv` + import rewrite) if the team wants snake_case everywhere.
+    file_names: false
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

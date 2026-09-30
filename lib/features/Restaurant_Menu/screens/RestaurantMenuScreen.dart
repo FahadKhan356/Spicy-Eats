@@ -87,7 +87,7 @@ class _RestaurantMenuScreenState
       if (value != null && mounted) {
         setState(() {
           allcategories = value.cast<Categories>();
-          print(allcategories[0].category_name);
+          debugPrint(allcategories[0].category_name);
         });
       }
     });
@@ -390,7 +390,7 @@ floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
                                                   Icons.star,
                                                   size: 22,
                                                 ),
-                                            onRatingUpdate: (double) {}),
+                                            onRatingUpdate: (_) {}),
                                         const SizedBox(
                                           width: 5,
                                         ),

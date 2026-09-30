@@ -65,7 +65,7 @@ class DishMenuRepository {
     List<DishData> allfreqbuydishes = [];
     List<DishData> items = [];
     if (freqid != null) {
-      print("if freq is not null");
+      debugPrint("if freq is not null");
       try {
         final res = await supabaseClient
             .from('frequently_bought')
@@ -81,11 +81,11 @@ class DishMenuRepository {
               .state!
               .where((element) => element.dishid == dish)
               .toList();
-          print("freq ${items.length}");
+          debugPrint("freq ${items.length}");
           allfreqbuydishes.addAll(items);
         }
-        print("freq again${items.length}");
-        print("allfreq list${allfreqbuydishes.length}");
+        debugPrint("freq again${items.length}");
+        debugPrint("allfreq list${allfreqbuydishes.length}");
         return allfreqbuydishes;
         // ref.read(freqDishesProvider.notifier).state = allfreqbuydishes;
       } catch (e) {

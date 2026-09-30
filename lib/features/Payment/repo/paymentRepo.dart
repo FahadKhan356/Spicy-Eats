@@ -37,11 +37,12 @@ class PaymentRepo {
         paymentintenddata = null;
       }).onError((error, stackTrace) {
         if (kDebugMode) {
-          print(error.toString() + stackTrace.toString());
+          debugPrint(error.toString() + stackTrace.toString());
         }
       });
       if (paymentResult.status == PaymentIntentsStatus.Succeeded) {
         // clearingcart(ref: ref, cart: cart, context: context);
+        if (!context.mounted) return;
         ref.read(cartReopProvider).clearCart(ref: ref, userId: supabaseClient.auth.currentUser!.id);
         Navigator.pushNamed(context, Home.routename);
 
@@ -53,15 +54,16 @@ class PaymentRepo {
       }
     } on StripeException catch (error) {
       if (kDebugMode) {
-        print(error);
+        debugPrint(error.toString());
       }
+      if (!context.mounted) return;
       showDialog(
           context: context,
           builder: (context) => const AlertDialog(
                 title: Text('Cancel'),
               ));
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 
@@ -72,7 +74,7 @@ class PaymentRepo {
         'currency': currency,
         'payment_method_types[]': 'card',
       };
-      print("Sending Payment Intent Request: $paymentinfo");
+      debugPrint("Sending Payment Intent Request: $paymentinfo");
       var res = await http.post(
           Uri.parse('https://api.stripe.com/v1/payment_intents'),
           body: paymentinfo,
@@ -81,14 +83,14 @@ class PaymentRepo {
             'Content-Type': 'application/x-www-form-urlencoded',
           });
 
-      print("Stripe API Response: ${res.body}");
+      debugPrint("Stripe API Response: ${res.body}");
       if (res.statusCode != 200) {
-        print("Error: Payment Intent API call failed");
+        debugPrint("Error: Payment Intent API call failed");
         return null; // Ensure it doesn't proceed with invalid data
       }
       return jsonDecode(res.body);
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
     }
   }
 
@@ -99,17 +101,17 @@ class PaymentRepo {
       required WidgetRef ref,
       required List<Cartmodel> cart}) async {
     try {
-      print(
+      debugPrint(
           "Initializing payment sheet with amount: $amount, currency: $currency");
       paymentintenddata = await createintentpayment(amount, currency);
 
       if (paymentintenddata == null ||
           !paymentintenddata!.containsKey('client_secret')) {
-        print("Error: Payment Intent data is null or invalid");
+        debugPrint("Error: Payment Intent data is null or invalid");
         return;
       }
 
-      print("Received Payment Intent Data: $paymentintenddata");
+      debugPrint("Received Payment Intent Data: $paymentintenddata");
       await Stripe.instance
           .initPaymentSheet(
               paymentSheetParameters: SetupPaymentSheetParameters(
@@ -119,12 +121,13 @@ class PaymentRepo {
         merchantDisplayName: 'any company',
       ))
           .then((value) {
-        print(value);
+        debugPrint(value.toString());
       });
 
+      if (!context.mounted) return;
       showpaymentsheet(context, ref, cart);
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 

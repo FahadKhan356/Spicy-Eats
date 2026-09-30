@@ -67,7 +67,7 @@ class _PhonenumberScreenState extends ConsumerState<PasswordlessScreen>
           }
         }
       } catch (e, stack) {
-        print('Auth listener Error $e\n $stack');
+        debugPrint('Auth listener Error $e\n $stack');
       }
     });
 
@@ -83,7 +83,7 @@ class _PhonenumberScreenState extends ConsumerState<PasswordlessScreen>
     if (user == null) {
       return;
     } else {
-      print('value of user $user');
+      debugPrint('value of user $user');
       uploaddata(user);
      if(mounted) Navigator.pushNamed(context, Home.routename);
       mysnackbar(context: context, text: 'data loaded to users table ');
@@ -102,7 +102,7 @@ class _PhonenumberScreenState extends ConsumerState<PasswordlessScreen>
           .limit(1);
       return response.isNotEmpty;
     } catch (e) {
-      print('userExists check failed: $e');
+      debugPrint('userExists check failed: $e');
       return false;
     }
   }
@@ -119,7 +119,7 @@ class _PhonenumberScreenState extends ConsumerState<PasswordlessScreen>
         'email': user.session?.user.email,
       });
     } else {
-      print('session is null');
+      debugPrint('session is null');
     }
   }
 
@@ -142,11 +142,11 @@ class _PhonenumberScreenState extends ConsumerState<PasswordlessScreen>
 
   @override
   void dispose() {
-    // TODO: implement dispose
+    _authSub?.cancel();
     super.dispose();
-    Nopass_emailController.dispose();
-    withpass_signin_emailController.dispose();
-    withpass_signup_emailController.dispose();
+    nopassEmailController.dispose();
+    withpassSigninEmailController.dispose();
+    withpassSignupEmailController.dispose();
     signuppassController.dispose();
     signinpassController.dispose();
     _animationController.dispose();
@@ -155,9 +155,9 @@ class _PhonenumberScreenState extends ConsumerState<PasswordlessScreen>
 
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
   bool isShow = false;
-  final Nopass_emailController = TextEditingController();
-  final withpass_signup_emailController = TextEditingController();
-  final withpass_signin_emailController = TextEditingController();
+  final nopassEmailController = TextEditingController();
+  final withpassSignupEmailController = TextEditingController();
+  final withpassSigninEmailController = TextEditingController();
   final signinpassController = TextEditingController();
   final signuppassController = TextEditingController();
 
@@ -313,7 +313,7 @@ class _PhonenumberScreenState extends ConsumerState<PasswordlessScreen>
                             ? Column(
                                 children: [
                                   RestaurantTextfield(
-                                      controller: Nopass_emailController,
+                                      controller: nopassEmailController,
                                       hintext: 'Pertermiconon@gmail.com',
                                       title: 'Enter Email',
                                       onvalidator: (value) {
@@ -353,7 +353,7 @@ class _PhonenumberScreenState extends ConsumerState<PasswordlessScreen>
                                   ),
                                   RestaurantTextfield(
                                       controller:
-                                          withpass_signup_emailController,
+                                          withpassSignupEmailController,
                                       hintext: 'Petermicinon@yahoo.com',
                                       title: 'Enter Email',
                                       onvalidator: (value) {
@@ -443,7 +443,7 @@ class _PhonenumberScreenState extends ConsumerState<PasswordlessScreen>
                                 children: [
                                   RestaurantTextfield(
                                       controller:
-                                          withpass_signin_emailController,
+                                          withpassSigninEmailController,
                                       hintext: 'Petermicinon@yahoo.com',
                                       title: 'Sign in with Email',
                                       onvalidator: (value) {
@@ -531,9 +531,9 @@ class _PhonenumberScreenState extends ConsumerState<PasswordlessScreen>
                               // Awaited: Login now returns Future<bool> and
                               // navigates itself, so the dialog timer below must
                               // only start after the attempt finishes.
-                              await authController.Login(
+                              await authController.login(
                                   context: context,
-                                  email: withpass_signin_emailController.text,
+                                  email: withpassSigninEmailController.text,
                                   passwrod: signuppassController.text);
                               // if (_isTextFieldVisible == false &&
                               //     buttonsindex[0] == false &&
@@ -548,16 +548,16 @@ class _PhonenumberScreenState extends ConsumerState<PasswordlessScreen>
                               // if (_isTextFieldVisible) {
                               //   SnackBar(content: Text('sign in magic link'));
                               //   // authController.signInWithMagicLink(
-                              //   //     email: Nopass_emailController.text.trim(),
+                              //   //     email: nopassEmailController.text.trim(),
                               //   //     context: context);
                               // }
 
                               // if (buttonsindex[1] == true) {
                               //   ScaffoldMessenger.of(context).showSnackBar(
                               //       SnackBar(content: Text('sign in')));
-                              //   // authController.Login(
+                              //   // authController.login(
                               //   //     context: context,
-                              //   //     email: withpass_signin_emailController.text
+                              //   //     email: withpassSigninEmailController.text
                               //   //         .trim(),
                               //   //     passwrod: signinpassController.text.trim());
                               // }
@@ -568,7 +568,7 @@ class _PhonenumberScreenState extends ConsumerState<PasswordlessScreen>
                               //       SnackBar(content: Text('sign up')));
                               //   // authController.signup(
                               //   //     context: context,
-                              //   //     email: withpass_signup_emailController.text
+                              //   //     email: withpassSignupEmailController.text
                               //   //         .trim(),
                               //   //     passwrod: signuppassController.text.trim());
                               // }

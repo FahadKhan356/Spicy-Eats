@@ -6,7 +6,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:spicy_eats/features/Profile/model/usermodel.dart';
-import 'package:spicy_eats/features/account/screen/accountscreen.dart';
 
 void main() {
   group('account header name', () {

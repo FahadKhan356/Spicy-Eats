@@ -52,8 +52,6 @@ class CartRepository {
 
   CartRepository(this._database);
 
-  final _mutex = Mutex();
-
 //Fetch Cart From Sqlight
   Future<void> initializeCart(
       {required String userId, required WidgetRef ref}) async {

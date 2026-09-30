@@ -182,7 +182,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     final restaurantData = ref.watch(restaurantDisplayListProvider);
     final allCusines = ref.watch(cusineListProvider);
     final address = ref.watch(pickedAddressProvider);
-    final isLoading = ref.watch(isloaderProvider);
     final cart = ref.watch(cartProvider);
     final crouselIndicator = ref.watch(crouselIndicatorProvider);
 

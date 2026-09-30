@@ -26,7 +26,7 @@ class HomeRepository {
           .select('*')
           .eq('rest_uid', restuid!);
       if (response.isEmpty) {
-        print('there is no dishes');
+        debugPrint('there is no dishes');
         return null;
       }
       dishList =
@@ -34,10 +34,10 @@ class HomeRepository {
 
       return dishList;
     } catch (e) {
-      print('$dishList this is dishlist');
-      // print('${ref.read(rest_ui_Provider)} this is rest uid in the homerepo');
+      debugPrint('$dishList this is dishlist');
+      // debugPrint('${ref.read(rest_ui_Provider)} this is rest uid in the homerepo');
 
-      print(e.toString());
+      debugPrint(e.toString());
     }
     return null;
   }
@@ -117,7 +117,7 @@ Future<List<RestaurantModel>> getRestaurantsData() async {
     } catch (e) {
       // ScaffoldMessenger.of(context)
       //     .showSnackBar(SnackBar(content: Text(e.toString())));
-      print(e.toString());
+      debugPrint(e.toString());
     }
   }
 
@@ -132,7 +132,7 @@ Future<List<RestaurantModel>> getRestaurantsData() async {
           .select('*')
           .eq('rest_uid', restuid!);
       if (response.isEmpty) {
-        print('there is no any category related to u r restaurant');
+        debugPrint('there is no any category related to u r restaurant');
         return null;
       }
       categories = response.map((e) => Categories.fromjson(e)).toList();
@@ -170,6 +170,7 @@ Future<List<RestaurantModel>> getRestaurantsData() async {
         }).eq('restid', restid);
       }
     } catch (e) {
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(e.toString())));
     }
@@ -198,7 +199,7 @@ Future<List<RestaurantModel>> getRestaurantsData() async {
           'average_ratings': averageRatings,
           'total_ratings': totalRatings,
         }).eq('rest_uid', restid);
-        print(
+        debugPrint(
             'Average Ratings (before update): $averageRatings (Type: ${averageRatings.runtimeType})');
       }
     } catch (e) {
@@ -324,8 +325,8 @@ Future<List<RestaurantModel>> getNearbyRestaurants({
       restaurant.lat!,
       restaurant.long!,
     );
-    print('Coordinates for ${restaurant.restaurantName}: Lat ${restaurant.lat}, Long ${restaurant.long}');
-    print('Distance to ${restaurant.restaurantName}: $distance km');
+    debugPrint('Coordinates for ${restaurant.restaurantName}: Lat ${restaurant.lat}, Long ${restaurant.long}');
+    debugPrint('Distance to ${restaurant.restaurantName}: $distance km');
     return distance <= radiusKm;
   }).toList();
 }

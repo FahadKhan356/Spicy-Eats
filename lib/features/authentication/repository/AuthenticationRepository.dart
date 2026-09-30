@@ -66,9 +66,13 @@ class AuthenticationRepository {
           email: email,
           emailRedirectTo: 'io.supabase.spicyeats://login-callback/');
     } on AuthException catch (e) {
-      mysnackbar(context: context, text: e.toString());
+      if (context.mounted) {
+        mysnackbar(context: context, text: e.toString());
+      }
     } catch (e) {
-      mysnackbar(context: context, text: e.toString());
+      if (context.mounted) {
+        mysnackbar(context: context, text: e.toString());
+      }
     }
   }
 
@@ -177,7 +181,7 @@ class AuthenticationRepository {
           .limit(1);
       return response.isNotEmpty;
     } catch (e) {
-      print('userExists check failed: $e');
+      debugPrint('userExists check failed: $e');
       return false;
     }
   }

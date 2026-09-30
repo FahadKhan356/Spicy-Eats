@@ -465,6 +465,7 @@ class _MapLocationPickerState extends State<CustomMap> {
                   if (permission == LocationPermission.denied ||
                       permission == LocationPermission.deniedForever) {
                     // Handle permission denied case
+                    if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                           content: Text("Location permission denied")),
@@ -487,6 +488,7 @@ class _MapLocationPickerState extends State<CustomMap> {
                     _getLocationResult();
                   } catch (e) {
                     // Handle error (e.g., GPS not available)
+                    if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text("Error getting location: $e")),
                     );

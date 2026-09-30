@@ -12,7 +12,7 @@ import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
 import 'package:spicy_eats/main.dart';
 
 class BuildDishItem extends ConsumerStatefulWidget {
-  BuildDishItem({
+  const BuildDishItem({
     super.key,
     this.cardHeight,
     required this.elevation,
@@ -41,11 +41,11 @@ class BuildDishItem extends ConsumerStatefulWidget {
   final String? userId;
   final RestaurantModel restaurantdata;
 
-  int? quantityIndex;
-  double? addbuttonHeight;
-  double? addbuttonWidth;
-  double? buttonIncDecHeight;
-  double? buttonIncDecWidth;
+  final int? quantityIndex;
+  final double? addbuttonHeight;
+  final double? addbuttonWidth;
+  final double? buttonIncDecHeight;
+  final double? buttonIncDecWidth;
   final List<VariattionTitleModel>? titleVariationList;
 
   @override
@@ -182,9 +182,7 @@ class _BuildDishItemState extends ConsumerState<BuildDishItem> {
               children: [
                 Flexible(
                       flex: 0,
-                      child: Container(
-                          // color: Colors.amber,
-                          child: Column(
+                      child: Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
@@ -376,7 +374,7 @@ class _BuildDishItemState extends ConsumerState<BuildDishItem> {
                                                 ),
                                               )),
                               ),
-                          ])),
+                          ]),
                     ),
               ],
             ),)

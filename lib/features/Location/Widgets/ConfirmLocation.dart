@@ -16,6 +16,10 @@ final isOther = StateProvider<bool>((ref) => false);
 final labelTitle = StateProvider<String?>((ref) => '');
 
 // Enhanced Confirm Location Screen with professional UI
+// NOTE: `locationResult` is filled in asynchronously by _getLocationResult()
+// after the widget is created, so it cannot be final. Converting this screen to
+// keep the result in State instead is tracked as a follow-up refactor.
+// ignore: must_be_immutable
 class Confirmlocation extends ConsumerStatefulWidget {
   static const String routename = "/conformLocation";
   final bool? isEdit;
@@ -51,7 +55,6 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
   }
 
   MapType _mapType = MapType.normal;
-  final bool _move = false;
 
   @override
   void dispose() {
@@ -76,14 +79,12 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
     }
   }
 
-  Timer? _timer;
   final MapController _controller = MapController();
 
   @override
   Widget build(BuildContext context) {
     final loader = ref.watch(isloaderProvider);
     final size = MediaQuery.of(context).size;
-    final selected = ref.watch(lableIndex);
     final others = ref.watch(isOther);
     final labeltitle = ref.watch(labelTitle);
 
@@ -274,7 +275,7 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
                                       //   overflow: TextOverflow.ellipsis,
                                       // ) :
                                       Text(
-                                        "${widget.locationResult?.locationName}" ??
+                                        widget.locationResult?.locationName ??
                                             "Finding location...",
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
@@ -557,6 +558,7 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
 
                                 ref.read(labelTitle.notifier).state = '';
 
+                                if (!context.mounted) return;
                                 Navigator.pushNamedAndRemoveUntil(
                                   context,
                                   Home.routename,
@@ -645,16 +647,16 @@ class _ConfirmlocationState extends ConsumerState<Confirmlocation> {
   }
 }
 
-List<label> labels = [
-  label(icon: Icons.home_outlined, title: "Home"),
-  label(icon: Icons.work_outline, title: "Work"),
-  label(icon: Icons.favorite_border, title: "Partner"),
-  label(icon: Icons.more_horiz, title: "Others"),
+List<LocationLabel> labels = [
+  LocationLabel(icon: Icons.home_outlined, title: "Home"),
+  LocationLabel(icon: Icons.work_outline, title: "Work"),
+  LocationLabel(icon: Icons.favorite_border, title: "Partner"),
+  LocationLabel(icon: Icons.more_horiz, title: "Others"),
 ];
 
-class label {
+class LocationLabel {
   final IconData icon;
   final String title;
 
-  label({required this.icon, required this.title});
+  LocationLabel({required this.icon, required this.title});
 }

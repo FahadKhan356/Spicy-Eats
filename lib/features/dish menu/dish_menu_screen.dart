@@ -25,6 +25,9 @@ final freqnewListProvider = StateProvider<List<DishData>?>((ref) => null);
 
 
 // Enhanced DishMenuScreen with professional UI
+// NOTE: `freqList` is populated from Supabase after initState, so this widget
+// still carries mutable state. Moving it into the State object is a follow-up.
+// ignore: must_be_immutable
 class DishMenuScreen extends ConsumerStatefulWidget {
   static const String routename = '/DishMenuScreen';
   final DishData? dish;

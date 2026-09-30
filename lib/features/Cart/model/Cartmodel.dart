@@ -12,11 +12,11 @@ class Cartmodel {
   final int? dish_id;
   final String created_at;
   final String? image;
-  final itemprice;
+  final double? itemprice;
   final String? name;
   final String? description;
   final List<Variation>? variation;
- final restaurant_id;
+  final String? restaurant_id;
  final String? restaurant_name;
   final List<DishData>? freqboughts;
 
@@ -71,7 +71,7 @@ class Cartmodel {
     int? dish_id,
     String? created_at,
     String? image,
-    int? itemprice,
+    double? itemprice,
     String? name,
     String? description,
     List<Variation>? variation,

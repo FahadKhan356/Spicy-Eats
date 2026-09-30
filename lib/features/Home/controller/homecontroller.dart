@@ -17,7 +17,7 @@ var homeControllerProvider = Provider((ref) {
 class HomeController {
   final DishesLocalDatabase database;
   HomeRepository homeRepository;
-  final ProviderRef ref;
+  final Ref ref;
   HomeController(
       {required this.homeRepository,
       required this.ref,

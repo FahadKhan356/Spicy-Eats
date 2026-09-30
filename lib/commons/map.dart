@@ -6,9 +6,9 @@ import 'package:spicy_eats/commons/Providers.dart';
 import 'package:spicy_eats/features/Location/Widgets/custommap.dart';
 
 class MyMap extends ConsumerStatefulWidget {
-  bool isAddScreen;
+  final bool isAddScreen;
   static const String routename = '/map';
-  MyMap({super.key, required this.isAddScreen});
+  const MyMap({super.key, required this.isAddScreen});
 
   @override
   ConsumerState<MyMap> createState() => _MyMapState();
@@ -24,9 +24,9 @@ class _MyMapState extends ConsumerState<MyMap> {
             initialLatitude: 25.3936435,
             initialLongitude: 68.3838603,
             onPicked: (result) {
-              print('Selected address: ${result.completeAddress}');
-              print('Selected lat: ${result.latitude}');
-              print('Selected long: ${result.longitude}');
+              debugPrint('Selected address: ${result.completeAddress}');
+              debugPrint('Selected lat: ${result.latitude}');
+              debugPrint('Selected long: ${result.longitude}');
 
               // you can get the location result here
               if (mounted) {
