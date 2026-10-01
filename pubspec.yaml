@@ -80,6 +80,10 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^3.0.0
 
+  # Used by test/account_screen_test.dart to stub Supabase's GoTrue storage so
+  # the real AccountScreen can be pumped in a widget test.
+  shared_preferences: ^2.5.3
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

@@ -651,8 +651,13 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                                             : Colors.grey[200]!,
                                       ),
                                     ),
-                                    child: CheckboxListTile(
-                                      checkColor: Colors.white,
+                                    // The Container above paints the card background;
+                                    // CheckboxListTile needs its own Material ancestor
+                                    // or Flutter asserts about invisible ink splashes.
+                                    child: Material(
+                                      color: Colors.transparent,
+                                      child: CheckboxListTile(
+                                        checkColor: Colors.white,
                                       activeColor: Colors.orange[700],
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(12),
@@ -765,7 +770,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                                             .state = updatedList;
                                       },
                                     ),
-                                  );
+                                  ));
                                 }),
                               ],
                             ),

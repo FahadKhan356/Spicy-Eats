@@ -556,42 +556,48 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                       width: 2,
                     ),
                   ),
-                  child: RadioListTile<String>(
-                    activeColor: Colors.orange[700],
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    title: Row(
-                      children: [
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          padding: const EdgeInsets.all(6),
-                          child: Image.network(
-                            option.imagurl,
-                            fit: BoxFit.contain,
-                            errorBuilder: (context, error, stackTrace) =>
-                                Icon(Icons.payment, color: Colors.grey[400]),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Text(
-                            option.option,
-                            style: TextStyle(
-                              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                              fontSize: 15,
+                  child: Material(
+                    // The Container above paints the card background. ListTile
+                    // needs its own Material ancestor, otherwise Flutter asserts
+                    // about invisible ink splashes and the sheet throws.
+                    color: Colors.transparent,
+                    child: RadioListTile<String>(
+                      activeColor: Colors.orange[700],
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      title: Row(
+                        children: [
+                          Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            padding: const EdgeInsets.all(6),
+                            child: Image.network(
+                              option.imagurl,
+                              fit: BoxFit.contain,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Icon(Icons.payment, color: Colors.grey[400]),
                             ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Text(
+                              option.option,
+                              style: TextStyle(
+                                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      value: option.option,
                     ),
-                    value: option.option,
                   ),
                 );
               }),
