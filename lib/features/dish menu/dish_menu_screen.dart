@@ -8,6 +8,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spicy_eats/features/Home/model/restaurant_model.dart';
 import 'package:spicy_eats/features/Cart/model/Cartmodel.dart';
 import 'package:spicy_eats/features/Cart/repository/CartRepository.dart';
+import 'package:spicy_eats/features/Favorites/repository/FavoritesRepository.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/cart/screens/BasketScreen.dart';
 import 'package:spicy_eats/features/dish%20menu/controller/dish-menu_controller.dart';
@@ -93,6 +94,8 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
     }
     ref.read(quantityPrvider.notifier).state = 1;
 
+    ref.read(favoriteDishListProvider.notifier).load();
+
     ref.read(isloaderProvider.notifier).state = false;
 
     if (widget.isCart) {
@@ -118,6 +121,70 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       fetchInitialData();
     });
+  }
+
+  Widget _buildFavoriteButton() {
+    final isFav = ref
+        .watch(favoriteDishListProvider)
+        .any((favorite) => favorite.dishId == widget.dish!.dishid);
+
+    return Container(
+      margin: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: IconButton(
+        icon: Icon(
+          isFav ? Icons.favorite : Icons.favorite_border,
+          color: isFav ? Colors.red : Colors.black87,
+        ),
+        onPressed: _toggleFavorite,
+      ),
+    );
+  }
+
+  Future<void> _toggleFavorite() async {
+    final dish = widget.dish!;
+    final added = await ref
+        .read(favoriteDishListProvider.notifier)
+        .toggle(
+          dish: dish,
+          restaurantId: widget.restaurantData?.restuid ?? dish.restuid ?? '',
+          restaurantName: widget.restaurantData?.restaurantName ?? '',
+        );
+
+    if (!mounted) return;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              Icon(added ? Icons.favorite : Icons.favorite_border,
+                  color: Colors.white, size: 20),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(added
+                    ? '${dish.dish_name} saved to favorites'
+                    : '${dish.dish_name} removed from favorites'),
+              ),
+            ],
+          ),
+          backgroundColor: added ? Colors.red : Colors.grey[800],
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(milliseconds: 1500),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      );
   }
 
   @override
@@ -189,27 +256,10 @@ class _DishMenuScreenState extends ConsumerState<DishMenuScreen>
                                 onPressed: () => Navigator.pop(context),
                               ),
                             ),
-                            // actions: [
-                              // Container(
-                              //   margin: const EdgeInsets.all(8),
-                              //   decoration: BoxDecoration(
-                              //     color: Colors.white,
-                              //     shape: BoxShape.circle,
-                              //     boxShadow: [
-                              //       BoxShadow(
-                              //         color: Colors.black.withOpacity(0.1),
-                              //         blurRadius: 8,
-                              //         offset: const Offset(0, 2),
-                              //       ),
-                              //     ],
-                              //   ),
-                              //   child: IconButton(
-                              //     icon: const Icon(Icons.favorite_border, color: Colors.red),
-                              //     onPressed: () {},
-                              //   ),
-                              // ),
-                            //   const SizedBox(width: 8),
-                            // ],
+                            actions: [
+                              _buildFavoriteButton(),
+                              const SizedBox(width: 8),
+                            ],
                             title: AnimatedBuilder(
                               animation: _animationController!,
                               builder: (context, child) {

@@ -11,6 +11,7 @@ import 'package:spicy_eats/features/Sqlight%20Database/Cart/services/CartLocalDa
 import 'package:spicy_eats/features/Sqlight%20Database/Dishes/services/DishesLocalDataBase.dart';
 import 'package:spicy_eats/features/Sqlight%20Database/Restaurants/services/RestaurantLocalDataBase.dart';
 import 'package:spicy_eats/features/Sqlight%20Database/onBoarding/services/OnBoardingLocalDatabase.dart';
+import 'package:spicy_eats/features/Favorites/data/FavoritesLocalDatabase.dart';
 
 import 'package:spicy_eats/features/splashscreen/SplashScreen.dart';
 import 'package:spicy_eats/routes.dart';
@@ -27,6 +28,7 @@ void main() async {
   await DishesLocalDatabase.instance.database;
   await OnBoardingLocalDatabase.instance.database;
   await LocationLocalDatabase.instance.database;
+  await FavoritesLocalDatabase.instance.database;
   
   // Get stored data (if any)
 

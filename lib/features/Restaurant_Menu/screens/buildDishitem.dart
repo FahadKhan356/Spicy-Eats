@@ -6,6 +6,7 @@ import 'package:spicy_eats/features/Home/model/restaurant_model.dart';
 import 'package:spicy_eats/commons/Responsive.dart';
 import 'package:spicy_eats/features/Cart/model/Cartmodel.dart';
 import 'package:spicy_eats/features/Cart/repository/CartRepository.dart';
+import 'package:spicy_eats/features/Favorites/repository/FavoritesRepository.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/dish%20menu/dishmenuVariation.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
@@ -77,6 +78,40 @@ class _BuildDishItemState extends ConsumerState<BuildDishItem> {
         isExpanded = false;
       });
     });
+  }
+
+  Future<void> _toggleFavorite(DishData dish) async {
+    final added = await ref
+        .read(favoriteDishListProvider.notifier)
+        .toggle(
+          dish: dish,
+          restaurantId: widget.restaurantdata.restuid ?? '',
+          restaurantName: widget.restaurantdata.restaurantName ?? '',
+        );
+
+    if (!mounted) return;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              Icon(added ? Icons.favorite : Icons.favorite_border,
+                  color: Colors.white, size: 20),
+              const SizedBox(width: 12),
+              Expanded(
+                  child: Text(added
+                      ? '${dish.dish_name} saved to favorites'
+                      : '${dish.dish_name} removed from favorites')),
+            ],
+          ),
+          backgroundColor: added ? Colors.red : Colors.grey[800],
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(milliseconds: 1500),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      );
   }
 
   @override
@@ -174,6 +209,11 @@ class _BuildDishItemState extends ConsumerState<BuildDishItem> {
                     );
                   },
                 ),
+              ),
+              Positioned(
+                top: 4,
+                right: 4,
+                child: _buildFavoriteButton(dish),
               ),
            Positioned(
             bottom: 0,
@@ -382,6 +422,35 @@ class _BuildDishItemState extends ConsumerState<BuildDishItem> {
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildFavoriteButton(DishData dish) {
+    final isFav = ref
+        .watch(favoriteDishListProvider)
+        .any((favorite) => favorite.dishId == dish.dishid);
+
+    return GestureDetector(
+      onTap: () => _toggleFavorite(dish),
+      child: Container(
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.2),
+              blurRadius: 4,
+              offset: const Offset(0, 1),
+            ),
+          ],
+        ),
+        child: Icon(
+          isFav ? Icons.favorite : Icons.favorite_border,
+          color: isFav ? Colors.red : Colors.grey[700],
+          size: 16,
+        ),
       ),
     );
   }

@@ -9,6 +9,7 @@ import 'package:spicy_eats/commons/categoriesmodel.dart';
 import 'package:spicy_eats/features/Cart/model/Cartmodel.dart';
 import 'package:spicy_eats/features/Cart/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Cusines/model/CusinesModel.dart';
+import 'package:spicy_eats/features/Favorites/repository/FavoritesRepository.dart';
 import 'package:spicy_eats/features/Home/controller/homecontroller.dart';
 import 'package:spicy_eats/features/Home/model/restaurant_model.dart';
 import 'package:spicy_eats/features/Home/repository/homerespository.dart';
@@ -121,6 +122,7 @@ class _RestaurantMenuScreenState
     });
 
     ref.read(cartReopProvider).initializeCart(userId: userId, ref: ref);
+    ref.read(favoriteDishListProvider.notifier).load();
   }
 
   void _scrollListener() {
