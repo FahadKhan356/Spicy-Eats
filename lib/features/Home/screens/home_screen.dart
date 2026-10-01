@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spicy_eats/features/Home/model/restaurant_model.dart';
+import 'package:spicy_eats/commons/Providers.dart';
 import 'package:spicy_eats/commons/Responsive.dart';
 import 'package:spicy_eats/features/Cart/repository/CartRepository.dart';
 import 'package:spicy_eats/features/cart/screens/BasketScreen.dart';
@@ -66,7 +67,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
     userid = authUser.id;
 
+    // Hold navigation from the moment the app starts. On a fresh install the
+    // address sheet is only raised at the end of the initial fetches, and a tap
+    // in that window used to push a new screen and leave the sheet stacked on
+    // top of it. _showBottomSheet releases the lock either way.
+    ref.read(navigationLockedProvider.notifier).state = true;
+
     _initialDataFuture = fetchInitialData();
+    // Safety net: whatever the initial load does, the user must never be left
+    // with navigation permanently disabled.
+    _initialDataFuture
+        .then((_) {}, onError: (error, stack) {
+      debugPrint('Home initial data failed: $error');
+    }).whenComplete(_releaseNavigationLock);
     ref.read(cartReopProvider).initializeCart(userId: userid, ref: ref);
   }
 
@@ -75,6 +88,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   late final String userid;
   String? lastLocation;
   bool? flag;
+  bool _isSheetOpen = false;
   List<RestaurantModel> nearByRestaurants = [];
   Future<void> fetchLastLocation() async {
     final data = await LocationLocalDatabase.instance
@@ -143,44 +157,64 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     await _showBottomSheet(addresses: allAdress ?? [], isEdit: false);
   }
 
+  void _releaseNavigationLock() {
+    if (!mounted) return;
+    ref.read(navigationLockedProvider.notifier).state = false;
+  }
+
   Future<void> _showBottomSheet(
       {required List<AddressModel?> addresses, bool? isEdit}) async {
-    if (flag != true && isEdit != true) return;
     if (!mounted) return;
-    {
-      showModalBottomSheet(
-          backgroundColor: Colors.white,
-          barrierColor: Colors.black.withValues(alpha: 0.5),
-          showDragHandle: true,
-          context: context,
-          sheetAnimationStyle: const AnimationStyle(
-              curve: Curves.easeInOut,
-              duration: Duration(milliseconds: 300)),
-          enableDrag: true,
-          clipBehavior: Clip.none,
-          builder: (context) {
-            return CustomBottomSheet(
-              lastLocation: lastLocation,
-              allAdress: addresses,
-              isEdit: isEdit,
-            );
-          }).whenComplete(() async {
-        // ✅ Called no matter how the sheet is closed.
-        final picked = ref.read(pickedAddressProvider);
-        if (picked == null) {
-          // User didn’t select anything → mark flag false
-          await LocationLocalDatabase.instance
-              .setLocationWithFlag('LocationData', false, lastLocation ?? '');
-          debugPrint(
-              'BottomSheet closed without selection → flag set to false');
-        }
-      });
+    // Same condition as before, spelled so the "nothing to show" path is
+    // obvious: the lock has to be released even when no sheet is raised.
+    final shouldShow = flag == true || isEdit == true;
+    if (!shouldShow) {
+      _releaseNavigationLock();
+      return;
     }
+    // Tapping the address bar while the automatic sheet is still pending must
+    // not stack a second one on top of it.
+    if (_isSheetOpen) {
+      _releaseNavigationLock();
+      return;
+    }
+    _isSheetOpen = true;
+
+    await showModalBottomSheet(
+        backgroundColor: Colors.white,
+        barrierColor: Colors.black.withValues(alpha: 0.5),
+        showDragHandle: true,
+        context: context,
+        sheetAnimationStyle: const AnimationStyle(
+            curve: Curves.easeInOut,
+            duration: Duration(milliseconds: 300)),
+        enableDrag: true,
+        clipBehavior: Clip.none,
+        builder: (context) {
+          return CustomBottomSheet(
+            lastLocation: lastLocation,
+            allAdress: addresses,
+            isEdit: isEdit,
+          );
+        }).whenComplete(() async {
+      _isSheetOpen = false;
+      // Called no matter how the sheet is closed, so this is the one place the
+      // user gets their navigation back.
+      _releaseNavigationLock();
+      final picked = ref.read(pickedAddressProvider);
+      if (picked == null) {
+        // User didn’t select anything → mark flag false
+        await LocationLocalDatabase.instance
+            .setLocationWithFlag('LocationData', false, lastLocation ?? '');
+        debugPrint('BottomSheet closed without selection → flag set to false');
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final restaurantData = ref.watch(restaurantDisplayListProvider);
+    final navigationLocked = ref.watch(navigationLockedProvider);
     final allCusines = ref.watch(cusineListProvider);
     final address = ref.watch(pickedAddressProvider);
     final cart = ref.watch(cartProvider);
@@ -421,11 +455,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                   child: Stack(
                                     children: [
                                       IconButton(
-                                        onPressed: () => Navigator.pushNamed(
-                                            context, CartScreen.routename),
+                                        // Held while the address sheet still
+                                        // has to appear, so a tap cannot leave
+                                        // the sheet stacked on the cart.
+                                        onPressed: navigationLocked
+                                            ? null
+                                            : () => Navigator.pushNamed(
+                                                context,
+                                                CartScreen.routename),
                                         icon: Icon(Icons.shopping_cart_outlined,
                                             size: Responsive.w20px,
-                                            color: Colors.white),
+                                            color: navigationLocked
+                                                ? Colors.white38
+                                                : Colors.white),
                                       ),
                                       if (cart.isNotEmpty)
                                         Positioned(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spicy_eats/commons/Providers.dart';
 import 'package:spicy_eats/features/Cart/model/Cartmodel.dart';
 import 'package:spicy_eats/features/Cart/repository/CartRepository.dart' show cartProvider, cartReopProvider;
 import 'package:spicy_eats/features/Cart/widgets/BasketCard.dart';
@@ -131,17 +132,9 @@ class _CartScreenState extends ConsumerState<CartScreen> {
           elevation: 0,
           backgroundColor: Colors.white,
           centerTitle: true,
-          leading: Container(
-            margin: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.grey[100],
-              shape: BoxShape.circle,
-            ),
-            child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.black87),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ),
+          // No back button: the cart is a tab of the Home shell, so the bottom
+          // nav is already the way out and a back arrow either pops the whole
+          // shell or does nothing at all.
           title: Column(
             children: [
               const Text(
@@ -513,7 +506,14 @@ class _CartScreenState extends ConsumerState<CartScreen> {
           ),
           const SizedBox(height: 40),
           ElevatedButton.icon(
-            onPressed: () => Navigator.pop(context),
+            // The cart is a tab, so popping popped the whole Home shell and
+            // left a black screen. Hand the shell back its first tab instead.
+            onPressed: () {
+              if (Navigator.of(context).canPop()) {
+                Navigator.of(context).pop();
+              }
+              ref.read(currentIndexProvider.notifier).state = 0;
+            },
             icon: const Icon(Icons.restaurant_menu, size: 22),
             label: const Text('Browse Menu'),
             style: ElevatedButton.styleFrom(

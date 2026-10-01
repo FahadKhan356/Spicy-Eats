@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:spicy_eats/commons/Providers.dart';
 import 'package:spicy_eats/features/Cart/model/Cartmodel.dart';
 import 'package:spicy_eats/features/Cart/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Cart/screens/BasketScreen.dart';
@@ -64,6 +65,54 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(find.text('Your basket is empty'), findsOneWidget);
+  });
+
+  // The cart is a tab of the Home shell, so the bottom nav is the way out. The
+  // back arrow had no valid target, and on the empty cart "Browse Menu" popped
+  // the whole shell and left a black screen.
+  testWidgets('cart screen has no back button', (tester) async {
+    await tester.pumpWidget(
+      const ProviderScope(child: MaterialApp(home: CartScreen())),
+    );
+    await tester.pump();
+
+    expect(find.text('Your Basket'), findsOneWidget);
+    expect(find.byIcon(Icons.arrow_back), findsNothing);
+    expect(find.byType(BackButton), findsNothing);
+  });
+
+  testWidgets('browse menu hands the shell back its first tab', (tester) async {
+    var observedIndex = -1;
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp(
+          onGenerateRoute: (settings) => MaterialPageRoute(
+            builder: (_) => settings.name == CartScreen.routename
+                ? const CartScreen()
+                : const Scaffold(body: Text('shell-home')),
+          ),
+          home: Consumer(
+            builder: (context, ref, _) {
+              observedIndex = ref.watch(currentIndexProvider);
+              return const Scaffold(body: Text('shell-home'));
+            },
+          ),
+        ),
+      ),
+    );
+
+    final shellContext = tester.element(find.text('shell-home'));
+    Navigator.of(shellContext).pushNamed(CartScreen.routename);
+    await tester.pumpAndSettle();
+    expect(find.text('Your basket is empty'), findsOneWidget);
+
+    await tester.tap(find.text('Browse Menu'));
+    await tester.pumpAndSettle();
+
+    // Still alive, and asking the shell for its first tab.
+    expect(find.text('shell-home'), findsOneWidget);
+    expect(observedIndex, 0);
   });
 
   // The screen used to require a menu list and a restaurant from route

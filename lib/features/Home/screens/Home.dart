@@ -18,9 +18,12 @@ class _HomeState extends ConsumerState<Home> {
   @override
   Widget build(BuildContext context) {
     var currentIndex = ref.watch(currentIndexProvider);
+    // While the address sheet is still pending, taps must not be able to move
+    // the shell out from under it.
+    final navigationLocked = ref.watch(navigationLockedProvider);
     return Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        body: 
+        body:
 IndexedStack(
           index: currentIndex,
           children: screen,),
@@ -32,16 +35,17 @@ IndexedStack(
                 child: AnimatedNavBar(
                   selectedIndex: currentIndex,
                   onItemTapped: (index) {
+                    if (navigationLocked) return;
                   WidgetsBinding.instance.addPostFrameCallback((_){
   ref
                         .read(currentIndexProvider.notifier)
                         .update((state) => index);
                   });
-                  
+
                   },
                 ),
               )
-       
+
             : const CircularProgressIndicator());
   }
 }

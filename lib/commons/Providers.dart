@@ -13,3 +13,9 @@ var favoriteProvider = StateProvider<Map<String, bool>>((ref) => {});
 // screens pushed from a tab (the favorites list, for one) can switch tabs
 // without importing Home, which would create an import cycle.
 var currentIndexProvider = StateProvider<int>((ref) => 0);
+
+// Held while a modal that still has to appear owns the first screen. On a
+// fresh install the address sheet only opens once the initial fetches finish,
+// and navigation in that window used to leave the sheet stacked on top of
+// whatever the user had tapped into.
+final navigationLockedProvider = StateProvider<bool>((ref) => false);
