@@ -20,6 +20,7 @@ import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 import 'package:spicy_eats/features/dish%20menu/dishmenuVAriation.dart';
 import 'package:spicy_eats/features/onBoarding/screen/BoardingScreen.dart';
 import 'package:spicy_eats/features/orders/screens/order_screen.dart';
+import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/screens/RestaurantMenuScreen.dart';
 
 Route<dynamic> generateRoutes(RouteSettings settings) {
@@ -46,12 +47,16 @@ Route<dynamic> generateRoutes(RouteSettings settings) {
     
     case CartScreen.routename:
       return MaterialPageRoute(builder: (context) {
-        final argument = settings.arguments as Map;
+        // The cart screen reads what it needs from the cart itself, so these
+        // arguments are only a hint. Casting a null `settings.arguments`
+        // straight to Map used to throw for callers that pass none.
+        final arguments = settings.arguments;
+        final args =
+            arguments is Map ? arguments : const <String, dynamic>{};
         return CartScreen(
-          // cart: argument['cart'],
-          dishes: argument['dishes'],
-
-          restaurantData: argument['restdata'],
+          dishes: args['dishes'] as List<DishData>?,
+          restaurantData:
+              (args['restdata'] ?? args['restaurantdata']) as RestaurantModel?,
         );
       });
 

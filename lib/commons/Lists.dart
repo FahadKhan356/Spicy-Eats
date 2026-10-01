@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:spicy_eats/features/Favorites/Screens/FavoriteScrren.dart';
 import 'package:spicy_eats/features/account/screen/accountscreen.dart';
 import 'package:spicy_eats/commons/country.dart';
+import 'package:spicy_eats/features/cart/screens/BasketScreen.dart';
 import 'package:spicy_eats/features/Home/screens/home_screen.dart';
-import 'package:spicy_eats/features/orders/screens/order_screen.dart';
 
+// Order has to line up with the nav items in customnavbar.dart:
+// 0 Explore, 1 Favs, 2 Cart, 3 Profile. Cart used to sit one slot too early, so
+// the "Cart" tab was showing the orders screen. Orders is still reachable from
+// the account screen.
 List<Widget> screen = [
   const HomeScreen(''),
   const Favoritescreen(),
-  const OrdersScreen(),
+  const CartScreen(),
   const AccountScreen(),
 ];
 List<BottomNavigationBarItem> bitems = [

@@ -269,7 +269,9 @@ class CartRepository {
 
       debugPrint("cart_id ${updatedItem.cart_id}"); //
       cartNotifier.state = newCart;
-      priceNotifier.state +=
+      // `+=` folded the new subtotal onto the previous one, so the running
+      // total grew every time an item's quantity went down.
+      priceNotifier.state =
           newCart.fold(0, (sum, item) => sum + (item.tprice ?? 0));
     }
   }
@@ -281,18 +283,15 @@ class CartRepository {
     double tvariation = 0.0;
 
     for (int i = 0; i < cart.length; i++) {
-      if (cart[i].variation != null) {
-        for (int j = 0; j < cart[i].variation!.length; j++) {
-          if (cart[i].variation![j].variationPrice != 0) {
-            tvariation +=
-                cart[i].variation![j].variationPrice!; // * cart[i].quantity;
-          }
-
-          debugPrint(
-              "${cart[i].variation![j].variationName}  : total : $tvariation");
+      // tprice is nullable on the row, and a cart row restored from an older
+      // schema can leave it null - that used to throw instead of totalling.
+      subTotal += cart[i].tprice ?? 0;
+      final variations = cart[i].variation;
+      if (variations != null) {
+        for (int j = 0; j < variations.length; j++) {
+          tvariation += variations[j].variationPrice ?? 0;
         }
       }
-      subTotal += cart[i].tprice!;
     }
 
     total = subTotal + tvariation;

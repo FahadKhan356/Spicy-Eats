@@ -4,6 +4,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spicy_eats/features/Home/model/restaurant_model.dart';
 import 'package:spicy_eats/commons/Responsive.dart';
 import 'package:spicy_eats/features/Cart/repository/CartRepository.dart';
+import 'package:spicy_eats/features/cart/screens/BasketScreen.dart';
 import 'package:spicy_eats/features/Cusines/model/CusinesModel.dart';
 import 'package:spicy_eats/features/Cusines/repository/CusinesRepo.dart';
 import 'package:spicy_eats/features/Home/model/AddressModel.dart';
@@ -420,7 +421,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                   child: Stack(
                                     children: [
                                       IconButton(
-                                        onPressed: () {},
+                                        onPressed: () => Navigator.pushNamed(
+                                            context, CartScreen.routename),
                                         icon: Icon(Icons.shopping_cart_outlined,
                                             size: Responsive.w20px,
                                             color: Colors.white),

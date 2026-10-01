@@ -52,6 +52,23 @@ class _CartCardState extends ConsumerState<BasketCard> {
   @override
   build(BuildContext context) {
     final cartRepo = ref.read(cartReopProvider);
+    // The cart is the source of truth for the count, so watch it: reading it
+    // left the number frozen at whatever it was when the card was built.
+    final cart = ref.watch(cartProvider);
+    // quantityIndex is a positional hint that goes stale as soon as any item
+    // is added or removed, so prefer the id lookup and fall back to it.
+    final indexed = (widget.quantityIndex != null &&
+            widget.quantityIndex! >= 0 &&
+            widget.quantityIndex! < cart.length)
+        ? cart[widget.quantityIndex!]
+        : null;
+    final quantity = cart
+            .cast<Cartmodel?>()
+            .firstWhere((item) => item?.cart_id == widget.cartItem?.cart_id,
+                orElse: () => null) ??
+        indexed ??
+        widget.cartItem;
+    final count = quantity?.quantity ?? 0;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -72,10 +89,16 @@ class _CartCardState extends ConsumerState<BasketCard> {
                   color: Colors.grey[100],
                   height: widget.imageHeight ?? 70,
                   width: widget.imageWidth ?? 70,
-                  child: Image.network(
-                    widget.cartItem!.image.toString(),
-                    fit: BoxFit.cover,
-                  ),
+                  child: (widget.cartItem?.image ?? '').isEmpty
+                      ? Icon(Icons.fastfood, color: Colors.grey[400])
+                      : Image.network(
+                          widget.cartItem!.image.toString(),
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => Icon(
+                            Icons.image_not_supported,
+                            color: Colors.grey[400],
+                          ),
+                        ),
                 ),
               ),
               
@@ -187,11 +210,7 @@ class _CartCardState extends ConsumerState<BasketCard> {
                       width: 32,
                       alignment: Alignment.center,
                       child: Text(
-                        ref
-                            .read(cartProvider.notifier)
-                            .state[widget.quantityIndex!]
-                            .quantity
-                            .toString(),
+                        count.toString(),
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,

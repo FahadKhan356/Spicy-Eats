@@ -5,23 +5,28 @@ import 'package:spicy_eats/features/Cart/repository/CartRepository.dart' show ca
 import 'package:spicy_eats/features/Cart/widgets/BasketCard.dart';
 import 'package:spicy_eats/features/Payment/PaymentScreen.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
+import 'package:spicy_eats/features/Sqlight%20Database/Restaurants/services/RestaurantLocalDataBase.dart';
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 import 'package:spicy_eats/features/dish%20menu/dishmenuVariation.dart';
-import 'package:spicy_eats/features/dish%20menu/repository/dishmenu_repo.dart';
 import 'package:spicy_eats/main.dart';
 
 import '../../Home/model/restaurant_model.dart';
 
 
 class CartScreen extends ConsumerStatefulWidget {
-   final List<DishData> dishes;
   static const String routename = "/basket";
-  final RestaurantModel restaurantData;
+
+  /// Optional hints for callers that already have a menu open. The screen
+  /// rebuilds everything it needs from the cart rows and the restaurant cache,
+  /// so it also works with no arguments at all - which is what lets it be used
+  /// as a tab and reached from the home cart button.
+  final List<DishData>? dishes;
+  final RestaurantModel? restaurantData;
 
   const CartScreen({
     super.key,
-    required this.dishes,
-    required this.restaurantData,
+    this.dishes,
+    this.restaurantData,
   });
 
   @override
@@ -29,10 +34,77 @@ class CartScreen extends ConsumerStatefulWidget {
 }
 
 class _CartScreenState extends ConsumerState<CartScreen> {
+  List<RestaurantModel> _restaurantCache = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRestaurants();
+  }
+
+  Future<void> _loadRestaurants() async {
+    try {
+      final restaurants =
+          await RestaurantLocalDatabase.instance.getRestaurants();
+      if (mounted) setState(() => _restaurantCache = restaurants);
+    } catch (e) {
+      debugPrint('Failed To Load Restaurants For Cart $e');
+    }
+  }
+
+  /// A cart row already carries everything a card and its detail screen need,
+  /// so a dish is rebuilt from the row instead of hunting the menu cache for a
+  /// match that may not be loaded yet.
+  DishData _dishFor(Cartmodel item) {
+    for (final dish in widget.dishes ?? const <DishData>[]) {
+      if (dish.dishid == item.dish_id) return dish;
+    }
+
+    return DishData(
+      dishid: item.dish_id,
+      id: item.dish_id,
+      dish_name: item.name ?? '',
+      dish_description: item.description ?? '',
+      dish_imageurl: item.image ?? '',
+      dish_price: item.itemprice ?? item.tprice ?? 0,
+      isVariation:
+          item.variation != null && item.variation!.isNotEmpty,
+      restuid: item.restaurant_id,
+    );
+  }
+
+  /// Resolves the restaurant a group belongs to, falling back to a stub built
+  /// from the ids the cart row already holds.
+  RestaurantModel _restaurantFor(List<Cartmodel> items) {
+    final restaurantId = items.first.restaurant_id ?? '';
+    for (final restaurant in _restaurantCache) {
+      if (restaurant.restuid == restaurantId) return restaurant;
+    }
+    if (widget.restaurantData?.restuid == restaurantId) {
+      return widget.restaurantData!;
+    }
+
+    return RestaurantModel(
+      restuid: restaurantId,
+      restaurantName: items.first.restaurant_name ?? 'Restaurant',
+      // Downstream screens dereference these with `!`, so a stub has to carry
+      // real values rather than nulls.
+      averageRatings: 0,
+      totalRatings: 0,
+      minTime: 0,
+      maxTime: 0,
+      deliveryFee: 0,
+      restaurantImageUrl: '',
+      cuisineIds: const [],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final dishesList = ref.watch(dishesListProvider);
-    final userId = supabaseClient.auth.currentUser!.id;
+    // The cart is local-first, so it is readable before (or without) a signed
+    // in user. BasketCard does not need the id, and the screen is also a tab,
+    // so it must not assume auth.currentUser is non-null.
+    final userId = supabaseClient.auth.currentUser?.id ?? '';
     var carttotalamount = ref.read(cartReopProvider).getTotalPrice(ref);
     final cart = ref.watch(cartProvider);
 
@@ -193,28 +265,33 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                 
                                 // Items for this restaurant
                                 ...restaurantItems.map((cartitem) {
-                                  final dishindex = widget.dishes.firstWhere(
-                                    (dish) => dish.dishid == cartitem.dish_id,
-                                    orElse: () => DishData(isVariation: false),
-                                  );
+                                  final dish = _dishFor(cartitem);
                                   final itemIndex = cart.indexOf(cartitem);
 
                                   return Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 16),
                                     child: InkWell(
                                       onTap: () {
-                                        if (dishindex.isVariation) {
+                                        if (dish.isVariation) {
                                           ref.read(isloaderProvider.notifier).state = true;
                                           Navigator.pushNamed(
                                             context,
                                             DishMenuVariation.routename,
                                             arguments: {
                                               'isdishscreen': false,
-                                              'dishes': dishesList,
-                                              'dish': dishindex,
+                                              'dishes': [
+                                                dish,
+                                                ...restaurantItems
+                                                    .where((e) =>
+                                                        e.dish_id !=
+                                                            cartitem.dish_id)
+                                                    .map(_dishFor),
+                                              ],
+                                              'dish': dish,
                                               'iscart': true,
                                               'cartdish': cartitem,
-                                              'restaurantdata': widget.restaurantData,
+                                              'restaurantdata':
+                                                  _restaurantFor(restaurantItems),
                                               'carts': cart,
                                             },
                                           );
@@ -224,9 +301,12 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                             context,
                                             DishMenuScreen.routename,
                                             arguments: {
-                                              'restaurantdata': widget.restaurantData,
-                                              'dishes': dishesList,
-                                              'dish': dishindex,
+                                              'restaurantdata':
+                                                  _restaurantFor(restaurantItems),
+                                              'dishes': restaurantItems
+                                                  .map(_dishFor)
+                                                  .toList(),
+                                              'dish': dish,
                                               'iscart': true,
                                               'cartdish': cartitem,
                                               'isdishscreen': false
@@ -239,7 +319,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                         cardHeight: null,
                                         elevation: 0,
                                         cardColor: Colors.white,
-                                        dish: dishindex,
+                                        dish: dish,
                                         imageHeight: 75,
                                         imageWidth: 75,
                                         cartItem: cartitem,
