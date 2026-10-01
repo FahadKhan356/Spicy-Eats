@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spicy_eats/commons/Lists.dart';
-
+import 'package:spicy_eats/commons/Providers.dart';
 import 'package:spicy_eats/commons/Responsive.dart';
 import 'package:spicy_eats/features/Home/screens/customnavbar.dart';
 import 'package:spicy_eats/main.dart';
-
-var currentIndexProvider = StateProvider<int>((ref) => 0);
 
 class Home extends ConsumerStatefulWidget {
   static const String routename = '/Home';

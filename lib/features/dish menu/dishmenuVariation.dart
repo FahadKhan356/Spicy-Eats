@@ -73,7 +73,7 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
     }
     if (widget.isCart!) {
       for (int i = 0; i < ref.watch(cartProvider).length; i++) {
-        widget.freqList!.removeWhere(
+        widget.freqList?.removeWhere(
             (element) => element.dishid == ref.read(cartProvider)[i].dish_id);
       }
     }
@@ -113,13 +113,13 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
 
     if (widget.isCart == true) {
       ref.read(variationListProvider.notifier).state =
-          widget.cartDish!.variation;
-      for (int i = 0; i < widget.carts!.length; i++) {
-        widget.freqList!.removeWhere(
+          widget.cartDish?.variation;
+      for (int i = 0; i < (widget.carts ?? []).length; i++) {
+        widget.freqList?.removeWhere(
             (element) => element.dishid == widget.carts![i].dish_id);
       }
       ref.read(updatedQuantityProvider.notifier).state =
-          widget.cartDish!.quantity;
+          widget.cartDish?.quantity ?? 1;
     } else {
       ref.read(variationListProvider.notifier).state = null;
     }
@@ -422,9 +422,11 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                               ),
                             ),
 
-                            // Cart Info Card (if applicable)
+                            // Cart Info Card (if applicable). The dish can be
+                            // opened without a matching cart row (for example
+                            // from the favorites list), so cartDish is nullable.
                             if (widget.isdishscreen &&
-                                widget.cartDish!.name != null)
+                                widget.cartDish?.name != null)
                               Container(
                                 margin: const EdgeInsets.symmetric(horizontal: 16),
                                 padding: const EdgeInsets.all(16),
@@ -460,8 +462,8 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                                     ),
                                     const SizedBox(width: 12),
                                     Expanded(
-                                      child: Text(
-                                        '${widget.cartDish!.name}',
+                                          child: Text(
+                                            '${widget.cartDish?.name}',
                                         style: TextStyle(
                                           fontSize: width * 0.04,
                                           fontWeight: FontWeight.w600,
@@ -869,10 +871,16 @@ class _DishMenuScreenState extends ConsumerState<DishMenuVariation>
                         _debouncer,
                         onAction: () {
                           ref.read(isloaderProvider.notifier).state = true;
+                          // A dish opened without a cart row (e.g. from
+                          // favorites) has no cartDish, but dishMenuCrud still
+                          // wants a Cartmodel. The placeholder is only read on
+                          // the isCart branches, which are unreachable then.
                           ref.read(dishMenuRepoProvider).dishMenuCrud(
                             restaurantName: widget.restaurantData!.restaurantName!,
                             restaurantId:  widget.restaurantData!.restuid!,
-                              cart: widget.cartDish!,
+                              cart: widget.cartDish ??
+                                  Cartmodel(
+                                      created_at: '', quantity: 0, cart_id: 0),
                               variations: ref
                                   .read(variationListProvider.notifier)
                                   .state,

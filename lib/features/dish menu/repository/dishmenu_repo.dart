@@ -14,7 +14,7 @@ var dishesListProvider = StateProvider<List<DishData>?>((ref) => []);
 class DishMenuRepository {
 //fetch variations
   Future<List<VariattionTitleModel>?> fetchVariations(
-      {required int dishid, required context}) async {
+      {required int dishid, required BuildContext context}) async {
     try {
       final response = await supabaseClient
           .from('titleVariations')
@@ -29,9 +29,20 @@ class DishMenuRepository {
       }
       return null;
     } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.toString())));
-      // throw Exception(e);
+      debugPrint('Failed to fetch variations: $e');
+      // `context` resolves to the messenger above this screen, which has no
+      // Scaffold registered under it, so showSnackBar asserts and turns a
+      // recoverable fetch failure into a crash. Never let reporting the error
+      // be the thing that breaks the screen.
+      if (context.mounted) {
+        try {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Could not load options. Please try again.'),
+          ));
+        } catch (_) {
+          // No Scaffold under this messenger; the screen still renders.
+        }
+      }
     }
     return null;
   }
@@ -63,36 +74,38 @@ class DishMenuRepository {
     // required List<DishData> dishes,
   }) async {
     List<DishData> allfreqbuydishes = [];
-    List<DishData> items = [];
-    if (freqid != null) {
-      debugPrint("if freq is not null");
-      try {
-        final res = await supabaseClient
-            .from('frequently_bought')
-            .select('freq_bought')
-            .eq('id', freqid)
-            .single();
-        if (res.isEmpty) return [];
-        final frequentlybuyList = List<int>.from(res['freq_bought']);
-        for (var dish in frequentlybuyList) {
-        
-          items = ref
-              .read(dishesListProvider.notifier)
-              .state!
-              .where((element) => element.dishid == dish)
-              .toList();
-          debugPrint("freq ${items.length}");
-          allfreqbuydishes.addAll(items);
-        }
-        debugPrint("freq again${items.length}");
-        debugPrint("allfreq list${allfreqbuydishes.length}");
-        return allfreqbuydishes;
-        // ref.read(freqDishesProvider.notifier).state = allfreqbuydishes;
-      } catch (e) {
-        throw Exception(e.toString());
-      }
+    // Dishes come back with frequentlyid 0 when they have no bundle, and a
+    // favorite rebuilt from a snapshot carries null. Querying id 0 with
+    // .single() throws, so treat "no bundle" as an empty result.
+    if (freqid == null || freqid <= 0) {
+      return null;
     }
-    return null;
+    debugPrint("if freq is not null");
+    try {
+      final res = await supabaseClient
+          .from('frequently_bought')
+          .select('freq_bought')
+          .eq('id', freqid)
+          .single();
+      if (res.isEmpty) return [];
+      final frequentlybuyList = List<int>.from(res['freq_bought']);
+      // The menu list is only populated once a restaurant has been opened, so
+      // it can legitimately be null or empty here.
+      final menuDishes = ref.read(dishesListProvider.notifier).state ?? [];
+      for (var dish in frequentlybuyList) {
+        final items = menuDishes
+            .where((element) => element.dishid == dish)
+            .toList();
+        debugPrint("freq ${items.length}");
+        allfreqbuydishes.addAll(items);
+      }
+      debugPrint("allfreq list${allfreqbuydishes.length}");
+      return allfreqbuydishes;
+      // ref.read(freqDishesProvider.notifier).state = allfreqbuydishes;
+    } catch (e) {
+      debugPrint("Failed to fetch frequently bought $e");
+      return null;
+    }
   }
 
   void addAllFreqBoughtItems({

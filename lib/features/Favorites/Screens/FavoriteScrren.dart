@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:spicy_eats/commons/Providers.dart';
 import 'package:spicy_eats/features/Cart/model/Cartmodel.dart';
 import 'package:spicy_eats/features/Cart/repository/CartRepository.dart';
 import 'package:spicy_eats/features/Cart/screens/BasketScreen.dart';
 import 'package:spicy_eats/features/Favorites/model/FavoriteDish.dart';
 import 'package:spicy_eats/features/Favorites/repository/FavoritesRepository.dart';
 import 'package:spicy_eats/features/Home/model/restaurant_model.dart';
-import 'package:spicy_eats/features/Home/screens/home_screen.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/Sqlight%20Database/Dishes/services/DishesLocalDataBase.dart';
 import 'package:spicy_eats/features/Sqlight%20Database/Restaurants/services/RestaurantLocalDataBase.dart';
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 import 'package:spicy_eats/features/dish%20menu/dishmenuVariation.dart';
+import 'package:spicy_eats/features/dish%20menu/repository/dishmenu_repo.dart';
 
 class Favoritescreen extends ConsumerStatefulWidget {
   static const String routename = '/favorite';
@@ -265,6 +266,11 @@ class _FavoritescreenState extends ConsumerState<Favoritescreen> {
       dishes = [...dishes, favorite.toDishData()];
     }
 
+    // The variation screen resolves "frequently bought together" against this
+    // provider, which the restaurant menu normally fills. Seed it here so the
+    // section still works when favorites is the first screen opened.
+    ref.read(dishesListProvider.notifier).state = dishes;
+
     final cart = ref.read(cartProvider);
     final cartItem = cart.cast<Cartmodel?>().firstWhere(
           (item) => item?.dish_id == favorite.dishId,
@@ -313,6 +319,18 @@ class _FavoritescreenState extends ConsumerState<Favoritescreen> {
         'restdata': restaurant,
       },
     );
+  }
+
+  /// The favorites list is the second tab of the Home shell, so "explore" has
+  /// to switch that shell back to its first tab. Pushing HomeScreen as a fresh
+  /// route instead would stack a second copy of the tab on top of the shell,
+  /// which drops the bottom nav and leaves a stray back button behind.
+  void _exploreMenu() {
+    final navigator = Navigator.of(context);
+    if (navigator.canPop()) {
+      navigator.pop();
+    }
+    ref.read(currentIndexProvider.notifier).state = 0;
   }
 
   @override
@@ -413,7 +431,7 @@ class _FavoritescreenState extends ConsumerState<Favoritescreen> {
             ),
             const SizedBox(height: 32),
             ElevatedButton.icon(
-              onPressed: () => Navigator.pushNamed(context, HomeScreen.routename),
+              onPressed: _exploreMenu,
               icon: const Icon(Icons.explore),
               label: const Text('Explore Menu'),
               style: ElevatedButton.styleFrom(

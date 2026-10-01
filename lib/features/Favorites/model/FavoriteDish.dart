@@ -84,7 +84,9 @@ class FavoriteDish {
       category_id: '',
       cusine: '',
       dish_schedule_meal: '',
-      frequentlyid: 0,
+      // Not stored on a favorite, so leave it null rather than inventing an id
+      // the frequently-bought query would try to look up.
+      frequentlyid: null,
     );
   }
 

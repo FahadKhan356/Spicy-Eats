@@ -19,7 +19,9 @@ class DishMenuController {
             ref: ref,
           );
     }
-    return freqList!;
+    // A dish with no bundle resolves to null, and callers assign this straight
+    // into a nullable list, so hand back an empty list instead of a null.
+    return freqList ?? [];
   }
 
 //for decrease quantity for showing in ui for already in cart item or for simple item

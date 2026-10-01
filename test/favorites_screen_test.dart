@@ -4,10 +4,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:spicy_eats/features/Favorites/data/FavoritesStore.dart';
+import 'package:spicy_eats/commons/Providers.dart';
 import 'package:spicy_eats/features/Favorites/model/FavoriteDish.dart';
 import 'package:spicy_eats/features/Favorites/repository/FavoritesRepository.dart';
 import 'package:spicy_eats/features/Favorites/Screens/FavoriteScrren.dart';
+import 'package:spicy_eats/features/Home/model/restaurant_model.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
+import 'package:spicy_eats/features/dish%20menu/dishmenuVariation.dart';
 
 class _FakeFavoritesStore implements FavoritesStore {
   _FakeFavoritesStore([List<FavoriteDish>? seed])
@@ -63,6 +66,11 @@ DishData _dish(int id) => DishData(
       dish_imageurl: 'https://example.com/burger$id.jpg',
       dish_price: 20,
       isVariation: false,
+    );
+
+RestaurantModel _restaurant() => RestaurantModel(
+      restuid: 'rest1',
+      restaurantName: 'Burger King',
     );
 
 void main() {
@@ -208,5 +216,80 @@ void main() {
     expect(restored.isVeg, isTrue);
     expect(restored.payablePrice, 15);
     expect(restored.discountPercent, 25);
+  });
+
+  // Tapping "Options" on a favorited variation dish opens the variation screen
+  // with no matching cart row, because the dish was hearted rather than added.
+  // The screen used to dereference that missing cartDish while building and
+  // died with "Null check operator used on a null value".
+  testWidgets('variation screen opens a favorited dish that is not in the cart',
+      (tester) async {
+    final dish = _dish(1);
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp(
+          home: DishMenuVariation(
+            dish: DishData(
+              dishid: dish.dishid,
+              dish_name: dish.dish_name,
+              dish_description: dish.dish_description,
+              dish_imageurl: dish.dish_imageurl,
+              dish_price: dish.dish_price,
+              isVariation: true,
+            ),
+            isCart: false,
+            cartDish: null,
+            carts: const [],
+            isdishscreen: true,
+            restaurantData: _restaurant(),
+            dishes: [dish],
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(tester.takeException(), isNull);
+  });
+
+  // Favorites is the second tab of the Home shell. "Explore" used to push a
+  // brand new HomeScreen route, which left the user on a bare screen with a
+  // back button and no bottom nav. It has to hand control back to the shell
+  // and ask it for its first tab instead.
+  testWidgets('explore returns to the Home shell instead of stacking a route',
+      (tester) async {
+    int? observedIndex;
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp(
+          onGenerateRoute: (settings) => MaterialPageRoute(
+            builder: (_) => settings.name == Favoritescreen.routename
+                ? const Favoritescreen()
+                : const Scaffold(body: Text('shell-home')),
+          ),
+          home: Consumer(
+            builder: (context, ref, _) {
+              observedIndex = ref.watch(currentIndexProvider);
+              return const Scaffold(body: Text('shell-home'));
+            },
+          ),
+        ),
+      ),
+    );
+
+    final shellContext = tester.element(find.text('shell-home'));
+    Navigator.of(shellContext).pushNamed(Favoritescreen.routename);
+    await tester.pumpAndSettle();
+    expect(find.text('No Favorites Yet'), findsOneWidget);
+
+    await tester.tap(find.text('Explore Menu'));
+    await tester.pumpAndSettle();
+
+    // Back on the shell, which is now asked to show its first tab. A stacked
+    // HomeScreen route would have left this text absent.
+    expect(find.text('shell-home'), findsOneWidget);
+    expect(find.text('No Favorites Yet'), findsNothing);
+    expect(observedIndex, 0);
   });
 }
