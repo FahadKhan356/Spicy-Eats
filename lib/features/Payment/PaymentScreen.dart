@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spicy_eats/features/Cart/repository/CartRepository.dart';
-import 'package:spicy_eats/features/Home/screens/Home.dart';
 import 'package:spicy_eats/features/Home/screens/home_screen.dart';
 import 'package:spicy_eats/features/Payment/repo/paymentRepo.dart';
 import 'package:spicy_eats/features/Profile/repo/ProfileRepo.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/screens/RestaurantMenuScreen.dart';
+import 'package:spicy_eats/commons/Providers.dart';
+import 'package:spicy_eats/features/orders/model/orderModel.dart';
 import 'package:spicy_eats/features/orders/repo/orderRepo.dart';
 import 'package:spicy_eats/main.dart';
 
@@ -1020,7 +1021,8 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                                       if (selectedmethod == 'Credit or Debit Card') {
                                         ref.read(orderRepoProvider).storeOrder(
                                            customerId: supabaseClient.auth.currentUser!.id,
-                                              orderStatus: 'Pending',
+                                              orderStatus: OrderStatus.pending,
+                                              totalPrice: cartTotal,
                                               orders: cart,
                                               orderedFrom: restaurant.restaurantName!,
                                               deliveredTo:
@@ -1051,7 +1053,8 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                                         );
                                         ref.read(orderRepoProvider).storeOrder(
                                               customerId: supabaseClient.auth.currentUser!.id,
-                                              orderStatus: 'Pending',
+                                              orderStatus: OrderStatus.pending,
+                                              totalPrice: cartTotal,
                                               orders: cart,
                                               orderedFrom: restaurant.restaurantName!,
                                               deliveredTo:
@@ -1062,7 +1065,16 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                                             .read(paymentRepProvider)
                                             .clearingcart(
                                                 ref: ref, cart: cart, context: context);
-                                        Navigator.pushNamed(context, Home.routename);
+                                        // Pushing Home stacked a second copy of the shell on top of the
+                                        // current one, which loses the bottom nav.
+                                        // Send the shell we are already on back to
+                                        // its first tab instead.
+                                        if (Navigator.of(context).canPop()) {
+                                          Navigator.of(context)
+                                              .popUntil((route) => route.isFirst);
+                                        }
+                                        ref.read(currentIndexProvider.notifier).state =
+                                            0;
                                       }
                                       setState(() => isloading = false);
                                     },

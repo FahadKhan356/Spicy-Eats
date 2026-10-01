@@ -99,7 +99,6 @@ flutter:
   assets:
     - lib/assets/data/restaurants.json
     - lib/assets/data/category.json
-    - lib/assets/data/orders.json
     - lib/assets/images/
     - lib/assets/images/banners/
     - lib/assets/images/cusineslist/
