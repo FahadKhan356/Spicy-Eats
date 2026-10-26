@@ -50,4 +50,28 @@ class AddressModel {
       long: json['long'] ?? 0.0,
     );
   }
+
+  AddressModel copyWith({
+    int? id,
+    String? userId,
+    String? address,
+    String? streetNumber,
+    String? floor,
+    String? label,
+    String? othersDetails,
+    double? lat,
+    double? long,
+  }) {
+    return AddressModel(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      address: address ?? this.address,
+      streetNumber: streetNumber ?? this.streetNumber,
+      floor: floor ?? this.floor,
+      label: label ?? this.label,
+      othersDetails: othersDetails ?? this.othersDetails,
+      lat: lat ?? this.lat,
+      long: long ?? this.long,
+    );
+  }
 }

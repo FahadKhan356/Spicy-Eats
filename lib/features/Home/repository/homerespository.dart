@@ -295,6 +295,30 @@ Future<List<RestaurantModel>> getRestaurantsData() async {
     }
   }
 
+  Future<void> deleteAddress({
+    required int addressID,
+    required BuildContext context,
+  }) async {
+    try {
+      final currentUserId = supabaseClient.auth.currentUser?.id;
+      if (currentUserId != null) {
+        try {
+          await supabaseClient
+              .from('users')
+              .update({'address_id': null})
+              .eq('id', currentUserId)
+              .eq('address_id', addressID);
+        } catch (_) {}
+      }
+      await supabaseClient.from('user_address').delete().eq('id', addressID);
+      if (context.mounted) {
+        mysnackbar(context: context, text: 'Address Deleted Successfully');
+      }
+    } catch (e) {
+      debugPrint("Error in deleting address $e");
+    }
+  }
+
     //Calculate Distance For Restaurant Near By Within X Km
     
 double _deg2rad(double deg) => deg * (pi / 180);

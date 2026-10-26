@@ -5,6 +5,7 @@ import 'package:spicy_eats/features/Profile/model/usermodel.dart';
 import 'package:spicy_eats/features/Profile/repo/ProfileRepo.dart';
 import 'package:spicy_eats/features/Profile/screen/ProfileScreen.dart';
 import 'package:spicy_eats/features/authentication/controller/AuthenicationController.dart';
+import 'package:spicy_eats/features/Location/screens/manage_addresses_screen.dart';
 import 'package:spicy_eats/features/orders/screens/order_screen.dart';
 import 'package:spicy_eats/main.dart';
 
@@ -279,9 +280,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                               title: 'Addresses',
                               subtitle: 'Manage locations',
                               color: Colors.green,
-                              onTap: () {
-                                // Navigate to addresses
-                              },
+                              onTap: () => Navigator.pushNamed(
+                                  context, ManageAddressesScreen.routename),
                             ),
                           ),
                           const SizedBox(width: 12),
