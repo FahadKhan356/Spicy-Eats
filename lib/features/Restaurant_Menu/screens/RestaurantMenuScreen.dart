@@ -23,6 +23,7 @@ import 'package:spicy_eats/features/Restaurant_Menu/widgets/sliverTabBar.dart';
 import 'package:spicy_eats/features/cart/screens/BasketScreen.dart';
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 import 'package:spicy_eats/features/dish%20menu/model/VariationTitleModel.dart';
+import 'package:spicy_eats/features/promotions/widgets/promo_badge.dart';
 import 'package:spicy_eats/features/dish%20menu/repository/dishmenu_repo.dart';
 import 'package:spicy_eats/main.dart';
 
@@ -510,6 +511,10 @@ floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
                                       color: Colors.green,
                                       fontSize: size.width * 0.025)),
                         ],
+                      ),
+                      SizedBox(height: size.height * 0.01),
+                      RestaurantDealsSection(
+                        restaurantId: widget.restaurantData.restuid ?? '',
                       ),
                     ],
                   ),

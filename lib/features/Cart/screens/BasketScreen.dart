@@ -10,7 +10,8 @@ import 'package:spicy_eats/features/Sqlight%20Database/Restaurants/services/Rest
 import 'package:spicy_eats/features/dish%20menu/dish_menu_screen.dart';
 import 'package:spicy_eats/features/dish%20menu/dishmenuVariation.dart';
 import 'package:spicy_eats/main.dart';
-
+import 'package:spicy_eats/features/promotions/controller/promotions_controller.dart';
+import 'package:spicy_eats/features/promotions/widgets/promo_code_input.dart';
 import '../../Home/model/restaurant_model.dart';
 
 
@@ -107,6 +108,9 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     // so it must not assume auth.currentUser is non-null.
     final userId = supabaseClient.auth.currentUser?.id ?? '';
     var carttotalamount = ref.read(cartReopProvider).getTotalPrice(ref);
+    final appliedCoupon = ref.watch(appliedCouponProvider);
+    final discountAmount = ref.watch(appliedDiscountAmountProvider);
+    final grandTotal = (carttotalamount - discountAmount).clamp(0.0, double.infinity);
     final cart = ref.watch(cartProvider);
 
     // Group cart items by restaurant_id
@@ -164,7 +168,8 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                     child: SingleChildScrollView(
                       padding: const EdgeInsets.only(top: 16, bottom: 16),
                       child: Column(
-                        children: groupedByRestaurant.entries.map((entry) {
+                        children: [
+                          ...groupedByRestaurant.entries.map((entry) {
                         
                           final restaurantItems = entry.value;
                           final restaurantName = restaurantItems.first.restaurant_name ?? "Restaurant";
@@ -326,8 +331,19 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                               ],
                             ),
                           );
-                        }).toList(),
-                      ),
+                        }),
+                        const SizedBox(height: 16),
+                        PromoCodeInputSection(
+                          subtotal: carttotalamount,
+                          restaurantId: groupedByRestaurant.keys.isNotEmpty &&
+                                  groupedByRestaurant.keys.first != 'unknown'
+                              ? groupedByRestaurant.keys.first
+                              : null,
+                          deliveryFee: 5.0,
+                        ),
+                        const SizedBox(height: 24),
+                      ],
+                    ),
                     ),
                   ),
 
@@ -352,6 +368,57 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                       top: false,
                       child: Column(
                         children: [
+                          if (discountAmount > 0) ...[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Subtotal',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                                Text(
+                                  '\$${carttotalamount.toStringAsFixed(2)}',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.grey[600],
+                                    decoration: TextDecoration.lineThrough,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 4),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(Icons.local_offer, size: 14, color: Colors.green[700]),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      'Discount (${appliedCoupon?.code ?? 'Promo'})',
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.green[700],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  '-\$${discountAmount.toStringAsFixed(2)}',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green[700],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 6),
+                          ],
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -367,7 +434,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    '\$${(carttotalamount ).toStringAsFixed(2)}',
+                                    '\$${grandTotal.toStringAsFixed(2)}',
                                     style: const TextStyle(
                                       fontSize: 24,
                                       fontWeight: FontWeight.bold,

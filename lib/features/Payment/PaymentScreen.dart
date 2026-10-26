@@ -10,6 +10,7 @@ import 'package:spicy_eats/commons/Providers.dart';
 import 'package:spicy_eats/features/orders/model/orderModel.dart';
 import 'package:spicy_eats/features/orders/repo/orderRepo.dart';
 import 'package:spicy_eats/main.dart';
+import 'package:spicy_eats/features/promotions/controller/promotions_controller.dart';
 
 var selectedmethodProvider = StateProvider<String?>((ref) => '');
 var onclickprovier = StateProvider<bool>((ref) => false);
@@ -407,7 +408,7 @@ var onclickprovier = StateProvider<bool>((ref) => false);
 
 //                               ref.read(orderRepoProvider).storeOrder(
 //                                     orders: cart,
-//                                     orderedFrom: restaurant.restaurantName!,
+//                                     orderedFrom: restaurant?.restaurantName ?? 'Restaurant',
 //                                     deliveredTo:
 //                                         '${ref.read(userProvider)!.firstname!} ${ref.read(userProvider)!.lastname}',
 //                                     paytype: ref
@@ -442,7 +443,7 @@ var onclickprovier = StateProvider<bool>((ref) => false);
 //                               }
 //                               ref.read(orderRepoProvider).storeOrder(
 //                                     orders: cart,
-//                                     orderedFrom: restaurant.restaurantName!,
+//                                     orderedFrom: restaurant?.restaurantName ?? 'Restaurant',
 //                                     deliveredTo:
 //                                         '${ref.read(userProvider)!.firstname!} ${ref.read(userProvider)!.lastname}',
 //                                     paytype: ref
@@ -618,7 +619,12 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
     final restaurant = ref.watch(restaurantProvider);
     final address = ref.watch(pickedAddressProvider);
     final subTotal = ref.read(cartReopProvider).getTotalPrice(ref);
-    cartTotal = subTotal + restaurant!.deliveryFee! + restaurant.platformfee!;
+    final appliedCoupon = ref.watch(appliedCouponProvider);
+    final discountAmount = ref.watch(appliedDiscountAmountProvider);
+    final deliveryFee = restaurant?.deliveryFee?.toDouble() ?? 0.0;
+    final platformFee = restaurant?.platformfee?.toDouble() ?? 0.0;
+    final rawTotal = subTotal + deliveryFee + platformFee;
+    cartTotal = (rawTotal - discountAmount).clamp(0.0, double.infinity);
     final cart = ref.watch(cartProvider);
     final user = ref.read(userProvider);
     final userData = ref.read(userDataProvider);
@@ -944,9 +950,17 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                           // Bill Details
                           _buildBillRow('Subtotal', '\$${subTotal.toStringAsFixed(2)}'),
                           const SizedBox(height: 8),
-                          _buildBillRow('Delivery Fee', '\$${restaurant.deliveryFee}'),
+                          if (discountAmount > 0) ...[
+                            _buildBillRow(
+                              'Discount (${appliedCoupon?.code ?? "Promo"})',
+                              '-\$${discountAmount.toStringAsFixed(2)}',
+                              color: Colors.green[700],
+                            ),
+                            const SizedBox(height: 8),
+                          ],
+                          _buildBillRow('Delivery Fee', '\$${restaurant?.deliveryFee ?? 0}'),
                           const SizedBox(height: 8),
-                          _buildBillRow('Platform Fee', '\$${restaurant.platformfee}'),
+                          _buildBillRow('Platform Fee', '\$${restaurant?.platformfee ?? 0}'),
                           const SizedBox(height: 12),
                           const Divider(),
                           const SizedBox(height: 12),
@@ -1024,11 +1038,16 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                                               orderStatus: OrderStatus.pending,
                                               totalPrice: cartTotal,
                                               orders: cart,
-                                              orderedFrom: restaurant.restaurantName!,
+                                              orderedFrom: restaurant?.restaurantName ?? 'Restaurant',
                                               deliveredTo:
                                                   '${user?.firstname} ${user?.lastname}',
                                               paytype: selectedmethod,
-                                            );
+                                            ).then((createdId) {
+                                          ref.read(promotionsControllerProvider).recordRedemption(
+                                                userId: supabaseClient.auth.currentUser!.id,
+                                                orderId: createdId,
+                                              );
+                                        });
                                         ref
                                             .read(paymentRepProvider)
                                             .paymentSheetInitializtion(
@@ -1056,11 +1075,16 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                                               orderStatus: OrderStatus.pending,
                                               totalPrice: cartTotal,
                                               orders: cart,
-                                              orderedFrom: restaurant.restaurantName!,
+                                              orderedFrom: restaurant?.restaurantName ?? 'Restaurant',
                                               deliveredTo:
                                                   '${user?.firstname} ${user?.lastname}',
                                               paytype: selectedmethod,
-                                            );
+                                            ).then((createdId) {
+                                          ref.read(promotionsControllerProvider).recordRedemption(
+                                                userId: supabaseClient.auth.currentUser!.id,
+                                                orderId: createdId,
+                                              );
+                                        });
                                         ref
                                             .read(paymentRepProvider)
                                             .clearingcart(
@@ -1119,7 +1143,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
     );
   }
 
-  Widget _buildBillRow(String label, String value) {
+  Widget _buildBillRow(String label, String value, {Color? color}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -1127,15 +1151,16 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
           label,
           style: TextStyle(
             fontSize: 14,
-            color: Colors.grey[700],
+            color: color ?? Colors.grey[700],
+            fontWeight: color != null ? FontWeight.w600 : FontWeight.normal,
           ),
         ),
         Text(
           value,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: Colors.black87,
+            color: color ?? Colors.black87,
           ),
         ),
       ],

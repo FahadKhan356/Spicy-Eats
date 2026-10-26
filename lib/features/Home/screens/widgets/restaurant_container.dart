@@ -4,6 +4,8 @@ import 'package:spicy_eats/commons/Providers.dart';
 import 'package:spicy_eats/commons/Responsive.dart';
 import 'package:spicy_eats/features/Home/repository/homerespository.dart';
 import 'package:spicy_eats/main.dart';
+import 'package:spicy_eats/features/promotions/controller/promotions_controller.dart';
+import 'package:spicy_eats/features/promotions/widgets/promo_badge.dart';
 
 // class RestaurantContainer extends ConsumerStatefulWidget {
 //   final String name;
@@ -198,6 +200,7 @@ class _RestaurantContainerState extends ConsumerState<RestaurantContainer> {
   Widget build(BuildContext context) {
     bool isFav = ref.watch(favoriteProvider)[widget.restid] ?? false;
     final size = MediaQuery.of(context).size;
+    final promosAsync = ref.watch(restaurantPromotionsProvider(widget.restid));
 
     return Container(
       margin: EdgeInsets.symmetric(
@@ -414,6 +417,20 @@ class _RestaurantContainerState extends ConsumerState<RestaurantContainer> {
                           ),
                         ],
                       ),
+                    ),
+                    promosAsync.when(
+                      data: (promos) {
+                        if (promos.isEmpty) return const SizedBox.shrink();
+                        return Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const SizedBox(width: 8),
+                            PromoBadge(label: promos.first.badgeLabel),
+                          ],
+                        );
+                      },
+                      loading: () => const SizedBox.shrink(),
+                      error: (_, __) => const SizedBox.shrink(),
                     ),
                   ],
                 ),

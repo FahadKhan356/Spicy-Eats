@@ -31,7 +31,7 @@ class OrderRepo implements OrderStore {
     }
   }
 
-  Future<void> storeOrder(
+  Future<int?> storeOrder(
       {required List<Cartmodel> orders,
       required String orderedFrom,
       required String deliveredTo,
@@ -44,7 +44,7 @@ class OrderRepo implements OrderStore {
       final List<Map<String, dynamic>> orderitems =
           orders.map((e) => e.tojson()).toList();
 
-      await supabaseClient.from('orders').insert({
+      final res = await supabaseClient.from('orders').insert({
         // These three used to be dropped on the floor, so every order the app
         // placed landed with a null user and no status or total - which is why
         // the orders screen had nothing real to show.
@@ -55,7 +55,9 @@ class OrderRepo implements OrderStore {
         'deliveredTo': deliveredTo,
         'orderedItems': orderitems,
         'payType': paytype,
-      });
+      }).select('id').maybeSingle();
+
+      return res != null && res['id'] is int ? res['id'] as int : null;
     } catch (e) {
       throw Exception(e);
     }
