@@ -71,7 +71,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     // address sheet is only raised at the end of the initial fetches, and a tap
     // in that window used to push a new screen and leave the sheet stacked on
     // top of it. _showBottomSheet releases the lock either way.
-    ref.read(navigationLockedProvider.notifier).state = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        ref.read(navigationLockedProvider.notifier).state = true;
+      }
+    });
 
     _initialDataFuture = fetchInitialData();
     // Safety net: whatever the initial load does, the user must never be left
