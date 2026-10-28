@@ -17,6 +17,9 @@ import 'package:spicy_eats/features/splashscreen/SplashScreen.dart';
 import 'package:spicy_eats/routes.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:spicy_eats/features/localization/app_localizations.dart';
+import 'package:spicy_eats/features/localization/controller/locale_provider.dart';
 
 
 var showBottomMap = StateProvider<bool>((ref) => true);
@@ -157,12 +160,21 @@ class _MyAppState extends ConsumerState<MyApp> {
   Widget build(BuildContext context) {
     
     debugPrint(MediaQuery.of(context).size.width.toString());
-       debugPrint(MediaQuery.of(context).size.height.toString());
-     Responsive.init(context);
+    debugPrint(MediaQuery.of(context).size.height.toString());
+    Responsive.init(context);
+    final currentLocale = ref.watch(appLocaleProvider);
     return MaterialApp(
+        locale: currentLocale,
+        supportedLocales: AppLocalizations.supportedLocales,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
         onGenerateRoute: generateRoutes,
         debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
+        title: 'Spicy Eats',
         theme: ThemeData(
             useMaterial3: true,
             //drawerTheme: DrawerThemeData(backgroundColor: Colors.),

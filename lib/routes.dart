@@ -21,8 +21,11 @@ import 'package:spicy_eats/features/dish%20menu/dishmenuVAriation.dart';
 import 'package:spicy_eats/features/onBoarding/screen/BoardingScreen.dart';
 import 'package:spicy_eats/features/orders/screens/order_screen.dart';
 import 'package:spicy_eats/features/Location/screens/manage_addresses_screen.dart';
+import 'package:spicy_eats/features/Payment/screens/manage_payment_methods_screen.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/model/dish.dart';
 import 'package:spicy_eats/features/Restaurant_Menu/screens/RestaurantMenuScreen.dart';
+import 'package:spicy_eats/features/localization/screens/language_selection_screen.dart';
+import 'package:spicy_eats/features/notifications/screens/notifications_screen.dart';
 
 Route<dynamic> generateRoutes(RouteSettings settings) {
   switch (settings.name) {
@@ -144,6 +147,18 @@ return MaterialPageRoute(builder: (context) => const SignUpScreen(),);
 
     case ManageAddressesScreen.routename:
       return MaterialPageRoute(builder: (_) => const ManageAddressesScreen());
+
+    case ManagePaymentMethodsScreen.routename:
+      return MaterialPageRoute(
+          builder: (_) => const ManagePaymentMethodsScreen());
+
+    case LanguageSelectionScreen.routename:
+      return MaterialPageRoute(
+          builder: (_) => const LanguageSelectionScreen());
+
+    case NotificationsScreen.routename:
+      return MaterialPageRoute(
+          builder: (_) => const NotificationsScreen());
     default:
       return MaterialPageRoute(
         builder: (context) => const Scaffold(

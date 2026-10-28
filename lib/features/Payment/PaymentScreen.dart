@@ -10,6 +10,8 @@ import 'package:spicy_eats/commons/Providers.dart';
 import 'package:spicy_eats/features/orders/model/orderModel.dart';
 import 'package:spicy_eats/features/orders/repo/orderRepo.dart';
 import 'package:spicy_eats/main.dart';
+import 'package:spicy_eats/features/Payment/controller/payment_methods_controller.dart';
+import 'package:spicy_eats/features/Payment/screens/manage_payment_methods_screen.dart';
 import 'package:spicy_eats/features/promotions/controller/promotions_controller.dart';
 
 var selectedmethodProvider = StateProvider<String?>((ref) => '');
@@ -497,6 +499,14 @@ class PaymentScreen extends ConsumerStatefulWidget {
 class _PaymentScreenState extends ConsumerState<PaymentScreen> {
   bool isloading = false;
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(paymentMethodsControllerProvider.notifier).load();
+    });
+  }
+
   void paymentModelbottomsheet(BuildContext context) {
     showModalBottomSheet(
       shape: const RoundedRectangleBorder(
@@ -506,108 +516,214 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
         ),
       ),
       context: context,
-      builder: (context) => RadioGroup<String>(
-        // `Radio.groupValue`/`onChanged` are deprecated since Flutter 3.32; the
-        // group state now lives on a RadioGroup ancestor. Tapping a tile pops
-        // the sheet with the newly picked method, same as before.
-        groupValue: ref.watch(selectedmethodProvider),
-        onChanged: (value) {
-          ref.read(selectedmethodProvider.notifier).state = value;
-          Navigator.pop(context);
-        },
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+      isScrollControlled: true,
+      builder: (context) {
+        final paymentState = ref.watch(paymentMethodsControllerProvider);
+        return RadioGroup<String>(
+          groupValue: ref.watch(selectedmethodProvider),
+          onChanged: (value) {
+            ref.read(selectedmethodProvider.notifier).state = value;
+            Navigator.pop(context);
+          },
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.orange[50],
-                      borderRadius: BorderRadius.circular(10),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.orange[50],
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Icon(
+                          Icons.payment,
+                          color: Colors.orange[700],
+                          size: 24,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      const Text(
+                        'Select Payment Method',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Saved Cards section (if any)
+                  if (paymentState.methods.isNotEmpty) ...[
+                    Text(
+                      'Your Saved Cards',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey[700],
+                      ),
                     ),
-                    child: Icon(
-                      Icons.payment,
-                      color: Colors.orange[700],
-                      size: 24,
+                    const SizedBox(height: 8),
+                    ...paymentState.methods.map((card) {
+                      final cardTitle = '${card.brandName} (${card.maskedCardNumber})';
+                      final isSelected = ref.watch(selectedmethodProvider) == cardTitle;
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 10),
+                        decoration: BoxDecoration(
+                          color: isSelected ? Colors.orange[50] : Colors.grey[50],
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: isSelected ? Colors.orange[300]! : Colors.grey[200]!,
+                            width: 2,
+                          ),
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: RadioListTile<String>(
+                            activeColor: Colors.orange[700],
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 6,
+                            ),
+                            title: Row(
+                              children: [
+                                Icon(card.brandIcon, color: Colors.purple[700], size: 24),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        cardTitle,
+                                        style: TextStyle(
+                                          fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      Text(
+                                        'Exp: ${card.effectiveExpiry}',
+                                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                if (card.isDefault)
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: Colors.green[50],
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: Text(
+                                      'DEFAULT',
+                                      style: TextStyle(
+                                        fontSize: 9,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.green[800],
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                            value: cardTitle,
+                          ),
+                        ),
+                      );
+                    }),
+                    const SizedBox(height: 12),
+                  ],
+
+                  Text(
+                    'Other Options',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[700],
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  const Text(
-                    'Select Payment Method',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                  const SizedBox(height: 8),
+
+                  ...ref.read(paymentRepProvider).paymentoption.map((option) {
+                    final isSelected = ref.watch(selectedmethodProvider) == option.option;
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      decoration: BoxDecoration(
+                        color: isSelected ? Colors.orange[50] : Colors.grey[50],
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: isSelected ? Colors.orange[300]! : Colors.grey[200]!,
+                          width: 2,
+                        ),
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: RadioListTile<String>(
+                          activeColor: Colors.orange[700],
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          title: Row(
+                            children: [
+                              Container(
+                                width: 36,
+                                height: 36,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                padding: const EdgeInsets.all(4),
+                                child: Image.network(
+                                  option.imagurl,
+                                  fit: BoxFit.contain,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      Icon(Icons.payment, color: Colors.grey[400]),
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Text(
+                                  option.option,
+                                  style: TextStyle(
+                                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          value: option.option,
+                        ),
+                      ),
+                    );
+                  }),
+                  const SizedBox(height: 8),
+
+                  // Manage Cards Button
+                  Center(
+                    child: TextButton.icon(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.pushNamed(context, ManagePaymentMethodsScreen.routename);
+                      },
+                      icon: const Icon(Icons.credit_card, size: 18),
+                      label: const Text('Manage & Add Cards'),
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.purple[700],
+                      ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
-              ...ref.read(paymentRepProvider).paymentoption.map((option) {
-                final isSelected = ref.watch(selectedmethodProvider) == option.option;
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  decoration: BoxDecoration(
-                    color: isSelected ? Colors.orange[50] : Colors.grey[50],
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: isSelected ? Colors.orange[300]! : Colors.grey[200]!,
-                      width: 2,
-                    ),
-                  ),
-                  child: Material(
-                    // The Container above paints the card background. ListTile
-                    // needs its own Material ancestor, otherwise Flutter asserts
-                    // about invisible ink splashes and the sheet throws.
-                    color: Colors.transparent,
-                    child: RadioListTile<String>(
-                      activeColor: Colors.orange[700],
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      title: Row(
-                        children: [
-                          Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            padding: const EdgeInsets.all(6),
-                            child: Image.network(
-                              option.imagurl,
-                              fit: BoxFit.contain,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Icon(Icons.payment, color: Colors.grey[400]),
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Text(
-                              option.option,
-                              style: TextStyle(
-                                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                                fontSize: 15,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      value: option.option,
-                    ),
-                  ),
-                );
-              }),
-              const SizedBox(height: 10),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

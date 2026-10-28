@@ -39,4 +39,23 @@ void main() {
     expect(find.text('Spicy Eats User'), findsOneWidget);
     expect(find.text('U'), findsOneWidget);
   });
+
+  testWidgets('AccountScreen renders Notifications and Language tiles with indicators',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(
+      const ProviderScope(child: MaterialApp(home: AccountScreen())),
+    );
+    await tester.pump();
+
+    // Verify Notifications tile and subtitle
+    expect(find.text('Notifications'), findsOneWidget);
+    expect(find.text('Manage your alerts'), findsOneWidget);
+
+    // Verify Language tile and subtitle with flag
+    expect(find.text('Language'), findsOneWidget);
+    expect(find.textContaining('English'), findsWidgets);
+
+    // Verify unread badge shows up for default notifications
+    expect(find.text('2'), findsWidgets);
+  });
 }

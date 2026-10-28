@@ -6,7 +6,13 @@ import 'package:spicy_eats/features/Profile/repo/ProfileRepo.dart';
 import 'package:spicy_eats/features/Profile/screen/ProfileScreen.dart';
 import 'package:spicy_eats/features/authentication/controller/AuthenicationController.dart';
 import 'package:spicy_eats/features/Location/screens/manage_addresses_screen.dart';
+import 'package:spicy_eats/features/Payment/screens/manage_payment_methods_screen.dart';
 import 'package:spicy_eats/features/orders/screens/order_screen.dart';
+import 'package:spicy_eats/features/localization/app_localizations.dart';
+import 'package:spicy_eats/features/localization/controller/locale_provider.dart';
+import 'package:spicy_eats/features/localization/screens/language_selection_screen.dart';
+import 'package:spicy_eats/features/notifications/controller/notifications_controller.dart';
+import 'package:spicy_eats/features/notifications/screens/notifications_screen.dart';
 import 'package:spicy_eats/main.dart';
 
 // class AccountScreen extends ConsumerStatefulWidget {
@@ -136,6 +142,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     final authUser = supabaseClient.auth.currentUser;
     final identities = authUser?.identities ?? [];
     final user = ref.watch(userProvider);
+    final currentLang = ref.watch(currentLanguageProvider);
+    final unreadNotifs = ref.watch(unreadNotificationsCountProvider);
 
     // Name shown in the header. userProvider is still null on first frame, so
     // fall back to a friendly placeholder instead of blowing up.
@@ -292,9 +300,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                               title: 'Payments',
                               subtitle: 'Cards & wallets',
                               color: Colors.purple,
-                              onTap: () {
-                                // Navigate to payments
-                              },
+                              onTap: () => Navigator.pushNamed(
+                                  context, ManagePaymentMethodsScreen.routename),
                             ),
                           ),
                         ],
@@ -336,29 +343,59 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                           children: [
                             _buildSettingsTile(
                               icon: Icons.notifications_outlined,
-                              title: 'Notifications',
-                              subtitle: 'Manage your alerts',
-                              onTap: () {},
+                              title: context.tr('notifications'),
+                              subtitle: context.tr('manage_alerts'),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  if (unreadNotifs > 0)
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 7, vertical: 2),
+                                      margin: const EdgeInsets.only(right: 6),
+                                      decoration: BoxDecoration(
+                                        color: Colors.orange,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Text(
+                                        '$unreadNotifs',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 16,
+                                    color: Colors.grey[400],
+                                  ),
+                                ],
+                              ),
+                              onTap: () => Navigator.pushNamed(
+                                  context, NotificationsScreen.routename),
                             ),
                             _buildDivider(),
                             _buildSettingsTile(
                               icon: Icons.language,
-                              title: 'Language',
-                              subtitle: 'English',
-                              onTap: () {},
+                              title: context.tr('language'),
+                              subtitle: '${currentLang.flag} ${currentLang.nativeName}',
+                              onTap: () => Navigator.pushNamed(
+                                  context, LanguageSelectionScreen.routename),
                             ),
                             _buildDivider(),
                             _buildSettingsTile(
                               icon: Icons.help_outline,
-                              title: 'Help & Support',
-                              subtitle: 'Get assistance',
+                              title: context.tr('help_support'),
+                              subtitle: context.tr('get_assistance'),
                               onTap: () {},
                             ),
                             _buildDivider(),
                             _buildSettingsTile(
                               icon: Icons.info_outline,
-                              title: 'About',
-                              subtitle: 'App version & info',
+                              title: context.tr('about'),
+                              subtitle: context.tr('app_info'),
                               onTap: () {},
                             ),
                           ],
@@ -511,6 +548,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     required String title,
     required String subtitle,
     required VoidCallback onTap,
+    Widget? trailing,
   }) {
     // The tiles sit inside a Container that paints the white card background.
     // ListTile needs a Material ancestor of its own, otherwise Flutter asserts
@@ -543,11 +581,12 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             color: Colors.grey[600],
           ),
         ),
-        trailing: Icon(
-          Icons.arrow_forward_ios,
-          size: 16,
-          color: Colors.grey[400],
-        ),
+        trailing: trailing ??
+            Icon(
+              Icons.arrow_forward_ios,
+              size: 16,
+              color: Colors.grey[400],
+            ),
       ),
     );
   }
